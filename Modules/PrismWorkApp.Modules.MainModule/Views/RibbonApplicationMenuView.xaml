@@ -1,0 +1,24 @@
+﻿<RibbonApplicationMenu  x:Class="PrismWorkApp.Modules.MainModule.Views.RibbonApplicationMenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PrismWorkApp.Modules.MainModule.Views"
+              xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+            xmlns:r="http://schemas.microsoft.com/winfx/2006/xaml/presentation"    >
+   <!--  <RibbonGroup Header="Исполнительная документация">
+        <RibbonButton Content="Загрузить из excel" Command="{Binding LoadProjectFromExcel}"/>
+        <RibbonButton Content="Сформировать АОСР"/>
+    </RibbonGroup>
+    <RibbonGroup Header="Инструменты">
+        <RibbonButton Content="Загрузить из excel" Command="{Binding LoadProjectFromExcel}"/>
+        <RibbonButton Content="Сформировать АОСР"/>
+    </RibbonGroup>-->
+
+
+    <RibbonApplicationMenuItem   Header="Файл" />
+            <RibbonApplicationMenuItem Header="Открыть" />
+            <RibbonApplicationMenuItem Header="Сохранить" />
+         
+</RibbonApplicationMenu>

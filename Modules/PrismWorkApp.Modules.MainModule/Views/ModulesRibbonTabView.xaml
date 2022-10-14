@@ -1,0 +1,35 @@
+﻿<RibbonTab  x:Class="PrismWorkApp.Modules.MainModule.Views.ModulesRibbonTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PrismWorkApp.Modules.MainModule.Views"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             Header="{Binding Title}">
+
+    <RibbonGroup Header="Модули">
+        <StackPanel>
+            <ListBox ItemsSource="{Binding ModulesContext.ModulesInfoData}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                        <TextBlock Text="{Binding Path=Name}"/>
+                        <CheckBox IsChecked="{Binding Path=IsEnable, Mode=TwoWay}"/>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                
+            </ListBox>
+            
+        </StackPanel>
+       </RibbonGroup>
+      <!--   <StackPanel>
+            <TextBlock Text="{Binding Title}"/>
+            <Button Content="Загрузить данные" Command="{Binding LoadAllProjectCommand}"/>
+            <Button Content="Сформировать АОСР" Command="{Binding CreateAOSRCommand}"/>
+            <TextBox Text="{Binding FormAOSR}"/>
+            <TextBox Text="{Binding ToAOSR}"/>
+         </StackPanel>-->
+  
+</RibbonTab>

@@ -1,0 +1,106 @@
+﻿<Window x:Class="PrismWorkApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:core="clr-namespace:PrismWorkApp.Core;assembly=PrismWorkApp.Core"
+        xmlns:mvvm="clr-namespace:PrismWorkApp.Core.Mvvm;assembly=PrismWorkApp.Core"
+        xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon" 
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Title="{Binding Title}" Height="950" Width="1025" WindowState="Maximized"  >
+    <Window.Resources>
+        <Style  x:Name="MainItemTabStyle" TargetType="{x:Type  TabItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Grid Height="20"
+                                  Background="{TemplateBinding Background}"
+                                  SnapsToDevicePixels="true">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="25" />
+                            </Grid.ColumnDefinitions>
+                            <ContentControl x:Name="content"
+                                                Grid.Column="0"
+                                                Margin="10 0 10 0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Content="{Binding DataContext.Title}" />
+                            <Button x:Name="close_button"
+                                        Grid.Column="1"
+                                        Width="15"
+                                        Height="15"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding DataContext.CloseCommand}"
+                                        CommandParameter="{Binding }"
+                                        DockPanel.Dock="Right">
+                                
+                                <Image Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/close-icon.png" Width="14" Height="14" 
+                                           HorizontalAlignment="Stretch" Margin="0"/>
+
+                            </Button>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="false">
+                                <Setter Property="Background" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" Value="Beige" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter Property="Background" Value="BlanchedAlmond" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+       
+        <Style TargetType="{x:Type DataGridRow}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsVisible,Converter={StaticResource bool2VisibilityConverter}}"  Value="Collapsed">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.4*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="0.15*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="0.05
+                           *"/>
+        </Grid.RowDefinitions>
+        <GridSplitter Grid.Column="1" Grid.Row="2" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+        <GridSplitter Grid.Column="3" Grid.Row="2" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+
+        <TabControl  Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" prism:RegionManager.RegionName="{x:Static core:RegionNames.ContentRegion}" >
+           
+        </TabControl>
+        <TabControl  Grid.Row="2" Grid.Column="0" prism:RegionManager.RegionName="{x:Static core:RegionNames.SolutionExplorerRegion}">
+        
+        </TabControl>
+        
+        <TabControl  Grid.Row="2" Grid.Column="4" prism:RegionManager.RegionName="{x:Static core:RegionNames.PropertiesRegion}"/>
+        <Ribbon Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="5" DockPanel.Dock="Top" Title=""
+                prism:RegionManager.RegionName="{x:Static core:RegionNames.RibbonRegion}">
+            <!--         <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu>
+                    <RibbonApplicationMenuItem   />
+                    <RibbonApplicationMenuItem Header="Открыть" />
+                    <RibbonApplicationMenuItem Header="Сохранить" />
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>-->
+        </Ribbon>
+
+    </Grid>
+</Window>

@@ -1,0 +1,255 @@
+﻿<UserControl x:Class="PrismWorkApp.Modules.BuildingModule.Views.ProjectView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
+            
+             mc:Ignorable="d" 
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             d:DesignHeight="500" d:DesignWidth="800" >
+
+
+    <Grid   ShowGridLines="False">
+        <Grid.Resources>
+
+            <Style x:Key="inlineText" TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="10,5,10,0"/>
+                <Setter Property="FontWeight" Value="Normal"/>
+                <Setter Property="FontSize" Value="12"/>
+            </Style>
+            <Style x:Key="titleText" TargetType="{x:Type TextBlock}">
+                <Setter Property="DockPanel.Dock" Value="Top"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Margin" Value="10,5,10,0"/>
+            </Style>
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="10,5,10,0"/>
+                <Setter Property="Width" Value="60"/>
+            </Style>
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="10,5,10,0"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+            </Style>
+            <Style TargetType="{x:Type DatePicker}">
+                <Setter Property="Margin" Value="10,5,10,0"/>
+            </Style>
+            <Style TargetType="{x:Type ListView}">
+                <Setter Property="Margin" Value="10,5,10,0"/>
+            </Style>
+            <Style x:Key="inlineListViewStackPanel" TargetType="{x:Type StackPanel}">
+                <Setter Property="Margin" Value="5,10,5,10"/>
+            </Style>
+            <Style x:Key="inlineListView" TargetType="{x:Type ListView}">
+                <Setter Property="Margin" Value="5,10,5,10"/>
+            </Style>
+            <Style x:Key="inlineDataGrid" TargetType="{x:Type DataGrid}">
+                <Setter Property="Margin" Value="5,10,5,10"/>
+            </Style>
+           
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.05*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.05*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.05*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="0.1*" />
+        </Grid.RowDefinitions>
+        <!-- <i:Interaction.Triggers>
+            <i:EventTrigger EventName="GotFocus">
+                <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
+                                           CommandParameter="{Binding   SelectedItem , ElementName=bldObjectDataGrid}" />
+            </i:EventTrigger>
+         <i:EventTrigger EventName="GotFocus">
+                <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" CommandParameter="{Binding SelectedItem, ElementName=bldParticipantDataGrid}"/>
+            </i:EventTrigger>
+            <i:EventTrigger EventName="GotFocus">
+                <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" CommandParameter="{Binding SelectedItem, ElementName=bldResponsibleEmployeeDataGrid}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>-->
+
+        <StackPanel x:Name="mainStakPanel" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="2" Orientation="Vertical" >
+            <TextBlock
+        Margin="10,5,10,0"
+        HorizontalAlignment="Center"
+        Style="{StaticResource titleText}">Форма для заполнения харахтеристик проекта.</TextBlock>
+            <StackPanel Orientation="Horizontal"  >
+                <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock  Style="{StaticResource inlineText}">Код:</TextBlock>
+                    <TextBox Grid.Column="1"  Text="{Binding SelectedProject.Code}" Width="40" HorizontalAlignment="Left"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"  >
+                <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock  Style="{StaticResource inlineText}">Наименование проекта (в проектной документации):</TextBlock>
+                    <TextBox Grid.Column="1"  Text="{Binding SelectedProject.Name}"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition   x:Name="shortProjectNameRightGridColumn"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" >Полное наименование проекта:</TextBlock>
+                    <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedProject.FullName}"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"  Style="{StaticResource inlineText}" >Короткое наименование</TextBlock>
+                    <TextBox Grid.Column="1" Text="{Binding SelectedProject.ShortName}"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock  Style="{StaticResource inlineText}">Дата начала строительства:</TextBlock>
+                <DatePicker  IsDropDownOpen="False"
+                    SelectedDateFormat="Short" 
+                    HorizontalAlignment="Left" 
+                    SelectedDate="{Binding  SelectedProject.StartTime ,Mode=TwoWay}" />
+                <TextBlock  Style="{StaticResource inlineText}">Дата окончания строительства:</TextBlock>
+                <DatePicker  IsDropDownOpen="False"
+                    SelectedDateFormat="Short" 
+                    HorizontalAlignment="Left" 
+                    SelectedDate="{Binding SelectedProject.EndTime}" />
+            </StackPanel>
+            <StackPanel  >
+                <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>
+                <StackPanel Orientation="Horizontal" x:Name="bldObjectStackPanel"  >
+                    <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" x:Name="DataGridLeftCulumn"/>
+                            <ColumnDefinition  Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid x:Name="bldObjectDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedProject.BuildingObjects}"
+                                                  SelectedItem="{Binding SelectedBuildingObject}"  
+                                                  Style="{StaticResource inlineDataGrid }" 
+                               AutoGenerateColumns="False"  IsReadOnly="True" 
+                                   HorizontalContentAlignment="Stretch"    >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectedCellsChanged">
+                                    <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
+                                           CommandParameter="{Binding   SelectedItem , ElementName=bldObjectDataGrid}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn  Header="Наименование объекта"  
+                                                     Binding = "{Binding Path=Name}" />
+                            </DataGrid.Columns>
+                           
+                        </DataGrid>
+
+                        <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
+                            <Button  Command="{ Binding AddBuildingObjectsCommand}">Добавить</Button>
+                            <Button Command="{Binding RemoveBuildingObjectCommand}" >Удалить</Button>
+                            <Button Command="{Binding EditBuildingObjectCommand}" >Изменить</Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel >
+                <TextBlock Style="{StaticResource inlineText}">Участники строительства:</TextBlock>
+                <StackPanel Orientation="Horizontal"  >
+                    <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition  Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid  x:Name="bldParticipantDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedProject.Participants}" 
+                                     SelectedItem="{Binding SelectedParticipant}"
+                                  Style="{StaticResource inlineDataGrid }" 
+                               AutoGenerateColumns="False"  IsReadOnly="True" 
+                                   HorizontalContentAlignment="Stretch" >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectedCellsChanged">
+                                    <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
+                                           CommandParameter="{Binding   SelectedItem , ElementName=bldParticipantDataGrid}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding = "{Binding Path=Name}"  
+                                                Header="Роль организации участника" Width="Auto" />
+                                <DataGridTextColumn Binding = "{Binding Path=Company.Name}" 
+                                                Header="Название ораганизации" Width="Auto"   />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
+                            <Button  Command="{Binding AddParticipantCommand}" >Добавить</Button>
+                            <Button Command="{Binding RemoveParticipantCommand}" >Удалить</Button>
+                            <Button Command="{Binding EditParticipantCommand}">Изменить</Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel >
+                <TextBlock Style="{StaticResource inlineText}">Отвественные лица:"</TextBlock>
+                <StackPanel Orientation="Horizontal"  >
+                    <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition  Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid x:Name="bldResponsibleEmployeeDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedProject.ResponsibleEmployees}"
+                                                   SelectedItem="{Binding SelectedResponsibleEmployee}"
+                                                Style="{StaticResource inlineDataGrid }" 
+                                                 AutoGenerateColumns="False"  IsReadOnly="True" 
+                                               HorizontalContentAlignment="Stretch"  >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectedCellsChanged">
+                                    <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
+                                           CommandParameter="{Binding   SelectedItem , ElementName=bldResponsibleEmployeeDataGrid}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding = "{Binding Path=Name}"  
+                                                Header="Роль организации участника" Width="Auto" />
+                                <DataGridTextColumn Binding = "{Binding Path=Company.Name}" 
+                                                Header="Название ораганизации" Width="Auto"   />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
+                            <Button Command="{Binding AddResponsibleEmployeesCommand}" >Добавить</Button>
+                            <Button Command="{Binding RemoveResponsibleEmployeeCommand}" >Удалить</Button>
+                            <Button Command="{Binding EditResponsibleEmployeeCommand}">Изменить</Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+
+            </StackPanel>
+
+        </StackPanel>
+        <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
+            <Button  Content="Сохранить" Command="{Binding SaveProjectCommand}" />
+            <Button  Content="Закрыть"  Command="{Binding CloseCommand}"
+                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                                                     AncestorType={x:Type UserControl}}}"/>
+
+        </StackPanel>
+
+
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,117 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>PrismWorkApp.Modules.BuildingModule</AssemblyName>
+    <RootNamespace>PrismWorkApp.Modules.BuildingModule</RootNamespace>
+  </PropertyGroup>
+      <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>TRACE</DefineConstants>
+      </PropertyGroup>
+      <ItemGroup>
+        <None Remove="Resourses\Images\bldProjectImages\bldAOSRDocument.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldConstruction.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldConstructionsGroup.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldExecutiveScheme.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldLaboratoryReport.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldMaterial.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldMaterialCertificate.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldMaterialGroup.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldMaterialsGroup.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldObject.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldObjectsGroup.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldParticipant_BUILDER.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldParticipant_DEVELOPER.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldParticipant_DISIGNER.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldParticipant_GENERAL_CONTRACTOR.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldProject.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldResponsibleEmployee_AUTHOR_SUPERVISION.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldResponsibleEmployee_CUSTOMER %282%29.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldResponsibleEmployee_CUSTOMER.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldResponsibleEmployee_GENERAL_CONTRACTOR.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldResponsibleEmployee_GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldResponsibleEmployee_WORK_PERFORMER.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldResponsibleEmployee__OTHER.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldWork.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
+        <None Remove="Resourses\Images\close-icon.png" />
+        <None Remove="Resourses\Images\Ribbon\32x32\add.png" />
+        <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
+        <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
+        <None Remove="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
+        <None Remove="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
+        <None Remove="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+      </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Interop.Word">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>7</VersionMinor>
+      <VersionMajor>8</VersionMajor>
+      <Guid>00020905-0000-0000-c000-000000000046</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="5.8.7" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\PrismWorkApp.Core\PrismWorkApp.Core.csproj" />
+    <ProjectReference Include="..\..\PrismWorkApp.OpenWorkLib\PrismWorkApp.OpenWorkLib.csproj" />
+    <ProjectReference Include="..\..\PrismWorkApp.ProjectModel\PrismWorkApp.ProjectModel.csproj" />
+    <ProjectReference Include="..\..\Services\PrismWorkApp.Services.Interfaces\PrismWorkApp.Services.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Services\PrismWorkApp.Services\PrismWorkApp.Services.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resourses\Images\bldProjectImages\bldAOSRDocument.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resourses\Images\bldProjectImages\bldConstruction.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldConstructionsGroup.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldExecutiveScheme.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldLaboratoryReport.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldMaterial.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldMaterialCertificate.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldMaterialsGroup.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldObject.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldObjectsGroup.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldParticipant_BUILDER.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldParticipant_DEVELOPER.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldParticipant_DISIGNER.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldParticipant_GENERAL_CONTRACTOR.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldProject.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldResponsibleEmployee_AUTHOR_SUPERVISION.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldResponsibleEmployee_CUSTOMER (2).png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldResponsibleEmployee_CUSTOMER.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldResponsibleEmployee_GENERAL_CONTRACTOR.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldResponsibleEmployee_GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldResponsibleEmployee_WORK_PERFORMER.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldResponsibleEmployee__OTHER.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldWork.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
+    <Resource Include="Resourses\Images\close-icon.png" />
+    <Resource Include="Resourses\Images\Ribbon\32x32\add.png" />
+    <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
+    <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
+    <Resource Include="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
+    <Resource Include="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
+    <Resource Include="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\ConstructionView .xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\ConstructionView .xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

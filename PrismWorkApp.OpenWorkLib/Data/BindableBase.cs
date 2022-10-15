@@ -362,14 +362,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public string Code
         {
             get {
-
-                // return $"{StructureLevel.ParentStructureLevel.Level.ToString()}.{StructureLevel.Level.ToString()}.{StructureLevel.Number.ToString()}";
-                return StructureLevel.Code;
+                return _code;
+                  //return StructureLevel.Code;
             }
             set { SetProperty(ref _code, value); }
         }//Код
+        [NotMapped]
+        public object ParentObject { get; set; }
 
-   
     }
 
 

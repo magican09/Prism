@@ -6,11 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PrismWorkApp.OpenWorkLib.Core;
 
 namespace PrismWorkApp.Core.Dialogs
 {
     public abstract class AddElementToCollectionDialogViewModel<TConteiner, T> : LocalBindableBase, IDialogAware
-        where TConteiner : ICollection<T>, INameable,INameableOservableCollection<T>, new()
+        where TConteiner :IEnumerable<T>, INameable,INameableOservableCollection<T>, new()
         where T : class, IRegisterable, new()
     {
         private string _title = "Диалоговое окно сообщения";
@@ -59,6 +60,12 @@ namespace PrismWorkApp.Core.Dialogs
             get { return _commonCollection; }
             set { SetProperty(ref _commonCollection, value); }
         }
+        private TConteiner _sortedCommonCollection;
+        public TConteiner SortedCommonCollection
+        {
+            get { return _sortedCommonCollection; }
+            set { SetProperty(ref _sortedCommonCollection, value); }
+        }
         private TConteiner _currentCollection;
         public TConteiner CurrentCollection
         {
@@ -91,7 +98,22 @@ namespace PrismWorkApp.Core.Dialogs
             get { return _currentContextId; }
             set { SetProperty(ref _currentContextId, value); }
         }
-        
+
+        private NameablePredicateObservableCollection<TConteiner, T> _predicateCollection;
+
+        public NameablePredicateObservableCollection<TConteiner,T> PredicateCollection
+        {
+            get { return _predicateCollection; }
+            set { _predicateCollection = value; }
+        }
+        private NameablePredicate<TConteiner, T> _selectedPredicate;
+
+
+        public NameablePredicate<TConteiner,T>  SelectedPredicate
+        {
+            get { return _selectedPredicate; }
+            set { SetProperty(ref _selectedPredicate, value); }
+        }
 
 
         public DelegateCommand ConfirmDialogCommand { get; private set; }
@@ -100,7 +122,8 @@ namespace PrismWorkApp.Core.Dialogs
         public DelegateCommand CreateElementOnPatternInstanceCommand { get; private set; }
         public DelegateCommand AddToCollectionCommand { get; private set; }
         public DelegateCommand RemoveFromCollectionCommand { get; private set; }
-
+        public DelegateCommand SortingCommand { get; private set; }
+        
         public event Action<IDialogResult> RequestClose;
         public event Action<IDialogResult> RequestNewObject;
         public string NewObjectDialogName { get; set; }
@@ -118,8 +141,23 @@ namespace PrismWorkApp.Core.Dialogs
                       .ObservesProperty(() => SelectedElement);
             RemoveFromCollectionCommand = new DelegateCommand(OnRemoveFromCollection, CanRemoveFromCollection)
                       .ObservesProperty(() => SelectedElement);
-
+            SortingCommand = new DelegateCommand(OnSortingCommand, CanSorting)
+                .ObservesProperty(()=> SelectedPredicate);
             _dialogService = dialogService;
+        }
+
+        private bool CanSorting()
+        {
+            return SelectedPredicate != null; ;
+        }
+
+        private void OnSortingCommand()
+        {
+            SortedCommonCollection = new TConteiner();
+            SortedCommonCollection.Clear();
+            foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
+                SortedCommonCollection.Add(element);
+
         }
 
         private bool CanRemoveFromCollection()
@@ -173,7 +211,7 @@ namespace PrismWorkApp.Core.Dialogs
             //CoreFunctions.SetAllIdToZero(new_element);
        
             ((IBindableBase)SelectedElement).SetCopy<IEntityObject>(new_element, x=> x.CopingEnable);
-
+           // ((IEntityObject)SelectedElement).GetCopy(x => x.CopingEnable);
                   ConveyanceObject conveyanceObject =
                 new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
             dialog_par.Add("selected_element_conveyance_object", conveyanceObject);
@@ -267,7 +305,8 @@ namespace PrismWorkApp.Core.Dialogs
             Refuse = parameters.GetValue<string>("confirm_button_content");
             Confirm = parameters.GetValue<string>("refuse_button_content");
             NewObjectDialogName = parameters.GetValue<string>("new_object_dialog_name");
-           
+            PredicateCollection =
+                parameters.GetValue<NameablePredicateObservableCollection<TConteiner, T>>("predicate_collection");
 
 
         }

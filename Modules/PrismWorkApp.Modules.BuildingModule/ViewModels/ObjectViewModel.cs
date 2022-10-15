@@ -186,14 +186,32 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnAddConstruction()
         {
             bldConstructionsGroup Constructions =  
-                new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync());
-            CoreFunctions.AddElementToCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
-                (SelectedBuildingObject.Constructions, Constructions, _dialogService,
+            new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync());
+            NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_1 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
+            predicate_1.Name = "Показать только из текущего проекта.";
+            predicate_1.Predicate = cl => cl.Where(el => el.bldObject.bldProject.Id == SelectedBuildingObject.bldProject.Id).ToList();
+            NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_2 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
+            predicate_2.Name = "Показать все кроме текущего проекта";
+            predicate_2.Predicate = cl => cl.Where(el => el.bldObject.bldProject.Id != SelectedBuildingObject.bldProject.Id).ToList();
+            NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_3 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
+            predicate_3.Name = "Показать все";
+            predicate_3.Predicate = cl => cl;
+
+            NameablePredicateObservableCollection<bldConstructionsGroup, bldConstruction> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldConstructionsGroup, bldConstruction>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
+            nameablePredicatesCollection.Add(predicate_3);
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<bldConstructionsGroup, bldConstruction>
+                (SelectedBuildingObject.Constructions, Constructions, 
+                nameablePredicatesCollection,
+                _dialogService,
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)
                      {
                          SaveCommand.RaiseCanExecuteChanged();
+                         foreach (bldConstruction construction in SelectedBuildingObject.Constructions)
+                             construction.bldObject = SelectedBuildingObject;
                      }
                      if (result.Result == ButtonResult.No)
                      {

@@ -330,7 +330,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public string Code
         {
             get {
-               return  StructureLevel.Code;
+                // return  StructureLevel.Code;
+                return _code;
             }
             set { _code = value; OnPropertyChanged("Code"); }
         }//Код
@@ -344,5 +345,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
         public bool CopingEnable { get; set; } = true;
+
+        public object ParentObject { get; set; }
     }
 }

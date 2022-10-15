@@ -30,8 +30,22 @@
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Margin="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" 
                Content="{Binding Message}" />
-        <Label Grid.Row="1"  Margin="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" 
+        <StackPanel Grid.Row="1" Grid.Column="0">
+            <Label Grid.Row="1"  Margin="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" 
                Content="{Binding CommonCollectionName}" />
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Показать"  Width="75" Height="20"  HorizontalAlignment="Right" Margin="2" 
+                        Command="{Binding SortingCommand}" />
+                <ComboBox ItemsSource="{Binding PredicateCollection}" SelectedItem="{Binding SelectedPredicate}"
+                          SelectedValue="{Binding PredicateCollection[0]}" DisplayMemberPath="Name"
+                          SelectedValuePath="Name" Width="255">
+                  
+                </ComboBox>
+            </StackPanel>
+
+
+
+        </StackPanel>
         <Label Grid.Row="1"   Margin="2"  Grid.Column="2"  HorizontalAlignment="Left" VerticalAlignment="Center" 
                Content="{Binding CurrentCollectionName}" />
         <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -46,7 +60,7 @@
             <Button Grid.Row="1" Grid.Column="0" Content="&lt;&lt;Удалить&lt;&lt;"  Height="25"  HorizontalAlignment="Stretch" Margin="2"
                 Command="{Binding RemoveFromCollectionCommand}"/>
         </StackPanel>
-        <DataGrid Grid.Row="2" Grid.Column="0" Margin="2"  ItemsSource="{Binding CommonCollection}" 
+        <DataGrid Grid.Row="2" Grid.Column="0" Margin="2"  ItemsSource="{Binding SortedCommonCollection}" 
                   SelectedItem="{Binding SelectedElement,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                    AutoGenerateColumns="False"  IsReadOnly="True">
             <DataGrid.Columns>

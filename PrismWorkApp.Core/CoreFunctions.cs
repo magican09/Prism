@@ -237,7 +237,7 @@ namespace PrismWorkApp.Core
 
             common_collection = GetCollectionElementsList<TContainer, T>(commonCollection);
 
-
+            
             foreach (T elm in current_collection) //Удаляем извременной общей коллекции объекты которые уже есть  редактируемой коллекции
             {
                 var obj = common_collection.Where(el => ((IEntityObject)el).Id == ((IEntityObject)elm).Id).FirstOrDefault();
@@ -262,9 +262,49 @@ namespace PrismWorkApp.Core
 
             dialogService.ShowDialog(dialogViewName, dialog_par, action);
         }
+        public static void AddElementToCollectionWhithDialog_Test<TContainer, T>
+           (TContainer currentCollection,
+           TContainer  commonCollection_all,
+            NameablePredicateObservableCollection<TContainer, T> predicate_collection,// commonCollection_restricted,
+            IDialogService dialogService, Action<IDialogResult> action,
+               string dialogViewName,
+               string newObjectDialogName,
+               Guid current_context_id,
+               string title = "",
+               string message = "",
+               string currentCollectionName = "",
+               string commonCollectionName = ""
+               )
+           where TContainer : ICollection<T>, INameableOservableCollection<T>, new()
+           where T : class, ICloneable
+        {
+            TContainer current_collection = new TContainer();
+            TContainer common_collection = new TContainer();
+            //CopyObjectReflectionNewInstances(currentCollection, current_collection);
+            //CopyObjectReflectionNewInstances(commonCollection, common_collection);
+            current_collection = currentCollection;
+          //  if (currentCollection == null) currentCollection = new TContainer();
+            common_collection = commonCollection_all;
 
+
+
+             var dialog_par = new DialogParameters();
+            dialog_par.Add("title", title);
+            dialog_par.Add("message", message);
+            dialog_par.Add("current_collection_name", currentCollectionName);
+            dialog_par.Add("common_collection_name", commonCollectionName);
+            dialog_par.Add("common_collection", common_collection);
+            dialog_par.Add("current_collection", current_collection);
+            dialog_par.Add("confirm_button_content", "Сохранить");
+            dialog_par.Add("refuse_button_content", "Закрыть");
+            dialog_par.Add("new_object_dialog_name", newObjectDialogName);
+            dialog_par.Add("current_context_id", current_context_id);
+            dialog_par.Add("predicate_collection", predicate_collection);
+
+            dialogService.ShowDialog(dialogViewName, dialog_par, action);
+        }
         public static TContainer GetCollectionElementsList<TContainer, T>(TContainer input_collection)
-            where TContainer : ICollection<T>, new()
+            where TContainer : INameableOservableCollection<T>, new()
             where T : class
         {
             TContainer output_collection = new TContainer();

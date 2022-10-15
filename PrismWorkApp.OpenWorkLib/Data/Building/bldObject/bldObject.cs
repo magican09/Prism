@@ -1,6 +1,7 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
@@ -115,7 +116,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
        
 
-        private bldConstructionsGroup _constructions;
+        private bldConstructionsGroup _constructions = new bldConstructionsGroup();
       
         public virtual bldConstructionsGroup? Constructions 
         {
@@ -145,8 +146,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _bldProject, value); }
         }
 
-        
-
+   
         public override bool Equals(object? obj)
         {
             if(obj is IEntityObject)
@@ -166,8 +166,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             bldObject val = new bldObject();
             val = (bldObject)MemberwiseClone();
-           
             return val;
         }
+        public bldObject()
+        {
+            
+        }
+
+       
     }
 }

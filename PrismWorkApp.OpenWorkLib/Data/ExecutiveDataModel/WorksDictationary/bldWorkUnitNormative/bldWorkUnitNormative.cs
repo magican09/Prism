@@ -22,6 +22,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public Guid CurrentContextId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public StructureLevel StructureLevel { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bool CopingEnable { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public object ParentObject { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void ClearStructureLevel()
         {

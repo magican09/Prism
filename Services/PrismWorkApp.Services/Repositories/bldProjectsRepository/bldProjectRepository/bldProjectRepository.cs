@@ -133,9 +133,12 @@ namespace PrismWorkApp.Services.Repositories
             PlutoContext.LaboratoryReports.ToList();
             PlutoContext.MaterialCertificates.ToList();
             PlutoContext.RegulationtDocuments.ToList();
-            PlutoContext.ResponsibleEmployees.ToList();
+            PlutoContext.ResponsibleEmployees.Include(em=>em.DocConfirmingTheAthority).ToList();
             PlutoContext.WorkAreas.ToList();
-
+            PlutoContext.Projects
+                .Include(p => p.Participants)
+                .ThenInclude(pr => pr.ConstructionCompanies)
+                .ThenInclude(c=>c.SROIssuingCompany).ToList();
             return projects;
         }
 

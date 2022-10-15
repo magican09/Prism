@@ -20,8 +20,7 @@ namespace PrismWorkApp.OpenWorkLib.Core
         public static int NavigateParametrDepth { get; set; } = 0;//Глубина навигационного свойства
         public static int InitialRecursive_depth { get; set; } = 0;
         public static int Cicling_recursive_depth { get; set; } = 0;//Глубина рекурсии
-
-        public static void CopyObjectReflectionNewInstances<TSourse>(object sourse, object target, Func<TSourse, bool> predicate, bool objectsTreeCatalogReset = true)
+         public static void CopyObjectReflectionNewInstances<TSourse>(object sourse, object target, Func<TSourse, bool> predicate, bool objectsTreeCatalogReset = true)
         where TSourse : IEntityObject
         {
 
@@ -149,7 +148,7 @@ namespace PrismWorkApp.OpenWorkLib.Core
                 }
             }
 
-            if ((sourse is IList)&& predicate.Invoke((TSourse)sourse)) //if input parameters is Tlist 
+            if ((sourse is IList) && predicate.Invoke((TSourse)sourse)) //if input parameters is Tlist 
             {
 
                 foreach (IEntityObject sourse_element in (IEnumerable<IEntityObject>)sourse)  //Регистрируем все объекты списка...
@@ -373,7 +372,7 @@ namespace PrismWorkApp.OpenWorkLib.Core
                     }
                 }
 
-                  bool sourse_prop_is_navigate_prop = GetNavigateProperties(common_prop).Where(pr => pr.Name == sourse_prop_info?.Name).FirstOrDefault() != null;
+                bool sourse_prop_is_navigate_prop = GetNavigateProperties(common_prop).Where(pr => pr.Name == sourse_prop_info?.Name).FirstOrDefault() != null;
 
                 if (tree_level == 1 && sourse_prop_is_navigate_prop)
                 {

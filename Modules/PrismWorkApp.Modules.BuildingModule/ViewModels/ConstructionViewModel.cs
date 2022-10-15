@@ -157,15 +157,34 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldWorksGroup Works =
                 new bldWorksGroup(_buildingUnitsRepository.Works.GetbldWorksAsync());
-           // Works.ClearStructureLevel();
-          //  Works.UpdateStructure();
-            CoreFunctions.AddElementToCollectionWhithDialog<bldWorksGroup, bldWork>
-                (SelectedConstruction.Works, Works, _dialogService,
+            // Works.ClearStructureLevel();
+            //  Works.UpdateStructure();
+            NameablePredicate<bldWorksGroup, bldWork> predicate_1 = new NameablePredicate<bldWorksGroup, bldWork>();
+            predicate_1.Name = "Показать только из текущего объекта.";
+            predicate_1.Predicate = cl => cl.Where(el => el.bldConstruction.bldObject.Id == SelectedConstruction.bldObject.Id).ToList();
+            NameablePredicate<bldWorksGroup, bldWork> predicate_2 = new NameablePredicate<bldWorksGroup, bldWork>();
+            predicate_2.Name = "Показать все кроме текущего объекта";
+            predicate_2.Predicate = cl => cl.Where(el => el.bldConstruction.bldObject.Id != SelectedConstruction.bldObject.Id).ToList();
+            NameablePredicate<bldWorksGroup, bldWork> predicate_3 = new NameablePredicate<bldWorksGroup, bldWork>();
+            predicate_3.Name = "Показать все";
+            predicate_3.Predicate = cl => cl;
+
+            NameablePredicateObservableCollection<bldWorksGroup, bldWork> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldWorksGroup, bldWork>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
+            nameablePredicatesCollection.Add(predicate_3);
+
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<bldWorksGroup, bldWork>
+                (SelectedConstruction.Works, Works,
+                 nameablePredicatesCollection,
+                _dialogService,
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)
                      {
                          SaveCommand.RaiseCanExecuteChanged();
+                         foreach (bldWork work in SelectedConstruction.Works)
+                             work.bldConstruction = SelectedConstruction;
                      }
                      if (result.Result == ButtonResult.No)
                      {
@@ -177,6 +196,25 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 "Редактирование списка работ",
                 "Форма для редактирования состава работ текушей коснтрукции.",
                 "Работы текущей конструкции", "Все работы");
+          
+            /*CoreFunctions.AddElementToCollectionWhithDialog<bldWorksGroup, bldWork>
+               (SelectedConstruction.Works, Works, _dialogService,
+                (result) =>
+                {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        SaveCommand.RaiseCanExecuteChanged();
+                    }
+                    if (result.Result == ButtonResult.No)
+                    {
+                        SelectedConstruction.Works.UnDoAll(Id);
+                    }
+                },
+               typeof(AddbldWorkToCollectionDialogView).Name,
+               typeof(WorkDialogView).Name, Id,
+               "Редактирование списка работ",
+               "Форма для редактирования состава работ текушей коснтрукции.",
+               "Работы текущей конструкции", "Все работы");*/
         }
         private void OnRemoveWork()
         {

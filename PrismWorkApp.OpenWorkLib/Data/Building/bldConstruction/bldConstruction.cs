@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
@@ -71,7 +72,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _netExecutionTime; }
             set { SetProperty(ref _netExecutionTime, value); }
         }//Чистое время выполнения
-
         private decimal _quantity;
         public decimal Quantity
         {
@@ -109,10 +109,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _scopeOfWork; }
             set { SetProperty(ref _scopeOfWork, value); }
         }
-        public bldConstruction()
-        {
-
-        }
         private  bldConstructionsGroup _constructions = new bldConstructionsGroup();
         public virtual bldConstructionsGroup Constructions
         {
@@ -129,6 +125,33 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         [NavigateProperty]
         public bldObject? bldObject { get; set; }
+         public bldConstruction()
+        {
+            Works.CollectionChanged += OnWorkAdd;
+            Constructions.CollectionChanged+=OnConstructionAdd;
+        }
+
+        private void OnConstructionAdd(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (bldConstruction construction  in e.NewItems)
+                {
+                  //  construction.bldConstruction = this;
+                }
+            }
+        }
+
+        private void OnWorkAdd(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if(e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach(bldWork work in e.NewItems)
+                {
+                    work.bldConstruction = this;
+                }
+            }
+        }
 
         public bldWork GetWork(Guid id)
         {
@@ -140,13 +163,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             return MemberwiseClone();
         }
-        public override void GetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate)
+        public override void SetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate)
         {
-            if(bldObject!=null)
-            {
-
-            }
-            base.GetCopy(pointer, predicate);
+            
+            base.SetCopy(pointer, predicate);
+       //     this.bldObject = (pointer as bldConstruction).bldObject;
         }
+
+        
     }
 }

@@ -39,5 +39,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Name = "Ведомость работ:";
         }
+
     }
 }

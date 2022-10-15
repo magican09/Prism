@@ -125,28 +125,28 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             NavigationParameters navParam = new NavigationParameters();
             switch (node_value_type?.Name)
             {
-                case nameof(Node):
-                    switch (((Node)clicked_node).Value?.GetType().Name)
-                    {
-                        case (nameof(BuildingConstruction)):
-                            switch (((Node)clicked_node).Name)
-                            {
-                                case "АОСР":
+                //case nameof(Node):
+                    //switch (((Node)clicked_node).Value?.GetType().Name)
+                    //{
+                    //    case (nameof(BuildingConstruction)):
+                    //        switch (((Node)clicked_node).Name)
+                    //        {
+                    //            case "АОСР":
 
-                                    navParam.Add("building_construction", (BuildingConstruction)((Node)clicked_node).Value);
-                                    _regionManager.RequestNavigate(RegionNames.ContentRegion, "AOSRDocumentsTableView", navParam);
-                                    break;
-                                case "Ведомость работ":
+                    //                navParam.Add("building_construction", (BuildingConstruction)((Node)clicked_node).Value);
+                    //                _regionManager.RequestNavigate(RegionNames.ContentRegion, "AOSRDocumentsTableView", navParam);
+                    //                break;
+                    //            case "Ведомость работ":
 
-                                    navParam.Add("building_construction", (BuildingConstruction)((Node)clicked_node).Value);
-                                    _regionManager.RequestNavigate(RegionNames.ContentRegion, "WorksTableView", navParam);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                    }
-                    break;
+                    //                navParam.Add("building_construction", (BuildingConstruction)((Node)clicked_node).Value);
+                    //                _regionManager.RequestNavigate(RegionNames.ContentRegion, "WorksTableView", navParam);
+                    //                break;
+                    //            default:
+                    //                break;
+                    //        }
+                    //        break;
+                    //}
+                    //break;
 
                 case (nameof(bldWork)):
                     {
@@ -192,8 +192,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 case (nameof(bldAOSRDocument)):
                     {
                         navParam.Add("bld_aosr_document", new ConveyanceObject((bldAOSRDocument)clicked_node, ConveyanceObjectModes.EditMode.FOR_EDIT));
-                        navParam.Add("bld_work", (new ConveyanceObject(((bldAOSRDocument)clicked_node).bldWork, ConveyanceObjectModes.EditMode.FOR_EDIT)));
-                        navParam.Add("bld_project", (new ConveyanceObject(((bldAOSRDocument)clicked_node).bldWork.bldConstruction.bldObject.bldProject, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                      //  navParam.Add("bld_work", (new ConveyanceObject(((bldAOSRDocument)clicked_node).bldWork, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                       // navParam.Add("bld_project", (new ConveyanceObject(((bldAOSRDocument)clicked_node).bldWork.bldConstruction.bldObject.bldProject, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                         _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AOSRDocumentView).Name, navParam);
                         break;
                     }

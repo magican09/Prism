@@ -18,7 +18,7 @@ using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class AOSRDocumentViewModel : LocalBindableBase, INotifyPropertyChanged, INavigationAware
+    public class AOSRDocumentViewModel : BaseViewModel<AOSRDocument>, INotifyPropertyChanged, INavigationAware
     {
         private string _title = "АОСР";
         public string Title
@@ -82,12 +82,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _resivedObject; }
             set { SetProperty(ref _resivedObject, value); }
         }
-        private bldObject _selectedObject;
-        public bldObject SelectedObject
-        {
-            get { return _selectedObject; }
-            set { SetProperty(ref _selectedObject, value); }
-        }
+       
 
         private bldAOSRDocument _selectedPreviousWork;
         public bldAOSRDocument SelectedPreviousWork
@@ -127,12 +122,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _selectedDocumentsList, value); }
         }
        
-        private bool _editMode;
-        public bool EditMode
-        {
-            get { return _editMode; }
-            set { SetProperty(ref _editMode, value); }
-        }
+        
 
         private bool _keepAlive = true;
 
@@ -160,11 +150,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public DelegateCommand GenerateWordDocumentCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
-
-
-
-        protected readonly IDialogService _dialogService;
-        private readonly IRegionManager _regionManager;
 
         public AOSRDocumentViewModel(IDialogService dialogService,
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
@@ -201,7 +186,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ProjectService.SaveAOSRToWord(SelectedAOSRDocument);
         }
 
-        private void OnClose(object obj)
+        public override void OnClose(object obj)
         {
             CoreFunctions.ConfirmActionOnElementDialog<bldAOSRDocument>(SelectedAOSRDocument, "Сохранить", "работу", "Сохранить", "Не сохранять", "Отмена", (result) =>
             {
@@ -209,14 +194,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 {
                     if (result.Result == ButtonResult.Yes)
                     {
-                        Save();
+                        SelectedAOSRDocument.SaveAll(Id);
                         // KeepAlive = false;
                         if (_regionManager.Regions[RegionNames.ContentRegion].Views.Contains(obj))
                             _regionManager.Regions[RegionNames.ContentRegion].Remove(obj);
                     }
                     else if (result.Result == ButtonResult.No)
                     {
-                        //KeepAlive = false;
+                        SelectedAOSRDocument.UnDoAll(Id);
                         if (_regionManager.Regions[RegionNames.ContentRegion].Views.Contains(obj))
                             _regionManager.Regions[RegionNames.ContentRegion].Remove(obj);
                     }
@@ -366,36 +351,35 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             SaveCommand.RaiseCanExecuteChanged();
         }
-        public virtual void OnSave()
+        public override  void OnSave()
         {
             CoreFunctions.ConfirmActionOnElementDialog<bldAOSRDocument>(SelectedAOSRDocument, "Сохранить", "работу", "Сохранить", "Не сохранять", "Отмена", (result) =>
             {
                 if (result.Result == ButtonResult.Yes)
                 {
-                    Save();
+                    SelectedAOSRDocument.SaveAll(Id);
                 }
             }, _dialogService);
         }
 
-        private void Save()
-        {
-         //    CoreFunctions.CopyObjectReflectionNewInstances(SelectedConstruction, ResivedConstruction);
-        }
+     
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
 
             ConveyanceObject navigane_message_aosr_document = (ConveyanceObject)navigationContext.Parameters["bld_aosr_document"];
-            ConveyanceObject navigane_message_work = (ConveyanceObject)navigationContext.Parameters["bld_work"];
-            ConveyanceObject navigane_message_project = (ConveyanceObject)navigationContext.Parameters["bld_project"];
+           // ConveyanceObject navigane_message_work = (ConveyanceObject)navigationContext.Parameters["bld_work"];
+          //  ConveyanceObject navigane_message_project = (ConveyanceObject)navigationContext.Parameters["bld_project"];
 
             //   ConveyanceObject navigane_message_construction = (ConveyanceObject)navigationContext.Parameters["bld_construction"];
             if (navigane_message_aosr_document != null)
             {
-                ResivedProject =(bldProject) navigane_message_project.Object;
-                ResivedWork = (bldWork)navigane_message_work.Object;
+              //  ResivedProject =(bldProject) navigane_message_project.Object;
+               // ResivedWork = (bldWork)navigane_message_work.Object;
                 ResivedAOSRDocument =(bldAOSRDocument)navigane_message_aosr_document.Object;
-               // ResivedConstruction = (bldConstruction)navigane_message_construction.Object;
-               //  ResivedObject = (bldObject)navigane_message_object.Object;
+               // ResivedProject = ResivedAOSRDocument.bldWork.bldConstruction.
+              //  ResivedWork = ;
+                // ResivedConstruction = (bldConstruction)navigane_message_construction.Object;
+                //  ResivedObject = (bldObject)navigane_message_object.Object;
 
                 EditMode = navigane_message_aosr_document.EditMode;
                 if (SelectedAOSRDocument != null) SelectedAOSRDocument.ErrorsChanged -= RaiseCanExecuteChanged;
@@ -403,12 +387,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedAOSRDocument.ErrorsChanged += RaiseCanExecuteChanged;
                 SelectedConstruction = new bldConstruction();
                 SelectedProject = new SimpleEditableBldProject();
-             //   CoreFunctions.CopyObjectReflectionNewInstances(ResivedProject, SelectedProject);
-                SelectedObject = SelectedProject.BuildingObjects.Where(ob => ob.Id == ResivedAOSRDocument.bldWork.bldConstruction.bldObject.Id).FirstOrDefault();
-                SelectedConstruction = SelectedObject.Constructions.Where(cn => cn.Id == ResivedAOSRDocument.bldWork.bldConstruction.Id).FirstOrDefault();
-                SelectedWork = SelectedConstruction.Works.Where(wr => wr.Id == ResivedAOSRDocument.bldWork.Id).FirstOrDefault();
-                SelectedAOSRDocument = SelectedWork.AOSRDocuments.Where(dc => dc.Id == ResivedAOSRDocument.Id).FirstOrDefault();
-             /*   SelectedAOSRDocument = SelectedConstruction.Works.Where(wr => wr.Id == ResivedAOSRDocument.Id).FirstOrDefault();
+                //   CoreFunctions.CopyObjectReflectionNewInstances(ResivedProject, SelectedProject);
+                SelectedAOSRDocument = ResivedAOSRDocument;// SelectedWork.AOSRDocuments.Where(dc => dc.Id == ResivedAOSRDocument.Id).FirstOrDefault();
+            //    SelectedObject = SelectedProject.BuildingObjects.Where(ob => ob.Id == ResivedAOSRDocument.bldWork.bldConstruction.bldObject.Id).FirstOrDefault();
+              //  SelectedConstruction = SelectedObject.Constructions.Where(cn => cn.Id == ResivedAOSRDocument.bldWork.bldConstruction.Id).FirstOrDefault();
+               // SelectedWork = SelectedConstruction.Works.Where(wr => wr.Id == ResivedAOSRDocument.bldWork.Id).FirstOrDefault();
+              /*   SelectedAOSRDocument = SelectedConstruction.Works.Where(wr => wr.Id == ResivedAOSRDocument.Id).FirstOrDefault();
                 AllDocuments.Clear();
                 AllDocuments.Add(SelectedAOSRDocument.AOSRDocuments.Id, SelectedAOSRDocument.AOSRDocuments);
                 AllDocuments.Add(SelectedAOSRDocument.LaboratoryReports.Id, SelectedAOSRDocument.LaboratoryReports);

@@ -291,7 +291,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         [NotMapped]
         public bool CopingEnable { get; set; } = true;
-        public virtual void  GetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate)
+        public virtual void SetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate)
             where TSourse:IEntityObject
         {
             Functions.CopyObjectReflectionNewInstances(this, pointer, predicate);

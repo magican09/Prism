@@ -373,25 +373,25 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
 
                         world_document.Bookmarks["Object_name"].Range.Text = project.FullName;//Наименованиа объекта
 
-                        string Client_name = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DEVELOPER).ConstructionCompanies[0]?.FullName + //Застройщик
-                            ", " + project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DEVELOPER).ConstructionCompanies[0].Contacts +
-                            ", " + project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DEVELOPER).ConstructionCompanies[0].SROIssuingCompany.FullName;
+                        string Client_name = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DEVELOPER)?.ConstructionCompanies[0]?.FullName + //Застройщик
+                            ", " + project.Participants?.FirstOrDefault(p => p.Role == ParticipantRole.DEVELOPER)?.ConstructionCompanies[0]?.Contacts +
+                            ", " + project.Participants?.FirstOrDefault(p => p.Role == ParticipantRole.DEVELOPER)?.ConstructionCompanies[0]?.SROIssuingCompany.FullName;
                         world_document.Bookmarks["Client_name"].Range.Text = Client_name;
 
-                        string GCC_name = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR).ConstructionCompanies[0].FullName +
-                            ", " + project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR).ConstructionCompanies[0].Contacts +
-                            ", " + project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR).ConstructionCompanies[0].SROIssuingCompany.FullName;
+                        string GCC_name = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR)?.ConstructionCompanies[0]?.FullName +
+                            ", " + project.Participants?.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR)?.ConstructionCompanies[0]?.Contacts +
+                            ", " + project.Participants?.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR)?.ConstructionCompanies[0]?.SROIssuingCompany.FullName;
                         world_document.Bookmarks["GCC_name"].Range.Text = GCC_name;//Ген подрядчик
 
-                        string Author_name = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER).ConstructionCompanies[0].FullName +
-                            ", " + project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER).ConstructionCompanies[0].Contacts +
-                            ", " + project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER).ConstructionCompanies[0].SROIssuingCompany.FullName;
+                        string Author_name = project.Participants?.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER)?.ConstructionCompanies[0]?.FullName +
+                            ", " + project.Participants?.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER)?.ConstructionCompanies[0]?.Contacts +
+                            ", " + project.Participants?.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER)?.ConstructionCompanies[0]?.SROIssuingCompany.FullName;
                         world_document.Bookmarks["Author_name"].Range.Text = Author_name;//Проективрощики
 
                         string Client_Signer = project.ResponsibleEmployees.FirstOrDefault(re => re.RoleOfResponsible == RoleOfResponsible.CUSTOMER).Position.Name +
                             " " + project.ResponsibleEmployees.FirstOrDefault(re => re.RoleOfResponsible == RoleOfResponsible.CUSTOMER).FullName +
                             " " + project.ResponsibleEmployees.FirstOrDefault(re => re.RoleOfResponsible == RoleOfResponsible.CUSTOMER).DocConfirmingTheAthority.Name +
-                            " " + project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DEVELOPER).ConstructionCompanies[0].FullName;
+                            " " + project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DEVELOPER)?.ConstructionCompanies[0].FullName;
                         world_document.Bookmarks["Client_Signer"].Range.Text = Client_Signer;//Предстваитель затройщика
 
 

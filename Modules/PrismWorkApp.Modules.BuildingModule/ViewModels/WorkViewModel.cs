@@ -133,10 +133,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
 
 
-
-        protected readonly IDialogService _dialogService;
-        private readonly IRegionManager _regionManager;
-
         public WorkViewModel(IDialogService dialogService,
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
         {

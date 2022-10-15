@@ -185,12 +185,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
             return MemberwiseClone();
         }
 
-        public override void GetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate)
+        public override void SetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate)
         {
            
             PreviousWorks.CopingEnable = false; //отключаем при копировании
             NextWorks.CopingEnable = false; //отключаем при копировании
-            base.GetCopy(pointer, predicate);
+            base.SetCopy(pointer, predicate);
+         //   this.bldConstruction = (pointer as bldWork).bldConstruction;
             PreviousWorks.CopingEnable = true; //отключаем при копировании
             NextWorks.CopingEnable = true; //отключаем при копировании
            

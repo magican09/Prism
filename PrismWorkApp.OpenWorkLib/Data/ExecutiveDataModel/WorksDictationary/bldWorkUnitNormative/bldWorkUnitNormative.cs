@@ -29,6 +29,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             throw new NotImplementedException();
         }
 
+        public object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject
+        {
+            throw new NotImplementedException();
+        }
+
         public void JornalingOff()
         {
             throw new NotImplementedException();

@@ -153,6 +153,30 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 b_jornal_recording_flag = true;
             }
         }
+
+
+        private StructureLevel _structureLevel = new StructureLevel();
+    //[NotMapped]
+   /*/  public StructureLevel StructureLevel
+        {
+            get { return _structureLevel; }
+            set { SetProperty(ref _structureLevel, value); }
+        }*/
+        private string _code;
+        public string Code
+        {
+            get
+            {
+                return _code;
+                //return StructureLevel.Code;
+            }
+            set { SetProperty(ref _code, value); }
+        }//Код
+        [NotMapped]
+        public object ParentObject { get; set; }
+        [NotMapped]
+        public bool CopingEnable { get; set; } = true;
+
         public virtual void Save(object prop_id, Guid currentContextId)
         { //Сохранение текущего состояние свойства заключается в том, что мы просто удаляем все предыдущие изменнеия из журнала изменений
             if (prop_id != null)
@@ -262,7 +286,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public void Add(object obj)
         {
-            var prop_infoes = this.GetType().GetRuntimeProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+           /* var prop_infoes = this.GetType().GetRuntimeProperties().Where(pr => pr.GetIndexParameters().Length == 0);
             Type obj_type = obj.GetType();
             int level_strutures_count = 0;
 
@@ -287,10 +311,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 ((ILevelable)prop_value).UpdateStructure();
                 }
             }
-
+            */
         }
-        [NotMapped]
-        public bool CopingEnable { get; set; } = true;
+        
+
         public virtual void SetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate)
             where TSourse:IEntityObject
         {
@@ -300,7 +324,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         
         public void UpdateStructure()
         {
-            if (StructureLevel.Status != StructureLevelStatus.DEFINED)
+          /*  if (StructureLevel.Status != StructureLevelStatus.DEFINED)
             {
                 StructureLevel.Level = StructureLevel.ParentStructureLevel.Number;
                 StructureLevel.Value = this;
@@ -330,12 +354,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
               
             }
-            OnPropertyChanged("Code"); 
+            OnPropertyChanged("Code"); */
         }
 
         public void ClearStructureLevel()
         {
-            var prop_infoes = this.GetType().GetRuntimeProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+           /* var prop_infoes = this.GetType().GetRuntimeProperties().Where(pr => pr.GetIndexParameters().Length == 0);
             StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
             foreach (PropertyInfo prop_info in prop_infoes)
             {
@@ -348,28 +372,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
 
             }
-            StructureLevel.Status = StructureLevelStatus.UN_DEFINED;
+            StructureLevel.Status = StructureLevelStatus.UN_DEFINED;*/
         }
 
-        private StructureLevel _structureLevel = new StructureLevel();
-        [NotMapped]
-        public StructureLevel StructureLevel
+        public  virtual object Clone<TSourse>(Func<TSourse,bool> predicate) where TSourse:IEntityObject
         {
-            get { return _structureLevel; }
-            set { SetProperty(ref _structureLevel, value); }
+            if (!CopingEnable)
+                return null;
+            object new_object = Activator.CreateInstance(this.GetType());
+            Functions.GetCopyEntitityObject(this, new_object, predicate);
+            Functions.SetAllIdToZero(new_object);
+            return new_object;
         }
-        private string _code;
-        public string Code
-        {
-            get {
-                return _code;
-                  //return StructureLevel.Code;
-            }
-            set { SetProperty(ref _code, value); }
-        }//Код
-        [NotMapped]
-        public object ParentObject { get; set; }
-
     }
 
 

@@ -39,13 +39,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get
             {
-                int short_name_leng = 40;
+         /*       int short_name_leng = 40;
                 string short_name = "";
                 if (Name?.Length < short_name_leng) 
                     short_name = $"{Name}";
                 else 
                     short_name = $"{Name?.Substring(0, short_name_leng)}";
-                SetProperty(ref _shortName, short_name);
+                SetProperty(ref _shortName, short_name);*/
                 return _shortName;
             }
             set { SetProperty(ref _shortName, value); }

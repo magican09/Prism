@@ -379,10 +379,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         string Client_name = $"{developer_company_name}, {developer_company_contacts}, {developer_company_SROCompany_name}."; //Застройщик
                         world_document.Bookmarks["Client_name"].Range.Text = Client_name;
                         
-                        string genera_contr_company_name = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR)?.ConstructionCompanies[0]?.FullName;
+                        string genera_contr_company_full_name = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR)?.ConstructionCompanies[0]?.FullName;
                         string genera_contr_company_contacts = project.Participants?.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR)?.ConstructionCompanies[0]?.Contacts;
                         string genera_contr_company_SROCompany_name = project.Participants?.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR)?.ConstructionCompanies[0]?.SROIssuingCompany.FullName;
-                        string GCC_name = $"{genera_contr_company_name}, {genera_contr_company_contacts}, {genera_contr_company_SROCompany_name}."; //Застройщик
+                        string GCC_name = $"{genera_contr_company_full_name}, {genera_contr_company_contacts}, {genera_contr_company_SROCompany_name}."; //Застройщик
                         world_document.Bookmarks["GCC_name"].Range.Text = GCC_name;//Ген подрядчик
 
                         string author_company_name = project.Participants?.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER)?.ConstructionCompanies[0]?.FullName;
@@ -422,19 +422,17 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         string builder_company_fullname = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.BUILDER).ConstructionCompanies[0].FullName; ;
                         string SubC_Signer = $"{work_performer_emp_position_name} {work_performer_emp_fullname} {work_performer_emp_doc_confirm_name} {builder_company_fullname}."; //Подрядчик
                         world_document.Bookmarks["SubC_Signer"].Range.Text = SubC_Signer;//Предстваитель лица  непосредственно выполняющего работы
-
-                        string SubC_name1 = genera_contr_company_name;
-                        world_document.Bookmarks["SubC_name1"].Range.Text = SubC_name1; // Иные лизац
+                       
+                        string genera_contr_company_name = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR)?.ConstructionCompanies[0]?.Name;
+                        world_document.Bookmarks["SubC_name1"].Range.Text = genera_contr_company_name; // Иные лизац
+                        
                         string str = "";
 
-
                         if (current_work.WorkArea.Axes != null)
-                            str = current_work.Name//Нименование работы к освидетелтьсвтованию
-                            + " " + current_work?.WorkArea.Levels + " в осях " + current_work.WorkArea.Axes + " " + project.ShortName+". ";
+                            str =$"{current_work.Name} {current_work?.WorkArea.Levels} в осях {current_work.WorkArea.Axes} {project.ShortName}.";
                         else
-                            str = current_work.Name//Нименование работы к освидетелтьсвтованию
-                         + " " + current_work?.WorkArea.Levels + " " + project.ShortName + ". "; 
-
+                            str = $"{current_work.Name} {current_work?.WorkArea.Levels} {project.ShortName}.";
+                
                         List<string> str_arr = new List<string>();
                         str_arr = DivideOnSubstring(str, ROW_LENGHT);
                         world_document.Tables[2].Rows[3].Range.Text = str_arr[str_arr.Count - 1];

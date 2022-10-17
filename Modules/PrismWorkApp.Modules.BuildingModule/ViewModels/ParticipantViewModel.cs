@@ -14,7 +14,7 @@ using BindableBase = Prism.Mvvm.BindableBase;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class ParticipantViewModel : LocalBindableBase, INotifyPropertyChanged, INavigationAware
+    public class ParticipantViewModel : BaseViewModel<bldParticipant>, INotifyPropertyChanged, INavigationAware
     {
        
        
@@ -25,8 +25,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-        private SimpleEditableBldParticipant _selectedParticipant;
-        public SimpleEditableBldParticipant SelectedParticipant
+        private bldParticipant _selectedParticipant;
+        public bldParticipant SelectedParticipant
         {
             get { return _selectedParticipant; }
             set { SetProperty(ref _selectedParticipant, value); }
@@ -37,26 +37,26 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _resivedParticipant; }
             set { SetProperty(ref _resivedParticipant, value); }
         }
-        private bool _editMode;
-        public bool EditMode
+
+        private bldResponsibleEmployee _selectedResponsibleEmployee;
+        public bldResponsibleEmployee SelectedResponsibleEmployee
         {
-            get { return _editMode; }
-            set { SetProperty(ref _editMode, value); }
+            get { return _selectedResponsibleEmployee; }
+            set { SetProperty(ref _selectedResponsibleEmployee, value); }
         }
-        private bldParticipantsGroup _participants;
-        public bldParticipantsGroup Participants
+        private bldResponsibleEmployeesGroup _responsibleEmployees;
+        public bldResponsibleEmployeesGroup ResponsibleEmployees
         {
-            get { return _participants; }
-            set { SetProperty(ref _participants, value); }
+            get { return _responsibleEmployees; }
+            set { SetProperty(ref _responsibleEmployees, value); }
         }
-        private bldParticipantsGroup _allParticipants;
-        public bldParticipantsGroup AllParticipants
+        private bldConstructionCompany _selectedConstructionCompany;
+        public bldConstructionCompany SelectedConstructionCompany
         {
-            get { return _allParticipants; }
-            set { SetProperty(ref _allParticipants, value); }
+            get { return _selectedConstructionCompany; }
+            set { SetProperty(ref _selectedConstructionCompany, value); }
         }
-        protected readonly IDialogService _dialogService;
-         private string _messageReceived="Бла бал бла...!!!";
+        private string _messageReceived="Бла бал бла...!!!";
         public string MessageReceived
         {
             get { return _messageReceived; }
@@ -64,102 +64,142 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
              
         }
 
-        public DelegateCommand ShowMessageDialogCommand { get; private set; }
+        public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
         public DelegateCommand SaveCommand { get; private set; }
+        public DelegateCommand<object> CloseCommand { get; private set; }
+        public DelegateCommand AddConstructionCompanyCommand { get; private set; }
+        public DelegateCommand EditConstructionCompanyCommand { get; private set; }
+        public DelegateCommand RemoveConstructionCompanyCommand { get; private set; }
+        
+        public DelegateCommand AddEmployerCommand { get; private set; }
+        public DelegateCommand EditEmployerCommand { get; private set; }
+        public DelegateCommand RemoveEmployerCommand { get; private set; }
+
         public ParticipantViewModel(IDialogService dialogService  )
         {
-            ShowMessageDialogCommand = new DelegateCommand(ShowDialog);
+            DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
             SaveCommand = new DelegateCommand(OnSave, CanSave);
+            CloseCommand = new DelegateCommand<object>(OnClose);
+            SaveCommand = new DelegateCommand(OnSave, CanSave);
+
+            EditConstructionCompanyCommand = new DelegateCommand(OnEditConstructionCompany, () => SelectedConstructionCompany != null);
+
+
            _dialogService = dialogService;
           
+        }
+
+        private void OnEditConstructionCompany()
+        {
+           // CoreFunctions.EditElementDialog<bldConstructionCompany>(SelectedConstructionCompany, "Участник строительства",
+           //    (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Id);
+        }
+
+        private void OnDataGridLostSocus(object obj)
+        {
+
+            if (obj == SelectedResponsibleEmployee)
+            {
+                SelectedResponsibleEmployee = null;
+                return;
+            }
+            if (obj == SelectedConstructionCompany)
+            {
+                SelectedConstructionCompany = null;
+                return;
+            }
+
+        }
+        /*
+                private void OnEditBuildingObject()
+                {
+                    CoreFunctions.EditElementDialog<bldObject>(SelectedBuildingObject, "Строительный объект",
+                     (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Id);
+                }
+                private void OnAddBuildingObject()
+                {
+                    BuildingObjects = new bldObjectsGroup(_buildingUnitsRepository.Objects.GetldObjectsAsync());//.GetBldObjects(SelectedProject.Id));
+                    if (SelectedBuildingObject.BuildingObjects == null) SelectedBuildingObject.BuildingObjects = new bldObjectsGroup();
+                    CoreFunctions.AddElementToCollectionWhithDialog<bldObjectsGroup, bldObject>
+                          (SelectedBuildingObject.BuildingObjects, BuildingObjects, _dialogService,
+                            (result) =>
+                            {
+
+                                if (result.Result == ButtonResult.Yes)
+                                {
+                                    SaveCommand.RaiseCanExecuteChanged();
+                                }
+                                if (result.Result == ButtonResult.No)
+                                {
+                                    SelectedBuildingObject.BuildingObjects.UnDoAll(Id);
+                                }
+                            },
+                           typeof(AddbldObjectToCollectionDialogView).Name,
+                            typeof(ObjectDialogView).Name, Id,
+                           "Редактирование списка объектов",
+                           "Форма для редактирования состава объектов проекта.",
+                          "Объекты текущего проекта", "Все объекты");
+
+                }
+                private void OnRemoveBuildingObject()
+                {
+
+                    CoreFunctions.RemoveElementFromCollectionWhithDialog<bldObjectsGroup, bldObject>
+                       (SelectedBuildingObject.BuildingObjects, SelectedChildBuildingObject, "Строительный объект"
+                       , () =>
+                       {
+                           SelectedChildBuildingObject = null;
+                           SaveCommand.RaiseCanExecuteChanged();
+                       }, _dialogService);
+                }
+                */
+        public void RaiseCanExecuteChanged(object sender, EventArgs e)
+        {
+            SaveCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanSave()
         {
             return true;
         }
-
-        virtual protected void OnSave()
+       public virtual void OnSave()
         {
-            if (EditMode == ConveyanceObjectModes.EditMode.FOR_EDIT)
-            {
+            this.OnSave<bldParticipant>(SelectedParticipant);
+        }
+        public virtual void OnClose(object obj)
+        {
+            this.OnClose<bldParticipant>(obj, SelectedParticipant);
+        }
 
-                CoreFunctions.ConfirmActionOnElementDialog<bldParticipant>(SelectedParticipant, "Сохранить", "участник строительства",
-                    "Сохранить" ,
-                    "Не сохранять",
-                    "Отмена", (result) =>
-                {
-                    if (result.Result == ButtonResult.Yes)
-                    {
-                 //       CoreFunctions.CopyObjectReflectionNewInstances(SelectedParticipant, ResivedParticipant);
-                   
-                    }
-                    else
-                    {
-                        
-                    }
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_participant"];
 
-                }, _dialogService);
-
-            }
+            if (((bldParticipant)navigane_message.Object).Id != SelectedParticipant.Id)
+                return false;
             else
-            {
-                //  bldObject new_bldObject = new bldObject();
-                //   CoreFunctions.CopyObjectReflectionNewInstances(SelectedObject, new_bldObject);
-                //  Objects?.Add(new_bldObject);
-
-            }
+                return true;
 
         }
 
-        public void RaiseCanExecuteChanged(object sender, EventArgs e)
-        {
-            SaveCommand.RaiseCanExecuteChanged();
-        }
-
-        private bool canExecuteMethod()
-        {
-            return false;
-        }
-
-        private void ShowDialog()
-        {
-            var p  = new DialogParameters();
-            p .Add("message", "Это тестовое сообщение диалоговому окну!");
-
-            _dialogService.ShowDialog("MessageDialog", p , result=>
-            {
-                if(result.Result ==ButtonResult.OK)
-                {
-                   MessageReceived = result.Parameters.GetValue<string>("my_param");
-                }
-            });
-        }
-
-      
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            ConveyanceObject navigate_message  = (ConveyanceObject)navigationContext.Parameters["participant"];
+            ConveyanceObject navigate_message  = (ConveyanceObject)navigationContext.Parameters["bld_participant"];
            if(navigate_message !=null)
             {
                 ResivedParticipant =(bldParticipant) navigate_message.Object;
                 EditMode = navigate_message.EditMode;
                 if (SelectedParticipant != null) SelectedParticipant.ErrorsChanged -= RaiseCanExecuteChanged;
-                SelectedParticipant = new SimpleEditableBldParticipant();
+                SelectedParticipant = ResivedParticipant;
                 SelectedParticipant.ErrorsChanged += RaiseCanExecuteChanged;
-              //  CoreFunctions.CopyObjectReflectionNewInstances(ResivedParticipant, SelectedParticipant);
-
+                
             }
 
 
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return true;
-        }
-
+     
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
 

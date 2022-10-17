@@ -196,5 +196,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
             NextWorks.CopingEnable = true; //отключаем при копировании
            
         }
+        public override object Clone<TSourse>(Func<TSourse, bool> predicate)
+        {
+
+            PreviousWorks.CopingEnable = false; //отключаем при копировании
+            NextWorks.CopingEnable = false; //отключаем при копировании
+            return base.Clone(predicate);
+            PreviousWorks.CopingEnable = true; //отключаем при копировании
+            NextWorks.CopingEnable = true; //отключаем при копировании
+
+        }
     }
 }

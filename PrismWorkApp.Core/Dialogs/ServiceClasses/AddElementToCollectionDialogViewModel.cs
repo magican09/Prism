@@ -210,9 +210,10 @@ namespace PrismWorkApp.Core.Dialogs
             // CoreFunctions.CopyObjectReflectionNewInstances(SelectedElement, new_element);
             //CoreFunctions.SetAllIdToZero(new_element);
        
-            ((IBindableBase)SelectedElement).SetCopy<IEntityObject>(new_element, x=> x.CopingEnable);
-           // ((IEntityObject)SelectedElement).GetCopy(x => x.CopingEnable);
-                  ConveyanceObject conveyanceObject =
+          //  ((IBindableBase)SelectedElement).SetCopy<IEntityObject>(new_element, x=> x.CopingEnable);
+            new_element = (T) ((IBindableBase)SelectedElement).Clone<IEntityObject>(x => x.CopingEnable);
+                   // ((IEntityObject)SelectedElement).GetCopy(x => x.CopingEnable);
+                   ConveyanceObject conveyanceObject =
                 new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
             dialog_par.Add("selected_element_conveyance_object", conveyanceObject);
             _dialogService.ShowDialog(NewObjectDialogName, dialog_par, (result) =>

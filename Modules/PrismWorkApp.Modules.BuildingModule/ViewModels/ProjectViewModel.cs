@@ -236,13 +236,25 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldObjectsGroup, bldObject>
-                (SelectedProject.BuildingObjects, SelectedBuildingObject, "Строительный объект"
-                , () =>
-                {
-                    SelectedBuildingObject = null;
-                    SaveCommand.RaiseCanExecuteChanged();
-                }, _dialogService);
+                  (SelectedProject.BuildingObjects, SelectedBuildingObject, "Строительный объект",
+                 () => { SelectedBuildingObject = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService);
+
+           
         }
+        private void OnRemoveResponsibleEmployee()
+        {
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
+                (SelectedProject.ResponsibleEmployees, SelectedResponsibleEmployee, "Ответсвенный представитель",
+                () => SelectedResponsibleEmployee = null, _dialogService);
+        }
+        private void OnRemoveParticipant()
+        {
+
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
+                 (SelectedProject.Participants, SelectedParticipant, "Учасник строительства",
+                 () => SelectedParticipant = null, _dialogService);
+        }
+
 
         private void OnDataGridLostSocus(object obj)
         {
@@ -269,21 +281,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 return;
             }
         }
-        private void OnRemoveResponsibleEmployee()
-        {
-            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
-                (SelectedProject.ResponsibleEmployees, SelectedResponsibleEmployee, "Ответсвенный представитель",
-                () => SelectedResponsibleEmployee = null, _dialogService);
-        }
-        private void OnRemoveParticipant()
-        {
-
-            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
-                 (SelectedProject.Participants, SelectedParticipant, "Учасник строительства",
-                 () => SelectedParticipant = null, _dialogService);
-        }
-
-
 
         private bool CanSave()
         {
@@ -296,11 +293,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             SaveCommand.RaiseCanExecuteChanged();
         }
-        public virtual void OnSave()
+        public override void OnSave()
         {
             this.OnSave<bldProject>(SelectedProject);
         }
-        public virtual void OnClose(object obj)
+        public override void OnClose(object obj)
         {
             this.OnClose<bldProject>(obj, SelectedProject);
         }

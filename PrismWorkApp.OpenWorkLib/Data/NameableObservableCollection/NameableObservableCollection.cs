@@ -1,4 +1,5 @@
-﻿using PrismWorkApp.OpenWorkLib.Data.Service;
+﻿using PrismWorkApp.OpenWorkLib.Core;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -236,7 +237,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public void UpdateStructure()
         {
-            if (StructureLevel.Status == StructureLevelStatus.UN_DEFINED)
+           /* if (StructureLevel.Status == StructureLevelStatus.UN_DEFINED)
             {
                 if (StructureLevel.ParentStructureLevel != null)
                 {
@@ -283,11 +284,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
                 StructureLevel.Status = StructureLevelStatus.DEFINED;
             }
-            OnPropertyChanged("Code");
+            OnPropertyChanged("Code");*/
         }
         public void ClearStructureLevel()
         {
-            StructureLevel.StructureLevels.Clear();
+          /*  StructureLevel.StructureLevels.Clear();
             StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
             foreach (ILevelable elm in this)
             {
@@ -297,8 +298,28 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     elm.ClearStructureLevel();
                 }
             }
-            StructureLevel.Status = StructureLevelStatus.UN_DEFINED;
+            StructureLevel.Status = StructureLevelStatus.UN_DEFINED;*/
         }
+
+
+        
+        public  virtual object Clone<TSourse>(Func<TSourse,bool> predicate) where TSourse:IEntityObject
+        {
+            if (!CopingEnable)
+                return null;
+
+                object new_object_collection  = Activator.CreateInstance(this.GetType());
+            foreach (IEntityObject element in this)
+            {
+                var new_element = Activator.CreateInstance(element.GetType());
+                new_element = element.Clone<TSourse>(predicate);
+                ((IList)new_object_collection).Add(new_element);
+            }
+         //   Functions.SetAllIdToZero(new_object_collection);
+            return new_object_collection;
+        }
+
+
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
         private PropertiesChangeJornal PropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
         private JornalRecordStatus status;

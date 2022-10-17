@@ -90,20 +90,26 @@
                                 Text="{Binding SelectedParticipant.Name}" Grid.ColumnSpan="2"/>
                 </Grid>
             </StackPanel>
-
-
-
+         
             <StackPanel >
-                <TextBlock Style="{StaticResource inlineText}">Отвественные представители учасника строительства:</TextBlock>
-                <StackPanel Orientation="Horizontal"  >
+                <TextBlock Style="{StaticResource inlineText}">Компании участники:</TextBlock>
+                <StackPanel Orientation="Horizontal" x:Name="bldConstructionCompanyStackPanel"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*"/>
-                            <ColumnDefinition  Width="Auto"/>
+                            <ColumnDefinition Width="0.2*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <DataGrid Grid.Column="0" ItemsSource="{Binding SelectedParticipant.ResponsibleEmployees}" Style="{StaticResource inlineDataGrid }" 
+                        <DataGrid x:Name="bldConstructionCompanyDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedParticipant.ConstructionCompanies}"
+                                                  SelectedItem="{Binding SelectedConstructionCompany}"  
+                                                  Style="{StaticResource inlineDataGrid }" 
                                AutoGenerateColumns="False"  IsReadOnly="True" 
-                                   HorizontalContentAlignment="Stretch" >
+                                   HorizontalContentAlignment="Stretch"    >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectedCellsChanged">
+                                    <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
+                                           CommandParameter="{Binding   SelectedItem , ElementName=bldConstructionCompanyDataGrid}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding = "{Binding Path=FullName}"  
                                                 Header="Фамилия Имя Отчество" Width="Auto" />
@@ -112,21 +118,54 @@
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
-                            <Button Command="{Binding ShowMessageDialogCommand}"  >Добавить</Button>
-                            <Button >Удалить</Button>
-                            <Button >Изменить</Button>
+                            <Button  Command="{ Binding AddBuildingObjectsCommand}">Добавить</Button>
+                            <Button Command="{Binding RemoveBuildingObjectCommand}" >Удалить</Button>
+                            <Button Command="{Binding EditBuildingObjectCommand}" >Изменить</Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel >
+                <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>
+                <StackPanel Orientation="Horizontal" x:Name="bldOResponcsibleEmploeeStackPanel"  >
+                    <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" x:Name="____________DataGridLeftCulumn"/>
+                            <ColumnDefinition  Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid x:Name="bldOResponcsibleEmploeeDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedBuildingObject.BuildingObjects}"
+                                                  SelectedItem="{Binding SelectedChildBuildingObject}"  
+                                                  Style="{StaticResource inlineDataGrid }" 
+                               AutoGenerateColumns="False"  IsReadOnly="True" 
+                                   HorizontalContentAlignment="Stretch"    >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectedCellsChanged">
+                                    <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
+                                           CommandParameter="{Binding   SelectedItem , ElementName=bldObjectDataGrid}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding = "{Binding Path=FullName}"  
+                                                Header="Фамилия Имя Отчество" Width="Auto" />
+                                <DataGridTextColumn Binding = "{Binding Path=RoleOfResponsible}" 
+                                                Header="Роль отвественного в строительстве" Width="Auto"   />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
+                            <Button  Command="{ Binding AddBuildingObjectsCommand}">Добавить</Button>
+                            <Button Command="{Binding RemoveBuildingObjectCommand}" >Удалить</Button>
+                            <Button Command="{Binding EditBuildingObjectCommand}" >Изменить</Button>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
             </StackPanel>
 
-
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
-            <Button Command="{Binding ShowMessageDialogCommand}" >Применить</Button>
-            <Button Command="{Binding SaveCommand}" >Сохрнать</Button>
-            <Label Content="{Binding MessageReceived}"/>
-            <Button  >Закрыть</Button>
+            <Button  Content="Сохранить" Command="{Binding SaveCommand}" />
+            <Button  Content="Закрыть"  Command="{Binding CloseCommand}"
+                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                                                     AncestorType={x:Type UserControl}}}"/>
         </StackPanel>
 
 

@@ -47,12 +47,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _ChildSelectedBuildingObject; }
             set { SetProperty(ref _ChildSelectedBuildingObject, value); }
         }
-        private bool _editMode;
-        public bool EditMode
-        {
-            get { return _editMode; }
-            set { SetProperty(ref _editMode, value); }
-        }
+       
         private bldObjectsGroup _objects;
         public bldObjectsGroup Objects
         {
@@ -72,13 +67,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _buildingObjects, value); }
         }
 
-        public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
+      
         private bldConstruction _selectedConstruction;
         public bldConstruction SelectedConstruction
         {
             get { return _selectedConstruction; }
             set { SetProperty(ref _selectedConstruction, value); }
         }
+        public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
         public DelegateCommand SaveCommand { get; private set; }
         public DelegateCommand<object> CloseCommand { get; private set; }
         public DelegateCommand AddBuildingObjectsCommand { get; private set; }
@@ -250,11 +246,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             this.OnClose<bldObject>(obj, SelectedBuildingObject);
         }
 
-        private void Save()
-        {
-         
-
-        }
+       
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_object"];

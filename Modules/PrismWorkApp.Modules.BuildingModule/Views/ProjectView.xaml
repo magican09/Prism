@@ -242,7 +242,7 @@
 
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
-            <Button  Content="Сохранить" Command="{Binding SaveProjectCommand}" />
+            <Button  Content="Сохранить" Command="{Binding SaveCommand}" />
             <Button  Content="Закрыть"  Command="{Binding CloseCommand}"
                                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
                                                      AncestorType={x:Type UserControl}}}"/>

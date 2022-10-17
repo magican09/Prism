@@ -9,7 +9,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public Guid Id { get; set; }
         public Guid StoredId { get; set; }
-        public bool CopingEnable{ get; set; }
         public object ParentObject { get; set; }
     }
 }

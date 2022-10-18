@@ -114,35 +114,35 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             SaveCommand = new DelegateCommand(OnSave, CanSave);
             CloseCommand = new DelegateCommand<object>(OnClose);
-               RemoveParticipantCommand = new DelegateCommand(OnRemoveParticipant,
+            AddBuildingObjectsCommand = new DelegateCommand(OnAddBuildingObject);
+            AddParticipantCommand = new DelegateCommand(OnAddParticipant);
+            AddResponsibleEmployeesCommand = new DelegateCommand(OnAddResponsibleEmployees);
+
+            EditBuildingObjectCommand = new DelegateCommand(OnEditBuildingObject,
+                                   () => SelectedBuildingObject != null)
+               .ObservesProperty(() => SelectedBuildingObject);
+            EditParticipantCommand = new DelegateCommand(OnEditParticipant,
+                                     () => SelectedParticipant != null)
+                 .ObservesProperty(() => SelectedParticipant);
+            EditResponsibleEmployeeCommand = new DelegateCommand(OnEditRemoveResponsibleEmployee,
+                                        () => SelectedResponsibleEmployee != null)
+                    .ObservesProperty(() => SelectedResponsibleEmployee);
+
+            RemoveBuildingObjectCommand = new DelegateCommand(OnRemoveBuildingObject,
+                                       () => SelectedBuildingObject != null)
+                   .ObservesProperty(() => SelectedBuildingObject);
+
+            RemoveParticipantCommand = new DelegateCommand(OnRemoveParticipant,
                                         () => SelectedParticipant != null)
                     .ObservesProperty(() => SelectedParticipant);
             RemoveResponsibleEmployeeCommand = new DelegateCommand(OnRemoveResponsibleEmployee,
                                         () => SelectedResponsibleEmployee != null)
                     .ObservesProperty(() => SelectedResponsibleEmployee);
+           
+            
             DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
 
-            EditBuildingObjectCommand = new DelegateCommand(OnEditBuildingObject,
-                                      () => SelectedBuildingObject != null)
-                  .ObservesProperty(() => SelectedBuildingObject);
-            AddBuildingObjectsCommand = new DelegateCommand(OnAddBuildingObject);
-             RemoveBuildingObjectCommand = new DelegateCommand(OnRemoveBuildingObject,
-                                        () => SelectedBuildingObject != null)
-                    .ObservesProperty(() => SelectedBuildingObject);
-
-
-            AddParticipantCommand = new DelegateCommand(OnAddParticipant);
-            
-            AddResponsibleEmployeesCommand = new DelegateCommand(OnAddResponsibleEmployees);
-
-        
-            EditParticipantCommand = new DelegateCommand(OnEditParticipant,
-                                        () => SelectedParticipant != null)
-                    .ObservesProperty(() => SelectedParticipant);
-            EditResponsibleEmployeeCommand = new DelegateCommand(OnEditRemoveResponsibleEmployee,
-                                        () => SelectedResponsibleEmployee != null)
-                    .ObservesProperty(() => SelectedResponsibleEmployee);
-            _dialogService = dialogService;
+             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
         }
@@ -182,21 +182,52 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnAddParticipant()
         {
-            Participants =
+            bldParticipantsGroup All_Participants =
                 new bldParticipantsGroup(_buildingUnitsRepository.Pacticipants.GetAllParticipants());
-            CoreFunctions.AddElementToCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
-                (SelectedProject.Participants, Participants, _dialogService,
+
+          
+            NameablePredicate<bldParticipantsGroup, bldParticipant> predicate_1 = new NameablePredicate<bldParticipantsGroup, bldParticipant>();
+            NameablePredicate<bldParticipantsGroup, bldParticipant> predicate_2 = new NameablePredicate<bldParticipantsGroup, bldParticipant>();
+            NameablePredicate<bldParticipantsGroup, bldParticipant> predicate_3 = new NameablePredicate<bldParticipantsGroup, bldParticipant>();
+             predicate_1.Name = "Показать только из текущего проекта.";
+            predicate_1.Predicate = cl => cl.Where(el => el.bldProject != null &&
+                                                        el.bldProject.Id == SelectedProject.Id).ToList();
+            predicate_2.Name = "Показать из всех кроме текущего объекта";
+            predicate_2.Predicate = cl => cl.Where(el => el.bldProject != null &&
+                                                        el.bldProject.Id != SelectedProject.Id).ToList();
+            predicate_3.Name = "Показать все";
+            predicate_3.Predicate = cl => cl;
+
+            NameablePredicateObservableCollection<bldParticipantsGroup, bldParticipant> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldParticipantsGroup, bldParticipant>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
+            nameablePredicatesCollection.Add(predicate_3);
+
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<bldParticipantsGroup, bldParticipant>
+                (SelectedProject.Participants, All_Participants,
+                 nameablePredicatesCollection,
+                _dialogService,
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)
-                         SelectedProject.Participants = (bldParticipantsGroup)
-                                result.Parameters.GetValue<object>("current_collection");
+                     {
+                         SaveCommand.RaiseCanExecuteChanged();
+                         foreach (bldParticipant participant in SelectedProject.Participants)
+                            participant.bldProject = SelectedProject;
+                     }
+                     if (result.Result == ButtonResult.No)
+                     {
+                         SelectedProject.Participants.UnDoAll(Id);
+                     }
                  },
                 typeof(AddbldParticipantToCollectionDialogView).Name,
                 typeof(ParticipantDialogView).Name, Id,
-                "Редактирование списка участников",
-                "Форма для редактирования.",
-                "Учасники текущего проекта", "Все организации");
+                "Редактирование списка объектов",
+                "Форма для редактирования состава объектов текушего проекта.",
+                "Объекты текущего проекта", "Все объекта");
+
+        
+    
         }
 
         private void OnEditBuildingObject()
@@ -206,30 +237,47 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnAddBuildingObject()
         {
-            BuildingObjects = new bldObjectsGroup(_buildingUnitsRepository.Objects.GetldObjectsAsync());//.GetBldObjects(SelectedProject.Id));
-            bldObject new_bld_obj = new bldObject();
-            new_bld_obj.Name = "Новый объект";
-            SelectedProject.Add(new_bld_obj);
-            
-           /* CoreFunctions.AddElementToCollectionWhithDialog<bldObjectsGroup, bldObject>
-                  (SelectedProject.BuildingObjects, BuildingObjects, _dialogService,
-                    (result) =>
-                    {
-                        if (result.Result == ButtonResult.Yes)
-                        {
-                            SaveCommand.RaiseCanExecuteChanged();
-                        }
-                        if (result.Result == ButtonResult.No)
-                        {
-                            SelectedProject.BuildingObjects.UnDoAll(Id);
-                        }
-                    },
-                   typeof(AddbldObjectToCollectionDialogView).Name,
-                    typeof(ObjectDialogView).Name,
-                    Id,
-                   "Редактирование списка объектов",
-                   "Форма для редактирования состава объектов проекта.",
-                  "Объекты текущего проекта", "Все объекты");*/
+            bldObjectsGroup All_BuildingObjects = new bldObjectsGroup(_buildingUnitsRepository.Objects.GetldObjectsAsync());//.GetBldObjects(SelectedProject.Id));
+
+            NameablePredicate<bldObjectsGroup, bldObject> predicate_1 = new NameablePredicate<bldObjectsGroup, bldObject>();
+            NameablePredicate<bldObjectsGroup, bldObject> predicate_2 = new NameablePredicate<bldObjectsGroup, bldObject>();
+            NameablePredicate<bldObjectsGroup, bldObject> predicate_3 = new NameablePredicate<bldObjectsGroup, bldObject>(); 
+            predicate_1.Name = "Показать только из текущего проекта.";
+            predicate_1.Predicate = cl => cl.Where(el => el.bldProject  != null &&
+                                                        el.bldProject.Id == SelectedProject.Id).ToList();
+           predicate_2.Name = "Показать из всех кроме текущего объекта";
+            predicate_2.Predicate = cl => cl.Where(el => el.bldProject != null &&
+                                                        el.bldProject.Id != SelectedProject.Id).ToList();
+            predicate_3.Name = "Показать все";
+            predicate_3.Predicate = cl => cl;
+
+            NameablePredicateObservableCollection<bldObjectsGroup, bldObject> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldObjectsGroup, bldObject>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
+            nameablePredicatesCollection.Add(predicate_3);
+
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<bldObjectsGroup,bldObject>
+                (SelectedProject.BuildingObjects, All_BuildingObjects,
+                 nameablePredicatesCollection,
+                _dialogService,
+                 (result) =>
+                 {
+                     if (result.Result == ButtonResult.Yes)
+                     {
+                         SaveCommand.RaiseCanExecuteChanged();
+                         foreach (bldObject bld_obj in SelectedProject.BuildingObjects)
+                             bld_obj.bldProject=SelectedProject;
+                     }
+                     if (result.Result == ButtonResult.No)
+                     {
+                         SelectedProject.BuildingObjects.UnDoAll(Id);
+                     }
+                 },
+                typeof(AddbldObjectToCollectionDialogView).Name,
+                typeof(ObjectDialogView).Name, Id,
+                "Редактирование списка объектов",
+                "Форма для редактирования состава объектов текушего проекта.",
+                "Объекты текущего проекта", "Все объекта");
 
         }
         private void OnRemoveBuildingObject()

@@ -17,6 +17,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, IEntityObject,IJornalable, ILevelable, INameableOservableCollection<TEntity> where TEntity : class, IEntityObject
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе с данных объектом по умолчанию
+
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
@@ -149,6 +151,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             PropertyStateRecord lastPropState = PropertiesChangeJornal.Where(r => r.ContextId == currentContextId)
                 .OrderBy(el => el.Date).Last();
+
             if (lastPropState != null)
             {
                 b_jornal_recording_flag = false; //Блокируем ведение журнала 

@@ -384,6 +384,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             Functions.SetAllIdToZero(new_object);
             return new_object;
         }
+        [NotMapped]
+        public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе (наприме копирования рефлексией) с данныv объектом по умолчанию 
     }
 
 

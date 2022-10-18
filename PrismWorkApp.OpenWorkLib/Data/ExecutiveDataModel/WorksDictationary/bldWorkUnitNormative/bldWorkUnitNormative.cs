@@ -23,6 +23,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public StructureLevel StructureLevel { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bool CopingEnable { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public object ParentObject { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Func<IEntityObject, bool> RestrictionPredicate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void ClearStructureLevel()
         {
@@ -30,6 +31,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
         public object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject
+        {
+            throw new NotImplementedException();
+        }
+
+        public object Clone<TSourse>(Func<TSourse, bool> predicate, bool restricts_eneable = false) where TSourse : IEntityObject
         {
             throw new NotImplementedException();
         }

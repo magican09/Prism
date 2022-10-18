@@ -111,7 +111,7 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=FullName}"  
+                                <DataGridTextColumn Binding = "{Binding Path=Name}"  
                                                 Header="Фамилия Имя Отчество" Width="Auto" />
                                 <DataGridTextColumn Binding = "{Binding Path=RoleOfResponsible}" 
                                                 Header="Роль отвественного в строительстве" Width="Auto"   />

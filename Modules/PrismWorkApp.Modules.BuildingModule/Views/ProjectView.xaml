@@ -141,8 +141,9 @@
                 <StackPanel Orientation="Horizontal" x:Name="bldObjectStackPanel"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*" x:Name="DataGridLeftCulumn"/>
-                            <ColumnDefinition  Width="Auto"/>
+                            <ColumnDefinition Width="0.2*" x:Name="DataGridLeftCulumn"/>
+                            <ColumnDefinition Width="Auto"/>
+                          
                         </Grid.ColumnDefinitions>
                         <DataGrid x:Name="bldObjectDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedProject.BuildingObjects}"
                                                   SelectedItem="{Binding SelectedBuildingObject}"  
@@ -156,6 +157,8 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
+                                <DataGridTextColumn  Header="Код"  
+                                                     Binding = "{Binding Path=Code}" />
                                 <DataGridTextColumn  Header="Наименование объекта"  
                                                      Binding = "{Binding Path=Name}" />
                             </DataGrid.Columns>
@@ -210,6 +213,7 @@
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="0.2*"/>
                             <ColumnDefinition  Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <DataGrid x:Name="bldResponsibleEmployeeDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedProject.ResponsibleEmployees}"
@@ -224,10 +228,12 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=Name}"  
-                                                Header="Роль организации участника" Width="Auto" />
+                                <DataGridTextColumn Binding = "{Binding Path=FullName}"  
+                                                Header="Ф.И.О." Width="Auto" />
                                 <DataGridTextColumn Binding = "{Binding Path=Company.Name}" 
                                                 Header="Название ораганизации" Width="Auto"   />
+                                <DataGridTextColumn Binding = "{Binding Path= bldParticipant.Name}" 
+                                                Header="Роль" Width="Auto"   />
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >

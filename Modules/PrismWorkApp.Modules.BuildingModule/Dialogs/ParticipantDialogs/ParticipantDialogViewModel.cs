@@ -64,13 +64,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             {
                 ResivedParticipant =(bldParticipant) navigate_message.Object;
                 EditMode = navigate_message.EditMode;
-              //  Participants = (bldParticipantsGroup) parameters.GetValue<object>("current_collection");
-                //AllParticipants =(bldParticipantsGroup) parameters.GetValue<object>("common_collection");
                 if (SelectedParticipant != null) SelectedParticipant.ErrorsChanged -= RaiseCanExecuteChanged;
-                SelectedParticipant = new SimpleEditableBldParticipant();
+                SelectedParticipant = ResivedParticipant;
                 SelectedParticipant.ErrorsChanged += RaiseCanExecuteChanged;
-             //   CoreFunctions.CopyObjectReflectionNewInstances(ResivedParticipant, SelectedParticipant);
-               
             }
         }
     }

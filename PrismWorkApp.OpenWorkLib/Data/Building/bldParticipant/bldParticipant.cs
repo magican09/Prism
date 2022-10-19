@@ -73,7 +73,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         break;
                         case ParticipantRole.GENERAL_CONTRACTOR:
                         FullName = "Генеральный подрядчик(лицо, осуществляющее строительство)";
-                        Name = "Генеральный";
+                        Name = "Генподрядчик";
 
                         break;
                         case ParticipantRole.DISIGNER:

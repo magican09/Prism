@@ -16,7 +16,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
     //public class NameableObservableCollection<TEntity>:ObservableCollection<TEntity>,IList<TEntity> where TEntity: class,IEntityObject
     public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, IEntityObject,IJornalable, ILevelable, INameableOservableCollection<TEntity> where TEntity : class, IEntityObject
     {
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public event PropertiesChangeJornalChangedEventHandler ObjectChangedNotify; 
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе с данных объектом по умолчанию
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -47,6 +48,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Id = Guid.NewGuid();
             CountNotificationSet();
+          
 
         }
         public NameableObservableCollection(string name) : this()
@@ -74,6 +76,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
             CountNotificationSet();
 
         }
+        private void IsJornalEmpty(object sender, PropertyStateRecord _propertyStateRecord)
+        {
+
+            Status = JornalRecordStatus.MODIFIED;
+          //  ((IJornalable)ParentObject).Status = JornalRecordStatus.MODIFIED;
+            //  return true;
+        }
+  
         public void SetAllValues(object in_object)
         {
             /*   var this_props = this.GetType().GetProperties();
@@ -105,41 +115,44 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 {
                     //  int last_struyctere_number = StructureLevel.StructureLevels.Count>0 ? StructureLevel.StructureLevels[StructureLevel.StructureLevels.Count-1].Number :0 ;
 
-                    foreach (object obj in e.NewItems)
+                    foreach (IEntityObject obj in e.NewItems)
                     {
                         if (b_jornal_recording_flag && CurrentContextId != Guid.Empty)
-                            PropertiesChangeJornal.Add(new PropertyStateRecord(obj, JornalRecordStatus.ADDED, Name, CurrentContextId));
-
-
-                        /*    if (obj is ILevelable )
-                            {
-                                if (((ILevelable)obj).StructureLevel == null)  
-                                    ((ILevelable)obj).StructureLevel = new StructureLevel();
-
-                                ((ILevelable)obj).StructureLevel.Level = StructureLevel.Number;
-                                ((ILevelable)obj).StructureLevel.Number = ++last_struyctere_number;
-                            }*/
+                            PropertiesChangeJornal.Add(new PropertyStateRecord(obj, JornalRecordStatus.ADDED, obj.Name, CurrentContextId));
+                        ((IEntityObject)obj).ParentObject = this;
                     }
                 }
                 if (e.Action == NotifyCollectionChangedAction.Remove)
                 {
                     foreach (object obj in e.OldItems)
                     {
-                        //if (b_jornal_recording_flag)
-                        //{
-                        //    PropertiesChangeJornal.Add(new PropertyStateRecord(obj, JornalRecordStatus.REMOVED, Name));
-                        //}
+                        if (b_jornal_recording_flag)
+                        {
+                            PropertiesChangeJornal.Add(new PropertyStateRecord(obj, JornalRecordStatus.REMOVED, Name));
+          
+                        }
 
                     }
                 }
+               
+               if(ParentObject!=null)
+                    ParentObject.PropertiesChangeJornal.Add(new PropertyStateRecord(this, JornalRecordStatus.MODIFIED, Name, CurrentContextId));
+
             };
 
             PropertyChanged += (sende, e) =>
               {
 
               };
+
+            PropertiesChangeJornal.ParentObject = this;
+            PropertiesChangeJornal.JornalChangedNotify += IsJornalEmpty;
         }
 
+        public void  SetParentObject(IJornalable obj)
+        {
+            ParentObject = obj;
+        }
         public bool RemoveJournalable(TEntity item)
         {
             item.Status = JornalRecordStatus.REMOVED;
@@ -324,7 +337,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
-        private PropertiesChangeJornal PropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
+        public PropertiesChangeJornal PropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
         private JornalRecordStatus status;
 
         public JornalRecordStatus Status
@@ -336,13 +349,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set
             {
                 status = value;
-                IsVisible = (status == JornalRecordStatus.CREATED) ? true : false;
+                IsVisible = (status != JornalRecordStatus.REMOVED) ? true : false;
             }
         }
 
         public bool IsVisible { get; set; } = true;
         private Guid _currentContextId;
-
         public Guid CurrentContextId
         {
             get { return _currentContextId; }
@@ -354,7 +366,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public string Code
         {
             get {
-                // return  StructureLevel.Code;
                 return _code;
             }
             set { _code = value; OnPropertyChanged("Code"); }
@@ -370,6 +381,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public bool CopingEnable { get; set; } = true;
 
-        public object ParentObject { get; set; }
+        public IJornalable ParentObject { get; set; }
+
+       
     }
 }

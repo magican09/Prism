@@ -68,12 +68,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _Works; }
             set { SetProperty(ref _Works, value); }
         }
-        private bool _editMode;
-        public bool EditMode
-        {
-            get { return _editMode; }
-            set { SetProperty(ref _editMode, value); }
-        }
+      
 
         private bool _keepAlive = true;
 

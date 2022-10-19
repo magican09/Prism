@@ -17,10 +17,10 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public abstract class BindableBase : INotifyPropertyChanged, IJornalable, IValidateable, IBindableBase, IAddable, ILevelable,ICopingEnableable
+    public abstract class BindableBase : INotifyPropertyChanged, IJornalable, IValidateable, IBindableBase, IAddable, ILevelable, ICopingEnableable
     {
 
-
+        public event PropertiesChangeJornalChangedEventHandler ObjectChangedNotify;
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
@@ -37,6 +37,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             return true;
         }
 
+
         public virtual void AllPropertiesModifyedChangeNotificate()
         {
             var properties = this.GetType().GetProperties();
@@ -49,7 +50,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
 
-        public System.Collections.IEnumerable GetErrors(string propertyName)
+        public IEnumerable GetErrors(string propertyName)
         {
             if (_errors.ContainsKey(propertyName))
                 return _errors[propertyName];
@@ -69,7 +70,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
             if (b_jornal_recording_flag) //Регистрация сделанных изменений в журнал изменений
             {
-                if (CurrentContextId != Guid.Empty) PropertiesChangeJornal.Add(new PropertyStateRecord(member, JornalRecordStatus.MODIFIED, propertyName, CurrentContextId));
+                if (CurrentContextId != Guid.Empty)
+                {
+                    PropertyStateRecord propertyStateRecord = new PropertyStateRecord(member, JornalRecordStatus.MODIFIED, propertyName, CurrentContextId);
+                    PropertiesChangeJornal.Add(propertyStateRecord);
+                    OnObjectChanged(this, propertyStateRecord);
+                    //if (ParentObject != null)
+                    //    ParentObject.PropertiesChangeJornal.Add(new PropertyStateRecord(this, JornalRecordStatus.MODIFIED, (this as IEntityObject).Name, CurrentContextId));
+                    //if (val is IEntityObject)
+                    //{
+                    //    (val as IEntityObject).ParentObject = this;
+
+                    //}
+
+                }
             }
 
             return BaseSetProperty<T>(ref member, val, propertyName);
@@ -93,15 +107,33 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
         }
+        [NotMapped]
+        public PropertiesChangeJornal PropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
 
-        private PropertiesChangeJornal PropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
+        private void IsJornalEmpty(object sender, PropertyStateRecord _propertyStateRecord)
+        {
+
+            Status = JornalRecordStatus.MODIFIED;
+            //  return true;
+        }
+        //   bool jornal_empty;
+        public BindableBase()
+        {
+            PropertiesChangeJornal.ParentObject = this;
+            //PropertiesChangeJornal.JornalChangedNotify += IsJornalEmpty;
+            ObjectChangedNotify += OnObjectChanged;
+        }
         public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId)
         {
             //   var dsf = PropertiesChangeJornal.Where(r => r.Id == currentContextId).FirstOrDefault();
             if (PropertiesChangeJornal.Where(r => r.ContextId == currentContextId).FirstOrDefault() == null)
                 return true;
             else
+            {
+                // if (jornal_empty) return true;
+                //   else
                 return false;
+            }
         }
         private Guid _currentContextId;
 
@@ -138,7 +170,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set
             {
                 status = value;
-                IsVisible = (status == JornalRecordStatus.CREATED) ? true : false;
+                IsVisible = (status != JornalRecordStatus.REMOVED) ? true : false;
             }
         }
         private bool visible = true;
@@ -156,12 +188,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
 
         private StructureLevel _structureLevel = new StructureLevel();
-    //[NotMapped]
-   /*/  public StructureLevel StructureLevel
-        {
-            get { return _structureLevel; }
-            set { SetProperty(ref _structureLevel, value); }
-        }*/
+        //[NotMapped]
+        /*/  public StructureLevel StructureLevel
+             {
+                 get { return _structureLevel; }
+                 set { SetProperty(ref _structureLevel, value); }
+             }*/
         private string _code;
         public string Code
         {
@@ -173,7 +205,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _code, value); }
         }//Код
         [NotMapped]
-        public object ParentObject { get; set; }
+        public IEntityObject ParentObject { get; set; }
+
+        public void SetParentObject(IEntityObject obj)
+        {
+            ParentObject = obj;
+        }
         [NotMapped]
         public bool CopingEnable { get; set; } = true;
 
@@ -286,96 +323,96 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public void Add(object obj)
         {
-           /* var prop_infoes = this.GetType().GetRuntimeProperties().Where(pr => pr.GetIndexParameters().Length == 0);
-            Type obj_type = obj.GetType();
-            int level_strutures_count = 0;
+            /* var prop_infoes = this.GetType().GetRuntimeProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+             Type obj_type = obj.GetType();
+             int level_strutures_count = 0;
 
-            foreach (PropertyInfo prop_info in prop_infoes)
-            {
-                var prop_value = prop_info.GetValue(this);
-                if (prop_value is ILevelable)
-                    level_strutures_count++;
+             foreach (PropertyInfo prop_info in prop_infoes)
+             {
+                 var prop_value = prop_info.GetValue(this);
+                 if (prop_value is ILevelable)
+                     level_strutures_count++;
 
-                if (prop_value is IList)
-                {
-                    var genericArgumentsType = prop_value.GetType().GetInterface("IEnumerable`1").GetGenericArguments()[0];
-                    if (genericArgumentsType == obj_type)
-                    {
-                        ((IList)prop_value).Add(obj);
+                 if (prop_value is IList)
+                 {
+                     var genericArgumentsType = prop_value.GetType().GetInterface("IEnumerable`1").GetGenericArguments()[0];
+                     if (genericArgumentsType == obj_type)
+                     {
+                         ((IList)prop_value).Add(obj);
 
-                        if (prop_value is ILevelable)
-                        {
-                            ((ILevelable)prop_value).StructureLevel.ParentStructureLevel = StructureLevel;
-                        }
-                    }
-                ((ILevelable)prop_value).UpdateStructure();
-                }
-            }
-            */
+                         if (prop_value is ILevelable)
+                         {
+                             ((ILevelable)prop_value).StructureLevel.ParentStructureLevel = StructureLevel;
+                         }
+                     }
+                 ((ILevelable)prop_value).UpdateStructure();
+                 }
+             }
+             */
         }
-        
+
 
         public virtual void SetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate)
-            where TSourse:IEntityObject
+            where TSourse : IEntityObject
         {
             Functions.CopyObjectReflectionNewInstances(this, pointer, predicate);
             Functions.SetAllIdToZero(pointer);
         }
-        
+
         public void UpdateStructure()
         {
-          /*  if (StructureLevel.Status != StructureLevelStatus.DEFINED)
-            {
-                StructureLevel.Level = StructureLevel.ParentStructureLevel.Number;
-                StructureLevel.Value = this;
-                StructureLevel.DeptIndex = StructureLevel.ParentStructureLevel.DeptIndex+1;
-                StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
-                var prop_infoes = this.GetType().GetRuntimeProperties().Where(pr => pr.GetIndexParameters().Length == 0);
-                int level_strutures_count = 0;
+            /*  if (StructureLevel.Status != StructureLevelStatus.DEFINED)
+              {
+                  StructureLevel.Level = StructureLevel.ParentStructureLevel.Number;
+                  StructureLevel.Value = this;
+                  StructureLevel.DeptIndex = StructureLevel.ParentStructureLevel.DeptIndex+1;
+                  StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
+                  var prop_infoes = this.GetType().GetRuntimeProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+                  int level_strutures_count = 0;
 
-                foreach (PropertyInfo prop_info in prop_infoes)
-                {
-                    var prop_value = prop_info.GetValue(this);
-                    if (prop_value is ILevelable)
-                        level_strutures_count++;
+                  foreach (PropertyInfo prop_info in prop_infoes)
+                  {
+                      var prop_value = prop_info.GetValue(this);
+                      if (prop_value is ILevelable)
+                          level_strutures_count++;
 
-                    if (prop_value is ILevelable && ((ILevelable)prop_value).StructureLevel.Status != StructureLevelStatus.DEFINED)
-                    {
-                        ((ILevelable)prop_value).StructureLevel.ParentStructureLevel = StructureLevel;
-                        ((ILevelable)prop_value).StructureLevel.Number = level_strutures_count++;
-                        //   ((ILevelable)prop_value).Code = $"{((ILevelable)prop_value).StructureLevel.Level.ToString()}.{ ((ILevelable)prop_value).StructureLevel.Number.ToString()}";
-                        ((ILevelable)prop_value).StructureLevel.Value = prop_value;
-                      //  ((ILevelable)prop_value).StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
-                        ((ILevelable)prop_value).UpdateStructure();
-                        //((ILevelable)prop_value).StructureLevel.Status = StructureLevelStatus.DEFINED;
+                      if (prop_value is ILevelable && ((ILevelable)prop_value).StructureLevel.Status != StructureLevelStatus.DEFINED)
+                      {
+                          ((ILevelable)prop_value).StructureLevel.ParentStructureLevel = StructureLevel;
+                          ((ILevelable)prop_value).StructureLevel.Number = level_strutures_count++;
+                          //   ((ILevelable)prop_value).Code = $"{((ILevelable)prop_value).StructureLevel.Level.ToString()}.{ ((ILevelable)prop_value).StructureLevel.Number.ToString()}";
+                          ((ILevelable)prop_value).StructureLevel.Value = prop_value;
+                        //  ((ILevelable)prop_value).StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
+                          ((ILevelable)prop_value).UpdateStructure();
+                          //((ILevelable)prop_value).StructureLevel.Status = StructureLevelStatus.DEFINED;
 
-                    }
-                    StructureLevel.Status = StructureLevelStatus.DEFINED;
-                }
-              
-            }
-            OnPropertyChanged("Code"); */
+                      }
+                      StructureLevel.Status = StructureLevelStatus.DEFINED;
+                  }
+
+              }
+              OnPropertyChanged("Code"); */
         }
 
         public void ClearStructureLevel()
         {
-           /* var prop_infoes = this.GetType().GetRuntimeProperties().Where(pr => pr.GetIndexParameters().Length == 0);
-            StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
-            foreach (PropertyInfo prop_info in prop_infoes)
-            {
-                var prop_value = prop_info.GetValue(this);
-                if (prop_value is ILevelable && ((ILevelable)prop_value).StructureLevel.Status!= StructureLevelStatus.UN_DEFINED)
-                {
-                    ((ILevelable)prop_value).StructureLevel.Status  =  StructureLevelStatus.IN_PROCESS;
-                    ((ILevelable)prop_value).StructureLevel.StructureLevels.Clear();
-                    ((ILevelable)prop_value).ClearStructureLevel();
-                }
+            /* var prop_infoes = this.GetType().GetRuntimeProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+             StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
+             foreach (PropertyInfo prop_info in prop_infoes)
+             {
+                 var prop_value = prop_info.GetValue(this);
+                 if (prop_value is ILevelable && ((ILevelable)prop_value).StructureLevel.Status!= StructureLevelStatus.UN_DEFINED)
+                 {
+                     ((ILevelable)prop_value).StructureLevel.Status  =  StructureLevelStatus.IN_PROCESS;
+                     ((ILevelable)prop_value).StructureLevel.StructureLevels.Clear();
+                     ((ILevelable)prop_value).ClearStructureLevel();
+                 }
 
-            }
-            StructureLevel.Status = StructureLevelStatus.UN_DEFINED;*/
+             }
+             StructureLevel.Status = StructureLevelStatus.UN_DEFINED;*/
         }
 
-        public  virtual object Clone<TSourse>(Func<TSourse,bool> predicate) where TSourse:IEntityObject
+        public virtual object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject
         {
             if (!CopingEnable)
                 return null;
@@ -386,6 +423,23 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         [NotMapped]
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе (наприме копирования рефлексией) с данныv объектом по умолчанию 
+        public void SetPropertesParentObjects()
+        {
+            var all_props_propinfos = this.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            foreach (PropertyInfo prop_info in all_props_propinfos)
+            {
+                var prop_value = prop_info.GetValue(this);
+                if (prop_value is IEntityObject && prop_value != null)
+                {
+                    (prop_value as IEntityObject).ParentObject = this;
+                }
+            }
+        }
+        public void OnObjectChanged(object sender, PropertyStateRecord _propertyStateRecord)
+        {
+          //  PropertiesChangeJornal.Add()
+        }
+
     }
 
 

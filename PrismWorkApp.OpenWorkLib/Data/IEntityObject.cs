@@ -9,7 +9,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public Guid Id { get; set; }
         public Guid StoredId { get; set; }
-        public object ParentObject { get; set; }
+        public IJornalable ParentObject { get; set; }
         public  Func<IEntityObject, bool> RestrictionPredicate { get; set; }
     }
 }

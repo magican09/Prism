@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
@@ -16,8 +17,60 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public virtual  RoleOfResponsible RoleOfResponsible
         {
             get { return _roleOfResposible; }
-            set { SetProperty(ref _roleOfResposible, value); }
+            set
+            {
+
+                switch (value)
+                {
+                    case RoleOfResponsible.CUSTOMER:
+                        RoleFullName = "Представитель Заказчика";
+                        RoleName = "Заказчик (застройщик)";
+
+                        break;
+                    case RoleOfResponsible.GENERAL_CONTRACTOR:
+                        RoleFullName = "Представитель генподрядной организации";
+                        RoleName = "Генподрядчик";
+
+                        break;
+                    case RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER:
+                        RoleFullName = "Технадзор от генподрядчика";
+                        RoleName = "Технадзор";
+                        break;
+                    case RoleOfResponsible.WORK_PERFORMER:
+                        RoleFullName = "Представитель подрядной организации организации";
+                        RoleName = "Подрядчик";
+                        break;
+                    case RoleOfResponsible.AUTHOR_SUPERVISION:
+                        RoleFullName = "Представитель проектной организации";
+                        RoleName = "Авторский надзор";
+                        break;
+                    case RoleOfResponsible.OTHER:
+                        RoleFullName = "Иное лицо участвующей в процессе строительства.";
+                        RoleName = "Иное лицо";
+                        break;
+                    default:
+                        RoleFullName = "Роль не определена";
+                        RoleName = "Не определено";
+                        break;
+                }
+                SetProperty(ref _roleOfResposible, value);
+            }
         }
+        private string _roleName;
+        [NotMapped]
+        public string RoleName
+        {
+            get { return _roleName; }
+            set { _roleName = value; }
+        }
+        private string _roleFullName;
+        [NotMapped]
+        public string RoleFullName
+        {
+            get { return _roleFullName; }
+            set { _roleFullName = value; }
+        }
+
         private bldDocument _docConfirmingTheAthority;
         public   bldDocument DocConfirmingTheAthority
         {
@@ -36,5 +89,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bldProject bldProject { get; set; }
         [NavigateProperty]
         public bldParticipant bldParticipant { get; set;}
+
     }
 }

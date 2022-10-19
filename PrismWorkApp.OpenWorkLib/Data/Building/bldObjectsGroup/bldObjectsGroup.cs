@@ -8,11 +8,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public class bldObjectsGroup : NameableObservableCollection<bldObject>, IEntityObject , IbldObjectsGroup
     {
       
-        public bldObjectsGroup()
+        public bldObjectsGroup():base()
         {
             Name = "Строительные объекты:";
         }
-        public bldObjectsGroup(string name)
+        public bldObjectsGroup(string name):base(name)
         {
             Name = name;
         }

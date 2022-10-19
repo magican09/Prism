@@ -10,7 +10,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                                                   /*  IList<TEntity>,*/ IContainerFunctionabl, INameable where TEntity: class//,IEntityObject
     {
         public bool RemoveJournalable(TEntity item);
-        public object ParentObject { get; set; }
+        public IJornalable ParentObject { get; set; }
 
     }
 }

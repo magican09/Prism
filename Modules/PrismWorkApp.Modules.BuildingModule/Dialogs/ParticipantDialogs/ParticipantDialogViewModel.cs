@@ -11,6 +11,13 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
     public class ParticipantDialogViewModel : ParticipantViewModel, IDialogAware
     {
         public event Action<IDialogResult> RequestClose;
+        private Guid _currentContextId;
+
+        public Guid CurrentContextId
+        {
+            get { return _currentContextId; }
+            set { _currentContextId = value; }
+        }
 
         public ParticipantDialogViewModel(IDialogService dialogService)
             :base(dialogService)
@@ -41,6 +48,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                     }
                     else
                     {
+
                         RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                     }
 
@@ -57,13 +65,22 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 
 
         }
+        override public void OnClose(object obj)
+        {
+            if (EditMode) SelectedParticipant.UnDo(Id);
+            RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
+        }
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigate_message =(ConveyanceObject) parameters.GetValue<object>("selected_element_conveyance_object");
-            if(navigate_message!=null)
+            CurrentContextId = (Guid)parameters.GetValue<object>("current_context_id");
+            if (navigate_message!=null)
             {
                 ResivedParticipant =(bldParticipant) navigate_message.Object;
                 EditMode = navigate_message.EditMode;
+                if (!EditMode)
+                    Id = CurrentContextId;
+
                 if (SelectedParticipant != null) SelectedParticipant.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedParticipant = ResivedParticipant;
                 SelectedParticipant.ErrorsChanged += RaiseCanExecuteChanged;

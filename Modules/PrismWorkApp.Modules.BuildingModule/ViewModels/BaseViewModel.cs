@@ -16,7 +16,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         protected  IRegionManager _regionManager;
 
         
-        public void OnSave<T>(T selected_obj) where T:IJornalable,INameable,IRegisterable, IBindableBase
+        public virtual  void OnSave<T>(T selected_obj) where T:IJornalable,INameable,IRegisterable, IBindableBase
         {
             CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", "проект", "Сохранить", "Не сохранять", "Отмена", (result) =>
             {
@@ -32,7 +32,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             }, _dialogService);
         }
 
-        public void  OnClose<T>(object view,T selected_obj) where T : IJornalable, INameable, IRegisterable, IBindableBase
+        public virtual void OnClose<T>(object view,T selected_obj) where T : IJornalable, INameable, IRegisterable, IBindableBase
         {
             if (!selected_obj.IsPropertiesChangeJornalIsEmpty(Id))
             {

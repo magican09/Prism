@@ -17,7 +17,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
     {
         CUSTOMER, //Заказчик
         GENERAL_CONTRACTOR, //Генеральный подрядчик
-        GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER, //Генеральный подрядчик
+        GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER, //Технадзор
         AUTHOR_SUPERVISION, // Авторский надзор 
         WORK_PERFORMER,//Подрядчик
         OTHER,

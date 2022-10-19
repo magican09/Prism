@@ -162,11 +162,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             return true;
         }
-       public virtual void OnSave()
+       public override void OnSave()
         {
             this.OnSave<bldParticipant>(SelectedParticipant);
         }
-        public virtual void OnClose(object obj)
+        public  override void OnClose(object obj)
         {
             this.OnClose<bldParticipant>(obj, SelectedParticipant);
         }
@@ -198,7 +198,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         }
-
      
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {

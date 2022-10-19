@@ -168,10 +168,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             val = (bldObject)MemberwiseClone();
             return val;
         }
-        public bldObject()
-        {
-            
-        }
+        
 
        
     }

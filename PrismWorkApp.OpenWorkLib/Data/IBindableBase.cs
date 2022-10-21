@@ -5,10 +5,10 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IBindableBase:ILevelable, ICopingEnableable
+    public interface IBindableBase: ICopingEnableable
     {
-        public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId);
-        public void SetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate) where TSourse : IEntityObject;
+    //    public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId);
+      //  public void SetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate) where TSourse : IEntityObject;
         public bool IsVisible { get; set;}
     }
 }

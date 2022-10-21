@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldParticipant : BindableBase, IbldParticipant, IEntityObject,ILevelable
+    public class bldParticipant : BindableBase, IbldParticipant, IEntityObject
     {
         private Guid _id;
         public Guid Id

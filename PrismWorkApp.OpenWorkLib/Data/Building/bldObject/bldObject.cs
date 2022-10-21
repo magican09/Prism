@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldObject: BindableBase ,IbldObject, IEntityObject,IJornalable,ILevelable
+    public class bldObject: BindableBase ,IbldObject, IEntityObject,IJornalable
     {
         private Guid _id;
         public Guid Id

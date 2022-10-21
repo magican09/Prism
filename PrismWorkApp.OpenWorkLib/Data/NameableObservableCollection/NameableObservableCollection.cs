@@ -14,10 +14,9 @@ using System.Text;
 namespace PrismWorkApp.OpenWorkLib.Data
 {
     //public class NameableObservableCollection<TEntity>:ObservableCollection<TEntity>,IList<TEntity> where TEntity: class,IEntityObject
-    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, IEntityObject,IJornalable, ILevelable, INameableOservableCollection<TEntity> where TEntity : class, IEntityObject
+    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, IEntityObject, IJornalable, INameableOservableCollection<TEntity> where TEntity : class, IEntityObject, IJornalable
     {
-         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        public event PropertiesChangeJornalChangedEventHandler ObjectChangedNotify; 
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе с данных объектом по умолчанию
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -48,7 +47,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Id = Guid.NewGuid();
             CountNotificationSet();
-          
+
 
         }
         public NameableObservableCollection(string name) : this()
@@ -76,90 +75,44 @@ namespace PrismWorkApp.OpenWorkLib.Data
             CountNotificationSet();
 
         }
-        private void IsJornalEmpty(object sender, PropertyStateRecord _propertyStateRecord)
-        {
+        #region Validating
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
 
-            Status = JornalRecordStatus.MODIFIED;
-          //  ((IJornalable)ParentObject).Status = JornalRecordStatus.MODIFIED;
-            //  return true;
-        }
-  
-        public void SetAllValues(object in_object)
-        {
-            /*   var this_props = this.GetType().GetProperties();
-               var in_props = in_object.GetType().GetProperties();
 
-               foreach (PropertyInfo prop_info in this_props)
-               {
-                   var in_prop_value = prop_info.GetValue(in_object);
-                   var this_prop_value = prop_info.GetValue(this);
-                   var this_prop = this.GetType().GetProperty(prop_info.Name);
+        #endregion
 
-                   if (this_prop is BindableBase || this_prop is IEntityObject)
-                         ((IEntityObject)this_prop_value).SetAllValues(in_prop_value);
-
-                   if(this_prop.CanWrite) this_prop.SetValue(this, in_prop_value);
-               }
-               */
-            Items.Clear();
-            foreach (TEntity obj_item in ((NameableObservableCollection<TEntity>)in_object).Items)
-                Items.Add(obj_item);
-        }
+        #region Changes Jornaling
+        public event ObjectStateChangeEventHandler ObjectChangedNotify;
 
         private bool b_jornal_recording_flag = true;
-        private void CountNotificationSet()
+        private Guid _currentContextId;
+        public Guid CurrentContextId
         {
-            CollectionChanged += (sender, e) =>
+            get { return _currentContextId; }
+            set { _currentContextId = value; }
+        }
+        private JornalRecordStatus status;
+        public JornalRecordStatus Status
+        {
+            get
             {
-                if (e.Action == NotifyCollectionChangedAction.Add)
-                {
-                    //  int last_struyctere_number = StructureLevel.StructureLevels.Count>0 ? StructureLevel.StructureLevels[StructureLevel.StructureLevels.Count-1].Number :0 ;
-
-                    foreach (IEntityObject obj in e.NewItems)
-                    {
-                        if (b_jornal_recording_flag && CurrentContextId != Guid.Empty)
-                            PropertiesChangeJornal.Add(new PropertyStateRecord(obj, JornalRecordStatus.ADDED, obj.Name, CurrentContextId));
-                        ((IEntityObject)obj).ParentObject = this;
-                    }
-                }
-                if (e.Action == NotifyCollectionChangedAction.Remove)
-                {
-                    foreach (object obj in e.OldItems)
-                    {
-                        if (b_jornal_recording_flag)
-                        {
-                            PropertiesChangeJornal.Add(new PropertyStateRecord(obj, JornalRecordStatus.REMOVED, Name));
-          
-                        }
-
-                    }
-                }
-               
-               if(ParentObject!=null)
-                    ParentObject.PropertiesChangeJornal.Add(new PropertyStateRecord(this, JornalRecordStatus.MODIFIED, Name, CurrentContextId));
-
-            };
-
-            PropertyChanged += (sende, e) =>
-              {
-
-              };
-
-            PropertiesChangeJornal.ParentObject = this;
-            PropertiesChangeJornal.JornalChangedNotify += IsJornalEmpty;
+                return status;
+            }
+            set
+            {
+                status = value;
+                IsVisible = (status != JornalRecordStatus.REMOVED) ? true : false;
+            }
         }
-
-        public void  SetParentObject(IJornalable obj)
+        public PropertiesChangeJornal PropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
+        public ObservableCollection<IJornalable> ParentObjects { get; set; }
+        public IJornalable ParentObject { get; set; }
+        private void OnPropertyChanges(object sender, PropertyStateRecord _propertyStateRecord)
         {
-            ParentObject = obj;
+            Status = JornalRecordStatus.MODIFIED;
+           if(ObjectChangedNotify!=null)
+                ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, _propertyStateRecord));
         }
-        public bool RemoveJournalable(TEntity item)
-        {
-            item.Status = JornalRecordStatus.REMOVED;
-            PropertiesChangeJornal.Add(new PropertyStateRecord(item, JornalRecordStatus.REMOVED, Name, CurrentContextId));
-            return true;
-        }
-
         public void UnDo(Guid currentContextId)
         {
             PropertyStateRecord lastPropState = PropertiesChangeJornal.Where(r => r.ContextId == currentContextId)
@@ -214,7 +167,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
             }
         }
-
         public void SaveAll(Guid currentContextId)
         {
             List<Guid> uniq_property_id =
@@ -232,146 +184,153 @@ namespace PrismWorkApp.OpenWorkLib.Data
              }
              */
         }
-
-        public void JornalingOff()
+        public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId)
         {
-            b_jornal_recording_flag = false;
-            foreach (TEntity entity in this)
+            //   var dsf = PropertiesChangeJornal.Where(r => r.Id == currentContextId).FirstOrDefault();
+            if (PropertiesChangeJornal.Where(r => r.ContextId == currentContextId).FirstOrDefault() == null)
+                return true;
+            else
             {
-                entity.JornalingOff();
+                // if (jornal_empty) return true;
+                //   else
+                return false;
             }
         }
-
-        public void JornalingOn()
+        public void OnChildObjectChanges(object sender, ObjectStateChangedEventArgs e)
         {
-            b_jornal_recording_flag = true;
-            foreach (TEntity entity in this)
-            {
-                entity.JornalingOn();
-            }
+            PropertiesChangeJornal.Add(e.PropertyStateRecord);
         }
-
-        public void UpdateStructure()
+        public void AdjustAllParentsObjects()
         {
-           /* if (StructureLevel.Status == StructureLevelStatus.UN_DEFINED)
+
+
+
+            AdjustParentObjects(this);
+        }
+        private void AdjustParentObjects(IJornalable sourse)
+        {
+            foreach (IEntityObject item in this)
             {
-                if (StructureLevel.ParentStructureLevel != null)
+                if (item.ParentObjects == null)
                 {
-                    StructureLevel.Level = StructureLevel.ParentStructureLevel.Number;
-                    StructureLevel.DeptIndex = StructureLevel.ParentStructureLevel.DeptIndex+1;
+                    item.ParentObjects = new ObservableCollection<IJornalable>();
+                    item.ParentObjects.Add(this);
+                    item.ObjectChangedNotify += OnChildObjectChanges;
+                    item.AdjustAllParentsObjects();
                 }
-                else
-                    StructureLevel.ParentStructureLevel = new StructureLevel(0);
+            }
+        }
 
-                StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
-                int level_strutures_count = 0;
-                if (this is bldObjectsGroup)
-                    ;
-                foreach (ILevelable elm in this)
+        #endregion
+
+        public void SetAllValues(object in_object)
+        {
+            /*   var this_props = this.GetType().GetProperties();
+               var in_props = in_object.GetType().GetProperties();
+
+               foreach (PropertyInfo prop_info in this_props)
+               {
+                   var in_prop_value = prop_info.GetValue(in_object);
+                   var this_prop_value = prop_info.GetValue(this);
+                   var this_prop = this.GetType().GetProperty(prop_info.Name);
+
+                   if (this_prop is BindableBase || this_prop is IEntityObject)
+                         ((IEntityObject)this_prop_value).SetAllValues(in_prop_value);
+
+                   if(this_prop.CanWrite) this_prop.SetValue(this, in_prop_value);
+               }
+               */
+            Items.Clear();
+            foreach (TEntity obj_item in ((NameableObservableCollection<TEntity>)in_object).Items)
+                Items.Add(obj_item);
+        }
+
+        private void CountNotificationSet()
+        {
+            PropertiesChangeJornal.JornalChangedNotify += OnPropertyChanges;
+            CollectionChanged += (sender, e) =>
+            {
+                if (e.Action == NotifyCollectionChangedAction.Add)
                 {
-                  if (elm.StructureLevel.Status == StructureLevelStatus.UN_DEFINED)
+                    //  int last_struyctere_number = StructureLevel.StructureLevels.Count>0 ? StructureLevel.StructureLevels[StructureLevel.StructureLevels.Count-1].Number :0 ;
+
+                    foreach (IEntityObject obj in e.NewItems)
                     {
-                         
-                        elm.StructureLevel.ParentStructureLevel = StructureLevel;
-                        elm.StructureLevel.Level = StructureLevel.Number;
-                        elm.StructureLevel.Number = level_strutures_count++;
-                        elm.StructureLevel.Value = elm;
-                        elm.StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
-                        StructureLevel.StructureLevels.Add(elm.StructureLevel);
-                        if (elm is bldWork)
+                        if (b_jornal_recording_flag && CurrentContextId != Guid.Empty)
                         {
-                            if ((elm as bldWork).bldConstruction != null)
-                            {
-                                var wrks = (elm as bldWork).bldConstruction.Works;
-                            }
-                         }
+                            PropertyStateRecord stateRecord = new PropertyStateRecord(obj, JornalRecordStatus.ADDED, obj.Name, CurrentContextId);
+                            PropertiesChangeJornal.Add(stateRecord);
+                          //  ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, stateRecord));
+                        }
 
                     }
                 }
-                foreach (ILevelable elm in this)
+                if (e.Action == NotifyCollectionChangedAction.Remove)
                 {
-
-                   if (elm.StructureLevel.Status != StructureLevelStatus.DEFINED)
+                    foreach (object obj in e.OldItems)
                     {
-                        elm.StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
-                        elm.UpdateStructure();
-                        elm.StructureLevel.Status = StructureLevelStatus.DEFINED;
+                        if (b_jornal_recording_flag)
+                        {
+                            PropertyStateRecord stateRecord = new PropertyStateRecord(obj, JornalRecordStatus.REMOVED, Name);
+                            PropertiesChangeJornal.Add(stateRecord);
+                         //   ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, stateRecord));
+
+                        }
+
                     }
                 }
-                StructureLevel.Status = StructureLevelStatus.DEFINED;
-            }
-            OnPropertyChanged("Code");*/
+
+
+
+            };
+
+          
         }
-        public void ClearStructureLevel()
+
+        public void SetParentObject(IJornalable obj)
         {
-          /*  StructureLevel.StructureLevels.Clear();
-            StructureLevel.Status = StructureLevelStatus.IN_PROCESS;
-            foreach (ILevelable elm in this)
-            {
-
-                if (elm.StructureLevel.Status != StructureLevelStatus.UN_DEFINED)
-                {
-                    elm.ClearStructureLevel();
-                }
-            }
-            StructureLevel.Status = StructureLevelStatus.UN_DEFINED;*/
+            ParentObject = obj;
         }
 
 
-        
-        public  virtual object Clone<TSourse>(Func<TSourse,bool> predicate) where TSourse:IEntityObject
+        public bool RemoveJournalable(TEntity item)
+        {
+            item.Status = JornalRecordStatus.REMOVED;
+            PropertiesChangeJornal.Add(new PropertyStateRecord(item, JornalRecordStatus.REMOVED, Name, CurrentContextId));
+            return true;
+        }
+        public virtual object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject
         {
             if (!CopingEnable)
                 return null;
 
-                object new_object_collection  = Activator.CreateInstance(this.GetType());
+            object new_object_collection = Activator.CreateInstance(this.GetType());
             foreach (IEntityObject element in this)
             {
                 var new_element = Activator.CreateInstance(element.GetType());
                 new_element = element.Clone<TSourse>(predicate);
                 ((IList)new_object_collection).Add(new_element);
             }
-         //   Functions.SetAllIdToZero(new_object_collection);
+            //   Functions.SetAllIdToZero(new_object_collection);
             return new_object_collection;
         }
 
 
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
-        public PropertiesChangeJornal PropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
-        private JornalRecordStatus status;
 
-        public JornalRecordStatus Status
-        {
-            get
-            {
-                return status;
-            }
-            set
-            {
-                status = value;
-                IsVisible = (status != JornalRecordStatus.REMOVED) ? true : false;
-            }
-        }
 
         public bool IsVisible { get; set; } = true;
-        private Guid _currentContextId;
-        public Guid CurrentContextId
-        {
-            get { return _currentContextId; }
-            set { _currentContextId = value; }
-        }
 
-        public StructureLevel StructureLevel { get; set; } = new StructureLevel();
         private string _code;
         public string Code
         {
-            get {
+            get
+            {
                 return _code;
             }
             set { _code = value; OnPropertyChanged("Code"); }
         }//Код
 
-        private bool _isPinterConteiner =false;
+        private bool _isPinterConteiner = false;
 
         public bool IsPointerContainer
         {
@@ -381,8 +340,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public bool CopingEnable { get; set; } = true;
 
-        public IJornalable ParentObject { get; set; }
 
-       
+
+
     }
 }

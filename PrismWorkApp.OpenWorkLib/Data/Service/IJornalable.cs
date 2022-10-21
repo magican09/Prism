@@ -1,6 +1,7 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
@@ -12,14 +13,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void SaveAll(Guid currentContextId);
         public void UnDo(Guid currentContextId);
         public void UnDoAll(Guid currentContextId);
-        public void JornalingOff();
-        public void JornalingOn();
+   //     public void JornalingOff();
+     //   public void JornalingOn();
         public JornalRecordStatus Status { get; set; }
-        public bool IsVisible { get; set; }
         public Guid CurrentContextId { get; set; }
         public PropertiesChangeJornal PropertiesChangeJornal { get; set; }
-        public event PropertiesChangeJornalChangedEventHandler ObjectChangedNotify;
-
+        public event ObjectStateChangeEventHandler ObjectChangedNotify;
+        public ObservableCollection<IJornalable> ParentObjects { get; set; }
+        public void AdjustAllParentsObjects();
+        public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId);
 
         //public void  SetParentObject(IJornalable obj);
 

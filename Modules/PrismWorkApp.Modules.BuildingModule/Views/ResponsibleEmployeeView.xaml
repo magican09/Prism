@@ -73,7 +73,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock  Style="{StaticResource inlineText}">Наименование:</TextBlock>
                     <TextBox Grid.Column="1" HorizontalContentAlignment="Stretch"   TextWrapping="Wrap" 
-                              Text="{Binding SelectedResposibleEmployee.Name}"/>
+                              Text="{Binding SelectedResposibleEmployee.FullName}"/>
                 </Grid>
             </StackPanel>
 
@@ -122,10 +122,10 @@
 
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
-            <Button Command="{Binding ShowMessageDialogCommand}" >Применить</Button>
-            <Button Command="{Binding SaveCommand}" >Сохранить</Button>
-            <Label Content="{Binding MessageReceived}"/>
-            <Button  >Закрыть</Button>
+            <Button  Content="Сохранить" Command="{Binding SaveCommand}" />
+            <Button  Content="Закрыть"  Command="{Binding CloseCommand}"
+                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                                                     AncestorType={x:Type UserControl}}}"/>
         </StackPanel>
 
 

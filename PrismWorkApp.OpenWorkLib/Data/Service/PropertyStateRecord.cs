@@ -28,5 +28,14 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             Name = name;
             ContextId = currentContextId;
         }
+        public PropertyStateRecord(object prop, JornalRecordStatus recordStatus, string name, Guid currentContextId, IEntityObject parentObject)
+        {
+            Value = prop;
+            Date = DateTime.Now;
+            Status = recordStatus;
+            Name = name;
+            ContextId = currentContextId;
+            ParentObject = parentObject;
+        }
     }
 }

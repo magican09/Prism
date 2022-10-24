@@ -164,10 +164,30 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnAddResponsibleEmployees()
         {
-            ResponsibleEmployees = new bldResponsibleEmployeesGroup(
+            bldResponsibleEmployeesGroup All_ResponsibleEmployees = new bldResponsibleEmployeesGroup(
                     _buildingUnitsRepository.ResponsibleEmployees.GetAllResponsibleEmployees());
-            CoreFunctions.AddElementToCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
-                 (SelectedProject.ResponsibleEmployees, ResponsibleEmployees, _dialogService,
+
+            NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee> predicate_1 = new NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee>();
+            NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee> predicate_2 = new NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee>();
+            NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee> predicate_3 = new NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee>();
+            predicate_1.Name = "Показать только из текущего проекта.";
+            predicate_1.Predicate = cl => cl.Where(el => el.bldProject != null &&
+                                                        el.bldProject.Id == SelectedProject.Id).ToList();
+            predicate_2.Name = "Показать из всех кроме текущего объекта";
+            predicate_2.Predicate = cl => cl.Where(el => el.bldProject != null &&
+                                                        el.bldProject.Id != SelectedProject.Id).ToList();
+            predicate_3.Name = "Показать все";
+            predicate_3.Predicate = cl => cl;
+
+            NameablePredicateObservableCollection<bldResponsibleEmployeesGroup, bldResponsibleEmployee> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldResponsibleEmployeesGroup, bldResponsibleEmployee>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
+            nameablePredicatesCollection.Add(predicate_3);
+
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
+                 (SelectedProject.ResponsibleEmployees, All_ResponsibleEmployees,
+                 nameablePredicatesCollection,
+                 _dialogService,
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)

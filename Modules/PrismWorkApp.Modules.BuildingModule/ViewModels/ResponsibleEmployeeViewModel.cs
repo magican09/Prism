@@ -11,7 +11,7 @@ using BindableBase = Prism.Mvvm.BindableBase;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class ResponsibleEmployeeViewModel : LocalBindableBase, INavigationAware
+    public class ResponsibleEmployeeViewModel : BaseViewModel<bldResponsibleEmployee>, INavigationAware
     {
         private string _title = "Отвественный работник";
         public string Title
@@ -19,8 +19,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-        private SimpleEditableResposibleEmployee _selectedResposibleEmployee;
-        public SimpleEditableResposibleEmployee SelectedResposibleEmployee
+        private bldResponsibleEmployee _selectedResposibleEmployee;
+        public bldResponsibleEmployee SelectedResposibleEmployee
         {
             get { return _selectedResposibleEmployee; }
             set { SetProperty(ref _selectedResposibleEmployee, value); }
@@ -31,12 +31,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _resivedResposibleEmployee; }
             set { SetProperty(ref _resivedResposibleEmployee, value); }
         }
-        private bool _editMode;
-        public bool EditMode
-        {
-            get { return _editMode; }
-            set { SetProperty(ref _editMode, value); }
-        }
+     
         private bldResponsibleEmployeesGroup _responsibleEmployees;
         public bldResponsibleEmployeesGroup ResponsibleEmployees
         {
@@ -49,7 +44,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _allResponsibleEmployees; }
             set { SetProperty(ref _allResponsibleEmployees, value); }
         }
-        protected readonly IDialogService _dialogService;
+       
         private string _messageReceived = "Бла бал бла...!!!";
         public string MessageReceived
         {
@@ -58,13 +53,32 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-        public DelegateCommand ShowMessageDialogCommand { get; private set; }
+        public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
         public DelegateCommand SaveCommand { get; private set; }
+        public DelegateCommand<object> CloseCommand { get; private set; }
+       
         public ResponsibleEmployeeViewModel(IDialogService dialogService)
         {
-            ShowMessageDialogCommand = new DelegateCommand(ShowDialog);
             SaveCommand = new DelegateCommand(OnSave, CanSave);
+            CloseCommand = new DelegateCommand<object>(OnClose);
+
             _dialogService = dialogService;
+
+        }
+
+        private void OnDataGridLostSocus(object obj)
+        {
+
+         /*   if (obj == Sele)
+            {
+                SelectedConstruction = null;
+                return;
+            }
+            if (obj == SelectedConstruction)
+            {
+                SelectedChildBuildingObject = null;
+                return;
+            }*/
 
         }
 
@@ -73,38 +87,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             return true;
         }
 
-        virtual  public  void OnSave()
-        {
-            if (EditMode == ConveyanceObjectModes.EditMode.FOR_EDIT)
-            {
-
-                CoreFunctions.ConfirmActionOnElementDialog<bldResponsibleEmployee>(SelectedResposibleEmployee,
-                    "Сохранить", "отвественный работник",
-                    "Сохранить",
-                    "не сохранять",
-                    "Отмена", (result) =>
-                {
-                    if (result.Result == ButtonResult.Yes)
-                    {
-                //        CoreFunctions.CopyObjectReflectionNewInstances(SelectedResposibleEmployee, ResivedResposibleEmployee);
-                    }
-                    else
-                    {
-
-                    }
-
-                }, _dialogService);
-
-            }
-            else
-            {
-                //  bldObject new_bldObject = new bldObject();
-                //   CoreFunctions.CopyObjectReflectionNewInstances(SelectedObject, new_bldObject);
-                //  Objects?.Add(new_bldObject);
-
-            }
-
-        }
+       
 
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
@@ -130,7 +113,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             });
         }
 
-
+        public virtual void OnSave()
+        {
+            this.OnSave<bldResponsibleEmployee>(SelectedResposibleEmployee);
+        }
+        public virtual void OnClose(object obj)
+        {
+            this.OnClose<bldResponsibleEmployee>(obj, SelectedResposibleEmployee);
+        }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {

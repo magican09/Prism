@@ -17,6 +17,13 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         }
         public event Action<IDialogResult> RequestClose;
 
+        private Guid _currentContextId;
+        public Guid CurrentContextId
+        {
+            get { return _currentContextId; }
+            set { _currentContextId = value; }
+        }
+
         public bool CanCloseDialog()
         {
             return true;
@@ -39,41 +46,43 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 {
                     if (result.Result == ButtonResult.Yes)
                     {
-                   //     CoreFunctions.CopyObjectReflectionNewInstances(SelectedResposibleEmployee, ResivedResposibleEmployee);
-                            RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
+                        if (EditMode) SelectedResposibleEmployee.SaveAll(Id);
+                        RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
                     }
                     else
                     {
-                           RequestClose?.Invoke(new DialogResult(ButtonResult.No));
+                        if (EditMode) SelectedResposibleEmployee.UnDo(Id);
+                        RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                     }
 
                 }, _dialogService);
 
             }
-            else
-            {
-               // bldObject new_bldObject = new bldObject();
-              //  CoreFunctions.CopyObjectReflectionNewInstances(SelectedObject, new_bldObject);
-             
-
-            }
+            
 
 
         }
-        
+        override public void OnClose(object obj)
+        {
+            if (EditMode) SelectedResposibleEmployee.UnDo(Id);
+            RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
+        }
+
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
+            CurrentContextId = (Guid)parameters.GetValue<object>("current_context_id");
             if (navigane_message != null)
             {
                 ResivedResposibleEmployee = (bldResponsibleEmployee)navigane_message.Object;
                 EditMode = navigane_message.EditMode;
-              //  Objects = (bldObjectsGroup)parameters.GetValue<object>("current_collection");
-               // AllObjects = (bldObjectsGroup)parameters.GetValue<object>("common_collection");
+                if (!EditMode)
+                    Id = CurrentContextId;
+
                 if (SelectedResposibleEmployee != null) SelectedResposibleEmployee.ErrorsChanged -= RaiseCanExecuteChanged;
-                SelectedResposibleEmployee = new SimpleEditableResposibleEmployee();
+                SelectedResposibleEmployee = ResivedResposibleEmployee;
                 SelectedResposibleEmployee.ErrorsChanged += RaiseCanExecuteChanged;
-            //    CoreFunctions.CopyObjectReflectionNewInstances(ResivedResposibleEmployee, SelectedResposibleEmployee);
+        
              
             }
 

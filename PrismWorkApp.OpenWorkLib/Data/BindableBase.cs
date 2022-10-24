@@ -17,7 +17,7 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public abstract class BindableBase : INotifyPropertyChanged, IJornalable, IValidateable, IBindableBase,  ICopingEnableable
+    public abstract class BindableBase : INotifyPropertyChanged, IJornalable, IValidateable, IBindableBase, ICopingEnableable
     {
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -45,8 +45,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 if (CurrentContextId != Guid.Empty)
                 {
                     PropertyStateRecord propertyStateRecord = new PropertyStateRecord(member, JornalRecordStatus.MODIFIED, propertyName, CurrentContextId);
+                    propertyStateRecord.ParentObject = (IEntityObject)this;
                     PropertiesChangeJornal.Add(propertyStateRecord);
-                    ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord));
+                    if (ObjectChangedNotify != null) ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord));
                     //if (ParentObject != null)
                     //    ParentObject.PropertiesChangeJornal.Add(new PropertyStateRecord(this, JornalRecordStatus.MODIFIED, (this as IEntityObject).Name, CurrentContextId));
                     //if (val is IEntityObject)
@@ -96,7 +97,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #endregion
 
         #region Changes Jornaling
-       
+
         private bool b_jornal_recording_flag = true;
         private bool visible = true;
         private JornalRecordStatus status;
@@ -162,7 +163,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId)
         {
             //   var dsf = PropertiesChangeJornal.Where(r => r.Id == currentContextId).FirstOrDefault();
-            if (PropertiesChangeJornal.Where(r => r.ContextId == currentContextId).FirstOrDefault() == null)
+            // if (PropertiesChangeJornal.Where(r => r.ContextId == currentContextId).FirstOrDefault() == null)
+            if (PropertiesChangeJornal.Count == 0)
                 return true;
             else
             {
@@ -177,7 +179,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             PropertiesChangeJornal.Add(e.PropertyStateRecord);
         }
-       
+
         private void OnPropertyChanges(object sender, PropertyStateRecord _propertyStateRecord)
         {
 
@@ -186,12 +188,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, _propertyStateRecord));
             //  return true;
         }
-      
-        
-        
+
+
+
         public void SetParentObject(IEntityObject obj)
         {
-         }
+        }
         public void JornalingOff()
         {
             b_jornal_recording_flag = false;
@@ -224,48 +226,74 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public virtual void UnDo(Guid currentContextId)
         {
-            PropertyStateRecord propertyState = PropertiesChangeJornal.Where(r => r.ContextId == currentContextId)?
-                .OrderBy(r => r.Date).LastOrDefault();//Берем последене измение в свойствах объекта
+            PropertyStateRecord propertyState = PropertiesChangeJornal?.OrderBy(r => r.Date).LastOrDefault();//Берем последене измение в свойствах объекта
             if (propertyState != null)
             {
-                var prop_info = this.GetType().GetProperty(propertyState.Name); //Достаем с помощью рефлексии данные о свойстве из текущего объекта
-                b_jornal_recording_flag = false; //Отключаем ведение жрунала, так как собираемся переустановить текущее значение без журналирования
-
-                if (prop_info.GetIndexParameters().Length == 0)//Если свойство не является индек..
+                if (propertyState.ParentObject.Id == (this as IEntityObject).Id)//Изменения были в дочернем объекте текущего отбъекта
                 {
-                    var prop = prop_info.GetValue(this);
-                    prop_info.SetValue(this, propertyState.Value); //Присваиваем свойству текущего объекта сохраненное в журнале значение
-                }
+                    var prop_info = this.GetType().GetProperty(propertyState.Name); //Достаем с помощью рефлексии данные о свойстве из текущего объекта
+                    b_jornal_recording_flag = false; //Отключаем ведение жрунала, так как собираемся переустановить текущее значение без журналирования
+                    var prop_val = prop_info.GetValue(this);
 
-                PropertiesChangeJornal.Remove(propertyState); //Удаляем из журнала сохраненное изменение
-                b_jornal_recording_flag = true; //Включаем журналирование
+                    if (prop_info.GetIndexParameters().Length == 0)//Если свойство не является индек..
+                    {
+                        prop_info.SetValue(this, propertyState.Value); //Присваиваем свойству текущего объекта сохраненное в журнале значение
+                    }
+
+                    PropertiesChangeJornal.Remove(propertyState); //Удаляем из журнала сохраненное изменение
+
+                    b_jornal_recording_flag = true; //Включаем журналирование
+                }
+                else
+                {
+                    propertyState.ParentObject.UnDo(currentContextId);
+                    PropertiesChangeJornal.Remove(propertyState);
+                }
             }
         }
         public virtual void UnDoAll(Guid currentContextId)
         {
-            while (PropertiesChangeJornal.Where(r => r.ContextId == currentContextId).FirstOrDefault() != null) UnDo(currentContextId); //Отменяем измеенения всех переменных, которые не коллекции
-            b_jornal_recording_flag = false;
-            var prop_info_coll = this.GetType().GetProperties();
-            foreach (PropertyInfo propertyInfo in prop_info_coll)
-            {
-                var prop_val = propertyInfo.GetValue(this);
-                if (prop_val is IList && prop_val is IJornalable)
-                {
-                    MethodInfo unDoAllMethod = propertyInfo.PropertyType.GetMethod("UnDoAll");
-                    object res = unDoAllMethod.Invoke(prop_val, new object[] { currentContextId });
-                }
-            }
-            b_jornal_recording_flag = true;
-
+            while (PropertiesChangeJornal.Where(r => r.ContextId == currentContextId).FirstOrDefault() != null)
+                UnDo(currentContextId); //Отменяем измеенения всех переменных, которые не коллекции
         }
         public virtual void Save(object prop_id, Guid currentContextId)
         { //Сохранение текущего состояние свойства заключается в том, что мы просто удаляем все предыдущие изменнеия из журнала изменений
             if (prop_id != null)
             {
-                List<PropertyStateRecord> propertyStateRecords =
-                        PropertiesChangeJornal.Where(p => p.Name == prop_id.ToString() && p.ContextId == currentContextId).ToList();
-                foreach (PropertyStateRecord record in propertyStateRecords)
-                    PropertiesChangeJornal.Remove(record);
+                PropertyStateRecord propertyState;
+                if (prop_id is string)
+                {
+                    propertyState = PropertiesChangeJornal.Where(p => p.Name == prop_id.ToString()).OrderBy(pr => pr.Date).LastOrDefault();
+                    if (propertyState != null)
+                    {
+                        if (propertyState.Value is IEntityObject)
+                        {
+                            propertyState.ParentObject.SaveAll(currentContextId);
+                            PropertiesChangeJornal.Remove(propertyState);
+                        }
+                        else
+                            PropertiesChangeJornal.Remove(propertyState);
+                    }
+                }
+                else
+                {
+                    propertyState = PropertiesChangeJornal.Where(p => p.Id == (Guid)prop_id).OrderBy(pr => pr.Date).LastOrDefault();
+
+                    if (propertyState.ParentObject.Id == (this as IEntityObject).Id)//Изменения были в дочернем объекте текущего отбъекта
+                    {
+                        PropertiesChangeJornal.Remove(propertyState);
+                    }
+                    else
+                    {
+                        propertyState.ParentObject.SaveAll(currentContextId);
+                        PropertiesChangeJornal.Remove(propertyState);
+                    }
+
+                }
+
+                for (int ii = 0; ii < PropertiesChangeJornal.Count; ii++)  //Удаляем все записи с изменениями сохраняемого объекта
+                    if (PropertiesChangeJornal[ii].Id == propertyState.Id)
+                        PropertiesChangeJornal.Remove(PropertiesChangeJornal[ii]);
             }
         }
         public virtual void SaveAll(Guid currentContextId)
@@ -278,23 +306,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     .ToList();
             foreach (string prop_name in uniq_property_names)//Сохраняем последние изменения для каждого свойства
                 Save(prop_name, currentContextId);
-            /// Если свойства представляет собой список, то побегаем по всем элементам списка и сохраняем изменения в каждом эелемента
-            var prop_info_coll = this.GetType().GetProperties();
-            b_jornal_recording_flag = false;
-            foreach (PropertyInfo propertyInfo in prop_info_coll)
-            {
-                var prop_val = propertyInfo.GetValue(this);
-                if (prop_val is IList && prop_val is IJornalable)
-                {
-                    MethodInfo saveAllMethod = propertyInfo.PropertyType.GetMethod("SaveAll");//Вызываем методо SaveAll каждого элмената
-                    object res = saveAllMethod.Invoke(prop_val, new object[] { currentContextId });
-                }
-            }
-            b_jornal_recording_flag = true;
+      
         }
-       
 
-        public  void AdjustAllParentsObjects()
+
+        public void AdjustAllParentsObjects()
         {
             AdjustParentObjects(this);
         }
@@ -304,16 +320,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
             foreach (PropertyInfo prop_info in all_props_propinfos)
             {
                 var prop_value = prop_info.GetValue(sourse);
-                if (prop_value is IJornalable && prop_value != null )
+                if (prop_value is IJornalable && prop_value != null)
                 {
                     if ((prop_value as IJornalable).ParentObjects == null)
                     {
                         (prop_value as IJornalable).ParentObjects = new ObservableCollection<IJornalable>();
                         (prop_value as IJornalable).ParentObjects.Add(sourse);
-                        if ((prop_value is  IList))
+                        if ((prop_value is IList))
                         {
-                           (prop_value as IJornalable).ObjectChangedNotify += OnChildObjectChanges;
-                           (prop_value as IJornalable).AdjustAllParentsObjects();
+                            (prop_value as IJornalable).ObjectChangedNotify += OnChildObjectChanges;
+                            (prop_value as IJornalable).AdjustAllParentsObjects();
                         }
                         else
                         {
@@ -325,9 +341,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     }
                 }
 
-              
+
             }
-           
+
 
         }
         #endregion
@@ -349,7 +365,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _code, value); }
         }//Код
 
-        [NotMapped] 
+        [NotMapped]
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе (наприме копирования рефлексией) с данныv объектом по умолчанию 
         [NotMapped]
         public bool CopingEnable { get; set; } = true;

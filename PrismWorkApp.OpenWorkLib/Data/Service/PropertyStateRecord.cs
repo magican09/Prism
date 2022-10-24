@@ -12,6 +12,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public DateTime Date { get ; set ; }
         public object Value { get; set; }
         public JornalRecordStatus Status { get; set; }
+        public IEntityObject ParentObject { get; set; }
         public PropertyStateRecord(object prop, JornalRecordStatus recordStatus, string name ="" )
         {
             Value = prop;

@@ -110,20 +110,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private void OnPropertyChanges(object sender, PropertyStateRecord _propertyStateRecord)
         {
             Status = JornalRecordStatus.MODIFIED;
-           if(ObjectChangedNotify!=null)
+            if (ObjectChangedNotify != null)
                 ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, _propertyStateRecord));
         }
         public void UnDo(Guid currentContextId)
         {
-            PropertyStateRecord lastPropState = PropertiesChangeJornal.Where(r => r.ContextId == currentContextId)
-                .OrderBy(el => el.Date).Last();
-
+               PropertyStateRecord lastPropState = PropertiesChangeJornal?.OrderBy(el => el.Date).LastOrDefault();
             if (lastPropState != null)
             {
                 b_jornal_recording_flag = false; //Блокируем ведение журнала 
                 if (lastPropState.Status == JornalRecordStatus.ADDED)
                 {
-                    // this.Remove((TEntity)lastPropState.Value);
                     if (this.Contains((TEntity)lastPropState.Value))
                     {
                         ((TEntity)lastPropState.Value).Status = JornalRecordStatus.REMOVED;
@@ -133,7 +130,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 else if (lastPropState.Status == JornalRecordStatus.REMOVED)
 
                 {
-                    //this.Add((TEntity)lastPropState.Value);
                     ((TEntity)lastPropState.Value).Status = JornalRecordStatus.CREATED;
                     PropertiesChangeJornal.Remove(lastPropState);
                 }
@@ -151,19 +147,36 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if ((Guid)prop_id != Guid.Empty)
             {
                 List<PropertyStateRecord> propertyStateRecords =
-                        PropertiesChangeJornal.Where(p => ((IKeyable)p.Value).Id == (Guid)prop_id && p.ContextId == currentContextId).ToList(); // Находим все записи о объекте в журнале
-                PropertyStateRecord last_record = propertyStateRecords.OrderBy(r => r.Date).LastOrDefault(); //Выбираем самую последнюю
-                if (last_record != null)
+                            PropertiesChangeJornal.Where(p => ((IKeyable)p.Value).Id == (Guid)prop_id).ToList(); // Находим все записи о объекте в журнале
+
+                PropertyStateRecord propertyState = propertyStateRecords.OrderBy(r => r.Date).LastOrDefault(); //Выбираем самую последнюю
+
+                if (propertyState != null)
                 {
-                    if (((IJornalable)last_record?.Value).Status == JornalRecordStatus.REMOVED) //Если удалит - удаляем
-                        this.Remove((TEntity)last_record.Value);
-                    //   ((IJornalable)last_record.Value).Status = JornalRecordStatus.REMOVED;// 
+                    if (propertyState.ParentObject.Id == (this as IEntityObject).Id)//Изменения были в дочернем объекте текущего отбъекта
+                    {
+                        if (((IJornalable)propertyState?.Value).Status == JornalRecordStatus.REMOVED) //Если удалит - удаляем
+                            this.Remove((TEntity)propertyState.Value);
+                        //   ((IJornalable)last_record.Value).Status = JornalRecordStatus.REMOVED;// 
 
-                    else if (((IJornalable)last_record?.Value).Status == JornalRecordStatus.CREATED)
-                        ((IJornalable)last_record.Value).Status = JornalRecordStatus.CREATED;//Иначе назанчаем статус созданного 
+                        else if (((IJornalable)propertyState?.Value).Status == JornalRecordStatus.CREATED)
+                            ((IJornalable)propertyState.Value).Status = JornalRecordStatus.CREATED;//Иначе назанчаем статус созданного 
+                                                                                                   // foreach (PropertyStateRecord record in propertyStateRecords) //Очищаем журнал от записаей данного объекта
+                        PropertiesChangeJornal.Remove(propertyState); //Удаляем последнюю запись их журнала
 
-                    // foreach (PropertyStateRecord record in propertyStateRecords) //Очищаем журнал от записаей данного объекта
-                    PropertiesChangeJornal.Remove(last_record); //Удаляем последнюю запись их журнала
+                        //     for (int ii = 0; ii < PropertiesChangeJornal.Count; ii++)  //Удаляем все записи с изменениями сохраняемого объекта
+                        //       if (PropertiesChangeJornal[ii].Id == propertyState.Id)
+                        //          PropertiesChangeJornal.Remove(PropertiesChangeJornal[ii]);
+                    }
+                    else
+                    {
+                        propertyState.ParentObject.SaveAll(currentContextId);
+                        PropertiesChangeJornal.Remove(propertyState);
+                    }
+
+                    for (int ii = 0; ii < PropertiesChangeJornal.Count; ii++)  //Удаляем все записи с изменениями сохраняемого объекта
+                        if (PropertiesChangeJornal[ii].Id == propertyState.Id)
+                            PropertiesChangeJornal.Remove(PropertiesChangeJornal[ii]);
                 }
             }
         }
@@ -177,12 +190,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     .ToList();
             foreach (Guid prop_id in uniq_property_id)
                 Save(prop_id, currentContextId);
-
-            /* foreach (TEntity entity in this)
-             {
-                 entity.SaveAll();
-             }
-             */
         }
         public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId)
         {
@@ -259,8 +266,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         if (b_jornal_recording_flag && CurrentContextId != Guid.Empty)
                         {
                             PropertyStateRecord stateRecord = new PropertyStateRecord(obj, JornalRecordStatus.ADDED, obj.Name, CurrentContextId);
+                            stateRecord.ParentObject = this;
                             PropertiesChangeJornal.Add(stateRecord);
-                          //  ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, stateRecord));
                         }
 
                     }
@@ -271,10 +278,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     {
                         if (b_jornal_recording_flag)
                         {
-                            PropertyStateRecord stateRecord = new PropertyStateRecord(obj, JornalRecordStatus.REMOVED, Name);
-                            PropertiesChangeJornal.Add(stateRecord);
-                         //   ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, stateRecord));
-
                         }
 
                     }
@@ -284,7 +287,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
             };
 
-          
+
         }
 
         public void SetParentObject(IJornalable obj)
@@ -296,7 +299,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bool RemoveJournalable(TEntity item)
         {
             item.Status = JornalRecordStatus.REMOVED;
-            PropertiesChangeJornal.Add(new PropertyStateRecord(item, JornalRecordStatus.REMOVED, Name, CurrentContextId));
+            PropertyStateRecord stateRecord = new PropertyStateRecord(item, JornalRecordStatus.REMOVED, Name, CurrentContextId);
+            stateRecord.ParentObject = this;
+            PropertiesChangeJornal.Add(stateRecord);
             return true;
         }
         public virtual object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject

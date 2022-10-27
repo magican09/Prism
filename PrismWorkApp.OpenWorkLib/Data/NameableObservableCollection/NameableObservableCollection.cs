@@ -115,9 +115,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void UnDo(PropertyStateRecord propertyState)
         {
-           // PropertyStateRecord lastPropState = PropertiesChangeJornal?.OrderBy(el => el.Date).LastOrDefault();
-          //  List<PropertyStateRecord> Undo_Chain =
-             //   PropertiesChangeJornal.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date).ToList();
+            // PropertyStateRecord lastPropState = PropertiesChangeJornal?.OrderBy(el => el.Date).LastOrDefault();
+            //  List<PropertyStateRecord> Undo_Chain =
+            //   PropertiesChangeJornal.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date).ToList();
 
             if (propertyState != null)
             {
@@ -149,7 +149,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 UnDo(record); //Отменяем измеенения всех переменных, которые не коллекции
 
         }
-    
+
         public virtual void Save(object prop_id, Guid currentContextId)
         {
             if ((Guid)prop_id != Guid.Empty)
@@ -177,12 +177,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         PropertiesChangeJornal.Remove(propertyState);
                     }
 
-                 /*   List<PropertyStateRecord> recordsFoDelete =
-                       PropertiesChangeJornal.Where(p => ((IKeyable)p.Value).Id == (Guid)prop_id).ToList();
-                    foreach (PropertyStateRecord record in recordsFoDelete)
-                    {
-                        PropertiesChangeJornal.Remove(record);
-                    }*/
+                    /*   List<PropertyStateRecord> recordsFoDelete =
+                          PropertiesChangeJornal.Where(p => ((IKeyable)p.Value).Id == (Guid)prop_id).ToList();
+                       foreach (PropertyStateRecord record in recordsFoDelete)
+                       {
+                           PropertiesChangeJornal.Remove(record);
+                       }*/
 
                     List<PropertyStateRecord> recordsFoDelete =
                         PropertiesChangeJornal.Where(p => p.Id == (Guid)prop_id && p.ContextId == currentContextId).ToList();
@@ -196,15 +196,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void SaveAll(Guid currentContextId)
         {
-          /*  List<Guid> uniq_property_id =
-                    PropertiesChangeJornal.Select(k => (k.Value as IKeyable).Id)
-                    .GroupBy(g => g)
-                    .Where(c => c.Count() == 1)
-                    .Select(k => k.Key)
-                    .ToList();
-            */
             List<Guid> uniq_property_ids = //Получаем имена свойство, которые подвергались изменениям
-                    PropertiesChangeJornal.GroupBy(g => g.Id).Select(x => x.First()).Select(jr => jr.Id).ToList();
+              PropertiesChangeJornal.GroupBy(g => ((IEntityObject)g.Value).Id).Select(x => x.First()).Select(jr => ((IEntityObject)jr.Value).Id).ToList();
 
             foreach (Guid prop_id in uniq_property_ids)
                 Save(prop_id, currentContextId);
@@ -275,8 +268,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 if (e.Action == NotifyCollectionChangedAction.Add)
                 {
-                    //  int last_struyctere_number = StructureLevel.StructureLevels.Count>0 ? StructureLevel.StructureLevels[StructureLevel.StructureLevels.Count-1].Number :0 ;
-
                     foreach (IEntityObject obj in e.NewItems)
                     {
                         if (b_jornal_recording_flag && CurrentContextId != Guid.Empty)
@@ -292,23 +283,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             PropertyStateRecord stateRecord = new PropertyStateRecord(obj, JornalRecordStatus.ADDED, obj.Name, CurrentContextId);
                             stateRecord.ParentObject = this;
                             PropertiesChangeJornal.Add(stateRecord);
-                        
-                           
                         }
 
                     }
                 }
-                if (e.Action == NotifyCollectionChangedAction.Remove)
-                {
-                    foreach (object obj in e.OldItems)
-                    {
-                        if (b_jornal_recording_flag)
-                        {
-                        }
-
-                    }
-                }
-
 
 
             };
@@ -337,7 +315,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             stateRecord.ParentObject = this;
             PropertiesChangeJornal.Add(stateRecord);
 
-          
+
             return true;
         }
         public virtual object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject

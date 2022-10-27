@@ -4,6 +4,7 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -57,7 +58,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public DelegateCommand SaveCommand { get; private set; }
         public DelegateCommand<object> CloseCommand { get; private set; }
        
-        public ResponsibleEmployeeViewModel(IDialogService dialogService)
+        public ResponsibleEmployeeViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
         {
             SaveCommand = new DelegateCommand(OnSave, CanSave);
             CloseCommand = new DelegateCommand<object>(OnClose);

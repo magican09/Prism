@@ -167,7 +167,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     }
                 case (nameof(bldParticipant)):
                     {
-                        navParam.Add("participant", new ConveyanceObject((bldParticipant)clicked_node, ConveyanceObjectModes.EditMode.FOR_EDIT));
+                        navParam.Add("bld_participant", new ConveyanceObject((bldParticipant)clicked_node, ConveyanceObjectModes.EditMode.FOR_EDIT));
                         _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(ParticipantView).Name, navParam);
                         break;
                     }

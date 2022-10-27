@@ -1,7 +1,9 @@
-﻿using Prism.Services.Dialogs;
+﻿using Prism.Regions;
+using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,8 +12,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
     public class ResponsibleEmployeeDialogViewModel : ResponsibleEmployeeViewModel, IDialogAware
     {
-            public ResponsibleEmployeeDialogViewModel(IDialogService dialogService )
-            :base(dialogService)
+            public ResponsibleEmployeeDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
+            : base( dialogService,  regionManager,  buildingUnitsRepository)
         {
 
         }

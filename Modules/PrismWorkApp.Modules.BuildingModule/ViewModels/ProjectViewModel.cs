@@ -77,13 +77,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _responsibleEmployees; }
             set { SetProperty(ref _responsibleEmployees, value); }
         }
-        private bool _editMode;
-        public bool EditMode
-        {
-            get { return _editMode; }
-            set { SetProperty(ref _editMode, value); }
-        }
-
+ 
         private bool _keepAlive = true;
 
         public bool KeepAlive

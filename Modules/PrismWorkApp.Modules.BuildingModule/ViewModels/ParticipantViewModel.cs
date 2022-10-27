@@ -5,6 +5,7 @@ using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.ProjectModel.Data.Models;
+using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,9 +17,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
     public class ParticipantViewModel : BaseViewModel<bldParticipant>, INotifyPropertyChanged, INavigationAware
     {
-       
-       
-       
         private string _title = "Учасник строительства";
         public string Title
         {
@@ -75,7 +73,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public DelegateCommand EditEmployerCommand { get; private set; }
         public DelegateCommand RemoveEmployerCommand { get; private set; }
 
-        public ParticipantViewModel(IDialogService dialogService  )
+        public ParticipantViewModel(IDialogService dialogService,IRegionManager regionManager,IBuildingUnitsRepository buildingUnitsRepository )
         {
             DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
             SaveCommand = new DelegateCommand(OnSave, CanSave);
@@ -86,6 +84,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
            _dialogService = dialogService;
+            _regionManager = regionManager;
           
         }
 

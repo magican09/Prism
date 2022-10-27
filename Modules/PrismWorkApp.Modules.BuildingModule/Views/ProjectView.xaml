@@ -160,7 +160,7 @@
                                 <DataGridTextColumn  Header="Код"  
                                                      Binding = "{Binding Path=Code}" />
                                 <DataGridTextColumn  Header="Наименование объекта"  
-                                                     Binding = "{Binding Path=Name}" />
+                                                     Binding = "{Binding Path=ShortName}" />
                             </DataGrid.Columns>
                            
                         </DataGrid>

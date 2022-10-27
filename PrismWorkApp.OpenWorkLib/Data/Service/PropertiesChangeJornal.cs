@@ -12,6 +12,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
     public class PropertiesChangeJornal : ObservableCollection<PropertyStateRecord>
     {
         public event PropertiesChangeJornalChangedEventHandler JornalChangedNotify;
+        public ObservableCollection<Guid> ContextIdHistory { get; set; } = new ObservableCollection<Guid>();
+
         public PropertiesChangeJornal()
         {
 
@@ -23,16 +25,31 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
              if(e.Action== NotifyCollectionChangedAction.Add)
             {
                 foreach (PropertyStateRecord stateRecord in e.NewItems)
+                {
+                    stateRecord.ParentJornal = this;
                     if (JornalChangedNotify != null)
+                    {
+                        /*  if (this.Where(pr=>pr.ContextId== stateRecord.ContextId).Count()==1)//Если изменеия в текущем контексе первые..
+                         {
+                             PropertyStateRecord st_record = new PropertyStateRecord(stateRecord.Value,stateRecord.Status, stateRecord.Name, ParentObject.CurrentContextId);
+
+                             ParentObject.PropertiesChangeJornal.Add(st_record);
+                         }    */
+                     //   if (!ContextIdHistory.Contains(stateRecord.ContextId))
+                       //     ContextIdHistory.Add(stateRecord.ContextId);
+
+
                         JornalChangedNotify(this, stateRecord);
+
+                    }
                     else
                         ;
-                
+                }
             }
            
            
         }
-       public object ParentObject { get; set; }
+        public IJornalable ParentObject { get; set; }
         private  bool IsContainsRecord(Guid currentContextId)
         {
             return this.Count > 0;
@@ -54,5 +71,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             PropertyStateRecord = propertyStateRecord;
         }
     }
+
 
 }

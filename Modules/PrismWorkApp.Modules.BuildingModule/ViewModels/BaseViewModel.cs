@@ -34,7 +34,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public virtual void OnClose<T>(object view,T selected_obj) where T : IJornalable, INameable, IRegisterable, IBindableBase
         {
-            if (!selected_obj.IsPropertiesChangeJornalIsEmpty(Id))
+            if (selected_obj!=null&&!selected_obj.IsPropertiesChangeJornalIsEmpty(Id))//selected_obj!=null&&добавлено 27,10,22
             {
                 CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", "проект", "Сохранить", "Не сохранять", "Отмена", (result) =>
                 {
@@ -64,7 +64,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             else
             {
                 if (_regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
+                {
                     _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
+                    _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
+                }
             }
 
         }

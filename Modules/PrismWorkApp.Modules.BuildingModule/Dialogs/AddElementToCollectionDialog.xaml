@@ -65,7 +65,7 @@
                    AutoGenerateColumns="False"  IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn  Header="Наименование"  
-                                                     Binding = "{Binding Path=Name}" />
+                                                     Binding = "{Binding Path=ShortName}" />
             </DataGrid.Columns>
         </DataGrid>
         <DataGrid Grid.Row="2" Grid.Column="2" Margin="2" ItemsSource="{Binding CurrentCollection}"
@@ -73,7 +73,7 @@
                    AutoGenerateColumns="False"  IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn  Header="Наименование"  
-                                                     Binding = "{Binding Path=Name}" />
+                                                     Binding = "{Binding Path=ShortName}" />
             </DataGrid.Columns>
 
         </DataGrid>

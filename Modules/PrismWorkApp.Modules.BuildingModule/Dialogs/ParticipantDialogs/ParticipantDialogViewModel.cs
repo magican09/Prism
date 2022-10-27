@@ -67,7 +67,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         }
         override public void OnClose(object obj)
         {
-            if (EditMode) SelectedParticipant.UnDo(Id);
+            if (EditMode) SelectedParticipant.UnDoAll(Id);
             RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
         }
         public void OnDialogOpened(IDialogParameters parameters)

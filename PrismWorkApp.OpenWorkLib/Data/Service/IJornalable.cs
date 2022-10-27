@@ -11,7 +11,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         //  public PropertiesChangeJornal<PropertyStateRecord> PropertiesChangeJornal { get; set; }
         public void Save(object prop_id, Guid currentContextId);
         public void SaveAll(Guid currentContextId);
-        public void UnDo(Guid currentContextId);
+        //public void UnDo(Guid currentContextId);
+        public void UnDo(PropertyStateRecord propertyState);
+      
         public void UnDoAll(Guid currentContextId);
    //     public void JornalingOff();
      //   public void JornalingOn();

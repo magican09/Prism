@@ -51,7 +51,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                     }
                     else
                     {
-                        if (EditMode) SelectedResposibleEmployee.UnDo(Id);
+                        if (EditMode) SelectedResposibleEmployee.UnDoAll(Id);
                         RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                     }
 
@@ -64,7 +64,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         }
         override public void OnClose(object obj)
         {
-            if (EditMode) SelectedResposibleEmployee.UnDo(Id);
+            if (EditMode) SelectedResposibleEmployee.UnDoAll(Id);
             RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
         }
 

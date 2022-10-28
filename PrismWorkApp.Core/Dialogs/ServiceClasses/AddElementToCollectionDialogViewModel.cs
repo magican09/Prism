@@ -12,7 +12,7 @@ namespace PrismWorkApp.Core.Dialogs
 {
     public abstract class AddElementToCollectionDialogViewModel<TConteiner, T> : LocalBindableBase, IDialogAware
         where TConteiner :IEnumerable<T>, INameable,INameableOservableCollection<T>, new()
-        where T : class, IRegisterable, new()
+        where T : class, IRegisterable,IEntityObject, new()
     {
         private string _title = "Диалоговое окно сообщения";
         public string Title
@@ -206,8 +206,9 @@ namespace PrismWorkApp.Core.Dialogs
             dialog_par.Add("current_context_id", CurrentContextId);
             T new_element = new T();
              CoreFunctions.CopyObjectNewInstances<IEntityObject>(SelectedElement, new_element, new_element.RestrictionPredicate);
-             CoreFunctions.SetAllIdToZero(new_element);
-               ConveyanceObject conveyanceObject =
+             CoreFunctions.SetAllIdToZero(new_element,true);
+            new_element.ClearChangesJornal();
+            ConveyanceObject conveyanceObject =
                 new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
             dialog_par.Add("selected_element_conveyance_object", conveyanceObject);
             _dialogService.ShowDialog(NewObjectDialogName, dialog_par, (result) =>

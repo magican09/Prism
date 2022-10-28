@@ -176,31 +176,38 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         propertyState.ParentObject.SaveAll(currentContextId);
                         PropertiesChangeJornal.Remove(propertyState);
                     }
-
-                    /*   List<PropertyStateRecord> recordsFoDelete =
-                          PropertiesChangeJornal.Where(p => ((IKeyable)p.Value).Id == (Guid)prop_id).ToList();
-                       foreach (PropertyStateRecord record in recordsFoDelete)
-                       {
-                           PropertiesChangeJornal.Remove(record);
-                       }*/
-
-                    List<PropertyStateRecord> recordsFoDelete =
-                        PropertiesChangeJornal.Where(p => p.Id == (Guid)prop_id && p.ContextId == currentContextId).ToList();
-                    foreach (PropertyStateRecord record in recordsFoDelete)
+                    /*
+                                        List<PropertyStateRecord> recordsForDelete = //Очищаем журнал от записей
+                                            PropertiesChangeJornal.Where(p => p.Id == (Guid)prop_id && p.ContextId == currentContextId).ToList();
+                                       foreach (PropertyStateRecord record in recordsForDelete)
+                                        {
+                                            PropertiesChangeJornal.Remove(record);
+                                        }*/
+                    foreach (PropertyStateRecord record in propertyStateRecords)//Очищаем журнал от записей
                     {
                         PropertiesChangeJornal.Remove(record);
                     }
-
                 }
             }
         }
         public void SaveAll(Guid currentContextId)
         {
+            /*  List<Guid> uniq_property_ids = //Получаем имена свойство, которые подвергались изменениям
+                PropertiesChangeJornal.GroupBy(g => ((IEntityObject)g.Value).Id).Select(x => x.First()).Select(jr => ((IEntityObject)jr.Value).Id).ToList();
+              */
             List<Guid> uniq_property_ids = //Получаем имена свойство, которые подвергались изменениям
-              PropertiesChangeJornal.GroupBy(g => ((IEntityObject)g.Value).Id).Select(x => x.First()).Select(jr => ((IEntityObject)jr.Value).Id).ToList();
+               PropertiesChangeJornal.Where(r=>r.Value!=null).GroupBy(g => g.ContextId).Select(x => x.First()).Select(jr =>((IEntityObject)jr.Value).Id).ToList();
 
             foreach (Guid prop_id in uniq_property_ids)
                 Save(prop_id, currentContextId);
+        }
+        public void ClearChangesJornal()
+        {
+            foreach (IEntityObject element in this)
+            {
+             if(element.PropertiesChangeJornal.Count!=0)
+                    element.ClearChangesJornal();
+            }
         }
         public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId)
         {

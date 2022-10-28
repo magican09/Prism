@@ -23,6 +23,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public event ObjectStateChangeEventHandler ObjectChangedNotify;
         public ObservableCollection<IJornalable> ParentObjects { get; set; }
         public void AdjustAllParentsObjects();
+        public void ClearChangesJornal();
         public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId);
 
         //public void  SetParentObject(IJornalable obj);

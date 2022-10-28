@@ -83,8 +83,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             TreeViewItemSelectedCommand = new DelegateCommand<object>(OnTreeViewItemSelected);
             TreeViewItemExpandedCommand = new DelegateCommand<object>(onTreeViewItemExpanded);
             _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
-                ThreadOption.PublisherThread, false,
-                message => message.Recipient == "ProjectExplorer");
+             ThreadOption.PublisherThread, false,
+             message => message.Recipient == "ProjectExplorer");
         
         }
 

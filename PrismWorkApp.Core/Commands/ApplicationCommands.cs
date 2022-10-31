@@ -11,7 +11,11 @@ namespace PrismWorkApp.Core.Commands
     }
     public class ApplicationCommands : IApplicationCommands
     {
-        public CompositeCommand SaveAllCommand { get; } = new CompositeCommand();
-        public CompositeCommand LoadProjectFromExcell { get; } = new CompositeCommand();
+        private CompositeCommand _saveAllCommand = new CompositeCommand(true);
+        public CompositeCommand SaveAllCommand
+        {
+            get { return _saveAllCommand; }
+        }
+        // public CompositeCommand LoadProjectFromExcell { get; } = new CompositeCommand();
     }
 }

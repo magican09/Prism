@@ -39,7 +39,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                        //     ContextIdHistory.Add(stateRecord.ContextId);
 
 
-                        JornalChangedNotify(this, stateRecord);
+                    //31.10.22    JornalChangedNotify(this, stateRecord);
 
                     }
                     else

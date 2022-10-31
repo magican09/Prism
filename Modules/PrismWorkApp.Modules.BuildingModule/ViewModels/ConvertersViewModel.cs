@@ -6,12 +6,14 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Console;
 using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
@@ -73,33 +75,49 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _allProjectsContext; }
             set { _allProjectsContext = value; }
         }
+         public bldProjectsGroup allbldProjects { get; set; } = new bldProjectsGroup();
 
-        public bldProjectsGroup allbldProjects { get; set; } = new bldProjectsGroup();
+        private IApplicationCommands _applicationCommands;
+        public IApplicationCommands ApplicationCommands
+        {
+            get { return _applicationCommands; }
+            set { SetProperty(ref _applicationCommands, value); }
+        }
+
+
         public ConvertersViewModel(IRegionManager regionManager, IModulesContext modulesContext, IEventAggregator eventAggregator,
-                                    IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService)
+                                    IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
         {
             _regionManager = regionManager;
             ModulesContext = modulesContext;
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
+            _applicationCommands = applicationCommands;
             ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
             //IsModuleEnable =  ModuleInfo.IsEnable;
             LoadProjectFromExcelCommand = new DelegateCommand(LoadProjectFromExcel, CanLoadAllProjects);
             LoadProjectFromDBCommand = new DelegateCommand(LoadProjectFomDB, CanLoadProjectFromDb);
             SaveDataToDBCommand = new DelegateCommand(SaveDataToDB, CanSaveDataToDB);
+            applicationCommands.SaveAllCommand.RegisterCommand(SaveDataToDBCommand);
+          
+
             /*  CreateProjectStructureCommand = new DelegateCommand(CreateProjectStructure).ObservesProperty(() => SelectedProject);
               CreateAOSRCommand = new DelegateCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
             */
             //     _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
             //          ThreadOption.PublisherThread, false,
             //   message => message.Recipient == "RibbonGroup");
-
+            AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
+        }
+        public void OnChildObjectChanges(object sender, ObjectStateChangedEventArgs e)
+        {
+            SaveDataToDBCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanSaveDataToDB()
         {
-            return true;
+            return AllProjectsContext.PropertiesChangeJornal.Count > 0;
         }
         private void SaveDataToDB()
         {
@@ -115,16 +133,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             if (find_project != null)
                             {
 
-                             //   CoreFunctions.CopyObjectReflectionNewInstances(project, find_project);
+                                //   CoreFunctions.CopyObjectReflectionNewInstances(project, find_project);
 
                             }
                         }
                         // CoreFunctions.CopyObjectReflectionNewInstances(AllProjects, AllProjectsContext);
-
+                        AllProjectsContext.ClearChangesJornal();
+                        SaveDataToDBCommand.RaiseCanExecuteChanged();
                         _buildingUnitsRepository.Complete();
                     }
                 }, _dialogService);
-
 
         }
         private bool CanLoadProjectFromDb()
@@ -215,11 +233,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void LoadProjectFomDB()
         {
-           // AllProjectsContext.JornalingOff();
+            // AllProjectsContext.JornalingOff();
             AllProjectsContext = new bldProjectsGroup(_buildingUnitsRepository.Projects.GetProjectsAsync());
             AllProjectsContext.AdjustAllParentsObjects();
-          //  AllProjectsContext.ClearStructureLevel();
-        //AllProjectsContext.UpdateStructure();
+            AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
+            //  AllProjectsContext.ClearStructureLevel();
+            //AllProjectsContext.UpdateStructure();
             EventMessage message = new EventMessage();
             bldProject project = new bldProject();
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldProjectsGroup, bldProject>(AllProjectsContext,

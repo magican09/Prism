@@ -43,7 +43,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         if (result.Result == ButtonResult.Yes)
                         {
                             selected_obj.SaveAll(Id);
-                            if (_regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
+                            if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
                                 _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
@@ -52,7 +52,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         else if (result.Result == ButtonResult.No)
                         {
                             selected_obj.UnDoAll(Id);
-                            if (_regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
+                            if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
                                 _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
@@ -68,7 +68,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             }
             else
             {
-                if (_regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
+                if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                 {
                     _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
                     _regionManager.Regions[RegionNames.ContentRegion].Remove(view);

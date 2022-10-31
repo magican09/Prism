@@ -46,18 +46,19 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 {
                     if (val == null)
                         ;
-                    List<Guid> AnatherWindowsIds = PropertiesChangeJornal.ContextIdHistory.Where(el => el != CurrentContextId).ToList(); //Ищем в журнале Id других окон в цепоче изменений
-                    foreach (Guid prev_wnd_is in AnatherWindowsIds)
+                    List<Guid> AnatherWindowsIds = PropertiesChangeJornal.ContextIdHistory.Where(el => el != CurrentContextId).ToList(); //Ищем в журнале Id других окон в цепочке изменений
+                    foreach (Guid prev_wnd_is in AnatherWindowsIds) //Если существуют другие контекты из которых производителись изменения свойство данного бъекта, то сохраняем текущее значение свойства в журнале
                     {
                         PropertyStateRecord propertyStateRecord_1 = new PropertyStateRecord(member, JornalRecordStatus.MODIFIED, propertyName, prev_wnd_is);
                         propertyStateRecord_1.ParentObject = (IEntityObject)this;
                         PropertiesChangeJornal.Add(propertyStateRecord_1);
+                        if (ObjectChangedNotify != null)
+                            ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord_1));
                     }
 
                     PropertyStateRecord propertyStateRecord = new PropertyStateRecord(member, JornalRecordStatus.MODIFIED, propertyName, CurrentContextId);
                     propertyStateRecord.ParentObject = (IEntityObject)this;
                     PropertiesChangeJornal.Add(propertyStateRecord);
-
 
                     if (ObjectChangedNotify != null)
                         ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord));
@@ -177,38 +178,32 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId)
         {
-            //   var dsf = PropertiesChangeJornal.Where(r => r.Id == currentContextId).FirstOrDefault();
-            // if (PropertiesChangeJornal.Where(r => r.ContextId == currentContextId).FirstOrDefault() == null)
             if (PropertiesChangeJornal.Count == 0)
                 return true;
             else
-            {
-                // if (jornal_empty) return true;
-                //   else
                 return false;
-            }
         }
 
         public event ObjectStateChangeEventHandler ObjectChangedNotify;
         public void OnChildObjectChanges(object sender, ObjectStateChangedEventArgs e)
         {
-            PropertiesChangeJornal.Add(e.PropertyStateRecord);
+            if (!PropertiesChangeJornal.Contains(e.PropertyStateRecord))
+            {
+                PropertiesChangeJornal.Add(e.PropertyStateRecord);
+                if (ObjectChangedNotify != null)
+                    ObjectChangedNotify(this, e);
+            }
         }
 
-        private void OnPropertyChanges(object sender, PropertyStateRecord _propertyStateRecord)
+      /* 31.10.2022  private void OnPropertyChanges(object sender, PropertyStateRecord _propertyStateRecord)
         {
 
             Status = JornalRecordStatus.MODIFIED;
             if (ObjectChangedNotify != null)
                 ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, _propertyStateRecord));
-            //  return true;
         }
+        */
 
-
-
-        public void SetParentObject(IEntityObject obj)
-        {
-        }
         public void JornalingOff()
         {
             b_jornal_recording_flag = false;
@@ -246,7 +241,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 var prop_val = propertyInfo.GetValue(this);
 
-                if (prop_val is IJornalable && (prop_val as IJornalable).PropertiesChangeJornal.Count!=0)
+                if (prop_val is IJornalable && (prop_val as IJornalable).PropertiesChangeJornal.Count != 0)
                 {
                     MethodInfo unDoAllMethod = propertyInfo.PropertyType.GetMethod("ClearChangesJornal");
                     object res = unDoAllMethod.Invoke(prop_val, new object[] { });
@@ -287,8 +282,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
               PropertiesChangeJornal.Where(pr => pr.ContextId == currentContextId).OrderByDescending(pr => pr.Date).ToList();
             foreach (PropertyStateRecord record in records)
                 UnDo(record); //Отменяем измеенения всех переменных, которые не коллекции
-
-
         }
         public virtual void Save(object prop_id, Guid currentContextId)
         { //Сохранение текущего состояние свойства заключается в том, что мы просто удаляем все предыдущие изменнеия из журнала изменений
@@ -338,14 +331,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public virtual void SaveAll(Guid currentContextId)
         {
-            /* List<string> uniq_property_names = //Получаем имена свойство, которые подвергались изменениям
-                     PropertiesChangeJornal.Select(k => k.Name)
-                     .GroupBy(g => g)
-                     .Where(c =>c.Count() == 1)
-                     .Select(k => k.Key)
-                     .ToList();*/
             List<string> uniq_property_names = //Получаем имена свойство, которые подвергались изменениям
-                     PropertiesChangeJornal.GroupBy(g => g.Name).Select(x => x.First()).Select(jr => jr.Name).ToList();
+                   PropertiesChangeJornal.GroupBy(g => g.Name).Select(x => x.First()).Select(jr => jr.Name).ToList();
             foreach (string prop_name in uniq_property_names)//Сохраняем последние изменения для каждого свойства
                 Save(prop_name, currentContextId);
 
@@ -396,7 +383,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             PropertiesChangeJornal = new PropertiesChangeJornal();
             PropertiesChangeJornal.ParentObject = this;
-            PropertiesChangeJornal.JornalChangedNotify += OnPropertyChanges;
+            //     31.10.2022   PropertiesChangeJornal.JornalChangedNotify += OnPropertyChanges;
         }
         private string _code;
         public string Code

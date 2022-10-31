@@ -3,6 +3,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
@@ -104,7 +105,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         public ProjectViewModel(IDialogService dialogService, IBuildingUnitsRepository buildingUnitsRepository,
-            IRegionManager regionManager)
+            IRegionManager regionManager, IApplicationCommands applicationCommands)
         {
             SaveCommand = new DelegateCommand(OnSave, CanSave);
             CloseCommand = new DelegateCommand<object>(OnClose);
@@ -139,6 +140,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
              _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
+            applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
         }
 
 
@@ -347,7 +349,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private bool CanSave()
         {
             if (SelectedProject != null)
-                return !SelectedProject.HasErrors;
+                return !SelectedProject.HasErrors && SelectedProject.PropertiesChangeJornal.Count>0;
             else
                 return false;
         }

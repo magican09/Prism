@@ -159,7 +159,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private bool CanSave()
         {
-            return true;
+            if (SelectedParticipant != null)
+                return !SelectedParticipant.HasErrors && SelectedParticipant.PropertiesChangeJornal.Count > 0;
+            else
+                return false;
         }
        public override void OnSave()
         {

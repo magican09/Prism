@@ -85,7 +85,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private bool CanSave()
         {
-            return true;
+            if (SelectedResposibleEmployee != null)
+                return !SelectedResposibleEmployee.HasErrors && SelectedResposibleEmployee.PropertiesChangeJornal.Count > 0;
+            else
+                return false;
         }
 
        

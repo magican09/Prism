@@ -13,7 +13,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Name= "Проекты";
         }
-        public bldProjectsGroup(string name)
+        public bldProjectsGroup(string name):this()
         {
             Name = name;
         }

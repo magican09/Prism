@@ -244,8 +244,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private bool CanSave()
         {
-            if (SelectedConstruction != null)
-                return !SelectedConstruction.HasErrors;
+            if(SelectedConstruction != null)
+                return !SelectedConstruction.HasErrors && SelectedConstruction.PropertiesChangeJornal.Count > 0;
             else
                 return false;
         }

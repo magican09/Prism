@@ -285,7 +285,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private bool CanSave()
         {
             if (SelectedWork != null)
-                return !SelectedWork.HasErrors;
+                return !SelectedWork.HasErrors && SelectedWork.PropertiesChangeJornal.Count > 0;
             else
                 return false;
         }

@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using Prism;
+using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
@@ -11,7 +12,7 @@ using BindableBase = Prism.Mvvm.BindableBase;
 
 namespace PrismWorkApp.Core
 {
-    public class LocalBindableBase : BindableBase, ILocalBindableBase
+    public class LocalBindableBase : BindableBase, ILocalBindableBase, IActiveAware
     {
         //public IDialogService _dialogService { get; set; }
         //public IBuildingUnitsRepository _buildingUnitsRepository { get; set; }
@@ -39,12 +40,14 @@ namespace PrismWorkApp.Core
             set { SetProperty(ref _selectedObject, value); }
         }
         private bool _editMode;
+
+       
         public bool EditMode
         {
             get { return _editMode; }
             set { SetProperty(ref _editMode, value); }
         }
-        public virtual  void OnSave()
+        public virtual void OnSave()
         {
 
         }
@@ -52,6 +55,33 @@ namespace PrismWorkApp.Core
         {
 
         }
+
+
+        public event EventHandler IsActiveChanged;
+
+        private bool _isActive;
+        public bool IsActive
+        {
+            get { return _isActive; }
+            set
+            {
+                _isActive = value;
+                OnIsActiveChanged();
+            }
+        }
+
+          private void Update()
+        {
+            //implement logic
+        }
+
+        private void OnIsActiveChanged()
+        {
+            //UpdateCommand.IsActive = IsActive; //set the command as active
+            IsActiveChanged?.Invoke(this, new EventArgs()); //invoke the event for all listeners
+        }
+
+     
         //public virtual void RaiseCanExecuteChanged(object sender, EventArgs e)
         //{
 

@@ -17,6 +17,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, IEntityObject, IJornalable, INameableOservableCollection<TEntity> where TEntity : class, IEntityObject, IJornalable
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public event ObjectStateChangeEventHandler ObjectChangedNotify;//Событие вызывается при изменении в данном объекте 
+        public event ObjectStateChangeEventHandler ObjectChangeSaved; //Событие вызывается при сохранении изменений в данном объекте
+        public event ObjectStateChangeEventHandler ObjectChangeUndo; //Событие вызывается при отмете изменений в данном объекте
+      
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе с данных объектом по умолчанию
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -82,8 +86,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #endregion
 
         #region Changes Jornaling
-        public event ObjectStateChangeEventHandler ObjectChangedNotify;
-
+      
         private bool b_jornal_recording_flag = true;
         private Guid _currentContextId;
         public Guid CurrentContextId
@@ -107,6 +110,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public PropertiesChangeJornal PropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
         public ObservableCollection<IJornalable> ParentObjects { get; set; }
         public IJornalable ParentObject { get; set; }
+      
         public void OnChildObjectChanges(object sender, ObjectStateChangedEventArgs e)//Вызывается дочерними объектами если в них были произведены изменения
         {
             if (!PropertiesChangeJornal.Contains(e.PropertyStateRecord))
@@ -116,12 +120,23 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     ObjectChangedNotify(this, e);
             }
         }
-        /*  31.10.2022  private void OnPropertyChanges(object sender, PropertyStateRecord _propertyStateRecord)
-           {
-               Status = JornalRecordStatus.MODIFIED;
-               if (ObjectChangedNotify != null)
-                   ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, _propertyStateRecord));
-           }*/
+        public void OnChildObjectChangeSaved(object sender, ObjectStateChangedEventArgs e)
+        {
+            if (PropertiesChangeJornal.Contains(e.PropertyStateRecord))
+            {
+                PropertiesChangeJornal.Remove(e.PropertyStateRecord);
+                ObjectChangeSaved?.Invoke(this, e);
+            }
+        }
+        public void OnChildObjectChangeUndo(object sender, ObjectStateChangedEventArgs e)
+        {
+            if (PropertiesChangeJornal.Contains(e.PropertyStateRecord))
+            {
+                PropertiesChangeJornal.Remove(e.PropertyStateRecord);
+                ObjectChangeUndo?.Invoke(this, e);
+            }
+        }
+
         public void UnDo(PropertyStateRecord propertyState)
         {
             // PropertyStateRecord lastPropState = PropertiesChangeJornal?.OrderBy(el => el.Date).LastOrDefault();
@@ -137,6 +152,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     {
                         ((TEntity)propertyState.Value).Status = JornalRecordStatus.REMOVED;
                         PropertiesChangeJornal.Remove(propertyState);
+                        ObjectChangeUndo?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyState));
                     }
                 }
                 else if (propertyState.Status == JornalRecordStatus.REMOVED)
@@ -144,6 +160,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 {
                     ((TEntity)propertyState.Value).Status = JornalRecordStatus.CREATED;
                     PropertiesChangeJornal.Remove(propertyState);
+                    ObjectChangeUndo?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyState));
                 }
                 b_jornal_recording_flag = true;
             }
@@ -158,7 +175,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 UnDo(record); //Отменяем измеенения всех переменных, которые не коллекции
 
         }
-
         public virtual void Save(object prop_id, Guid currentContextId)
         {
             if ((Guid)prop_id != Guid.Empty)
@@ -179,11 +195,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             ((IJornalable)propertyState.Value).Status = JornalRecordStatus.CREATED;//Иначе назанчаем статус созданного 
 
                         PropertiesChangeJornal.Remove(propertyState); //Удаляем последнюю запись их журнала
+                        ObjectChangeSaved?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyState));
                     }
                     else
                     {
                         propertyState.ParentObject.SaveAll(currentContextId);
                         PropertiesChangeJornal.Remove(propertyState);
+                        ObjectChangeSaved?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyState));
                     }
                     /*
                                         List<PropertyStateRecord> recordsForDelete = //Очищаем журнал от записей
@@ -195,16 +213,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     foreach (PropertyStateRecord record in propertyStateRecords)//Очищаем журнал от записей
                     {
                         PropertiesChangeJornal.Remove(record);
+                        ObjectChangeSaved?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyState));
                     }
                 }
             }
         }
         public void SaveAll(Guid currentContextId)
         {
-            /*  List<Guid> uniq_property_ids = //Получаем имена свойство, которые подвергались изменениям
-                PropertiesChangeJornal.GroupBy(g => ((IEntityObject)g.Value).Id).Select(x => x.First()).Select(jr => ((IEntityObject)jr.Value).Id).ToList();
-              */
-            List<Guid> uniq_property_ids = //Получаем имена свойство, которые подвергались изменениям
+                List<Guid> uniq_property_ids = //Получаем имена свойство, которые подвергались изменениям
                PropertiesChangeJornal.Where(r=>r.Value!=null).GroupBy(g => g.ContextId).Select(x => x.First()).Select(jr =>((IEntityObject)jr.Value).Id).ToList();
 
             foreach (Guid prop_id in uniq_property_ids)
@@ -214,6 +230,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             PropertiesChangeJornal.Clear();
             PropertiesChangeJornal.ContextIdHistory.Clear();
+            ParentObjects?.Clear();
             foreach (IEntityObject element in this)
             {
              if(element.PropertiesChangeJornal.Count!=0)
@@ -283,27 +300,41 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 if (e.Action == NotifyCollectionChangedAction.Add)
                 {
-                    foreach (IEntityObject obj in e.NewItems)
+                    foreach (IJornalable obj in e.NewItems)
                     {
+                        obj.ObjectChangedNotify += OnChildObjectChanges;
+                        obj.ObjectChangeSaved += OnChildObjectChangeSaved;
+                        obj.ObjectChangeUndo += OnChildObjectChangeUndo;
+                        if (obj.ParentObjects == null) obj.ParentObjects = new ObservableCollection<IJornalable>();
+                        if (!obj.ParentObjects.Contains(this))
+                            obj.ParentObjects.Add(this);
                         if (b_jornal_recording_flag && CurrentContextId != Guid.Empty)
                         {
                             List<Guid> AnatherWindowsIds = PropertiesChangeJornal.ContextIdHistory.Where(el => el != CurrentContextId).ToList();
                             foreach (Guid prev_wnd_is in AnatherWindowsIds)
                             {
-                                PropertyStateRecord propertyStateRecord_1 = new PropertyStateRecord(obj, JornalRecordStatus.ADDED, obj.Name, prev_wnd_is);
+                                PropertyStateRecord propertyStateRecord_1 = new PropertyStateRecord(obj, JornalRecordStatus.ADDED,((IEntityObject)obj).Name, prev_wnd_is);
                                 propertyStateRecord_1.ParentObject = (IEntityObject)this;
                                 PropertiesChangeJornal.Add(propertyStateRecord_1);
-                                if (ObjectChangedNotify != null)
-                                    ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord_1));
+                                ObjectChangedNotify?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord_1));
                             }
 
-                            PropertyStateRecord stateRecord = new PropertyStateRecord(obj, JornalRecordStatus.ADDED, obj.Name, CurrentContextId);
+                            PropertyStateRecord stateRecord = new PropertyStateRecord(obj, JornalRecordStatus.ADDED, ((IEntityObject)obj).Name, CurrentContextId);
                             stateRecord.ParentObject = this;
                             PropertiesChangeJornal.Add(stateRecord);
-                            if (ObjectChangedNotify != null)
-                                ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, stateRecord));
+                            ObjectChangedNotify?.Invoke(this, new ObjectStateChangedEventArgs("", this, stateRecord));
                         }
 
+                    }
+                }
+                if(e.Action== NotifyCollectionChangedAction.Remove)
+                {
+                    foreach (IJornalable obj in e.OldItems)
+                    {
+                        obj.ObjectChangedNotify -= OnChildObjectChanges;
+                        obj.ObjectChangeSaved -= OnChildObjectChangeSaved;
+                        obj.ObjectChangeUndo -= OnChildObjectChangeUndo;
+                        obj.ParentObjects.Remove(this);
                     }
                 }
 
@@ -322,7 +353,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bool RemoveJournalable(TEntity item)
         {
             item.Status = JornalRecordStatus.REMOVED;
-
             List<Guid> AnatherWindowsIds = PropertiesChangeJornal.ContextIdHistory.Where(el => el != CurrentContextId).ToList();
             foreach (Guid prev_wnd_is in AnatherWindowsIds)
             {
@@ -330,15 +360,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 propertyStateRecord_1.ParentObject = (IEntityObject)this;
                 PropertiesChangeJornal.Add(propertyStateRecord_1);
                 PropertiesChangeJornal.Add(propertyStateRecord_1);
-                if (ObjectChangedNotify != null)
-                    ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord_1));
+                ObjectChangedNotify?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord_1));
             }
             PropertyStateRecord stateRecord = new PropertyStateRecord(item, JornalRecordStatus.REMOVED, Name, CurrentContextId);
             stateRecord.ParentObject = this;
             PropertiesChangeJornal.Add(stateRecord);
-            if (ObjectChangedNotify != null)
-                ObjectChangedNotify(this, new ObjectStateChangedEventArgs("", this, stateRecord));
-
+            ObjectChangedNotify?.Invoke(this, new ObjectStateChangedEventArgs("", this, stateRecord));
             return true;
         }
         public virtual object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject

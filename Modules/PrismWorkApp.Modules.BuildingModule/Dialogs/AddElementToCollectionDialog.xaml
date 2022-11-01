@@ -71,6 +71,17 @@
         <DataGrid Grid.Row="2" Grid.Column="2" Margin="2" ItemsSource="{Binding CurrentCollection}"
                   SelectedItem="{Binding SelectedElement,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                    AutoGenerateColumns="False"  IsReadOnly="True">
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsVisible,Converter={StaticResource bool2VisibilityConverter}}"  Value="Collapsed">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+           
+            
             <DataGrid.Columns>
                 <DataGridTextColumn  Header="Наименование"  
                                                      Binding = "{Binding Path=ShortName}" />

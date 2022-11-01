@@ -206,7 +206,8 @@ namespace PrismWorkApp.Core.Dialogs
             dialog_par.Add("current_context_id", CurrentContextId);
             T new_element = new T();
              CoreFunctions.CopyObjectNewInstances<IEntityObject>(SelectedElement, new_element, new_element.RestrictionPredicate);
-             CoreFunctions.SetAllIdToZero(new_element,true);
+            CoreFunctions.SetAllIdToZero(new_element, false);
+            CoreFunctions.SetAllIdToZero(new_element,true);
             new_element.ClearChangesJornal();
             ConveyanceObject conveyanceObject =
                 new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);

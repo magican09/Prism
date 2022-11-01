@@ -233,7 +233,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SaveCommand.RaiseCanExecuteChanged();
         }
 
-        private bool CanSave()
+        public virtual bool CanSave()
         {
             if (SelectedBuildingObject != null)
                 return !SelectedBuildingObject.HasErrors && SelectedBuildingObject.PropertiesChangeJornal.Count > 0;

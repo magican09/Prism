@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
@@ -20,7 +21,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public JornalRecordStatus Status { get; set; }
         public Guid CurrentContextId { get; set; }
         public PropertiesChangeJornal PropertiesChangeJornal { get; set; }
-        public event ObjectStateChangeEventHandler ObjectChangedNotify;
+        public event ObjectStateChangeEventHandler ObjectChangedNotify;//Событие вызывается при изменении в данном объекте 
+        public event ObjectStateChangeEventHandler ObjectChangeSaved; //Событие вызывается при сохранении изменений в данном объекте
+        public event ObjectStateChangeEventHandler ObjectChangeUndo; //Событие вызывается при отмете изменений в данном объекте
+
+
         public ObservableCollection<IJornalable> ParentObjects { get; set; }
         public void AdjustAllParentsObjects();
         public void ClearChangesJornal();

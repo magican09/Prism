@@ -263,12 +263,16 @@
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Setter Property = "Foreground" Value = "Red" />
                         </DataTrigger>
-                    
+                        <DataTrigger Binding="{Binding Path=IsVisible,Converter={StaticResource bool2VisibilityConverter}}"  Value="Collapsed">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
                         <Trigger Property = "IsMouseOver" Value = "True">
                             <Setter Property = "Foreground" Value = "Green" />
                         </Trigger>
                     </Style.Triggers>
-                    
+
+                   
+
                 </Style>
 
             </TreeView.Resources>

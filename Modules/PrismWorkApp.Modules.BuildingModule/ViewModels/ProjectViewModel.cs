@@ -133,11 +133,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveResponsibleEmployeeCommand = new DelegateCommand(OnRemoveResponsibleEmployee,
                                         () => SelectedResponsibleEmployee != null)
                     .ObservesProperty(() => SelectedResponsibleEmployee);
-           
-            
             DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
-
-             _dialogService = dialogService;
+            
+            _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
             applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
@@ -148,13 +146,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnEditRemoveResponsibleEmployee()
         {
             CoreFunctions.EditElementDialog<bldResponsibleEmployee>(SelectedResponsibleEmployee, "Отвественне лицо",
-                  (result) => { }, _dialogService, typeof(ResponsibleEmployeeDialogView).Name, "Редактировать", Id);
+                  (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ResponsibleEmployeeDialogView).Name, "Редактировать", Id);
+            SaveCommand.RaiseCanExecuteChanged();
         }
 
         private void OnEditParticipant()
         {
             CoreFunctions.EditElementDialog<bldParticipant>(SelectedParticipant, "Учасник строительства",
-                  (result) => { }, _dialogService, typeof(ParticipantDialogView).Name, "Редактировать", Id);
+                  (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ParticipantDialogView).Name, "Редактировать", Id);
+           
         }
 
 
@@ -189,6 +189,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      if (result.Result == ButtonResult.Yes)
                          SelectedProject.ResponsibleEmployees = (bldResponsibleEmployeesGroup)
                                 result.Parameters.GetValue<object>("current_collection");
+                     SaveCommand.RaiseCanExecuteChanged();
                  },
                  typeof(AddbldResponsibleEmployeeToCollectionDialogView).Name,
                  typeof(ResponsibleEmployeeDialogView).Name, Id,
@@ -261,7 +262,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             predicate_1.Name = "Показать только из текущего проекта.";
             predicate_1.Predicate = cl => cl.Where(el => el.bldProject  != null &&
                                                         el.bldProject.Id == SelectedProject.Id).ToList();
-           predicate_2.Name = "Показать из всех кроме текущего объекта";
+            predicate_2.Name = "Показать из всех кроме текущего объекта";
             predicate_2.Predicate = cl => cl.Where(el => el.bldProject != null &&
                                                         el.bldProject.Id != SelectedProject.Id).ToList();
             predicate_3.Name = "Показать все";
@@ -309,14 +310,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
                 (SelectedProject.ResponsibleEmployees, SelectedResponsibleEmployee, "Ответсвенный представитель",
-                () => SelectedResponsibleEmployee = null, _dialogService);
+                () => { SelectedResponsibleEmployee = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService);
         }
         private void OnRemoveParticipant()
         {
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
                  (SelectedProject.Participants, SelectedParticipant, "Учасник строительства",
-                 () => SelectedParticipant = null, _dialogService);
+                 () => { SelectedParticipant = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService);
         }
 
 
@@ -346,7 +347,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             }
         }
 
-        private bool CanSave()
+        public virtual bool CanSave()
         {
             if (SelectedProject != null)
                 return !SelectedProject.HasErrors && SelectedProject.PropertiesChangeJornal.Count>0;

@@ -39,7 +39,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         {
             if (EditMode == ConveyanceObjectModes.EditMode.FOR_EDIT)
             {
-
                 CoreFunctions.ConfirmActionOnElementDialog<bldResponsibleEmployee>(SelectedResposibleEmployee, 
                     "Сохранить", "отвествественного работника", 
                     "Сохранить",
@@ -58,11 +57,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                     }
 
                 }, _dialogService);
-
             }
-            
-
-
         }
         override public void OnClose(object obj)
         {

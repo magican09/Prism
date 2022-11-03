@@ -28,8 +28,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public ObservableCollection<IJornalable> ParentObjects { get; set; }
         public void AdjustAllParentsObjects();
+        public void ResetAllAdjustedParentObjects();
         public void ClearChangesJornal();
         public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId);
+        public bool Adjusted { get; set; }
 
         //public void  SetParentObject(IJornalable obj);
 

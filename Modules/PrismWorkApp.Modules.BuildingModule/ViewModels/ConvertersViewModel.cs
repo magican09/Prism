@@ -288,6 +288,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 //  work_1.NextWorks.Add(work_2);
                 // work_2.PreviousWorks.Add(work_1);
                 var navParam = new NavigationParameters();
+                prj.ObjectChangedNotify += OnChildObjectChanges;
                 navParam.Add("bld_project", prj);
                 //prj.SaveAll(Id);
                 _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(ProjectExplorerView).Name, navParam);

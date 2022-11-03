@@ -146,6 +146,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 IsVisible = (status != JornalRecordStatus.REMOVED) ? true : false;
             }
         }
+        [NotMapped]
+        public bool Adjusted { get; set; } = false;
+
         public virtual void AllPropertiesModifyedChangeNotificate()
         {
             var properties = this.GetType().GetProperties();
@@ -163,19 +166,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void OnChildObjectChanges(object sender, ObjectStateChangedEventArgs e)
         {
-            if (!PropertiesChangeJornal.Contains(e.PropertyStateRecord))
+            if (e != null && !PropertiesChangeJornal.Contains(e.PropertyStateRecord))
             {
                 PropertiesChangeJornal.Add(e.PropertyStateRecord);
-                ObjectChangedNotify?.Invoke(this, e);
             }
+            ObjectChangedNotify?.Invoke(this, e);
         }
         public void OnChildObjectChangeSaved(object sender, ObjectStateChangedEventArgs e)
         {
-            if (PropertiesChangeJornal.Contains(e.PropertyStateRecord))
+            if (e != null && PropertiesChangeJornal.Contains(e.PropertyStateRecord))
             {
                 PropertiesChangeJornal.Remove(e.PropertyStateRecord);
                 ObjectChangeSaved?.Invoke(this, e);
             }
+            ObjectChangedNotify?.Invoke(this, null);
         }
         public void OnChildObjectChangeUndo(object sender, ObjectStateChangedEventArgs e)
         {
@@ -184,6 +188,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 PropertiesChangeJornal.Remove(e.PropertyStateRecord);
                 ObjectChangeUndo?.Invoke(this, e);
             }
+            ObjectChangedNotify?.Invoke(this, null);
         }
 
         public void JornalingOff()
@@ -273,7 +278,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (prop_id != null)
             {
                 PropertyStateRecord propertyState;
-                if (prop_id is string)
+                if (prop_id is string)//Если пытаемся сохранить изменения в простом свойстве - нам передали имя свойства.
                 {
                     propertyState = PropertiesChangeJornal.Where(p => p.Name == prop_id.ToString() && p.ContextId == currentContextId).OrderBy(pr => pr.Date).LastOrDefault();
                     if (propertyState != null)
@@ -286,25 +291,23 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
                 else
                 {
-                    propertyState = PropertiesChangeJornal.Where(p => p.Id == (Guid)prop_id).OrderBy(pr => pr.Date).LastOrDefault();
+                    //Ищем в журнале запись с изменениями сохраняемого свойства
+                    propertyState = PropertiesChangeJornal.Where(p => p.Id == (Guid)prop_id).OrderBy(pr => pr.Date).LastOrDefault(); //
 
                     if (propertyState.ParentObject.Id != (this as IEntityObject).Id)//Изменения были в дочернем объекте текущего отбъекта
                         propertyState.ParentObject.SaveAll(currentContextId);
                     PropertiesChangeJornal.Remove(propertyState);
-                    ObjectChangeSaved?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyState));
-                    List<PropertyStateRecord> recordsFoDelete =
-                        PropertiesChangeJornal.Where(p => p.Name == prop_id.ToString() && p.ContextId == currentContextId).ToList();
+                    ObjectChangeSaved?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyState));//Оповещаем подписантов на этом собитие о том, что сохранили изменение
 
-                    foreach (PropertyStateRecord record in recordsFoDelete)
-                    {
-                        PropertiesChangeJornal.Remove(record);
-                        ObjectChangeSaved?.Invoke(this, new ObjectStateChangedEventArgs("", this, record));
-                    }
                 }
+                List<PropertyStateRecord> recordsFoDelete =//Удаляем из журнала предыдущие состояния свойства сделанные их текущего контекста окна. 
+                                        PropertiesChangeJornal.Where(p => p.Name == prop_id.ToString() && p.ContextId == currentContextId).ToList();
 
-                /*for (int ii = 0; ii < PropertiesChangeJornal.Count; ii++)  //Удаляем все записи с изменениями сохраняемого объекта
-                    if (PropertiesChangeJornal[ii].Id == propertyState.Id)
-                        PropertiesChangeJornal.Remove(PropertiesChangeJornal[ii]);*/
+                foreach (PropertyStateRecord record in recordsFoDelete)
+                {
+                    PropertiesChangeJornal.Remove(record);
+                    ObjectChangeSaved?.Invoke(this, new ObjectStateChangedEventArgs("", this, record));//Оповещаем подписантов на этом собитие о том, что сохранили изменение
+                }
             }
         }
         public virtual void SaveAll(Guid currentContextId)
@@ -322,6 +325,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             if (b_jornal_recording_flag) //Регистрация сделанных изменений в журнал изменений
             {
+
                 if (member is IJornalable && member != null && newVal != null) // Если свойству присваивают другой объект
                 {
                     IJornalable property_member = member as IJornalable;
@@ -339,8 +343,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     if (!property_new_val.ParentObjects.Contains(this))
                         property_new_val.ParentObjects.Add(this); //Добавляем текущий объекта в качестве родительского для нового значения 
                 }
-
-
                 if (CurrentContextId != Guid.Empty)
                 {
                     List<Guid> AnatherWindowsIds = PropertiesChangeJornal.ContextIdHistory.Where(el => el != CurrentContextId).ToList(); //Ищем в журнале Id других окон в цепочке изменений
@@ -372,18 +374,49 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 if (prop_value is IJornalable && prop_value != null)
                 {
                     if ((prop_value as IJornalable).ParentObjects == null)
-                    {
                         (prop_value as IJornalable).ParentObjects = new ObservableCollection<IJornalable>();
-                        (prop_value as IJornalable).ParentObjects.Add(sourse);
-                        (prop_value as IJornalable).ObjectChangedNotify += OnChildObjectChanges;
-                        (prop_value as IJornalable).ObjectChangeSaved += OnChildObjectChangeSaved;
-                        (prop_value as IJornalable).ObjectChangeUndo += OnChildObjectChangeUndo;
-
+                    (prop_value as IJornalable).ObjectChangedNotify += OnChildObjectChanges;
+                    (prop_value as IJornalable).ObjectChangeSaved += OnChildObjectChangeSaved;
+                    (prop_value as IJornalable).ObjectChangeUndo += OnChildObjectChangeUndo;
+                    Adjusted = true;
+                    if (!(prop_value as IJornalable).Adjusted)
+                    {
                         if ((prop_value is IList))
                             (prop_value as IJornalable).AdjustAllParentsObjects();
                         else
                             AdjustParentObjects((prop_value as IJornalable));
+                        (prop_value as IJornalable).ParentObjects.Add(sourse);
+                       
                     }
+
+                }
+            }
+        }
+        public void  ResetAllAdjustedParentObjects()
+        {
+            ResetAdjustedParentObjects(this);
+        }
+        private void ResetAdjustedParentObjects(IJornalable sourse)
+        {
+            var all_props_propinfos = sourse.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            foreach (PropertyInfo prop_info in all_props_propinfos)
+            {
+                var prop_value = prop_info.GetValue(sourse);
+                if (prop_value is IJornalable && prop_value != null)
+                {
+                    (prop_value as IJornalable).ObjectChangedNotify -= OnChildObjectChanges;
+                    (prop_value as IJornalable).ObjectChangeSaved -= OnChildObjectChangeSaved;
+                    (prop_value as IJornalable).ObjectChangeUndo -= OnChildObjectChangeUndo;
+                    Adjusted = false;
+                    if ((prop_value as IJornalable).Adjusted)
+                    {
+                        if ((prop_value is IList))
+                            (prop_value as IJornalable).ResetAllAdjustedParentObjects();
+                        else
+                            ResetAdjustedParentObjects((prop_value as IJornalable));
+                       
+                    }
+
                 }
             }
         }

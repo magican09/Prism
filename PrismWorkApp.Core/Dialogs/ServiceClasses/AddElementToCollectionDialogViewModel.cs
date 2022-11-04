@@ -205,10 +205,11 @@ namespace PrismWorkApp.Core.Dialogs
             dialog_par.Add("common_collection", common_collection);
             dialog_par.Add("current_context_id", CurrentContextId);
             T new_element = new T();
-             CoreFunctions.CopyObjectNewInstances<IEntityObject>(SelectedElement, new_element, new_element.RestrictionPredicate);
+            CoreFunctions.CopyObjectNewInstances<IEntityObject>(SelectedElement, new_element, new_element.RestrictionPredicate);
             CoreFunctions.SetAllIdToZero(new_element, false);
             CoreFunctions.SetAllIdToZero(new_element,true);
             new_element.ClearChangesJornal();
+           
             ConveyanceObject conveyanceObject =
                 new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
             dialog_par.Add("selected_element_conveyance_object", conveyanceObject);
@@ -216,8 +217,12 @@ namespace PrismWorkApp.Core.Dialogs
             {
                 if (result.Result == ButtonResult.Yes)
                 {
+                  //  new_element.ResetObjectsStructure();
                     CurrentCollection.Add(new_element);
-                  //  CommonCollection.Add(new_element);
+                 //   CurrentCollection.ResetObjectsStructure();
+                //    CurrentCollection.AdjustObjectsStructure();
+
+                    //  CommonCollection.Add(new_element);
                 }
                 if (result.Result == ButtonResult.No)
                 {

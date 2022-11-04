@@ -30,6 +30,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
     public class ConvertersViewModel : LocalBindableBase, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public DelegateCommand LoadProjectFromExcelCommand { get; private set; }
+        public DelegateCommand CreateProjectStructureCommand { get; private set; }
+        public DelegateCommand LoadProjectFromDBCommand { get; private set; }
+        public DelegateCommand SaveDataToDBCommand { get; private set; }
+        public DelegateCommand CreateAOSRCommand { get; private set; }
         private const int CURRENT_MODULE_ID = 2;
 
         public IBuildingUnitsRepository _buildingUnitsRepository;
@@ -194,11 +199,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             // CreateAOSR(SelectedWork);
 
         }
-        public DelegateCommand LoadProjectFromExcelCommand { get; private set; }
-        public DelegateCommand CreateProjectStructureCommand { get; private set; }
-        public DelegateCommand LoadProjectFromDBCommand { get; private set; }
-        public DelegateCommand SaveDataToDBCommand { get; private set; }
-        public DelegateCommand CreateAOSRCommand { get; private set; }
+       
         private void LoadProjectFromExcel()
         {
             var project = ProjectService.LoadProjectFromExcel();
@@ -235,7 +236,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             // AllProjectsContext.JornalingOff();
             AllProjectsContext = new bldProjectsGroup(_buildingUnitsRepository.Projects.GetProjectsAsync());
-            AllProjectsContext.AdjustAllParentsObjects();
+            AllProjectsContext.ResetObjectsStructure();
+            AllProjectsContext.AdjustObjectsStructure();
+            AllProjectsContext.CurrentContextId = Id;
+            AllProjectsContext.PropertiesChangeJornal.ContextIdHistory.Add(Id);
             AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
             //  AllProjectsContext.ClearStructureLevel();
             //AllProjectsContext.UpdateStructure();

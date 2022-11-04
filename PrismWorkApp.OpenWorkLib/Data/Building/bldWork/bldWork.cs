@@ -179,7 +179,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             PreviousWorks.CopingEnable = false; //отключаем при копировании
             NextWorks.CopingEnable = false; //отключаем при копировании 
-            RestrictionPredicate = x => x.CopingEnable;
+            RestrictionPredicate = x => x.CopingEnable;// Определяет условтия я своего копировани в время глубокого копирования рефлексией 
         }
 
         public object Clone()

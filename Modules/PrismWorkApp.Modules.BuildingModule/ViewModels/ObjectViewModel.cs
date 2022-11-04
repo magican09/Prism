@@ -185,10 +185,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync());
             NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_1 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_1.Name = "Показать только из текущего проекта.";
-            predicate_1.Predicate = cl => cl.Where(el => el.bldObject.bldProject.Id == SelectedBuildingObject.bldProject.Id).ToList();
+            predicate_1.Predicate = cl => cl.Where(el => el.bldObject?.bldProject.Id == SelectedBuildingObject.bldProject.Id).ToList();
             NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_2 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_2.Name = "Показать все кроме текущего проекта";
-            predicate_2.Predicate = cl => cl.Where(el => el.bldObject.bldProject.Id != SelectedBuildingObject.bldProject.Id).ToList();
+            predicate_2.Predicate = cl => cl.Where(el => el.bldObject?.bldProject.Id != SelectedBuildingObject.bldProject.Id).ToList();
             NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_3 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_3.Name = "Показать все";
             predicate_3.Predicate = cl => cl;
@@ -253,8 +253,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_object"];
-           
-                 
+                    
                 if (((bldObject)navigane_message.Object).Id != SelectedBuildingObject.Id)
                     return false;
                 else
@@ -274,9 +273,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             {
                 ResivedObject = (bldObject)navigane_message.Object;
                 EditMode = navigane_message.EditMode;
+                 if (SelectedBuildingObject != null) SelectedBuildingObject.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedBuildingObject = ResivedObject;
-                if (SelectedBuildingObject != null) SelectedBuildingObject.ErrorsChanged -= RaiseCanExecuteChanged;
-              //  SelectedBuildingObject = new SimpleEditableBldObject();
                 SelectedBuildingObject.ErrorsChanged += RaiseCanExecuteChanged;
                
                 Title = ResivedObject.Name;

@@ -18,8 +18,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
          get {
                 int wrk_name_leng = 30;
                 if (bldWork?.Name.Length < wrk_name_leng) wrk_name_leng = bldWork.Name.Length;
+                this.JornalingOff();
                 SetProperty(ref _fullName, $"АОСР №{RegId} от {Date.ToString("d")} {bldWork?.Name.Substring(0, wrk_name_leng)}...");
-                
+                this.JornalingOn();
                 return _fullName;
             }
             set {   }

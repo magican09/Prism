@@ -120,8 +120,8 @@ namespace PrismWorkApp.Services.Repositories
             PlutoContext.Objects.ToList();
             PlutoContext.Constructions.ToList();
             PlutoContext.Works
-                .Include(el=>el.NextWorks)
-                .Include(el=>el.PreviousWorks).ToList();
+               .Include(el=>el.NextWorks)
+               .Include(el=>el.PreviousWorks).ToList();
             PlutoContext.Materials.ToList();
             PlutoContext.ProjectDocuments.ToList();
             PlutoContext.ExecutiveSchemes.ToList();

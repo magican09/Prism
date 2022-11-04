@@ -134,6 +134,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NotMapped]
         public ObservableCollection<IJornalable> ParentObjects { get; set; }
         [NotMapped]
+        public ObservableCollection<IJornalable> ChildObjects { get; set; }
+        [NotMapped]
         public JornalRecordStatus Status
         {
             get
@@ -147,7 +149,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
         }
         [NotMapped]
-        public bool Adjusted { get; set; } = false;
+        public AdjustStatus AdjustedStatus { get; set; } = AdjustStatus.UNADJUSTED;
 
         public virtual void AllPropertiesModifyedChangeNotificate()
         {
@@ -193,32 +195,36 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public void JornalingOff()
         {
-            b_jornal_recording_flag = false;
-
-            var prop_info_coll = this.GetType().GetProperties();
-            foreach (PropertyInfo propertyInfo in prop_info_coll)
+            if (b_jornal_recording_flag == true)
             {
-                var prop_val = propertyInfo.GetValue(this);
-                if (prop_val is IList && prop_val is IJornalable)
-                {
-                    MethodInfo unDoAllMethod = propertyInfo.PropertyType.GetMethod("JornalingOff");
-                    object res = unDoAllMethod.Invoke(prop_val, new object[] { });
+                b_jornal_recording_flag = false;
 
-                }
+                /*  var prop_info_coll = this.GetType().GetProperties();
+                  foreach (PropertyInfo propertyInfo in prop_info_coll)
+                  {
+                      var prop_val = propertyInfo.GetValue(this);
+                      if (prop_val is IList && prop_val is IJornalable)
+                      {
+                          (prop_val as IJornalable).JornalingOff();
+
+                      }
+                  }*/
             }
         }
         public void JornalingOn()
         {
-            b_jornal_recording_flag = true;
-            var prop_info_coll = this.GetType().GetProperties();
-            foreach (PropertyInfo propertyInfo in prop_info_coll)
+            if (b_jornal_recording_flag == false)
             {
-                var prop_val = propertyInfo.GetValue(this);
-                if (prop_val is IList && prop_val is IJornalable)
-                {
-                    MethodInfo unDoAllMethod = propertyInfo.PropertyType.GetMethod("JornalingOn");
-                    object res = unDoAllMethod.Invoke(prop_val, new object[] { });
-                }
+                b_jornal_recording_flag = true;
+                /*   var prop_info_coll = this.GetType().GetProperties();
+                   foreach (PropertyInfo propertyInfo in prop_info_coll)
+                   {
+                       var prop_val = propertyInfo.GetValue(this);
+                       if (prop_val is IList && prop_val is IJornalable)
+                       {
+                           (prop_val as IJornalable).JornalingOn();
+                       }
+                   }*/
             }
         }
         public void ClearChangesJornal()
@@ -235,6 +241,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
             }
             ParentObjects?.Clear();
+            ChildObjects?.Clear();
             PropertiesChangeJornal.Clear();
             PropertiesChangeJornal.ContextIdHistory.Clear();
         }
@@ -243,10 +250,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             if (propertyState != null)
             {
+                b_jornal_recording_flag = false; //Отключаем ведение жрунала, так как собираемся переустановить текущее значение без журналирования
                 if (propertyState.ParentObject.Id == (this as IEntityObject).Id)//Изменения были в дочернем объекте текущего отбъекта
                 {
                     var prop_info = this.GetType().GetProperty(propertyState.Name); //Достаем с помощью рефлексии данные о свойстве из текущего объекта
-                    b_jornal_recording_flag = false; //Отключаем ведение жрунала, так как собираемся переустановить текущее значение без журналирования
                     var prop_val = prop_info.GetValue(this);
 
                     if (prop_info.GetIndexParameters().Length == 0)//Если свойство не является индек..
@@ -256,7 +263,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     PropertiesChangeJornal.Remove(propertyState); //Удаляем из журнала сохраненное изменение
                     ObjectChangeUndo?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyState));
 
-                    b_jornal_recording_flag = true; //Включаем журналирование
                 }
                 else
                 {
@@ -264,6 +270,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     PropertiesChangeJornal.Remove(propertyState);
                     ObjectChangeUndo?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyState));
                 }
+                b_jornal_recording_flag = true; //Включаем журналирование
+
             }
         }
         public virtual void UnDoAll(Guid currentContextId)
@@ -272,6 +280,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
               PropertiesChangeJornal.Where(pr => pr.ContextId == currentContextId).OrderByDescending(pr => pr.Date).ToList();
             foreach (PropertyStateRecord record in records)
                 UnDo(record); //Отменяем измеенения всех переменных, которые не коллекции
+            PropertiesChangeJornal.ContextIdHistory.Remove(currentContextId);
         }
         public virtual void Save(object prop_id, Guid currentContextId)
         { //Сохранение текущего состояние свойства заключается в том, что мы просто удаляем все предыдущие изменнеия из журнала изменений
@@ -317,31 +326,60 @@ namespace PrismWorkApp.OpenWorkLib.Data
             foreach (string prop_name in uniq_property_names)//Сохраняем последние изменения для каждого свойства
                 Save(prop_name, currentContextId);
 
-
+            PropertiesChangeJornal.ContextIdHistory.Remove(currentContextId);
 
         }
 
         private void PropertyChangesRegistrate<T>(ref T member, T newVal, string propertyName)
         {
-            if (b_jornal_recording_flag) //Регистрация сделанных изменений в журнал изменений
-            {
+            var navigate_props_infos = Functions.GetNavigateProperties(this); //Получаем список навигационных свойств текущего объкта
 
-                if (member is IJornalable && member != null && newVal != null) // Если свойству присваивают другой объект
+            if (b_jornal_recording_flag &&
+                navigate_props_infos.Where(pri => pri.Name == propertyName).FirstOrDefault() == null) //Регистрация сделанных изменений в журнал изменений
+            {
+                if (member is IJornalable || newVal is IJornalable)
                 {
-                    IJornalable property_member = member as IJornalable;
-                    IJornalable property_new_val = newVal as IJornalable;
-                    if (property_member.ParentObjects == null)
-                        property_member.ParentObjects = new ObservableCollection<IJornalable>();
-                    property_member.ObjectChangedNotify -= OnChildObjectChanges;  //Отписвыаемся от изменений в объете который был в качестве свойства 
-                    property_member.ObjectChangeSaved -= OnChildObjectChangeSaved;  //Отписвыаемся от изменений  
-                    property_member.ObjectChangeUndo -= OnChildObjectChangeSaved;  //Отписвыаемся от изменений 
-                    if (property_member.ParentObjects.Contains(this))
-                        property_member.ParentObjects.Remove(this); //Удаляемся из объеткса в свойств текущи объекта в качестве родительского
-                    property_new_val.ObjectChangedNotify += OnChildObjectChanges; //Добавляем обработски изменений в новомо объекте 
-                    property_new_val.ObjectChangeSaved += OnChildObjectChangeSaved; //Добавляем обработски изменений в новомо объекте 
-                    property_new_val.ObjectChangeUndo += OnChildObjectChangeSaved; //Добавляем обработски изменений в новомо объекте 
-                    if (!property_new_val.ParentObjects.Contains(this))
-                        property_new_val.ParentObjects.Add(this); //Добавляем текущий объекта в качестве родительского для нового значения 
+                    if (member != null && member is IJornalable && newVal != null) // Если свойству присваивают другой объект и они оба не null
+                    {
+                        IJornalable property_member = member as IJornalable;
+                        IJornalable property_new_val = newVal as IJornalable;
+
+                        if (property_member.ParentObjects == null) property_member.ParentObjects = new ObservableCollection<IJornalable>();
+
+                        if (property_member.ParentObjects.Contains(this))
+                            property_member.ParentObjects.Remove(this); //Удаляемся из объектса  свойств 
+                        property_member.ObjectChangedNotify -= OnChildObjectChanges;  //Отписвыаемся от изменений в объете который был в качестве свойства 
+                        property_member.ObjectChangeSaved -= OnChildObjectChangeSaved;  //Отписвыаемся от изменений  
+                        property_member.ObjectChangeUndo -= OnChildObjectChangeSaved;  //Отписвыаемся от изменений 
+
+                        if (property_new_val.ParentObjects == null) property_new_val.ParentObjects = new ObservableCollection<IJornalable>();
+                        if (!property_new_val.ParentObjects.Contains(this))
+                            property_new_val.ParentObjects.Add(this); //Добавляем текущий объекта в качестве родительского для нового значения 
+
+                        property_new_val.ObjectChangedNotify += OnChildObjectChanges; //Добавляем обработски изменений в новомо объекте 
+                        property_new_val.ObjectChangeSaved += OnChildObjectChangeSaved; //Добавляем обработски изменений в новомо объекте 
+                        property_new_val.ObjectChangeUndo += OnChildObjectChangeSaved; //Добавляем обработски изменений в новомо объекте 
+                    }
+                    if (member == null && newVal != null && newVal is IJornalable) // Если свойству присваивают другой объект и  он не  null
+                    {
+                        IJornalable property_new_val = newVal as IJornalable;
+                        if (property_new_val.ParentObjects == null) property_new_val.ParentObjects = new ObservableCollection<IJornalable>();
+                        if (!property_new_val.ParentObjects.Contains(this))
+                            property_new_val.ParentObjects.Add(this); //Добавляем текущий объекта в качестве родительского для нового значения 
+
+                        property_new_val.ObjectChangedNotify += OnChildObjectChanges; //Добавляем обработски изменений в новомо объекте 
+                        property_new_val.ObjectChangeSaved += OnChildObjectChangeSaved; //Добавляем обработски изменений в новомо объекте 
+                        property_new_val.ObjectChangeUndo += OnChildObjectChangeSaved; //Добавляем обработски изменений в новомо объекте 
+                    }
+                    if (member != null && member is IJornalable && newVal == null) // Если свойству присваивают другой объект и они оба не null
+                    {
+                        IJornalable property_member = member as IJornalable;
+
+                        property_member.ParentObjects.Remove(this); //Удаляемся из объектса  свойств 
+                        property_member.ObjectChangedNotify -= OnChildObjectChanges;  //Отписвыаемся от изменений в объете который был в качестве свойства 
+                        property_member.ObjectChangeSaved -= OnChildObjectChangeSaved;  //Отписвыаемся от изменений  
+                        property_member.ObjectChangeUndo -= OnChildObjectChangeSaved;  //Отписвыаемся от изменений 
+                    }
                 }
                 if (CurrentContextId != Guid.Empty)
                 {
@@ -360,66 +398,103 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
             }
         }
-        public void AdjustAllParentsObjects()
+        public void AdjustObjectsStructure(IJornalable sourse = null)
         {
-            AdjustParentObjects(this);
+            if (sourse == null) sourse = this;
+            var _props_propinfos = sourse.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            var navigate_props_infoes = Functions.GetNavigateProperties(this);
+            var all_props_propinfos =
+               _props_propinfos.Where(pri => !navigate_props_infoes.Contains(pri) && pri.GetValue(sourse) is IJornalable);
 
-        }
-        private void AdjustParentObjects(IJornalable sourse)
-        {
-            var all_props_propinfos = sourse.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            foreach (PropertyInfo prop_info in all_props_propinfos)
+            //all_props_propinfos.Where(pri=>(pri.GetValue(sourse) as IJornalable).AdjustedStatus==AdjustStatus.UNADJUSTED))
+            {
+                var prop_value = prop_info.GetValue(sourse);
+                IJornalable jornl_prop_value = prop_value as IJornalable;
+
+                if (jornl_prop_value != null && jornl_prop_value.AdjustedStatus != AdjustStatus.IN_PROCESS &&
+                   jornl_prop_value.AdjustedStatus != AdjustStatus.ADJUSTED)
+                {           //Примем что "детей настраивает родитель"
+                    if (jornl_prop_value.ParentObjects == null) jornl_prop_value.ParentObjects = new ObservableCollection<IJornalable>();
+
+                    if (!jornl_prop_value.ParentObjects.Contains(sourse))
+                        jornl_prop_value.ParentObjects.Add(sourse);
+
+                    if (this.ChildObjects == null) this.ChildObjects = new ObservableCollection<IJornalable>();
+
+                    if (!this.ChildObjects.Contains(jornl_prop_value))
+                        this.ChildObjects.Add(jornl_prop_value);
+
+                    jornl_prop_value.ObjectChangedNotify += OnChildObjectChanges;
+                    jornl_prop_value.ObjectChangeSaved += OnChildObjectChangeSaved;
+                    jornl_prop_value.ObjectChangeUndo += OnChildObjectChangeUndo;
+                    jornl_prop_value.AdjustedStatus = AdjustStatus.IN_PROCESS;
+                }
+            }
             foreach (PropertyInfo prop_info in all_props_propinfos)
             {
                 var prop_value = prop_info.GetValue(sourse);
-                if (prop_value is IJornalable && prop_value != null)
-                {
-                    if ((prop_value as IJornalable).ParentObjects == null)
-                        (prop_value as IJornalable).ParentObjects = new ObservableCollection<IJornalable>();
-                    (prop_value as IJornalable).ObjectChangedNotify += OnChildObjectChanges;
-                    (prop_value as IJornalable).ObjectChangeSaved += OnChildObjectChangeSaved;
-                    (prop_value as IJornalable).ObjectChangeUndo += OnChildObjectChangeUndo;
-                    Adjusted = true;
-                    if (!(prop_value as IJornalable).Adjusted)
-                    {
-                        if ((prop_value is IList))
-                            (prop_value as IJornalable).AdjustAllParentsObjects();
-                        else
-                            AdjustParentObjects((prop_value as IJornalable));
-                        (prop_value as IJornalable).ParentObjects.Add(sourse);
-                       
-                    }
+                IJornalable jornl_prop_value = prop_value as IJornalable;
+                if (jornl_prop_value != null && jornl_prop_value.AdjustedStatus == AdjustStatus.IN_PROCESS)
+                {           //Примем что "детей настраивает родитель"
+                    jornl_prop_value.AdjustedStatus = AdjustStatus.ADJUSTED;
+                    if ((prop_value is IList))
+                        jornl_prop_value.AdjustObjectsStructure();
+                    else
+                        AdjustObjectsStructure(jornl_prop_value);
 
                 }
             }
         }
-        public void  ResetAllAdjustedParentObjects()
+        public void ResetObjectsStructure(IJornalable sourse = null)
         {
-            ResetAdjustedParentObjects(this);
-        }
-        private void ResetAdjustedParentObjects(IJornalable sourse)
-        {
-            var all_props_propinfos = sourse.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            if (sourse == null)
+            {
+                sourse = this;
+                sourse.ParentObjects?.Clear();
+                sourse.ChildObjects?.Clear();
+                sourse.ObjectChangedNotify -= OnChildObjectChanges;
+                sourse.ObjectChangeSaved -= OnChildObjectChangeSaved;
+                sourse.ObjectChangeUndo -= OnChildObjectChangeUndo;
+            }
+            var _props_propinfos = sourse.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            var navigate_props_infoes = Functions.GetNavigateProperties(this);
+            var all_props_propinfos =
+               _props_propinfos.Where(pri => !navigate_props_infoes.Contains(pri) && pri.GetValue(sourse) is IJornalable);
+
             foreach (PropertyInfo prop_info in all_props_propinfos)
             {
                 var prop_value = prop_info.GetValue(sourse);
-                if (prop_value is IJornalable && prop_value != null)
+                IJornalable jornl_prop_value = prop_value as IJornalable;
+
+                if (jornl_prop_value != null && jornl_prop_value.AdjustedStatus != AdjustStatus.IN_PROCESS &&
+                     jornl_prop_value.AdjustedStatus != AdjustStatus.NONE)
                 {
-                    (prop_value as IJornalable).ObjectChangedNotify -= OnChildObjectChanges;
-                    (prop_value as IJornalable).ObjectChangeSaved -= OnChildObjectChangeSaved;
-                    (prop_value as IJornalable).ObjectChangeUndo -= OnChildObjectChangeUndo;
-                    Adjusted = false;
-                    if ((prop_value as IJornalable).Adjusted)
-                    {
-                        if ((prop_value is IList))
-                            (prop_value as IJornalable).ResetAllAdjustedParentObjects();
-                        else
-                            ResetAdjustedParentObjects((prop_value as IJornalable));
-                       
-                    }
+                    jornl_prop_value.ParentObjects?.Clear();
+                    jornl_prop_value.ChildObjects?.Clear();
+
+                    jornl_prop_value.ObjectChangedNotify -= OnChildObjectChanges;
+                    jornl_prop_value.ObjectChangeSaved -= OnChildObjectChangeSaved;
+                    jornl_prop_value.ObjectChangeUndo -= OnChildObjectChangeUndo;
+                    jornl_prop_value.AdjustedStatus = AdjustStatus.IN_PROCESS;
+                }
+            }
+            foreach (PropertyInfo prop_info in all_props_propinfos)
+            {
+                var prop_value = prop_info.GetValue(sourse);
+                IJornalable jornl_prop_value = prop_value as IJornalable;
+                if (jornl_prop_value != null && jornl_prop_value.AdjustedStatus == AdjustStatus.IN_PROCESS)
+                {           //Примем что "детей настраивает родитель"
+                    jornl_prop_value.AdjustedStatus = AdjustStatus.NONE;
+                    if ((prop_value is IList))
+                        jornl_prop_value.ResetObjectsStructure();
+                    else
+                        ResetObjectsStructure(jornl_prop_value);
 
                 }
             }
         }
+
         #endregion
 
 

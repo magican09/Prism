@@ -108,12 +108,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public PropertiesChangeJornal PropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
         public ObservableCollection<IJornalable> ParentObjects { get; set; }
-        public IJornalable ParentObject { get; set; }
+        public ObservableCollection<IJornalable> ChildObjects { get; set; }
+        public AdjustStatus AdjustedStatus { get; set; } = AdjustStatus.UNADJUSTED;
 
         public void OnChildObjectChanges(object sender, ObjectStateChangedEventArgs e)//Вызывается дочерними объектами если в них были произведены изменения
         {
             if (e != null && !PropertiesChangeJornal.Contains(e.PropertyStateRecord))
-            {
+            {   
                 PropertiesChangeJornal.Add(e.PropertyStateRecord);
             }
             ObjectChangedNotify?.Invoke(this, e);
@@ -250,64 +251,97 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
         }
 
-        public void AdjustAllParentsObjects()
-        {
 
-            AdjustParentObjects(this);
-        }
-        private void AdjustParentObjects(IJornalable sourse)
+        public void AdjustObjectsStructure(IJornalable sourse = null)
         {
+            if (sourse == null) sourse = this;
+
             foreach (IEntityObject item in this)
             {
-                if (Adjusted == false)
+                if (item.AdjustedStatus == AdjustStatus.ADJUSTED)
+                    ;
+                if (item.AdjustedStatus != AdjustStatus.IN_PROCESS && item.AdjustedStatus != AdjustStatus.ADJUSTED)
                 {
-                    if (item.ParentObjects == null)
-                    {
-                        item.ParentObjects = new ObservableCollection<IJornalable>();
+                    if (item.ParentObjects == null) item.ParentObjects = new ObservableCollection<IJornalable>();
+                    if (!item.ParentObjects.Contains(sourse))
+                        item.ParentObjects.Add(sourse);
+                    if (this.ChildObjects == null) this.ChildObjects = new ObservableCollection<IJornalable>();
+                    if (!this.ChildObjects.Contains(item))
+                        this.ChildObjects.Add(item);
 
-                    }
                     item.ObjectChangedNotify += OnChildObjectChanges;
                     item.ObjectChangeSaved += OnChildObjectChangeSaved;
                     item.ObjectChangeUndo += OnChildObjectChangeUndo;
-                    if (!item.ParentObjects.Contains(this))
-                    {
-
-                        item.ParentObjects.Add(this);
-                    }
-
-                   if(!item.Adjusted) item.AdjustAllParentsObjects();
-
-
+                    item.AdjustedStatus = AdjustStatus.IN_PROCESS;
                 }
             }
+            foreach (IEntityObject item in this)
+            {
+
+                if (item.AdjustedStatus == AdjustStatus.IN_PROCESS)
+                {
+                    item.AdjustedStatus = AdjustStatus.ADJUSTED;
+                    item.AdjustObjectsStructure();
+                }
+            }
+
         }
-        public void ResetAllAdjustedParentObjects()
+
+        public void ResetObjectsStructure(IJornalable sourse = null)
+        {
+            if (sourse == null) sourse = this;
+            foreach (IEntityObject item in this)
+            {
+                if (item.AdjustedStatus != AdjustStatus.IN_PROCESS && item.AdjustedStatus != AdjustStatus.NONE)
+                {
+                    item.ParentObjects?.Clear();
+                    item.ChildObjects?.Clear();
+                    item.ObjectChangedNotify -= OnChildObjectChanges;
+                    item.ObjectChangeSaved -= OnChildObjectChangeSaved;
+                    item.ObjectChangeUndo -= OnChildObjectChangeUndo;
+                    item.AdjustedStatus = AdjustStatus.IN_PROCESS;
+                }
+            }
+            foreach (IEntityObject item in this)
+            {
+
+                if (item.AdjustedStatus == AdjustStatus.IN_PROCESS)
+                {
+                    item.AdjustedStatus = AdjustStatus.NONE;
+                    item.ResetObjectsStructure();
+                }
+            }
+
+        }
+        public void JornalingOff()
         {
 
+            if (b_jornal_recording_flag == true)
+            {
+                b_jornal_recording_flag = false;
+                /*   foreach (IJornalable item in this)
+                   {
+
+                       item.JornalingOff();
+                   }*/
+            }
+        }
+        public void JornalingOn()
+        {
+
+            if (b_jornal_recording_flag == false)
+            {
+                b_jornal_recording_flag = true;
+                /*   foreach (IJornalable item in this)
+                   {
+
+                       item.JornalingOn();
+                   }*/
+            }
         }
         #endregion
 
-        public void SetAllValues(object in_object)
-        {
-            /*   var this_props = this.GetType().GetProperties();
-               var in_props = in_object.GetType().GetProperties();
 
-               foreach (PropertyInfo prop_info in this_props)
-               {
-                   var in_prop_value = prop_info.GetValue(in_object);
-                   var this_prop_value = prop_info.GetValue(this);
-                   var this_prop = this.GetType().GetProperty(prop_info.Name);
-
-                   if (this_prop is BindableBase || this_prop is IEntityObject)
-                         ((IEntityObject)this_prop_value).SetAllValues(in_prop_value);
-
-                   if(this_prop.CanWrite) this_prop.SetValue(this, in_prop_value);
-               }
-               */
-            Items.Clear();
-            foreach (TEntity obj_item in ((NameableObservableCollection<TEntity>)in_object).Items)
-                Items.Add(obj_item);
-        }
 
         private void CountNotificationSet()
         {
@@ -318,12 +352,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 {
                     foreach (IJornalable obj in e.NewItems)
                     {
-                        obj.ObjectChangedNotify += OnChildObjectChanges;
-                        obj.ObjectChangeSaved += OnChildObjectChangeSaved;
-                        obj.ObjectChangeUndo += OnChildObjectChangeUndo;
-                        if (obj.ParentObjects == null) obj.ParentObjects = new ObservableCollection<IJornalable>();
-                        if (!obj.ParentObjects.Contains(this))
-                            obj.ParentObjects.Add(this);
+                        /*    obj.ObjectChangedNotify += OnChildObjectChanges;
+                            obj.ObjectChangeSaved += OnChildObjectChangeSaved;
+                            obj.ObjectChangeUndo += OnChildObjectChangeUndo;
+                            if (obj.ParentObjects == null) obj.ParentObjects = new ObservableCollection<IJornalable>();
+                            if (!obj.ParentObjects.Contains(this))
+                                obj.ParentObjects.Add(this);*/
                         if (b_jornal_recording_flag && CurrentContextId != Guid.Empty)
                         {
                             List<Guid> AnatherWindowsIds = PropertiesChangeJornal.ContextIdHistory.Where(el => el != CurrentContextId).ToList();
@@ -347,9 +381,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 {
                     foreach (IJornalable obj in e.OldItems)
                     {
-                        obj.ObjectChangedNotify -= OnChildObjectChanges;
-                        obj.ObjectChangeSaved -= OnChildObjectChangeSaved;
-                        obj.ObjectChangeUndo -= OnChildObjectChangeUndo;
+                        /*   obj.ObjectChangedNotify -= OnChildObjectChanges;
+                           obj.ObjectChangeSaved -= OnChildObjectChangeSaved;
+                           obj.ObjectChangeUndo -= OnChildObjectChangeUndo;*/
                         obj.ParentObjects.Remove(this);
                     }
                 }
@@ -360,10 +394,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         }
 
-        public void SetParentObject(IJornalable obj)
-        {
-            ParentObject = obj;
-        }
 
 
         public bool RemoveJournalable(TEntity item)
@@ -414,7 +444,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { _code = value; OnPropertyChanged("Code"); }
         }//Код
-        public bool Adjusted { get; set; } = false;
+
 
         private bool _isPinterConteiner = false;
 

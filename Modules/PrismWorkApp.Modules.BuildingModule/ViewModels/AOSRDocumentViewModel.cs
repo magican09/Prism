@@ -33,25 +33,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _selectedProject, value); }
         }
         private bldProject _resivedProject;
-        public bldProject ResivedProject
-        {
-            get { return _resivedProject; }
-            set { SetProperty(ref _resivedProject, value); }
 
-        }
 
-        private bldWork _selectedWork;
-        public bldWork SelectedWork
-        {
-            get { return _selectedWork; }
-            set { SetProperty(ref _selectedWork, value); }
-        }
-        private bldWork _resivedWork;
-        public bldWork ResivedWork
-        {
-            get { return _resivedWork; }
-            set { SetProperty(ref _resivedWork, value); }
-        }
         private bldAOSRDocument _selectedAOSRDocument;
         public bldAOSRDocument SelectedAOSRDocument
         {
@@ -82,7 +65,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _resivedObject; }
             set { SetProperty(ref _resivedObject, value); }
         }
-       
+
 
         private bldAOSRDocument _selectedPreviousWork;
         public bldAOSRDocument SelectedPreviousWork
@@ -121,8 +104,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedDocumentsList; }
             set { SetProperty(ref _selectedDocumentsList, value); }
         }
-       
-        
+
+
 
         private bool _keepAlive = true;
 
@@ -146,7 +129,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public DelegateCommand EditPreviousWorkCommand { get; private set; }
         public DelegateCommand EditNextWorkCommand { get; private set; }
-        
+
         public DelegateCommand GenerateWordDocumentCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
@@ -159,22 +142,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 .ObservesProperty(() => SelectedAOSRDocument);
             CloseCommand = new DelegateCommand<object>(OnClose);
 
-            RemovePreviousWorkCommand = new DelegateCommand(OnRemovePreviousWork,
-                                        () => SelectedPreviousWork != null)
-                    .ObservesProperty(() => SelectedPreviousWork);
-            RemoveNextWorkCommand = new DelegateCommand(OnRemoveNextWork,
-                                        () => SelectedNextWork != null)
-                    .ObservesProperty(() => SelectedNextWork);
-
-            AddPreviousWorkCommand = new DelegateCommand(OnAddPreviousWork);
-            AddNextWorkCommand = new DelegateCommand(OnAddNextWork);
-
-            EditPreviousWorkCommand = new DelegateCommand(OnEditPreviousWork,
-                                        () => SelectedPreviousWork != null)
-                    .ObservesProperty(() => SelectedPreviousWork);
-            EditNextWorkCommand = new DelegateCommand(OnEditNextWork,
-                                        () => SelectedNextWork != null)
-                    .ObservesProperty(() => SelectedNextWork);
             GenerateWordDocumentCommand = new DelegateCommand(OnGenerateWordDocumentCommand);
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
@@ -184,126 +151,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnGenerateWordDocumentCommand()
         {
             ProjectService.SaveAOSRToWord(SelectedAOSRDocument);
-        }
-
-        public override void OnClose(object obj)
-        {
-            CoreFunctions.ConfirmActionOnElementDialog<bldAOSRDocument>(SelectedAOSRDocument, "Сохранить", "работу", "Сохранить", "Не сохранять", "Отмена", (result) =>
-            {
-                if (obj != null)
-                {
-                    if (result.Result == ButtonResult.Yes)
-                    {
-                        SelectedAOSRDocument.SaveAll(Id);
-                        // KeepAlive = false;
-                        if (_regionManager.Regions[RegionNames.ContentRegion].Views.Contains(obj))
-                            _regionManager.Regions[RegionNames.ContentRegion].Remove(obj);
-                    }
-                    else if (result.Result == ButtonResult.No)
-                    {
-                        SelectedAOSRDocument.UnDoAll(Id);
-                        if (_regionManager.Regions[RegionNames.ContentRegion].Views.Contains(obj))
-                            _regionManager.Regions[RegionNames.ContentRegion].Remove(obj);
-                    }
-                    else if (result.Result == ButtonResult.Cancel)
-                    {
-
-                    }
-                }
-            }, _dialogService);
-        }
-
-        private void OnEditNextWork()
-        {
-            CoreFunctions.EditElementDialog<bldAOSRDocument>(SelectedNextWork, "Последующая работа",
-                 (result) => { }, _dialogService, typeof(WorkDialogView).Name, "Редактировать", Id);
-
-        }
-
-        private void OnEditPreviousWork()
-        {
-            CoreFunctions.EditElementDialog<bldAOSRDocument>(SelectedPreviousWork, "Перыдыдущая работа",
-                  (result) => { }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", Id);
-        }
-
-
-
-        private void OnAddNextWork()
-        {
-         /*   bldWorksGroup AllWorks = new bldWorksGroup(SelectedAOSRDocument.bldConstruction.Works.Where(wr=>wr.Id!=SelectedAOSRDocument.Id).ToList());
-            //new bldWorksGroup(_buildingUnitsRepository.Works.GetAllBldWorks());
-            CoreFunctions.AddElementToCollectionWhithDialog<bldWorksGroup, bldAOSRDocument>
-                 (SelectedAOSRDocument.NextWorks, AllWorks, _dialogService,
-                 (result) =>
-                 {
-                     if (result.Result == ButtonResult.Yes)
-                     {
-                         bldWorksGroup new_nextWork_collection = (bldWorksGroup)
-                                result.Parameters.GetValue<object>("current_collection");
-
-                         bldWorksGroup add_works = new bldWorksGroup();
-
-                         foreach (bldAOSRDocument work in new_nextWork_collection)//Добавляем выбранные работы в писок
-                         { 
-                             if (SelectedAOSRDocument.NextWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault() == null)//Если работы в списке нет...
-                             {
-                                 bldAOSRDocument new_work = AllWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault();
-                                 add_works.Add(new_work);
-                                  SelectedAOSRDocument.NextWorks.Add(new_work);
-                             }
-                         }
-                         //CoreFunctions.CopyObjectReflectionNewInstances(new_nextWork_collection, SelectedAOSRDocument.NextWorks);
-                         foreach (bldAOSRDocument work in add_works)
-                               work?.PreviousWorks.Add(SelectedAOSRDocument);
-                     }
-                 },
-                 typeof(AddbldWorkToCollectionDialogView).Name,
-                 typeof(WorkDialogView).Name,
-                  "Редактирование списка последующих работ",
-                 "Форма для редактирования спика последующих работ.",
-                 "Список всех работ текущей коснрукции", "Последущие работы");*/
-        }
-
-        private void OnAddPreviousWork()
-        {
-          /*   bldWorksGroup AllWorks = new bldWorksGroup(SelectedAOSRDocument.bldConstruction.Works.Where(wr=>wr.Id!=SelectedAOSRDocument.Id).ToList());
-            // new bldWorksGroup(_buildingUnitsRepository.Works.GetAllBldWorks());
-            CoreFunctions.AddElementToCollectionWhithDialog<bldWorksGroup, bldAOSRDocument>
-                (SelectedAOSRDocument.PreviousWorks, AllWorks, _dialogService,
-                 (result) =>
-                 {
-                     if (result.Result == ButtonResult.Yes)
-
-                     {
-                         bldWorksGroup new_previousWork_collection = (bldWorksGroup)
-                           result.Parameters.GetValue<object>("current_collection");
-
-                         bldWorksGroup add_works = new bldWorksGroup();
-
-                         foreach (bldAOSRDocument work in new_previousWork_collection)
-                         {
-                             if (SelectedAOSRDocument.PreviousWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault() == null)
-                             {
-                                 bldAOSRDocument new_work = AllWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault();
-                                 add_works.Add(new_work);
-                                 SelectedAOSRDocument.PreviousWorks.Add(new_work);
-                            //     SelectedAOSRDocument.PreviousWorks.Name = "1111111";
-                             }
-                         }
-                         // RiseEvent  SelectedAOSRDocument.PreviousWorks.CollectionChanged(N);
-                         foreach (bldAOSRDocument work in add_works)
-                         {
-                             work?.NextWorks.Add(SelectedAOSRDocument);
-                          //   work.NextWorks.Name = "222222";
-                         }
-                     }
-
-                 },
-                typeof(AddbldWorkToCollectionDialogView).Name,
-                typeof(WorkDialogView).Name,
-                "Редактирование списка предыдущих работ",
-                "Форма для редактирования.",
-                "Список работ", "Все работы");*/
         }
 
 
@@ -324,20 +171,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             }
         }
 
-        private void OnRemoveNextWork()
-        {
-           /* CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldAOSRDocument>
-                (SelectedAOSRDocument.NextWorks, SelectedNextWork, "Последующая работа",
-                () => SelectedNextWork = null, _dialogService);*/
-        }
 
-        private void OnRemovePreviousWork()
-        {
-
-           /* CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldAOSRDocument>
-                 (SelectedAOSRDocument.PreviousWorks, SelectedPreviousWork, "Предыдущая работа",
-                 () => SelectedPreviousWork = null, _dialogService);*/
-        }
 
 
         private bool CanSave()
@@ -351,61 +185,36 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             SaveCommand.RaiseCanExecuteChanged();
         }
-        public override  void OnSave()
+        public virtual void OnSave()
         {
-            CoreFunctions.ConfirmActionOnElementDialog<bldAOSRDocument>(SelectedAOSRDocument, "Сохранить", "работу", "Сохранить", "Не сохранять", "Отмена", (result) =>
-            {
-                if (result.Result == ButtonResult.Yes)
-                {
-                    SelectedAOSRDocument.SaveAll(Id);
-                }
-            }, _dialogService);
+            this.OnSave<bldAOSRDocument>(SelectedAOSRDocument);
+        }
+        public virtual void OnClose(object obj)
+        {
+            this.OnClose<bldAOSRDocument>(obj, SelectedAOSRDocument);
         }
 
-     
+
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
 
             ConveyanceObject navigane_message_aosr_document = (ConveyanceObject)navigationContext.Parameters["bld_aosr_document"];
-           // ConveyanceObject navigane_message_work = (ConveyanceObject)navigationContext.Parameters["bld_work"];
-          //  ConveyanceObject navigane_message_project = (ConveyanceObject)navigationContext.Parameters["bld_project"];
-
-            //   ConveyanceObject navigane_message_construction = (ConveyanceObject)navigationContext.Parameters["bld_construction"];
             if (navigane_message_aosr_document != null)
             {
-              //  ResivedProject =(bldProject) navigane_message_project.Object;
-               // ResivedWork = (bldWork)navigane_message_work.Object;
-                ResivedAOSRDocument =(bldAOSRDocument)navigane_message_aosr_document.Object;
-               // ResivedProject = ResivedAOSRDocument.bldWork.bldConstruction.
-              //  ResivedWork = ;
-                // ResivedConstruction = (bldConstruction)navigane_message_construction.Object;
-                //  ResivedObject = (bldObject)navigane_message_object.Object;
-
+                ResivedAOSRDocument = (bldAOSRDocument)navigane_message_aosr_document.Object;
                 EditMode = navigane_message_aosr_document.EditMode;
                 if (SelectedAOSRDocument != null) SelectedAOSRDocument.ErrorsChanged -= RaiseCanExecuteChanged;
-                SelectedAOSRDocument = new bldAOSRDocument();
+                SelectedAOSRDocument = ResivedAOSRDocument;
                 SelectedAOSRDocument.ErrorsChanged += RaiseCanExecuteChanged;
-                SelectedConstruction = new bldConstruction();
-                SelectedProject = new SimpleEditableBldProject();
-                //   CoreFunctions.CopyObjectReflectionNewInstances(ResivedProject, SelectedProject);
-                SelectedAOSRDocument = ResivedAOSRDocument;// SelectedWork.AOSRDocuments.Where(dc => dc.Id == ResivedAOSRDocument.Id).FirstOrDefault();
-            //    SelectedObject = SelectedProject.BuildingObjects.Where(ob => ob.Id == ResivedAOSRDocument.bldWork.bldConstruction.bldObject.Id).FirstOrDefault();
-              //  SelectedConstruction = SelectedObject.Constructions.Where(cn => cn.Id == ResivedAOSRDocument.bldWork.bldConstruction.Id).FirstOrDefault();
-               // SelectedWork = SelectedConstruction.Works.Where(wr => wr.Id == ResivedAOSRDocument.bldWork.Id).FirstOrDefault();
-              /*   SelectedAOSRDocument = SelectedConstruction.Works.Where(wr => wr.Id == ResivedAOSRDocument.Id).FirstOrDefault();
-                AllDocuments.Clear();
-                AllDocuments.Add(SelectedAOSRDocument.AOSRDocuments.Id, SelectedAOSRDocument.AOSRDocuments);
-                AllDocuments.Add(SelectedAOSRDocument.LaboratoryReports.Id, SelectedAOSRDocument.LaboratoryReports);
-                AllDocuments.Add(SelectedAOSRDocument.ExecutiveSchemes.Id, SelectedAOSRDocument.ExecutiveSchemes);
-             */
+
                 Title = ResivedAOSRDocument.ShortName;
-               
+
             }
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-          //  AllDocuments.Clear();
+            //  AllDocuments.Clear();
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_aosr_document"];
             if (((bldAOSRDocument)navigane_message.Object).Id != SelectedAOSRDocument.Id)
                 return false;

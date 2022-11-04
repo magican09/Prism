@@ -16,8 +16,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void UnDo(PropertyStateRecord propertyState);
       
         public void UnDoAll(Guid currentContextId);
-   //     public void JornalingOff();
-     //   public void JornalingOn();
+         public void JornalingOff();
+        public void JornalingOn();
         public JornalRecordStatus Status { get; set; }
         public Guid CurrentContextId { get; set; }
         public PropertiesChangeJornal PropertiesChangeJornal { get; set; }
@@ -27,16 +27,24 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
 
         public ObservableCollection<IJornalable> ParentObjects { get; set; }
-        public void AdjustAllParentsObjects();
-        public void ResetAllAdjustedParentObjects();
+        public ObservableCollection<IJornalable> ChildObjects { get; set; }
+        public void AdjustObjectsStructure(IJornalable sourse = null);
+        public void ResetObjectsStructure(IJornalable sourse = null);
         public void ClearChangesJornal();
         public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId);
-        public bool Adjusted { get; set; }
+        public AdjustStatus AdjustedStatus { get; set; }
 
         //public void  SetParentObject(IJornalable obj);
 
     }
-
+    public enum AdjustStatus
+    {
+        
+        UNADJUSTED
+        ,IN_PROCESS,
+        ADJUSTED,
+        NONE
+    }
 
     public enum JornalRecordStatus
     {

@@ -235,10 +235,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public virtual bool CanSave()
         {
+            return true;
             if (SelectedBuildingObject != null)
                 return !SelectedBuildingObject.HasErrors && SelectedBuildingObject.PropertiesChangeJornal.Count > 0;
             else
                 return false;
+
         }
         public virtual void OnSave()
         {

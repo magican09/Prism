@@ -209,18 +209,18 @@ namespace PrismWorkApp.Core.Dialogs
             CoreFunctions.SetAllIdToZero(new_element, false);
             CoreFunctions.SetAllIdToZero(new_element,true);
             new_element.ClearChangesJornal();
-           
-            ConveyanceObject conveyanceObject =
+            new_element.Id = Guid.Empty;
+             ConveyanceObject conveyanceObject =
                 new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
             dialog_par.Add("selected_element_conveyance_object", conveyanceObject);
             _dialogService.ShowDialog(NewObjectDialogName, dialog_par, (result) =>
             {
                 if (result.Result == ButtonResult.Yes)
                 {
-                  //  new_element.ResetObjectsStructure();
-                    CurrentCollection.Add(new_element);
-                 //   CurrentCollection.ResetObjectsStructure();
-                //    CurrentCollection.AdjustObjectsStructure();
+                    new_element.ResetObjectsStructure();
+                   CurrentCollection.Add(new_element);
+               //    CurrentCollection.ResetObjectsStructure();
+                  // CurrentCollection.AdjustObjectsStructure();
 
                     //  CommonCollection.Add(new_element);
                 }

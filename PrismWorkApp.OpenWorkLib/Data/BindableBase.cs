@@ -283,7 +283,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             PropertiesChangeJornal.ContextIdHistory.Remove(currentContextId);
         }
         public virtual void Save(object prop_id, Guid currentContextId)
-        { //Сохранение текущего состояние свойства заключается в том, что мы просто удаляем все предыдущие изменнеия из журнала изменений
+        {
+           /* List<PropertyStateRecord> propertyStateRecords =
+                           PropertiesChangeJornal.Where(p => ((IKeyable)p.Value).Id == (Guid)prop_id && p.ContextId == currentContextId).ToList(); // Находим все записи о объекте в журнале
+            */
+            //Сохранение текущего состояние свойства заключается в том, что мы просто удаляем все предыдущие изменнеия из журнала изменений
             if (prop_id != null)
             {
                 PropertyStateRecord propertyState;
@@ -321,10 +325,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public virtual void SaveAll(Guid currentContextId)
         {
-            List<string> uniq_property_names = //Получаем имена свойство, которые подвергались изменениям
-                   PropertiesChangeJornal.GroupBy(g => g.Name).Select(x => x.First()).Select(jr => jr.Name).ToList();
-            foreach (string prop_name in uniq_property_names)//Сохраняем последние изменения для каждого свойства
-                Save(prop_name, currentContextId);
+             List<string> uniq_property_names = //Получаем имена свойство, которые подвергались изменениям
+                    PropertiesChangeJornal.GroupBy(g => g.Name).Select(x => x.First()).Select(jr => jr.Name).ToList();
+             foreach (string prop_name in uniq_property_names)//Сохраняем последние изменения для каждого свойства
+                 Save(prop_name, currentContextId);
+             
+         /*   List<Guid> uniq_property_ids = //Получаем id элементов, которые подвергались изменениям
+            PropertiesChangeJornal.Where(r => r.Value != null).GroupBy(g => g.ContextId).Select(x => x.First()).Select(jr => ((IEntityObject)jr.Value).Id).ToList();
+            foreach (Guid prop_id in uniq_property_ids)
+                Save(prop_id, currentContextId);*/
+
 
             PropertiesChangeJornal.ContextIdHistory.Remove(currentContextId);
 

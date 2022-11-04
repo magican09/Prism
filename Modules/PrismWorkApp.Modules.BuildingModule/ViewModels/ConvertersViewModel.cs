@@ -80,7 +80,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _allProjectsContext; }
             set { _allProjectsContext = value; }
         }
-         public bldProjectsGroup allbldProjects { get; set; } = new bldProjectsGroup();
+        public bldProjectsGroup allbldProjects { get; set; } = new bldProjectsGroup();
 
         private IApplicationCommands _applicationCommands;
         public IApplicationCommands ApplicationCommands
@@ -105,7 +105,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             LoadProjectFromDBCommand = new DelegateCommand(LoadProjectFomDB, CanLoadProjectFromDb);
             SaveDataToDBCommand = new DelegateCommand(SaveDataToDB, CanSaveDataToDB);
             applicationCommands.SaveAllCommand.RegisterCommand(SaveDataToDBCommand);
-          
+
 
             /*  CreateProjectStructureCommand = new DelegateCommand(CreateProjectStructure).ObservesProperty(() => SelectedProject);
               CreateAOSRCommand = new DelegateCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
@@ -138,11 +138,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             if (find_project != null)
                             {
 
-                                //   CoreFunctions.CopyObjectReflectionNewInstances(project, find_project);
 
                             }
                         }
-                        // CoreFunctions.CopyObjectReflectionNewInstances(AllProjects, AllProjectsContext);
+
                         AllProjectsContext.ClearChangesJornal();
                         SaveDataToDBCommand.RaiseCanExecuteChanged();
                         _buildingUnitsRepository.Complete();
@@ -199,7 +198,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             // CreateAOSR(SelectedWork);
 
         }
-       
+
         private void LoadProjectFromExcel()
         {
             var project = ProjectService.LoadProjectFromExcel();
@@ -234,15 +233,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void LoadProjectFomDB()
         {
-            // AllProjectsContext.JornalingOff();
+            AllProjectsContext.JornalingOff();
             AllProjectsContext = new bldProjectsGroup(_buildingUnitsRepository.Projects.GetProjectsAsync());
+            AllProjectsContext.JornalingOn();
             AllProjectsContext.ResetObjectsStructure();
             AllProjectsContext.AdjustObjectsStructure();
-            AllProjectsContext.CurrentContextId = Id;
-            AllProjectsContext.PropertiesChangeJornal.ContextIdHistory.Add(Id);
+           // AllProjectsContext.CurrentContextId = Id;
+           // AllProjectsContext.PropertiesChangeJornal.ContextIdHistory.Add(Id);
             AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
-            //  AllProjectsContext.ClearStructureLevel();
-            //AllProjectsContext.UpdateStructure();
+
             EventMessage message = new EventMessage();
             bldProject project = new bldProject();
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldProjectsGroup, bldProject>(AllProjectsContext,

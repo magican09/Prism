@@ -16,9 +16,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         protected IRegionManager _regionManager;
 
 
-        public virtual void OnSave<T>(T selected_obj) where T : IJornalable, INameable, IRegisterable, IBindableBase
+        public virtual void OnSave<T>(T selected_obj,string object_name="") where T : IJornalable, INameable, IRegisterable, IBindableBase
         {
-            CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", "проект", "Сохранить", "Не сохранять", "Отмена", (result) =>
+            CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
             {
                 if (result.Result == ButtonResult.Yes)
                 {

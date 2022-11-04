@@ -791,14 +791,19 @@ namespace PrismWorkApp.Core
                     else
                         new_target_prop_value = sourse_prop_value;
 
-                    if (target_prop.CanWrite && !set_value_skip_flag) target_prop.SetValue(target, new_target_prop_value);
-
+                    if (target_prop.CanWrite && !set_value_skip_flag)
+                    {
+                        (target as IJornalable).JornalingOff();
+                        target_prop.SetValue(target, new_target_prop_value);
+                        (target as IJornalable).JornalingOn();
+                    }
                     set_value_skip_flag = false;
                 }
             }
 
             if ((sourse is IList) && !((IContainerFunctionabl)sourse).IsPointerContainer) //if input parameters is Tlist 
             {
+                (target as IJornalable).JornalingOff();
 
                 foreach (IEntityObject sourse_element in (IEnumerable<IEntityObject>)sourse)  //Регистрируем все объекты списка...
                 {
@@ -855,6 +860,7 @@ namespace PrismWorkApp.Core
                         ((IList)target).Remove(obj);
                     }
                 }
+            (target as IJornalable).JornalingOn();
 
             }
 

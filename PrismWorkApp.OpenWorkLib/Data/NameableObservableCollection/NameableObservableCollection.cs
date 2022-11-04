@@ -179,12 +179,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public virtual void Save(object prop_id, Guid currentContextId)
         {
-            if ((Guid)prop_id != Guid.Empty)
+            PropertyStateRecord propertyState = prop_id as PropertyStateRecord;
+            if ((propertyState.Value as IEntityObject).Id != Guid.Empty)
             {
-                List<PropertyStateRecord> propertyStateRecords =
-                            PropertiesChangeJornal.Where(p => ((IKeyable)p.Value).Id == (Guid)prop_id && p.ContextId == currentContextId).ToList(); // Находим все записи о объекте в журнале
+               // List<PropertyStateRecord> propertyStateRecords =
+               //             PropertiesChangeJornal.Where(p => ((IKeyable)p.Value).Id == (Guid)prop_id && p.ContextId == currentContextId).ToList(); // Находим все записи о объекте в журнале
 
-                PropertyStateRecord propertyState = propertyStateRecords.OrderBy(r => r.Date).LastOrDefault(); //Выбираем самую последнюю
+               // PropertyStateRecord propertyState = propertyStateRecords.OrderBy(r => r.Date).LastOrDefault(); //Выбираем самую последнюю
 
                 if (propertyState != null)
                 {
@@ -211,21 +212,28 @@ namespace PrismWorkApp.OpenWorkLib.Data
                                         {
                                             PropertiesChangeJornal.Remove(record);
                                         }*/
-                    foreach (PropertyStateRecord record in propertyStateRecords)//Очищаем журнал от записей
+                   /* foreach (PropertyStateRecord record in propertyStateRecords)//Очищаем журнал от записей
                     {
                         PropertiesChangeJornal.Remove(record);
                         ObjectChangeSaved?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyState));
-                    }
+                    }*/
                 }
             }
         }
         public void SaveAll(Guid currentContextId)
         {
-            List<Guid> uniq_property_ids = //Получаем id элементов, которые подвергались изменениям
-           PropertiesChangeJornal.Where(r => r.Value != null).GroupBy(g => g.ContextId).Select(x => x.First()).Select(jr => ((IEntityObject)jr.Value).Id).ToList();
-
-            foreach (Guid prop_id in uniq_property_ids)
-                Save(prop_id, currentContextId);
+            // List<Guid> uniq_property_ids = //Получаем id элементов, которые подвергались изменениям
+            // PropertiesChangeJornal.Where(r => r.Value != null).GroupBy(g => g.ContextId).Select(x => x.First()).Select(jr => ((IEntityObject)jr.Value).Id).ToList();
+            var uniq_property_ids = //Получаем id элементов, которые подвергались изменениям
+                  PropertiesChangeJornal.Where(r => r.Value != null).GroupBy(g => g.Id).Select(el=>el.GroupBy(g=>g.ContextId).First()).Select(el=>el.OrderBy(or=>or.Date).First()).ToList();
+            foreach (PropertyStateRecord prop_st_rec in uniq_property_ids)
+                Save(prop_st_rec, currentContextId);
+           
+            foreach (PropertyStateRecord record in PropertiesChangeJornal)//Очищаем журнал от записей
+            {
+                PropertiesChangeJornal.Remove(record);
+                ObjectChangeSaved?.Invoke(this, new ObjectStateChangedEventArgs("", this, record));
+            }
         }
         public void ClearChangesJornal()
         {

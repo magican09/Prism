@@ -31,12 +31,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             }, _dialogService);
         }
+        public  virtual void OnWindowClose()
+        {
 
-        public virtual void OnClose<T>(object view, T selected_obj) where T : IJornalable, INameable, IRegisterable, IBindableBase
+        }
+
+        public virtual void OnClose<T>(object view, T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
         {
             if (selected_obj != null && !selected_obj.IsPropertiesChangeJornalIsEmpty(Id))//selected_obj!=null&&добавлено 27,10,22
             {
-                CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", "проект", "Сохранить", "Не сохранять", "Отмена", (result) =>
+                CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
                 {
                     if (view != null)
                     {
@@ -48,6 +52,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
                                 _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
                             }
+                            OnWindowClose();
                         }
                         else if (result.Result == ButtonResult.No)
                         {
@@ -57,6 +62,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
                                 _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
                             }
+                            OnWindowClose();
                         }
                         else if (result.Result == ButtonResult.Cancel)
                         {
@@ -73,6 +79,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
                     _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
                 }
+                OnWindowClose();
             }
 
         }

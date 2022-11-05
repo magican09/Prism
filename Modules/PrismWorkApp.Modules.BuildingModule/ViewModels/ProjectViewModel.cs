@@ -87,8 +87,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { _keepAlive = value; }
         }
 
-         public  DelegateCommand SaveCommand { get; private set; }
-         public  DelegateCommand<object> CloseCommand { get; private set; }
+        // public  DelegateCommand SaveCommand { get; private set; }
+        public ApplicationCommand SaveCommand { get; private set; }
+        public DelegateCommand<object> CloseCommand { get; private set; }
 
         public DelegateCommand RemoveBuildingObjectCommand { get; private set; }
         public DelegateCommand RemoveParticipantCommand { get; private set; }
@@ -102,12 +103,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public DelegateCommand EditResponsibleEmployeeCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; set; }
-
+          private IApplicationCommands _applicationCommands;
+        public IApplicationCommands ApplicationCommands
+        {
+            get { return _applicationCommands; }
+            set { SetProperty(ref _applicationCommands, value); }
+        }
 
         public ProjectViewModel(IDialogService dialogService, IBuildingUnitsRepository buildingUnitsRepository,
             IRegionManager regionManager, IApplicationCommands applicationCommands)
         {
-            SaveCommand = new DelegateCommand(OnSave, CanSave);
+            //  SaveCommand = new DelegateCommand(OnSave, CanSave);
+            SaveCommand = new ApplicationCommand(OnSave, CanSave)
+                .ObservesProperty(() => {SelectedParticipant});
             CloseCommand = new DelegateCommand<object>(OnClose);
             AddBuildingObjectsCommand = new DelegateCommand(OnAddBuildingObject);
             AddParticipantCommand = new DelegateCommand(OnAddParticipant);
@@ -138,7 +146,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
-            applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            _applicationCommands = applicationCommands;
+            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
         }
 
 
@@ -350,7 +359,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public virtual bool CanSave()
         {
             if (SelectedProject != null)
-                return !SelectedProject.HasErrors && SelectedProject.PropertiesChangeJornal.Count>0;
+                return !SelectedProject.HasErrors;//&& SelectedProject.PropertiesChangeJornal.Count>0;
             else
                 return false;
         }
@@ -365,8 +374,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public override void OnClose(object obj)
         {
             this.OnClose<bldProject>(obj, SelectedProject);
+           
         }
-     
+        public override void OnWindowClose()
+        {
+            _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+        //   base.OnCloseWindow();
+        }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
 
@@ -381,7 +395,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 Title = ResivedProject.ShortName;
             }
         }
-
+        
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_project"];
@@ -394,7 +408,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-
+        
         }
 
 

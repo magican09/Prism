@@ -3,6 +3,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
@@ -86,7 +87,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
      
         private readonly IBuildingUnitsRepository _buildingUnitsRepository;
-        public ObjectViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
+        private IApplicationCommands _applicationCommands;
+        public ObjectViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
+             IApplicationCommands applicationCommands)
         {
 
             DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
@@ -114,6 +117,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _dialogService = dialogService;
             _regionManager = regionManager;
             _buildingUnitsRepository = buildingUnitsRepository;
+            _applicationCommands = applicationCommands;
+            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
         }
         private void OnDataGridLostSocus(object obj)
         {
@@ -235,9 +240,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public virtual bool CanSave()
         {
-            return true;
+
             if (SelectedBuildingObject != null)
-                return !SelectedBuildingObject.HasErrors && SelectedBuildingObject.PropertiesChangeJornal.Count > 0;
+                return !SelectedBuildingObject.HasErrors;// && SelectedBuildingObject.PropertiesChangeJornal.Count > 0;
             else
                 return false;
 
@@ -251,7 +256,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             this.OnClose<bldObject>(obj, SelectedBuildingObject);
         }
 
-       
+        public override void OnWindowClose()
+        {
+            _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+        //    base.OnWindowClose();
+        }
+
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_object"];

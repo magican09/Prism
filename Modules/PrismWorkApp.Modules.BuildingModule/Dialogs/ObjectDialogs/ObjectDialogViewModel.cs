@@ -1,6 +1,7 @@
 ﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.Services.Repositories;
@@ -13,8 +14,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
     public class ObjectDialogViewModel : ObjectViewModel,IDialogAware
     {
 
-        public ObjectDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
-            :base(dialogService, regionManager, buildingUnitsRepository)
+        public ObjectDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
+            :base(dialogService, regionManager, buildingUnitsRepository, applicationCommands)
         {
 
         }

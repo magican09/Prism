@@ -36,9 +36,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public DelegateCommand SaveDataToDBCommand { get; private set; }
         public DelegateCommand CreateAOSRCommand { get; private set; }
         private const int CURRENT_MODULE_ID = 2;
-
         public IBuildingUnitsRepository _buildingUnitsRepository;
-
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
@@ -65,22 +63,28 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private readonly IRegionManager _regionManager;
         private readonly IEventAggregator _eventAggregator;
         private IDialogService _dialogService;
-
         private bldProjectsGroup _allProjects = new bldProjectsGroup();
-
         public bldProjectsGroup AllProjects
         {
             get { return _allProjects; }
             set { _allProjects = value; }
         }
         private bldProjectsGroup _allProjectsContext = new bldProjectsGroup();
-
         public bldProjectsGroup AllProjectsContext
         {
             get { return _allProjectsContext; }
             set { _allProjectsContext = value; }
         }
         public bldProjectsGroup allbldProjects { get; set; } = new bldProjectsGroup();
+
+        private bool _allChangesIsDone;
+
+        public bool AllChangesIsDone
+        {
+            get { return _allChangesIsDone; }
+            set { _allChangesIsDone = value; }
+        }
+
 
         private IApplicationCommands _applicationCommands;
         public IApplicationCommands ApplicationCommands
@@ -89,6 +93,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _applicationCommands, value); }
         }
 
+      
 
         public ConvertersViewModel(IRegionManager regionManager, IModulesContext modulesContext, IEventAggregator eventAggregator,
                                     IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
@@ -98,13 +103,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
-            _applicationCommands = applicationCommands;
+            ApplicationCommands = applicationCommands;
             ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
             //IsModuleEnable =  ModuleInfo.IsEnable;
             LoadProjectFromExcelCommand = new DelegateCommand(LoadProjectFromExcel, CanLoadAllProjects);
             LoadProjectFromDBCommand = new DelegateCommand(LoadProjectFomDB, CanLoadProjectFromDb);
-            SaveDataToDBCommand = new DelegateCommand(SaveDataToDB, CanSaveDataToDB);
-            applicationCommands.SaveAllCommand.RegisterCommand(SaveDataToDBCommand);
+            SaveDataToDBCommand = new DelegateCommand(SaveDataToDB, CanSaveDataToDB)
+                .ObservesProperty(()=>AllChangesIsDone);
+         //   ApplicationCommands.SaveAllCommand.RegisterCommand(SaveDataToDBCommand);
 
 
             /*  CreateProjectStructureCommand = new DelegateCommand(CreateProjectStructure).ObservesProperty(() => SelectedProject);
@@ -114,15 +120,30 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //          ThreadOption.PublisherThread, false,
             //   message => message.Recipient == "RibbonGroup");
             AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
+         
+          //  ApplicationCommands.SaveAllCommand.CanExecuteChanged += SaveAllCommandCanExecuteChanged;
+            ApplicationCommands.SaveAllCommand.RegisterCommand(SaveDataToDBCommand);
         }
+
+        private void SaveAllCommandCanExecuteChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private bool SaveAllCommandCanExecute(object arg)
+        {
+            return true;
+        }
+
         public void OnChildObjectChanges(object sender, ObjectStateChangedEventArgs e)
         {
+            AllChangesIsDone = AllProjectsContext.PropertiesChangeJornal.Count > 0;
             SaveDataToDBCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanSaveDataToDB()
         {
-            return AllProjectsContext.PropertiesChangeJornal.Count > 0;
+            return true;//AllProjectsContext.PropertiesChangeJornal.Count > 0;
         }
         private void SaveDataToDB()
         {

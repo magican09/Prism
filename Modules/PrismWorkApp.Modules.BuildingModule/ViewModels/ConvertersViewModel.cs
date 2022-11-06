@@ -110,6 +110,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             LoadProjectFromDBCommand = new DelegateCommand(LoadProjectFomDB, CanLoadProjectFromDb);
             SaveDataToDBCommand = new DelegateCommand(SaveDataToDB, CanSaveDataToDB)
                 .ObservesProperty(()=>AllChangesIsDone);
+            AllChangesIsDone = true;
          //   ApplicationCommands.SaveAllCommand.RegisterCommand(SaveDataToDBCommand);
 
 

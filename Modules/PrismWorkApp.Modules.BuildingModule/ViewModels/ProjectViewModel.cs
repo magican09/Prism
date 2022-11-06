@@ -84,23 +84,25 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public bool KeepAlive
         {
             get { return _keepAlive; }
-            set { _keepAlive = value; }
+            set { SetProperty(ref _keepAlive , value); }
         }
 
-        // public  DelegateCommand SaveCommand { get; private set; }
-        public ApplicationCommand SaveCommand { get; private set; }
-        public DelegateCommand<object> CloseCommand { get; private set; }
+        
+        // public  NotifyCommand SaveCommand { get; private set; }
+        public NotifyCommand SaveCommand { get; private set; }
+        public NotifyCommand TestCommand { get; private set; }
+        public NotifyCommand<object> CloseCommand { get; private set; }
 
-        public DelegateCommand RemoveBuildingObjectCommand { get; private set; }
-        public DelegateCommand RemoveParticipantCommand { get; private set; }
-        public DelegateCommand RemoveResponsibleEmployeeCommand { get; private set; }
-        public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
-        public DelegateCommand AddBuildingObjectsCommand { get; private set; }
-        public DelegateCommand AddParticipantCommand { get; private set; }
-        public DelegateCommand AddResponsibleEmployeesCommand { get; private set; }
-        public DelegateCommand EditBuildingObjectCommand { get; private set; }
-        public DelegateCommand EditParticipantCommand { get; private set; }
-        public DelegateCommand EditResponsibleEmployeeCommand { get; private set; }
+        public NotifyCommand RemoveBuildingObjectCommand { get; private set; }
+        public NotifyCommand RemoveParticipantCommand { get; private set; }
+        public NotifyCommand RemoveResponsibleEmployeeCommand { get; private set; }
+        public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
+        public NotifyCommand AddBuildingObjectsCommand { get; private set; }
+        public NotifyCommand AddParticipantCommand { get; private set; }
+        public NotifyCommand AddResponsibleEmployeesCommand { get; private set; }
+        public NotifyCommand EditBuildingObjectCommand { get; private set; }
+        public NotifyCommand EditParticipantCommand { get; private set; }
+        public NotifyCommand EditResponsibleEmployeeCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; set; }
           private IApplicationCommands _applicationCommands;
@@ -113,35 +115,38 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public ProjectViewModel(IDialogService dialogService, IBuildingUnitsRepository buildingUnitsRepository,
             IRegionManager regionManager, IApplicationCommands applicationCommands)
         {
-            //  SaveCommand = new DelegateCommand(OnSave, CanSave);
-            SaveCommand = new ApplicationCommand(OnSave, CanSave)
-                .ObservesProperty(() => {SelectedParticipant});
-            CloseCommand = new DelegateCommand<object>(OnClose);
-            AddBuildingObjectsCommand = new DelegateCommand(OnAddBuildingObject);
-            AddParticipantCommand = new DelegateCommand(OnAddParticipant);
-            AddResponsibleEmployeesCommand = new DelegateCommand(OnAddResponsibleEmployees);
+            //  SaveCommand = new NotifyCommand(OnSave, CanSave);
 
-            EditBuildingObjectCommand = new DelegateCommand(OnEditBuildingObject,
+            SaveCommand = new NotifyCommand(OnSave, CanSave)
+                .ObservesProperty(() => SelectedProject);
+            TestCommand = new NotifyCommand(OnTestCommand)
+                .ObservesCanExecute(() => KeepAlive);
+            CloseCommand = new NotifyCommand<object>(OnClose).ObservesCanExecute(() => KeepAlive); ;
+            AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
+            AddParticipantCommand = new NotifyCommand(OnAddParticipant);
+            AddResponsibleEmployeesCommand = new NotifyCommand(OnAddResponsibleEmployees);
+
+            EditBuildingObjectCommand = new NotifyCommand(OnEditBuildingObject,
                                    () => SelectedBuildingObject != null)
                .ObservesProperty(() => SelectedBuildingObject);
-            EditParticipantCommand = new DelegateCommand(OnEditParticipant,
+            EditParticipantCommand = new NotifyCommand(OnEditParticipant,
                                      () => SelectedParticipant != null)
                  .ObservesProperty(() => SelectedParticipant);
-            EditResponsibleEmployeeCommand = new DelegateCommand(OnEditRemoveResponsibleEmployee,
+            EditResponsibleEmployeeCommand = new NotifyCommand(OnEditRemoveResponsibleEmployee,
                                         () => SelectedResponsibleEmployee != null)
                     .ObservesProperty(() => SelectedResponsibleEmployee);
 
-            RemoveBuildingObjectCommand = new DelegateCommand(OnRemoveBuildingObject,
+            RemoveBuildingObjectCommand = new NotifyCommand(OnRemoveBuildingObject,
                                        () => SelectedBuildingObject != null)
                    .ObservesProperty(() => SelectedBuildingObject);
 
-            RemoveParticipantCommand = new DelegateCommand(OnRemoveParticipant,
+            RemoveParticipantCommand = new NotifyCommand(OnRemoveParticipant,
                                         () => SelectedParticipant != null)
                     .ObservesProperty(() => SelectedParticipant);
-            RemoveResponsibleEmployeeCommand = new DelegateCommand(OnRemoveResponsibleEmployee,
+            RemoveResponsibleEmployeeCommand = new NotifyCommand(OnRemoveResponsibleEmployee,
                                         () => SelectedResponsibleEmployee != null)
                     .ObservesProperty(() => SelectedResponsibleEmployee);
-            DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
             
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
@@ -150,7 +155,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
         }
 
+        private bool CanTest()
+        {
+           return  true;
+        }
 
+        private void OnTestCommand()
+        {
+            
+        }
 
         private void OnEditRemoveResponsibleEmployee()
         {
@@ -369,6 +382,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public override void OnSave()
         {
+            KeepAlive = !KeepAlive;
             this.OnSave<bldProject>(SelectedProject);
         }
         public override void OnClose(object obj)

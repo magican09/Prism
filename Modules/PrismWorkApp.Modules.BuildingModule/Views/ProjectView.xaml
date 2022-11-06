@@ -261,6 +261,7 @@
 
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
+            <Button  Content="Test Command" Command="{Binding TestCommand}" />
             <Button  Content="Сохранить" Command="{Binding SaveCommand}" />
             <Button  Content="Закрыть"  Command="{Binding CloseCommand}"
                                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,

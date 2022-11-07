@@ -168,6 +168,34 @@ namespace PrismWorkApp.Core
 
         }
 
+        public static void ConfirmActionDialog
+            (string action_name, string element_type_name, string confirm_action_name, 
+            string cencel_action_name, string confirm_Yes_action_massage,
+          Action<IDialogResult> elm_save_action, IDialogService dialogService)
+        {
+            var dialog_par = new DialogParameters();
+            dialog_par.Add("massege",
+               $"Вы действительно хотите {action_name} {element_type_name} ?!");
+            dialog_par.Add("confirm_button_content", confirm_action_name);
+            dialog_par.Add("refuse_button_content", cencel_action_name);
+            dialogService.ShowDialog(typeof(ConfirmActionWhithoutCancelDialog).Name, dialog_par, result =>
+            {
+                if (result.Result == ButtonResult.Yes)
+                {
+                    var res_massage = result.Parameters.GetValue<string>("confirm_dialog_param");
+                    var p = new DialogParameters();
+                    p.Add("message", confirm_Yes_action_massage);
+                    elm_save_action.Invoke(new DialogResult(ButtonResult.Yes));
+                    dialogService.ShowDialog(typeof(MessageDialog).Name, p, (r) => { });
+                }
+                if (result.Result == ButtonResult.No)
+                {
+                    elm_save_action.Invoke(new DialogResult(ButtonResult.No));
+                }
+            });
+
+        }
+
         public static void EditElementDialog<T>
                    (T element, string element_type_name,
                  Action<IDialogResult> elm_save_action, IDialogService dialogService,

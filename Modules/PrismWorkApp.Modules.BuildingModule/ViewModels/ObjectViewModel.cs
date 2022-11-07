@@ -75,15 +75,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedConstruction; }
             set { SetProperty(ref _selectedConstruction, value); }
         }
-        public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
-        public DelegateCommand SaveCommand { get; private set; }
-        public DelegateCommand<object> CloseCommand { get; private set; }
-        public DelegateCommand AddBuildingObjectsCommand { get; private set; }
-        public DelegateCommand AddConstructionCommand { get; private set; }
-        public DelegateCommand EditBuildingObjectCommand { get; private set; }
-        public DelegateCommand EditConstructionCommand { get; private set; }
-        public DelegateCommand RemoveBuildingObjectCommand { get; private set; }
-        public DelegateCommand RemoveConstructionCommand { get; private set; }
+        public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
+        public NotifyCommand SaveCommand { get; private set; }
+        public NotifyCommand<object> CloseCommand { get; private set; }
+        public NotifyCommand AddBuildingObjectsCommand { get; private set; }
+        public NotifyCommand AddConstructionCommand { get; private set; }
+        public NotifyCommand EditBuildingObjectCommand { get; private set; }
+        public NotifyCommand EditConstructionCommand { get; private set; }
+        public NotifyCommand RemoveBuildingObjectCommand { get; private set; }
+        public NotifyCommand RemoveConstructionCommand { get; private set; }
 
      
         private readonly IBuildingUnitsRepository _buildingUnitsRepository;
@@ -92,25 +92,25 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
              IApplicationCommands applicationCommands)
         {
 
-            DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
-            SaveCommand = new DelegateCommand(OnSave, CanSave);
-            CloseCommand = new DelegateCommand<object>(OnClose);
-            RemoveBuildingObjectCommand = new DelegateCommand(OnRemoveBuildingObject,
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+            SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(()=>SelectedBuildingObject);
+            CloseCommand = new NotifyCommand<object>(OnClose);
+            RemoveBuildingObjectCommand = new NotifyCommand(OnRemoveBuildingObject,
                                       () => SelectedChildBuildingObject != null)
                   .ObservesProperty(() => SelectedChildBuildingObject);
-            RemoveConstructionCommand = new DelegateCommand(OnRemoveConstruction,
+            RemoveConstructionCommand = new NotifyCommand(OnRemoveConstruction,
                                         () => SelectedConstruction != null)
                 .ObservesProperty(() => SelectedConstruction);
-            AddBuildingObjectsCommand = new DelegateCommand(OnAddBuildingObject);
+            AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
            
-            AddConstructionCommand = new DelegateCommand(OnAddConstruction);
+            AddConstructionCommand = new NotifyCommand(OnAddConstruction);
 
 
-            EditBuildingObjectCommand = new DelegateCommand(OnEditBuildingObject,
+            EditBuildingObjectCommand = new NotifyCommand(OnEditBuildingObject,
                                          () => SelectedChildBuildingObject != null)
                      .ObservesProperty(() => SelectedChildBuildingObject);
 
-            EditConstructionCommand = new DelegateCommand(OnEditConstruction,
+            EditConstructionCommand = new NotifyCommand(OnEditConstruction,
                                          () => SelectedConstruction != null)
                      .ObservesProperty(() => SelectedConstruction);
              

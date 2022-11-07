@@ -1,4 +1,5 @@
 ﻿using Prism;
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,12 +10,10 @@ using System.Windows.Input;
 
 namespace PrismWorkApp.Core.Commands
 {
-   public abstract class NotifyCommandBase 
+   public abstract class NotifyCommandBase : DelegateCommandBase
     {
         
-        protected abstract bool CanExecute(object parameter);
-        //
-      
+        
 
        
     }

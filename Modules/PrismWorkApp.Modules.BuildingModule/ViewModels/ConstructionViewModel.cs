@@ -3,6 +3,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
@@ -24,7 +25,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         INavigationAware//, IRegionMemberLifetime
 
     {
-        private string _title = "Проект";
+        private string _title = "Конструкция";
         public string Title
         {
             get { return _title; }
@@ -80,48 +81,52 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
 
-        public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
-        public DelegateCommand SaveCommand { get; private set; }
-        public DelegateCommand<object> CloseCommand { get; private set; }
+        public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
+        public NotifyCommand SaveCommand { get; private set; }
+        public NotifyCommand<object> CloseCommand { get; private set; }
 
-        public DelegateCommand RemoveConstructionCommand { get; private set; }
-        public DelegateCommand RemoveWorkCommand { get; private set; }
+        public NotifyCommand RemoveConstructionCommand { get; private set; }
+        public NotifyCommand RemoveWorkCommand { get; private set; }
 
-        public DelegateCommand AddConstructionCommand { get; private set; }
-        public DelegateCommand AddWorkCommand { get; private set; }
+        public NotifyCommand AddConstructionCommand { get; private set; }
+        public NotifyCommand AddWorkCommand { get; private set; }
 
-        public DelegateCommand EditConstructionCommand { get; private set; }
-        public DelegateCommand EditWorkCommand { get; private set; }
+        public NotifyCommand EditConstructionCommand { get; private set; }
+        public NotifyCommand EditWorkCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
-
+        private IApplicationCommands _applicationCommands;
 
         public ConstructionViewModel(IDialogService dialogService,
-            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
+            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
-            DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
-            SaveCommand = new DelegateCommand(OnSave, CanSave);
-            CloseCommand = new DelegateCommand<object>(OnClose);
+          
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+            SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(()=>SelectedConstruction);
+             CloseCommand = new NotifyCommand<object>(OnClose);
 
-            RemoveConstructionCommand = new DelegateCommand(OnRemoveConstruction,
+            RemoveConstructionCommand = new NotifyCommand(OnRemoveConstruction,
                                         () => SelectedChildConstruction != null)
                     .ObservesProperty(() => SelectedChildConstruction);
-            RemoveWorkCommand = new DelegateCommand(OnRemoveWork,
+            RemoveWorkCommand = new NotifyCommand(OnRemoveWork,
                                         () => SelectedWork != null)
                     .ObservesProperty(() => SelectedWork);
 
-            AddConstructionCommand = new DelegateCommand(OnAddConstruction);
-            AddWorkCommand = new DelegateCommand(OnAddWork);
+            AddConstructionCommand = new NotifyCommand(OnAddConstruction);
+            AddWorkCommand = new NotifyCommand(OnAddWork);
 
-            EditConstructionCommand = new DelegateCommand(OnEditConstruction,
+            EditConstructionCommand = new NotifyCommand(OnEditConstruction,
                                         () => SelectedChildConstruction != null)
                     .ObservesProperty(() => SelectedChildConstruction);
-            EditWorkCommand = new DelegateCommand(OnEditWork,
+            EditWorkCommand = new NotifyCommand(OnEditWork,
                                         () => SelectedWork != null)
                     .ObservesProperty(() => SelectedWork);
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
+            _applicationCommands = applicationCommands;
+            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+
         }
 
 
@@ -244,8 +249,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private bool CanSave()
         {
-            if(SelectedConstruction != null)
-                return !SelectedConstruction.HasErrors && SelectedConstruction.PropertiesChangeJornal.Count > 0;
+            if (SelectedConstruction != null)
+                return !SelectedConstruction.HasErrors;// && SelectedConstruction.PropertiesChangeJornal.Count > 0;
             else
                 return false;
         }
@@ -261,6 +266,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public override void OnClose(object obj)
         {
             this.OnClose<bldConstruction>(obj, SelectedConstruction);
+        }
+        public override void OnWindowClose()
+        {
+            _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+            base.OnWindowClose();
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)

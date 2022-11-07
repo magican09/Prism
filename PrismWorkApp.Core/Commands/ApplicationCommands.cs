@@ -16,12 +16,12 @@ namespace PrismWorkApp.Core.Commands
 {
     public interface IApplicationCommands
     {
-        CompositeCommand SaveAllCommand { get; }
+        NotifyCompositeCommand SaveAllCommand { get; }
     }
     public class ApplicationCommands : IApplicationCommands
     {
-        private CompositeCommand _saveAllCommand = new CompositeCommand();
-        public CompositeCommand SaveAllCommand
+        private NotifyCompositeCommand _saveAllCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand SaveAllCommand
         {
             get { return _saveAllCommand; }
         }

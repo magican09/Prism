@@ -118,9 +118,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //  SaveCommand = new NotifyCommand(OnSave, CanSave);
 
             SaveCommand = new NotifyCommand(OnSave, CanSave)
-                .ObservesProperty(() => SelectedProject);
-            TestCommand = new NotifyCommand(OnTestCommand)
-                .ObservesCanExecute(() => KeepAlive);
+                .ObservesProperty(() => SelectedProject).ObservesCanExecute(()=>KeepAlive);
+            TestCommand = new NotifyCommand(OnTestCommand);
             CloseCommand = new NotifyCommand<object>(OnClose).ObservesCanExecute(() => KeepAlive); ;
             AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
             AddParticipantCommand = new NotifyCommand(OnAddParticipant);
@@ -162,7 +161,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnTestCommand()
         {
-            
+            KeepAlive = !KeepAlive;
         }
 
         private void OnEditRemoveResponsibleEmployee()
@@ -382,8 +381,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public override void OnSave()
         {
-            KeepAlive = !KeepAlive;
-            this.OnSave<bldProject>(SelectedProject);
+                this.OnSave<bldProject>(SelectedProject);
         }
         public override void OnClose(object obj)
         {

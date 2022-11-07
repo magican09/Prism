@@ -3,6 +3,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.ProjectModel.Data.Models;
@@ -117,49 +118,52 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
 
-        public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
-        public DelegateCommand SaveCommand { get; private set; }
-        public DelegateCommand<object> CloseCommand { get; private set; }
+        public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
+        public NotifyCommand SaveCommand { get; private set; }
+        public NotifyCommand<object> CloseCommand { get; private set; }
 
-        public DelegateCommand RemovePreviousWorkCommand { get; private set; }
-        public DelegateCommand RemoveNextWorkCommand { get; private set; }
+        public NotifyCommand RemovePreviousWorkCommand { get; private set; }
+        public NotifyCommand RemoveNextWorkCommand { get; private set; }
 
-        public DelegateCommand AddPreviousWorkCommand { get; private set; }
-        public DelegateCommand AddNextWorkCommand { get; private set; }
+        public NotifyCommand AddPreviousWorkCommand { get; private set; }
+        public NotifyCommand AddNextWorkCommand { get; private set; }
 
-        public DelegateCommand EditPreviousWorkCommand { get; private set; }
-        public DelegateCommand EditNextWorkCommand { get; private set; }
+        public NotifyCommand EditPreviousWorkCommand { get; private set; }
+        public NotifyCommand EditNextWorkCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
+        private IApplicationCommands _applicationCommands;
 
 
         public WorkViewModel(IDialogService dialogService,
-            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
+            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
-            DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
-            SaveCommand = new DelegateCommand(OnSave, CanSave)
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+            SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedWork);
-            CloseCommand = new DelegateCommand<object>(OnClose);
+            CloseCommand = new NotifyCommand<object>(OnClose);
 
-            RemovePreviousWorkCommand = new DelegateCommand(OnRemovePreviousWork,
+            RemovePreviousWorkCommand = new NotifyCommand(OnRemovePreviousWork,
                                         () => SelectedPreviousWork != null)
                     .ObservesProperty(() => SelectedPreviousWork);
-            RemoveNextWorkCommand = new DelegateCommand(OnRemoveNextWork,
+            RemoveNextWorkCommand = new NotifyCommand(OnRemoveNextWork,
                                         () => SelectedNextWork != null)
                     .ObservesProperty(() => SelectedNextWork);
 
-            AddPreviousWorkCommand = new DelegateCommand(OnAddPreviousWork);
-            AddNextWorkCommand = new DelegateCommand(OnAddNextWork);
+            AddPreviousWorkCommand = new NotifyCommand(OnAddPreviousWork);
+            AddNextWorkCommand = new NotifyCommand(OnAddNextWork);
 
-            EditPreviousWorkCommand = new DelegateCommand(OnEditPreviousWork,
+            EditPreviousWorkCommand = new NotifyCommand(OnEditPreviousWork,
                                         () => SelectedPreviousWork != null)
                     .ObservesProperty(() => SelectedPreviousWork);
-            EditNextWorkCommand = new DelegateCommand(OnEditNextWork,
+            EditNextWorkCommand = new NotifyCommand(OnEditNextWork,
                                         () => SelectedNextWork != null)
                     .ObservesProperty(() => SelectedNextWork);
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
+            _applicationCommands = applicationCommands;
+            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
         }
 
 
@@ -285,7 +289,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private bool CanSave()
         {
             if (SelectedWork != null)
-                return !SelectedWork.HasErrors && SelectedWork.PropertiesChangeJornal.Count > 0;
+                return !SelectedWork.HasErrors;// && SelectedWork.PropertiesChangeJornal.Count > 0;
             else
                 return false;
         }
@@ -301,6 +305,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public virtual void OnClose(object obj)
         {
             this.OnClose<bldWork>(obj, SelectedWork);
+        }
+        public override void OnWindowClose()
+        {
+            _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+            base.OnWindowClose();
         }
 
         private void Save()

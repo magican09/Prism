@@ -228,8 +228,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
                   PropertiesChangeJornal.Where(r => r.Value != null).GroupBy(g => g.Id).Select(el=>el.GroupBy(g=>g.ContextId).First()).Select(el=>el.OrderBy(or=>or.Date).First()).ToList();
             foreach (PropertyStateRecord prop_st_rec in uniq_property_ids)
                 Save(prop_st_rec, currentContextId);
-           
-            foreach (PropertyStateRecord record in PropertiesChangeJornal)//Очищаем журнал от записей
+
+            var records_for_delete = PropertiesChangeJornal.Where(r => r.ContextId == currentContextId).ToList();
+            foreach (PropertyStateRecord record in records_for_delete)//Очищаем журнал от записей
             {
                 PropertiesChangeJornal.Remove(record);
                 ObjectChangeSaved?.Invoke(this, new ObjectStateChangedEventArgs("", this, record));
@@ -392,7 +393,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         /*   obj.ObjectChangedNotify -= OnChildObjectChanges;
                            obj.ObjectChangeSaved -= OnChildObjectChangeSaved;
                            obj.ObjectChangeUndo -= OnChildObjectChangeUndo;*/
-                        obj.ParentObjects.Remove(this);
+                        if(obj.ParentObjects!=null && obj.ParentObjects.Contains(this)) obj.ParentObjects.Remove(this);
                     }
                 }
 

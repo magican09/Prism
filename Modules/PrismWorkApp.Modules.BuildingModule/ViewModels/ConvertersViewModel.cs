@@ -30,11 +30,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
     public class ConvertersViewModel : LocalBindableBase, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public DelegateCommand LoadProjectFromExcelCommand { get; private set; }
-        public DelegateCommand CreateProjectStructureCommand { get; private set; }
-        public DelegateCommand LoadProjectFromDBCommand { get; private set; }
-        public DelegateCommand SaveDataToDBCommand { get; private set; }
-        public DelegateCommand CreateAOSRCommand { get; private set; }
+        public NotifyCommand LoadProjectFromExcelCommand { get; private set; }
+        public NotifyCommand CreateProjectStructureCommand { get; private set; }
+        public NotifyCommand LoadProjectFromDBCommand { get; private set; }
+        public NotifyCommand SaveDataToDBCommand { get; private set; }
+        public NotifyCommand CreateAOSRCommand { get; private set; }
         private const int CURRENT_MODULE_ID = 2;
         public IBuildingUnitsRepository _buildingUnitsRepository;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -106,24 +106,30 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands = applicationCommands;
             ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
             //IsModuleEnable =  ModuleInfo.IsEnable;
-            LoadProjectFromExcelCommand = new DelegateCommand(LoadProjectFromExcel, CanLoadAllProjects);
-            LoadProjectFromDBCommand = new DelegateCommand(LoadProjectFomDB, CanLoadProjectFromDb);
-            SaveDataToDBCommand = new DelegateCommand(SaveDataToDB, CanSaveDataToDB)
+            LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
+            LoadProjectFromDBCommand = new NotifyCommand(LoadProjectFomDB, CanLoadProjectFromDb);
+            SaveDataToDBCommand = new NotifyCommand(SaveDataToDB, CanSaveDataToDB)
                 .ObservesProperty(()=>AllChangesIsDone);
             AllChangesIsDone = true;
-         //   ApplicationCommands.SaveAllCommand.RegisterCommand(SaveDataToDBCommand);
+            ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
 
 
-            /*  CreateProjectStructureCommand = new DelegateCommand(CreateProjectStructure).ObservesProperty(() => SelectedProject);
-              CreateAOSRCommand = new DelegateCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
+            /*  CreateProjectStructureCommand = new NotifyCommand(CreateProjectStructure).ObservesProperty(() => SelectedProject);
+              CreateAOSRCommand = new NotifyCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
             */
             //     _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
             //          ThreadOption.PublisherThread, false,
             //   message => message.Recipient == "RibbonGroup");
-            AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
-         
-          //  ApplicationCommands.SaveAllCommand.CanExecuteChanged += SaveAllCommandCanExecuteChanged;
-            ApplicationCommands.SaveAllCommand.RegisterCommand(SaveDataToDBCommand);
+         //   AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
+
+            //  ApplicationCommands.SaveAllCommand.CanExecuteChanged += SaveAllCommandCanExecuteChanged;
+       //     ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
+       //     ApplicationCommands.SaveAllCommand.SetExecuteMethod(OnSaveAll);
+        }
+
+        private void OnSaveAll()
+        {
+            SaveDataToDB();
         }
 
         private void SaveAllCommandCanExecuteChanged(object sender, EventArgs e)
@@ -149,7 +155,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void SaveDataToDB()
         {
             CoreFunctions.ConfirmActionDialog(
-                "Cохранить изменения", "проектов", "Сохранить", "Отмена",
+                "Cохранить в БД изменения", "проектов", "Сохранить", "Отмена","Сохраниение в БД завершено!",
                  (result) =>
                 {
                     if (result.Result == ButtonResult.Yes)

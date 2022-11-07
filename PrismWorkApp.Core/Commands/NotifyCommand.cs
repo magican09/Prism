@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace PrismWorkApp.Core.Commands
 {
-    public class NotifyCommand : DelegateCommandBase, ICommand, IActiveAware
+    public class NotifyCommand : NotifyCommandBase, ICommand, IActiveAware
     {
         public bool IsActive { get; set; }
         public event EventHandler IsActiveChanged;

@@ -289,8 +289,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             AllProjectsContext.JornalingOff();
             AllProjectsContext = new bldProjectsGroup(_buildingUnitsRepository.Projects.GetProjectsAsync());
             AllProjectsContext.JornalingOn();
+            _commonPropertiesChangeJornal.RegisterObject(AllProjectsContext);
             AllProjectsContext.ResetObjectsStructure();
-            AllProjectsContext.AdjustObjectsStructure((PropertiesChangeJornal)_commonPropertiesChangeJornal);
+            AllProjectsContext.AdjustObjectsStructure(_commonPropertiesChangeJornal);
            // AllProjectsContext.CurrentContextId = Id;
            // AllProjectsContext.PropertiesChangeJornal.ContextIdHistory.Add(Id);
             AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;

@@ -111,7 +111,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     }
                 }
                 b_jornal_recording_flag = true;
-                if (!PropertiesChangeJornal.ContextIdHistory.Contains(value))
+                if (PropertiesChangeJornal!=null && !PropertiesChangeJornal.ContextIdHistory.Contains(value))
                     PropertiesChangeJornal.ContextIdHistory.Add(value);
                 _currentContextId = value;
 

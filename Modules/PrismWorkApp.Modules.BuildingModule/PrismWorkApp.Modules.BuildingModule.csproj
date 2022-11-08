@@ -41,6 +41,8 @@
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+        <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
+        <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
       </ItemGroup>
   <ItemGroup>
@@ -103,6 +105,8 @@
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+    <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
+    <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
   </ItemGroup>
   <ItemGroup>

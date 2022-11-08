@@ -9,7 +9,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
     public delegate void  PropertiesChangeJornalChangedEventHandler(object sender, PropertyStateRecord _propertyStateRecord);
     public delegate void ObjectStateChangeEventHandler(object sender, ObjectStateChangedEventArgs e);
 
-    public class PropertiesChangeJornal : ObservableCollection<PropertyStateRecord>
+    public class PropertiesChangeJornal : ObservableCollection<PropertyStateRecord>, IPropertiesChangeJornal
     {
         public event PropertiesChangeJornalChangedEventHandler JornalChangedNotify;
         public ObservableCollection<Guid> ContextIdHistory { get; set; } = new ObservableCollection<Guid>();
@@ -22,7 +22,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
         private void PropertiesChangeJornal_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-             if(e.Action== NotifyCollectionChangedAction.Add)
+            if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (PropertyStateRecord stateRecord in e.NewItems)
                 {
@@ -35,22 +35,22 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
                              ParentObject.PropertiesChangeJornal.Add(st_record);
                          }    */
-                     //   if (!ContextIdHistory.Contains(stateRecord.ContextId))
-                       //     ContextIdHistory.Add(stateRecord.ContextId);
+                        //   if (!ContextIdHistory.Contains(stateRecord.ContextId))
+                        //     ContextIdHistory.Add(stateRecord.ContextId);
 
 
-                    //31.10.22    JornalChangedNotify(this, stateRecord);
+                        //31.10.22    JornalChangedNotify(this, stateRecord);
 
                     }
                     else
                         ;
                 }
             }
-           
-           
+
+
         }
         public IJornalable ParentObject { get; set; }
-        private  bool IsContainsRecord(Guid currentContextId)
+        private bool IsContainsRecord(Guid currentContextId)
         {
             return this.Count > 0;
         }

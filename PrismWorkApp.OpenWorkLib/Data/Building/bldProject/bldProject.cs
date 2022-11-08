@@ -1,5 +1,4 @@
-﻿using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Services;
+﻿using PrismWorkApp.OpenWorkLib.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,12 +11,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldProject : BindableBase, IbldProject, IEntityObject
     {
-        private Guid _id;
-        public Guid Id
-        {
-            get { return _id; }
-            set { SetProperty(ref _id, value); }
-        }
+        
 
         private Guid _storedId;
       

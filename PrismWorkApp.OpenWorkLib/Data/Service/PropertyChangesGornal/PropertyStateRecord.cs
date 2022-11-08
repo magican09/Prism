@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public class PropertyStateRecord : IKeyable, INameable,IDateable
+    public class PropertyStateRecord 
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
@@ -37,7 +37,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public DateTime Date { get ; set ; }
         public object Value { get; set; }
         public JornalRecordStatus Status { get; set; }
-        public IEntityObject ParentObject { get; set; }
+        public IJornalable ParentObject { get; set; }
         public PropertiesChangeJornal ParentJornal { get; set; }
         public PropertyStateRecord(object prop, JornalRecordStatus recordStatus, string name ="" )
         {

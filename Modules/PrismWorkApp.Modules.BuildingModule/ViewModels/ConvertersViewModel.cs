@@ -14,6 +14,7 @@ using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Services;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand LoadProjectFromDBCommand { get; private set; }
         public NotifyCommand SaveDataToDBCommand { get; private set; }
         public NotifyCommand CreateAOSRCommand { get; private set; }
+        public NotifyCommand UnDoLeftCommand { get; private set; }
+
         private const int CURRENT_MODULE_ID = 2;
         public IBuildingUnitsRepository _buildingUnitsRepository;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -93,10 +96,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _applicationCommands, value); }
         }
 
-      
+        public PropertiesChangeJornal _commonPropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
+
+
 
         public ConvertersViewModel(IRegionManager regionManager, IModulesContext modulesContext, IEventAggregator eventAggregator,
-                                    IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
+                                    IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands,
+                                    IPropertiesChangeJornal propertiesChangeJornal)
         {
             _regionManager = regionManager;
          
@@ -108,6 +114,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
+            _commonPropertiesChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
             ApplicationCommands = applicationCommands;
             ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
             //IsModuleEnable =  ModuleInfo.IsEnable;
@@ -118,7 +125,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 .ObservesProperty(()=>AllChangesIsDone);
             AllChangesIsDone = true;
             ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
-
+            UnDoLeftCommand = new NotifyCommand(OnUnDoLast, CanUndoLast);
 
             /*  CreateProjectStructureCommand = new NotifyCommand(CreateProjectStructure).ObservesProperty(() => SelectedProject);
               CreateAOSRCommand = new NotifyCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
@@ -126,11 +133,22 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //     _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
             //          ThreadOption.PublisherThread, false,
             //   message => message.Recipient == "RibbonGroup");
-         //   AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
+            //   AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
 
             //  ApplicationCommands.SaveAllCommand.CanExecuteChanged += SaveAllCommandCanExecuteChanged;
-       //     ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
-       //     ApplicationCommands.SaveAllCommand.SetExecuteMethod(OnSaveAll);
+            //     ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
+            //     ApplicationCommands.SaveAllCommand.SetExecuteMethod(OnSaveAll);
+        }
+
+        private bool CanUndoLast()
+        {
+           return _commonPropertiesChangeJornal.Count > 0;
+        }
+
+        private void OnUnDoLast()
+        {
+           PropertyStateRecord last_record = _commonPropertiesChangeJornal.OrderBy(r => r.Date).LastOrDefault();
+            last_record.ParentObject.UnDoLast(last_record.ContextId);
         }
 
         private void OnSaveAll()
@@ -152,6 +170,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             AllChangesIsDone = AllProjectsContext.PropertiesChangeJornal.Count > 0;
             SaveDataToDBCommand.RaiseCanExecuteChanged();
+            UnDoLeftCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanSaveDataToDB()
@@ -271,7 +290,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             AllProjectsContext = new bldProjectsGroup(_buildingUnitsRepository.Projects.GetProjectsAsync());
             AllProjectsContext.JornalingOn();
             AllProjectsContext.ResetObjectsStructure();
-            AllProjectsContext.AdjustObjectsStructure();
+            AllProjectsContext.AdjustObjectsStructure((PropertiesChangeJornal)_commonPropertiesChangeJornal);
            // AllProjectsContext.CurrentContextId = Id;
            // AllProjectsContext.PropertiesChangeJornal.ContextIdHistory.Add(Id);
             AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;

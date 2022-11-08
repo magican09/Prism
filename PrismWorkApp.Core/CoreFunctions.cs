@@ -1,6 +1,7 @@
 ﻿using Prism.Services.Dialogs;
 using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 using System.Collections;
 using System.Collections.Generic;

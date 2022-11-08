@@ -106,7 +106,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 IsVisible = (status != JornalRecordStatus.REMOVED) ? true : false;
             }
         }
-        public PropertiesChangeJornal PropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
+        public PropertiesChangeJornal PropertiesChangeJornal { get; set; } 
         public ObservableCollection<IJornalable> ParentObjects { get; set; }
         public ObservableCollection<IJornalable> ChildObjects { get; set; }
         public AdjustStatus AdjustedStatus { get; set; } = AdjustStatus.UNADJUSTED;
@@ -169,6 +169,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
 
         }
+        public virtual void  UnDoLast(Guid currentContextId)
+        {
+            PropertyStateRecord last_record =
+                       PropertiesChangeJornal.Where(pr => pr.ContextId == currentContextId).OrderByDescending(pr => pr.Date).LastOrDefault();
+            UnDo(last_record);
+        }
+
         public void UnDoAll(Guid currentContextId)
         {
             List<PropertyStateRecord> records =
@@ -241,7 +248,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             PropertiesChangeJornal.Clear();
             PropertiesChangeJornal.ContextIdHistory.Clear();
             ParentObjects?.Clear();
-            foreach (IEntityObject element in this)
+            foreach (IJornalable element in this)
             {
                 if (element.PropertiesChangeJornal.Count != 0)
                     element.ClearChangesJornal();
@@ -261,11 +268,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
 
-        public void AdjustObjectsStructure(IJornalable sourse = null)
+        public void AdjustObjectsStructure(PropertiesChangeJornal changesJornal, IJornalable sourse = null)
         {
             if (sourse == null) sourse = this;
 
-            foreach (IEntityObject item in this)
+            sourse.PropertiesChangeJornal = changesJornal;
+
+            foreach (IJornalable item in this)
             {
                 if (item.AdjustedStatus == AdjustStatus.ADJUSTED)
                     ;
@@ -284,13 +293,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     item.AdjustedStatus = AdjustStatus.IN_PROCESS;
                 }
             }
-            foreach (IEntityObject item in this)
+            foreach (IJornalable item in this)
             {
 
                 if (item.AdjustedStatus == AdjustStatus.IN_PROCESS)
                 {
                     item.AdjustedStatus = AdjustStatus.ADJUSTED;
-                    item.AdjustObjectsStructure();
+                    item.AdjustObjectsStructure(changesJornal);
                 }
             }
 
@@ -299,7 +308,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void ResetObjectsStructure(IJornalable sourse = null)
         {
             if (sourse == null) sourse = this;
-            foreach (IEntityObject item in this)
+            foreach (IJornalable item in this)
             {
                 if (item.AdjustedStatus != AdjustStatus.IN_PROCESS && item.AdjustedStatus != AdjustStatus.NONE)
                 {
@@ -311,7 +320,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     item.AdjustedStatus = AdjustStatus.IN_PROCESS;
                 }
             }
-            foreach (IEntityObject item in this)
+            foreach (IJornalable item in this)
             {
 
                 if (item.AdjustedStatus == AdjustStatus.IN_PROCESS)
@@ -373,7 +382,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             foreach (Guid prev_wnd_is in AnatherWindowsIds)
                             {
                                 PropertyStateRecord propertyStateRecord_1 = new PropertyStateRecord(obj, JornalRecordStatus.ADDED, ((IEntityObject)obj).Name, prev_wnd_is);
-                                propertyStateRecord_1.ParentObject = (IEntityObject)this;
+                                propertyStateRecord_1.ParentObject = (IJornalable)this;
                                 PropertiesChangeJornal.Add(propertyStateRecord_1);
                                 ObjectChangedNotify?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord_1));
                             }
@@ -412,7 +421,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             foreach (Guid prev_wnd_is in AnatherWindowsIds)
             {
                 PropertyStateRecord propertyStateRecord_1 = new PropertyStateRecord(item, JornalRecordStatus.REMOVED, Name, prev_wnd_is);
-                propertyStateRecord_1.ParentObject = (IEntityObject)this;
+                propertyStateRecord_1.ParentObject = (IJornalable)this;
                 PropertiesChangeJornal.Add(propertyStateRecord_1);
                 PropertiesChangeJornal.Add(propertyStateRecord_1);
                 ObjectChangedNotify?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord_1));

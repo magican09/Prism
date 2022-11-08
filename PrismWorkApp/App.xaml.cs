@@ -8,6 +8,8 @@ using PrismWorkApp.Modules.BuildingModule;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.MainModule;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Services;
 using PrismWorkApp.Services;
 using PrismWorkApp.Services.Interfaces;
 using PrismWorkApp.Services.Repositories;
@@ -37,7 +39,7 @@ namespace PrismWorkApp
             containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
             containerRegistry.RegisterSingleton<IModulesContext, ModulesContext>();
             containerRegistry.RegisterSingleton<IBuildingUnitsRepository, BuildingUnitsRepository>();
-
+            containerRegistry.RegisterSingleton<IPropertiesChangeJornal, PropertiesChangeJornal>(); 
 
             containerRegistry.RegisterDialog<MessageDialog, MessageDialogViewModel>();
             containerRegistry.RegisterDialog<ConfirmActionDialog, ConfirmActionDialogViewModel>();

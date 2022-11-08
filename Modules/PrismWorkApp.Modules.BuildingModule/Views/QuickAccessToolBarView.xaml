@@ -14,8 +14,13 @@
             <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
     </RibbonQuickAccessToolBar.Resources>
-
     <StackPanel Orientation="Horizontal">
+        <RibbonButton   VerticalAlignment="Center"
+                        SmallImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/QuickAccwssTollBar/arrow_left.png"
+                        Command="{Binding   UnDoLeftCommand}"/>
+        <RibbonButton   VerticalAlignment="Center"
+                        SmallImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/QuickAccwssTollBar/arrow_right.png"
+                        Command="{Binding   UnDoRightCommand}"/>
         <RibbonButton   VerticalAlignment="Center"
                         SmallImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/QuickAccwssTollBar/save_as.png"
                         Command="{Binding   ApplicationCommands.SaveAllCommand}"/>

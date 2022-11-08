@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PrismWorkApp.OpenWorkLib.Data
+namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
    public  class ContextIdStructure
     {

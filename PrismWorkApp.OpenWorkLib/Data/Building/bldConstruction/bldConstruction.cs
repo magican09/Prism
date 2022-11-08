@@ -8,12 +8,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldConstruction : BindableBase,IbldConstruction,ICloneable, IEntityObject
     {
-        private Guid _id;
-        public Guid Id
-        {
-            get { return _id; }
-            set { SetProperty(ref _id, value);  }
-        }
         private Guid _storedId;
         public Guid StoredId
         {

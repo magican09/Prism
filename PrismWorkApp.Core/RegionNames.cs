@@ -7,6 +7,7 @@ namespace PrismWorkApp.Core
         public const string SolutionExplorerRegion = "SolutionExplorerRegion";
         public const string ToolBarRegion = "ToolBarRegion";
         public const string RibbonRegion = "RibbonRegion";
+        public const string RibbonQuickAccessToolBarRegion = "RibbonQuickAccessToolBarRegion";
         public const string PropertiesRegion = "PropertiesRegion";
     }
 }

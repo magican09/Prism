@@ -93,6 +93,11 @@
         <TabControl  Grid.Row="2" Grid.Column="4" prism:RegionManager.RegionName="{x:Static core:RegionNames.PropertiesRegion}"/>
         <Ribbon Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="5" DockPanel.Dock="Top" Title=""
                 prism:RegionManager.RegionName="{x:Static core:RegionNames.RibbonRegion}">
+            <Ribbon.QuickAccessToolBar >
+                <RibbonQuickAccessToolBar prism:RegionManager.RegionName="{x:Static core:RegionNames.RibbonQuickAccessToolBarRegion}">
+                    
+                </RibbonQuickAccessToolBar>
+            </Ribbon.QuickAccessToolBar>
             <!--         <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu>
                     <RibbonApplicationMenuItem   />

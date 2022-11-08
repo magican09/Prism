@@ -12,17 +12,15 @@ namespace PrismWorkApp.Core.Commands
         public event EventHandler CanExecuteChanged;
         protected Action _TargetExecuteMetod;
         protected Func<bool> _TargetCanExecuteMethod;
-
         private bool _monitorCommandActivity;
-        private ObservableCollection<ICommand> _registeredCommands = new ObservableCollection<ICommand>();
 
+        private ObservableCollection<ICommand> _registeredCommands = new ObservableCollection<ICommand>();
         public ObservableCollection<ICommand> RegisteredCommands { get; set; } = new ObservableCollection<ICommand>();
         private ICommand _LastCommand { get; set; }
         public NotifyCompositeCommand()
         {
             RegisteredCommands.CollectionChanged += OnRegisteredCommandsChanged;
         }
-
         public NotifyCompositeCommand(bool monitorCommandActivity):base()
         {
 
@@ -84,19 +82,16 @@ namespace PrismWorkApp.Core.Commands
 
 
         #endregion
-
         public virtual void RegisterCommand(ICommand command)
         {
             RegisteredCommands.Add(command);
             command.CanExecuteChanged += RaiseChildrenCanExecuteChanged;
             RaiseCanExecuteChanged();
         }
-
         private void RaiseChildrenCanExecuteChanged(object sender, EventArgs e)
         {
             RaiseCanExecuteChanged();
         }
-
         public virtual void UnregisterCommand(ICommand command)
         {
             RegisteredCommands.Remove(command);
@@ -107,7 +102,6 @@ namespace PrismWorkApp.Core.Commands
         {
             _TargetExecuteMetod = execute_method;
         }
-
         public void SetCanExecuteMethod(Func<bool> can_execute_method)
         {
             _TargetCanExecuteMethod = can_execute_method;
@@ -123,7 +117,6 @@ namespace PrismWorkApp.Core.Commands
         {
             return true;
         }
-
         public void RaiseCanExecuteChanged()
         {
             CanExecuteChanged(this, EventArgs.Empty);

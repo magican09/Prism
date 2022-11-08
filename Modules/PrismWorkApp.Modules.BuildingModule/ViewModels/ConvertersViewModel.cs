@@ -99,6 +99,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                     IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
         {
             _regionManager = regionManager;
+         
+            var quickAccessTollBar = new QuickAccessToolBarView();
+            quickAccessTollBar.Items.Add(new QuickAccessToolBar());
+            quickAccessTollBar.DataContext = this;
+            _regionManager.Regions[RegionNames.RibbonQuickAccessToolBarRegion].Add(quickAccessTollBar);//Доабвяем кнопку сохраниять все на панель панель быстрого вызова
             ModulesContext = modulesContext;
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
@@ -106,6 +111,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands = applicationCommands;
             ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
             //IsModuleEnable =  ModuleInfo.IsEnable;
+          
             LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
             LoadProjectFromDBCommand = new NotifyCommand(LoadProjectFomDB, CanLoadProjectFromDb);
             SaveDataToDBCommand = new NotifyCommand(SaveDataToDB, CanSaveDataToDB)

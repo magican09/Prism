@@ -21,8 +21,7 @@ using BindableBase = Prism.Mvvm.BindableBase;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class ConstructionViewModel : BaseViewModel<bldConstruction>, INotifyPropertyChanged,
-        INavigationAware//, IRegionMemberLifetime
+    public class ConstructionViewModel : BaseViewModel<bldConstruction>//, IRegionMemberLifetime
 
     {
         private string _title = "Конструкция";

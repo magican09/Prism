@@ -41,6 +41,7 @@
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+        <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
       </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Interop.Word">
@@ -102,6 +103,7 @@
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+    <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Views\ConstructionView .xaml.cs">
@@ -112,6 +114,9 @@
     <Page Update="Views\ConstructionView .xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\QuickAccessToolBarView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
   </ItemGroup>
 </Project>

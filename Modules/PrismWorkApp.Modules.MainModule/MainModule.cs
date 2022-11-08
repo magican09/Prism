@@ -53,6 +53,7 @@ namespace PrismWorkApp.Modules.MainModule
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
+            //После инициализация шлем широковещательное сообщение с запросом всех згруженный модулей
             EventMessage msg = new EventMessage();
             msg.From = ModuleId;
             msg.ParameterName = "Command";
@@ -75,19 +76,21 @@ namespace PrismWorkApp.Modules.MainModule
                         string command_name = command_str[0];
                         switch (command_name)
                         {
-                            case "register_module":
+                            case "register_module": //регистрием дополнительные модули
                                 {
                                     ModuleInfoData moduleInfoData = new ModuleInfoData();
                                     moduleInfoData.Id = Convert.ToInt32(command_str[1]);
                                     moduleInfoData.Name = (command_str[2]);
                                     moduleInfoData.IsEnable = true;
                                     ModulesContext.ModulesInfoData.Add(moduleInfoData);
-                                    EventMessage requestEventMessage = new EventMessage();
+                                 /*   EventMessage requestEventMessage = new EventMessage();
                                     requestEventMessage.From = ModuleId;
                                     requestEventMessage.To = eventMessage.From;
                                     requestEventMessage.ParameterName = "Command";
-                                    requestEventMessage.Value = $"get_ribbon_tab {moduleInfoData.Id.ToString()} {moduleInfoData.Name}";
+                                    requestEventMessage.Value = $"get_ribbon_tab {moduleInfoData.Id.ToString()} {moduleInfoData.Name}"; //Запрашиваем RibbonTab
                                     _eventAggregator.GetEvent<MessageConveyEvent>().Publish(requestEventMessage);
+                                    requestEventMessage.Value = $"quick_access_tool_bar {moduleInfoData.Id.ToString()} {moduleInfoData.Name}"; //Запрашиваем RibbonTab
+                                    _eventAggregator.GetEvent<MessageConveyEvent>().Publish(requestEventMessage);*/
                                     break;
                                 }
 
@@ -97,6 +100,11 @@ namespace PrismWorkApp.Modules.MainModule
                 case "RibbonTabEntity":
                     {
                         _regionManager.Regions[RegionNames.RibbonRegion].Add(eventMessage.Value);
+                        break;
+                    }
+                case "QuickAccessToolBarEntity":
+                    {
+                        _regionManager.Regions[RegionNames.RibbonQuickAccessToolBarRegion].Add(eventMessage.Value);
                         break;
                     }
 
@@ -135,7 +143,9 @@ namespace PrismWorkApp.Modules.MainModule
             // var ribbonAppMenuItem = new RibbonApplicationMenuItem();
             // ribbonAppMenuItem.Header = "Ghbdtn dfd";
             //     _regionManager.Regions[RegionNames.RibbonRegion].Add(ribbonAppMenuItem);
-            _regionManager.Regions[RegionNames.RibbonRegion].Add(new ModulesRibbonTabView());
+         //   _regionManager.Regions[RegionNames.RibbonRegion].Add(new ModulesRibbonTabView());
+          //  _regionManager.AddToRegion(RegionNames.RibbonQuickAccessToolBarRegion,new QuickAccessToolBarView());
+
         }
     }
 }

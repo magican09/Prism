@@ -14,7 +14,7 @@ namespace PrismWorkApp.ViewModels
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
-        private string _title = "Prism Application";
+        private string _title = "Executive Documentation";
         public string Title
         {
             get { return _title; }

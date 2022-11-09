@@ -115,21 +115,29 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
-        public PropertiesChangeJornal _commonChangeJornal { get; set; } = new PropertiesChangeJornal();
+        private PropertiesChangeJornal _commonChangeJornal;
+        public PropertiesChangeJornal CommonChangeJornal
+        {
+            get { return _commonChangeJornal; }
+            set { SetProperty(ref _commonChangeJornal, value); }
+        }
+         
 
         public ProjectViewModel(IDialogService dialogService, IBuildingUnitsRepository buildingUnitsRepository,
             IRegionManager regionManager, IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
         {
             //  SaveCommand = new NotifyCommand(OnSave, CanSave);
-            _commonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
+            CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
 
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedProject).ObservesCanExecute(()=>KeepAlive);
-            UnDoLeftCommand = new NotifyCommand(OnUnDoLeft, CanUnDoLeft);
-            UnDoRightCommand = new NotifyCommand(OnUnDoRight, CanUnDoRight);
+            UnDoLeftCommand = new NotifyCommand(OnUnDoLeft, () => { return !CommonChangeJornal.IsOnFirstRecord(); })
+                .ObservesEvent(CommonChangeJornal);
+            UnDoRightCommand = new NotifyCommand(OnUnDoRight, () => { return !CommonChangeJornal.IsOnLastRecord(); })
+                  .ObservesEvent(CommonChangeJornal); 
             
               TestCommand = new NotifyCommand(OnTestCommand);
-
+           
             CloseCommand = new NotifyCommand<object>(OnClose).ObservesCanExecute(() => KeepAlive); ;
             AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
             AddParticipantCommand = new NotifyCommand(OnAddParticipant);
@@ -173,7 +181,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnUnDoRight()
         {
-            _commonChangeJornal.UnDoRight(this.Id);
+            _commonChangeJornal.UnDoRight();
         }
 
         private bool CanUnDoLeft()
@@ -183,7 +191,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnUnDoLeft()
         {
-            _commonChangeJornal.UnDoLeft(this.Id);
+            _commonChangeJornal.UnDoLeft();
         }
 
         private bool CanTest()
@@ -193,7 +201,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnTestCommand()
         {
-            KeepAlive = !KeepAlive;
+          //  BuildingObjects = SelectedProject.BuildingObjects;
+         //   BuildingObjects.Remove(BuildingObjects[0]);
+            SelectedProject.BuildingObjects.Remove(SelectedProject.BuildingObjects[0]);
         }
 
         private void OnEditRemoveResponsibleEmployee()
@@ -413,7 +423,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public override void OnSave()
         {
-                this.OnSave<bldProject>(SelectedProject);
+           CommonChangeJornal.Save();
+            //  this.OnSave<bldProject>(SelectedProject);
         }
         public override void OnClose(object obj)
         {

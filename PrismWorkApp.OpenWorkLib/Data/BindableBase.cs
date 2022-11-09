@@ -44,7 +44,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
 
             if (object.Equals(val, member)) return false;
-            PropertyBeforeChanged(this, new PropertyChangedEventArgs(propertyName));
+           if(b_jornal_recording_flag)
+                PropertyBeforeChanged(this, new PropertyChangedEventArgs(propertyName));
             member = val;
             //Type tp = Children[Children.Count - 1].GetType();
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));

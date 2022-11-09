@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public interface IJornalable : IKeyable
+    public interface IJornalable : IKeyable, ICuntextIdable
     {
         public void Save(object prop_id, Guid currentContextId);
         public void SaveAll(Guid currentContextId);

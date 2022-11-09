@@ -107,6 +107,14 @@ namespace PrismWorkApp.Core.Commands
             }
             return this;
         }
+        public NotifyCommand ObservesEvent(INotifyPropertyChanged  obj)
+        {
+            obj.PropertyChanged += RaiseCanExecuteChanged;//Подписываемся на событие PropertyChanged
+            return this;
+        }
+
+     
+
         /// <summary>
         /// Метод вызываемый собятием PropertyChanged  объктом ViewModel на котором находятис свойства на изменения которых подписаны
         /// </summary>
@@ -118,6 +126,10 @@ namespace PrismWorkApp.Core.Commands
                 RaiseCanExecuteChanged();
         }
         #endregion
+        private void RaiseCanExecuteChanged(object sender, EventArgs e)
+        {
+            RaiseCanExecuteChanged();
+        }
         public void RaiseCanExecuteChanged()
         {
             CanExecuteChanged(this, EventArgs.Empty);

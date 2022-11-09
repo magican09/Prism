@@ -27,9 +27,9 @@ namespace PrismWorkApp.Core
 
         protected override bool SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = null)
         {
-            if (val is IJornalable)
+            if (val is ICuntextIdable)
             {
-                ((IJornalable)val).CurrentContextId = Id; 
+                ((ICuntextIdable)val).CurrentContextId = Id; 
             }
             return base.SetProperty(ref member, val, propertyName);
         }

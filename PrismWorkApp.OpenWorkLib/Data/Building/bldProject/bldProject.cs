@@ -1,4 +1,5 @@
-﻿using PrismWorkApp.OpenWorkLib.Services;
+﻿using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldProject : BindableBase, IbldProject, IEntityObject
+    public class bldProject : BindableBase, IbldProject, IEntityObject//, IJornalable
     {
         
 
@@ -48,6 +49,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _shortName, value); }
         }
         private string _fullName;
+       
         public string FullName
         {
             get { return _fullName; }

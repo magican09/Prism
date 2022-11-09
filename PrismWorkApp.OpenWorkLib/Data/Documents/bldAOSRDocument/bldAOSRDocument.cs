@@ -13,14 +13,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _responsibleEmployees, value); }
         }
         private string _fullName;
+    //    [NotJornaling]
         public override string ShortName
         { 
          get {
-                int wrk_name_leng = 30;
+               /* int wrk_name_leng = 30;
                 if (bldWork?.Name.Length < wrk_name_leng) wrk_name_leng = bldWork.Name.Length;
                 this.JornalingOff();
-                SetProperty(ref _fullName, $"АОСР №{RegId} от {Date.ToString("d")} {bldWork?.Name.Substring(0, wrk_name_leng)}...");
-                this.JornalingOn();
+               _fullName =  $"АОСР №{RegId} от {Date.ToString("d")} {bldWork?.Name.Substring(0, wrk_name_leng)}...";
+                this.JornalingOn();*/
                 return _fullName;
             }
             set {   }

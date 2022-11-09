@@ -119,7 +119,7 @@ namespace PrismWorkApp.Core.Commands
         }
         public void RaiseCanExecuteChanged()
         {
-            CanExecuteChanged(this, EventArgs.Empty);
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

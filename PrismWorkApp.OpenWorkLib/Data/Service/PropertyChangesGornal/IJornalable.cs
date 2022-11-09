@@ -23,6 +23,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public event ObjectStateChangeEventHandler ObjectChangedNotify;//Событие вызывается при изменении в данном объекте 
         public event ObjectStateChangeEventHandler ObjectChangeSaved; //Событие вызывается при сохранении изменений в данном объекте
         public event ObjectStateChangeEventHandler ObjectChangeUndo; //Событие вызывается при отмете изменений в данном объекте
+        public event PropertyChangedEventHandler PropertyBeforeChanged;
         public ObservableCollection<IJornalable> ParentObjects { get; set; }
         public ObservableCollection<IJornalable> ChildObjects { get; set; }
 
@@ -50,6 +51,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         DELETED,
         UNJOURNALED,
         ADDED,
-        REMOVED
+        REMOVED,
+        CURRENT_VALUE
     }
 }

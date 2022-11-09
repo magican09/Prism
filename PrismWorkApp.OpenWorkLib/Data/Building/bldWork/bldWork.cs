@@ -1,10 +1,11 @@
-﻿using System;
+﻿using PrismWorkApp.OpenWorkLib.Data.Service;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldWork : BindableBase, IbldWork,ICloneable, IEntityObject
+    public class bldWork : BindableBase, IbldWork,ICloneable, IEntityObject//, IJornalable
     {
     
         private Guid _storedId;

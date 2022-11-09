@@ -21,6 +21,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
     {
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        public event PropertyChangedEventHandler PropertyBeforeChanged = delegate { };
+
+
         public event ObjectStateChangeEventHandler ObjectChangedNotify;//Событие вызывается при изменении в данном объекте 
         public event ObjectStateChangeEventHandler ObjectChangeSaved; //Событие вызывается при сохранении изменений в данном объекте
         public event ObjectStateChangeEventHandler ObjectChangeUndo; //Событие вызывается при отмете изменений в данном объекте
@@ -40,6 +44,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
 
             if (object.Equals(val, member)) return false;
+            PropertyBeforeChanged(this, new PropertyChangedEventArgs(propertyName));
             member = val;
             //Type tp = Children[Children.Count - 1].GetType();
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
@@ -49,7 +54,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             if (member != null)
                 ValidateProperty(propertyName, val);
-            PropertyChangesRegistrate(ref member, val, propertyName);
+         //   PropertyChangesRegistrate(ref member, val, propertyName);
             return BaseSetProperty<T>(ref member, val, propertyName);
         }
 
@@ -165,7 +170,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId)
         {
-            if (PropertiesChangeJornal.Count == 0)
+            if (PropertiesChangeJornal!=null && PropertiesChangeJornal.Count == 0)
                 return true;
             else
                 return false;

@@ -17,6 +17,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, IEntityObject, IJornalable, INameableOservableCollection<TEntity> where TEntity : class, IEntityObject, IJornalable
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public event PropertyChangedEventHandler PropertyBeforeChanged = delegate { };
+
+
         public event ObjectStateChangeEventHandler ObjectChangedNotify;//Событие вызывается при изменении в данном объекте 
         public event ObjectStateChangeEventHandler ObjectChangeSaved; //Событие вызывается при сохранении изменений в данном объекте
         public event ObjectStateChangeEventHandler ObjectChangeUndo; //Событие вызывается при отмете изменений в данном объекте
@@ -27,24 +30,27 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
-
+        public void OnPropertyBeforChanged([CallerMemberName] string prop = "")
+        {
+            PropertyBeforeChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
         private Guid _id;
         public Guid Id
         {
             get { return _id; }
-            set { _id = value; OnPropertyChanged("Id"); }
+            set { OnPropertyBeforChanged("Id"); _id = value; OnPropertyChanged("Id"); }
         }
         private Guid _storedId;
         public Guid StoredId
         {
             get { return _storedId; }
-            set { _storedId = value; OnPropertyChanged("StoredId"); }
+            set { OnPropertyBeforChanged("Id"); _storedId = value; OnPropertyChanged("StoredId"); }
         }
         private string _name;
         public string Name
         {
             get { return _name; }
-            set { _name = value; OnPropertyChanged("Name"); }
+            set { OnPropertyBeforChanged("Id"); _name = value; OnPropertyChanged("Name"); }
         }
         public NameableObservableCollection()
         {

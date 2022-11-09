@@ -8,6 +8,7 @@ using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
@@ -90,6 +91,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         
         // public  NotifyCommand SaveCommand { get; private set; }
         public NotifyCommand SaveCommand { get; private set; }
+        public NotifyCommand UnDoLeftCommand { get; private set; }
+        public NotifyCommand UnDoRightCommand { get; private set; }
+
         public NotifyCommand TestCommand { get; private set; }
         public NotifyCommand<object> CloseCommand { get; private set; }
 
@@ -111,15 +115,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
+        public PropertiesChangeJornal _commonChangeJornal { get; set; } = new PropertiesChangeJornal();
 
         public ProjectViewModel(IDialogService dialogService, IBuildingUnitsRepository buildingUnitsRepository,
-            IRegionManager regionManager, IApplicationCommands applicationCommands)
+            IRegionManager regionManager, IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
         {
             //  SaveCommand = new NotifyCommand(OnSave, CanSave);
+            _commonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
 
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedProject).ObservesCanExecute(()=>KeepAlive);
-            TestCommand = new NotifyCommand(OnTestCommand);
+            UnDoLeftCommand = new NotifyCommand(OnUnDoLeft, CanUnDoLeft);
+            UnDoRightCommand = new NotifyCommand(OnUnDoRight, CanUnDoRight);
+            
+              TestCommand = new NotifyCommand(OnTestCommand);
+
             CloseCommand = new NotifyCommand<object>(OnClose).ObservesCanExecute(() => KeepAlive); ;
             AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
             AddParticipantCommand = new NotifyCommand(OnAddParticipant);
@@ -152,6 +162,28 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _regionManager = regionManager;
             _applicationCommands = applicationCommands;
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+             _applicationCommands.UnDoRightCommand.RegisterCommand(UnDoRightCommand);
+            _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
+        }
+
+        private bool CanUnDoRight()
+        {
+            return true;
+        }
+
+        private void OnUnDoRight()
+        {
+            _commonChangeJornal.UnDoRight(this.Id);
+        }
+
+        private bool CanUnDoLeft()
+        {
+            return true;
+        }
+
+        private void OnUnDoLeft()
+        {
+            _commonChangeJornal.UnDoLeft(this.Id);
         }
 
         private bool CanTest()

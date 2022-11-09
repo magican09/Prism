@@ -119,13 +119,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
             //IsModuleEnable =  ModuleInfo.IsEnable;
           
-            LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
+              LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
             LoadProjectFromDBCommand = new NotifyCommand(LoadProjectFomDB, CanLoadProjectFromDb);
             SaveDataToDBCommand = new NotifyCommand(SaveDataToDB, CanSaveDataToDB)
                 .ObservesProperty(()=>AllChangesIsDone);
             AllChangesIsDone = true;
             ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
-            UnDoLeftCommand = new NotifyCommand(OnUnDoLast, CanUndoLast);
+          //  UnDoLeftCommand = new NotifyCommand(OnUnDoLast, CanUndoLast);
 
             /*  CreateProjectStructureCommand = new NotifyCommand(CreateProjectStructure).ObservesProperty(() => SelectedProject);
               CreateAOSRCommand = new NotifyCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
@@ -290,8 +290,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             AllProjectsContext = new bldProjectsGroup(_buildingUnitsRepository.Projects.GetProjectsAsync());
             AllProjectsContext.JornalingOn();
             _commonPropertiesChangeJornal.RegisterObject(AllProjectsContext);
-            AllProjectsContext.ResetObjectsStructure();
-            AllProjectsContext.AdjustObjectsStructure(_commonPropertiesChangeJornal);
+          //  AllProjectsContext.ResetObjectsStructure();
+        //    AllProjectsContext.AdjustObjectsStructure(_commonPropertiesChangeJornal);
            // AllProjectsContext.CurrentContextId = Id;
            // AllProjectsContext.PropertiesChangeJornal.ContextIdHistory.Add(Id);
             AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;

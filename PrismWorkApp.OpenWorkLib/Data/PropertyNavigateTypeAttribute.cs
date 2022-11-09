@@ -25,4 +25,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             return false;
         }
     }
+    public class NotJornalingAttribute : ValidationAttribute
+    {
+        public override bool IsValid(object value)
+        {
+
+            return false;
+        }
+    }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -10,14 +12,14 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public delegate void  PropertiesChangeJornalChangedEventHandler(object sender, PropertyStateRecord _propertyStateRecord);
+    public delegate void PropertiesChangeJornalChangedEventHandler(object sender, PropertyStateRecord _propertyStateRecord);
     public delegate void ObjectStateChangeEventHandler(object sender, ObjectStateChangedEventArgs e);
 
     public class PropertiesChangeJornal : ObservableCollection<PropertyStateRecord>, IPropertiesChangeJornal
     {
         public event PropertiesChangeJornalChangedEventHandler JornalChangedNotify;
         public ObservableCollection<Guid> ContextIdHistory { get; set; } = new ObservableCollection<Guid>();
-
+        public ObservableCollection<IJornalable> RegistedObjects { get; set; } = new ObservableCollection<IJornalable>();
         public PropertiesChangeJornal()
         {
 
@@ -33,17 +35,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     stateRecord.ParentJornal = this;
                     if (JornalChangedNotify != null)
                     {
-                        /*  if (this.Where(pr=>pr.ContextId== stateRecord.ContextId).Count()==1)//Если изменеия в текущем контексе первые..
-                         {
-                             PropertyStateRecord st_record = new PropertyStateRecord(stateRecord.Value,stateRecord.Status, stateRecord.Name, ParentObject.CurrentContextId);
-
-                             ParentObject.PropertiesChangeJornal.Add(st_record);
-                         }    */
-                        //   if (!ContextIdHistory.Contains(stateRecord.ContextId))
-                        //     ContextIdHistory.Add(stateRecord.ContextId);
-
-
-                        //31.10.22    JornalChangedNotify(this, stateRecord);
 
                     }
                     else
@@ -58,67 +49,169 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             return this.Count > 0;
         }
-        public void RegisterObject(IJornalable obj)
+        public void RegisterObject(IJornalable obj) //Регистрирем объет в журнале для наблюдения за имземениями
         {
             if (obj is INotifyCollectionChanged)
+            {
                 (obj as INotifyCollectionChanged).CollectionChanged += OnCollectionObjectChanged;
+                obj.PropertyBeforeChanged += OnPropertyBeforeChanged;
+
+            }
             else if (obj is INotifyPropertyChanged)
+            {
                 (obj as INotifyPropertyChanged).PropertyChanged += OnPropertyObjectChanged;
-             var  properties_list = obj.GetType().GetProperties().Where(pr=>pr.GetIndexParameters().Length==0);
+                obj.PropertyBeforeChanged += OnPropertyBeforeChanged;
+            }
+            if (!RegistedObjects.Contains(obj))
+                RegistedObjects.Add(obj);
 
-             foreach (PropertyInfo propertyInfo in properties_list)
-             {
-                 var prop_value = propertyInfo.GetValue(obj);
+            var properties_list = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            foreach (PropertyInfo propertyInfo in properties_list)
+            {
+                var prop_value = propertyInfo.GetValue(obj);
 
-             }
-      
+                if (prop_value != null && prop_value is IJornalable && !RegistedObjects.Contains(prop_value))
+                {
+                    RegisterObject(prop_value as IJornalable);
+                }
+            }
+            if (obj is IList)
+            {
+
+                foreach (IJornalable element in obj as IList)
+                {
+                    if (!RegistedObjects.Contains(element)) RegisterObject(element);
+                }
+            }
+
         }
-      /*  public void RegisterObject<T>(Expression<Func<T>> objectExpression) where T : IJornalable
+        private void OnPropertyBeforeChanged(object sender, PropertyChangedEventArgs e)
         {
-            var lamda_expression = (LambdaExpression)objectExpression;
-            var member_expression = (MemberExpression)lamda_expression.Body;
-            var view_model_expression = (ConstantExpression) member_expression.Expression;
-            var view_model = view_model_expression.Value;
-            PropertyInfo object_propI_info = member_expression.Member as PropertyInfo;
-            if (view_model is INotifyCollectionChanged)
-                (view_model as INotifyCollectionChanged).CollectionChanged += OnCollectionObjectChanged;
-            else if (view_model is INotifyPropertyChanged)
-                (view_model as INotifyPropertyChanged).PropertyChanged += OnObjectChanged;
+            var properties_list = sender.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            var property_last_value_prop_info = properties_list.Where(pri => pri.Name == e.PropertyName).FirstOrDefault();
+            var results = new List<ValidationResult>();
+            var context_obj = new ValidationContext(sender);
+            bool obj_validate_result = false;
+            if (!Validator.TryValidateObject(sender, context_obj, results, true))
+                obj_validate_result = results?[0]?.MemberNames?.FirstOrDefault() == property_last_value_prop_info?.Name;
+            if (obj_validate_result == false)
+            {
+                var property_last_value = property_last_value_prop_info.GetValue(sender);
+                PropertyStateRecord stateRecord = new PropertyStateRecord(property_last_value, JornalRecordStatus.MODIFIED, e.PropertyName,
+                    (sender as IJornalable).CurrentContextId, sender as IJornalable);
+                this.Add(stateRecord);
+            }
         }
-        */
-       /* private  static void ParseExpression(Expression  expression)
-        {
-            if(expression.NodeType== ExpressionType.Lambda)
-            {
-                var lamda_expression = (LambdaExpression)expression;
-                ParseExpression(lamda_expression.Body); 
-            }
-            if(expression.NodeType== ExpressionType.MemberAccess)
-            {
-                var member_expression = (MemberExpression)expression;
-                ParseExpression(member_expression.Expression);
-            }
-            if(expression.NodeType== ExpressionType.Constant)
-            {
-                
-            }
-        }*/
-
         private void OnPropertyObjectChanged(object sender, PropertyChangedEventArgs e)
         {
-            
-        }
 
+            var properties_list = sender.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            var property_current_value_prop_info = properties_list.Where(pri => pri.Name == e.PropertyName).FirstOrDefault();
+            string prop_name = property_current_value_prop_info.Name;
+            var property_current_value = property_current_value_prop_info.GetValue(sender);
+
+            if (property_current_value is IJornalable current_value &&
+                property_current_value != null && !RegistedObjects.Contains(current_value))
+            {
+                this.RegisterObject(current_value);
+            }
+
+
+        }
         private void OnCollectionObjectChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-           
+
+
+
+        }
+
+        public virtual void UnDoLeft(Guid currentContextId)
+        {
+            PropertyStateRecord propertyState = null;
+            var all_prop_states = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date);
+            PropertyStateRecord current_prop_state = all_prop_states.Where(pr => pr.Status == JornalRecordStatus.CURRENT_VALUE).LastOrDefault();
+         
+            if (current_prop_state != null)
+            {
+                current_prop_state.Status = JornalRecordStatus.MODIFIED;
+                var previous_prop_states = all_prop_states.Where(pr => pr.Date < current_prop_state.Date).ToList();
+                 if (previous_prop_states.Count > 0)
+                {
+                    propertyState = previous_prop_states.OrderBy(pr => pr.Date).LastOrDefault();
+                }
+                 else
+                         propertyState = this.Where(pr => pr.ContextId == currentContextId).OrderByDescending(pr => pr.Date).LastOrDefault();
+            }
+            else
+            {
+                propertyState = this.Where(pr => pr.ContextId == currentContextId).OrderByDescending(pr => pr.Date).FirstOrDefault();
+            }
+
+       
+                         
+
+            if (propertyState != null)
+            {
+                var prop_info = propertyState.ParentObject.GetType().GetProperty(propertyState.Name); //Достаем с помощью рефлексии данные о свойстве из текущего объекта
+                var prop_val = prop_info.GetValue(propertyState.ParentObject);
+
+                if (prop_info.GetIndexParameters().Length == 0)//Если свойство не является индек..
+                {
+                    propertyState.ParentObject.JornalingOff();
+                    prop_info.SetValue(propertyState.ParentObject, propertyState.Value); //Присваиваем свойству текущего объекта сохраненное в журнале значение
+                    propertyState.ParentObject.JornalingOn();
+                    propertyState.Status = JornalRecordStatus.CURRENT_VALUE;
+                }
+              //  this.Remove(propertyState); //Удаляем из журнала сохраненное изменение
+            }
+        }
+        public virtual void UnDoRight(Guid currentContextId)
+        {
+            PropertyStateRecord propertyState = null;
+            var all_prop_states = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date);
+            PropertyStateRecord current_prop_state = all_prop_states.Where(pr => pr.Status == JornalRecordStatus.CURRENT_VALUE).LastOrDefault();
+
+            if (current_prop_state != null)
+            {
+                current_prop_state.Status = JornalRecordStatus.MODIFIED;
+                var previous_prop_states = all_prop_states.Where(pr => pr.Date > current_prop_state.Date).ToList();
+                if (previous_prop_states.Count > 0)
+                {
+                    propertyState = previous_prop_states.OrderByDescending(pr => pr.Date).LastOrDefault();
+                }
+                else
+                    propertyState = this.Where(pr => pr.ContextId == currentContextId).OrderByDescending(pr => pr.Date).LastOrDefault();
+            }
+            else
+            {
+                propertyState = this.Where(pr => pr.ContextId == currentContextId).OrderByDescending(pr => pr.Date).FirstOrDefault();
+            }
+
+
+
+
+            if (propertyState != null)
+            {
+                var prop_info = propertyState.ParentObject.GetType().GetProperty(propertyState.Name); //Достаем с помощью рефлексии данные о свойстве из текущего объекта
+                var prop_val = prop_info.GetValue(propertyState.ParentObject);
+
+                if (prop_info.GetIndexParameters().Length == 0)//Если свойство не является индек..
+                {
+                    propertyState.ParentObject.JornalingOff();
+                    prop_info.SetValue(propertyState.ParentObject, propertyState.Value); //Присваиваем свойству текущего объекта сохраненное в журнале значение
+                    propertyState.ParentObject.JornalingOn();
+                    propertyState.Status = JornalRecordStatus.CURRENT_VALUE;
+                }
+                //  this.Remove(propertyState); //Удаляем из журнала сохраненное изменение
+            }
         }
     }
+
     public class ObjectStateChangedEventArgs
     {
-       public  string ObjectName { get; set; }
-       public IJornalable Object { get; set; }
-       public PropertyStateRecord PropertyStateRecord { get; set; }
+        public string ObjectName { get; set; }
+        public IJornalable Object { get; set; }
+        public PropertyStateRecord PropertyStateRecord { get; set; }
         public ObjectStateChangedEventArgs()
         {
 
@@ -131,6 +224,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         }
     }
 
-    
+
 
 }

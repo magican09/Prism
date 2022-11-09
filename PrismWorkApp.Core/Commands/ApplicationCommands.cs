@@ -17,6 +17,8 @@ namespace PrismWorkApp.Core.Commands
     public interface IApplicationCommands
     {
         NotifyCompositeCommand SaveAllCommand { get; }
+       NotifyCompositeCommand UnDoLeftCommand { get; }
+        NotifyCompositeCommand UnDoRightCommand { get; }
     }
     public class ApplicationCommands : IApplicationCommands
     {
@@ -25,7 +27,16 @@ namespace PrismWorkApp.Core.Commands
         {
             get { return _saveAllCommand; }
         }
-
+        private NotifyCompositeCommand _unDoLeftCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand UnDoLeftCommand
+        {
+            get { return _unDoLeftCommand; }
+        }
+        private NotifyCompositeCommand _unDoRightCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand UnDoRightCommand
+        {
+            get { return _unDoRightCommand; }
+        }
         // public CompositeCommand LoadProjectFromExcell { get; } = new CompositeCommand();
     }
     

@@ -16,7 +16,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public delegate void PropertiesChangeJornalChangedEventHandler(object sender, PropertyStateRecord _propertyStateRecord);
     public delegate void ObjectStateChangeEventHandler(object sender, ObjectStateChangedEventArgs e);
-    
+
     public class PropertiesChangeJornal : ObservableCollection<PropertyStateRecord>, IPropertiesChangeJornal, INotifyPropertyChanged
     {
 
@@ -24,7 +24,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         protected virtual bool SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = "")
         {
-          if (object.Equals(val, member)) return false;
+            if (object.Equals(val, member)) return false;
             member = val;
             //Type tp = Children[Children.Count - 1].GetType();
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
@@ -109,20 +109,22 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
         private void OnCollectionPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-          
+
         }
 
         private void OnCollectionChangedBeforAdd(object sender, CollectionChangedEventArgs e)
         {
-          
+
         }
 
         private void OnCollectionChangedBeforeRemove(object sender, CollectionChangedEventArgs e)
         {
             PropertyStateRecord stateRecord = new PropertyStateRecord(
                     e.Item, JornalRecordStatus.REMOVED, e.Item.Id.ToString(),
-                    CurrentContextId,sender as IJornalable);
+                    CurrentContextId, sender as IJornalable);
             this.Add(stateRecord);
+            this.UnPickRecords();
+
         }
 
         private void OnPropertyBeforeChanged(object sender, PropertyChangedEventArgs e)
@@ -139,8 +141,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 var property_last_value = property_last_value_prop_info.GetValue(sender);
                 PropertyStateRecord stateRecord = new PropertyStateRecord(property_last_value, JornalRecordStatus.MODIFIED, e.PropertyName,
                     (sender as IJornalable).CurrentContextId, sender as IJornalable);
-                this.SetCurrentPropertyStateRecord(stateRecord);
+                
                 this.Add(stateRecord);
+                this.UnPickRecords();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(stateRecord.Name));
 
             }
@@ -162,78 +165,83 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 this.RegisterObject(current_value);
             }
         }
-       
+
 
         public virtual void UnDoLeft()
         {
             Guid currentContextId = CurrentContextId;
-            PropertyStateRecord propertyState = null;
-            var all_prop_states = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date);
-            PropertyStateRecord current_prop_state = all_prop_states.Where(pr => pr.PointerStatus == JornalRecordPointerStatus.CURRENT_VALUE).FirstOrDefault();
-
-            if (current_prop_state != null)
+             var all_prop_states = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date);
+            PropertyStateRecord picked_state = all_prop_states.Where(pr => pr.PointerStatus == JornalRecordPointerStatus.PICKED).FirstOrDefault();
+            PropertyStateRecord previous_picked_state = null;
+            if (picked_state != null) // Если не было выбранной сохраненой записи 
             {
-                //  current_prop_state.Status = JornalRecordStatus.MODIFIED;
-                var previous_prop_states = all_prop_states.Where(pr => pr.Date < current_prop_state.Date).ToList();
-                if (previous_prop_states.Count > 0)
-                {
-                    propertyState = previous_prop_states.OrderBy(pr => pr.Date).LastOrDefault();
-                    current_prop_state.PointerStatus = JornalRecordPointerStatus.UNPICKED;
-                }
+                previous_picked_state = all_prop_states.Where(r => r.Date < picked_state.Date)
+                 .OrderBy(r => r.Date).LastOrDefault();
+                picked_state.PointerStatus = JornalRecordPointerStatus.UNPICKED;
             }
             else
-                propertyState = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date).LastOrDefault();
-
-            if (propertyState != null)
             {
-                var prop_info = propertyState.ParentObject.GetType().GetProperty(propertyState.Name); //Достаем с помощью рефлексии данные о свойстве из текущего объекта
-                var prop_val = prop_info.GetValue(propertyState.ParentObject);
-
-                if (prop_info.GetIndexParameters().Length == 0)//Если свойство не является индек..
-                {
-                    propertyState.ParentObject.JornalingOff();
-                    prop_info.SetValue(propertyState.ParentObject, propertyState.Value); //Присваиваем свойству текущего объекта сохраненное в журнале значение
-                   propertyState.ParentObject.JornalingOn();
-                    propertyState.PointerStatus = JornalRecordPointerStatus.CURRENT_VALUE;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyState.Name));
-                }
-
+                previous_picked_state = all_prop_states.OrderBy(r => r.Date).LastOrDefault();
             }
+
+            if(previous_picked_state!=null ) previous_picked_state.PointerStatus = JornalRecordPointerStatus.PICKED;
+
+             this.UnDo(previous_picked_state);
            
+
         }
         public virtual void UnDoRight()
         {
             Guid currentContextId = CurrentContextId;
-            PropertyStateRecord propertyState = null;
             var all_prop_states = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date);
-            PropertyStateRecord current_prop_state = all_prop_states.Where(pr => pr.PointerStatus == JornalRecordPointerStatus.CURRENT_VALUE).FirstOrDefault();
-            if (current_prop_state != null)
+            PropertyStateRecord picked_state = all_prop_states.Where(pr => pr.PointerStatus == JornalRecordPointerStatus.PICKED).FirstOrDefault();
+            PropertyStateRecord next_picked_state = null;
+            if (picked_state != null) // Если не было выбранной сохраненой записи 
             {
-                var previous_prop_states = all_prop_states.Where(pr => pr.Date > current_prop_state.Date).ToList();
-                if (previous_prop_states.Count > 0)
-                {
-                    propertyState = previous_prop_states.OrderByDescending(pr => pr.Date).LastOrDefault();
-                    current_prop_state.PointerStatus = JornalRecordPointerStatus.UNPICKED;
-                }
+                next_picked_state = all_prop_states.Where(r => r.Date > picked_state.Date)
+                 .OrderBy(r => r.Date).FirstOrDefault();
+                picked_state.PointerStatus = JornalRecordPointerStatus.UNPICKED;
             }
             else
-                propertyState = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date).LastOrDefault();
-            if (propertyState != null)
             {
-                var prop_info = propertyState.ParentObject.GetType().GetProperty(propertyState.Name); //Достаем с помощью рефлексии данные о свойстве из текущего объекта
-                var prop_val = prop_info.GetValue(propertyState.ParentObject);
-
-                if (prop_info.GetIndexParameters().Length == 0)//Если свойство не является индек..
-                {
-                    propertyState.ParentObject.JornalingOff();
-                    prop_info.SetValue(propertyState.ParentObject, propertyState.Value); //Присваиваем свойству текущего объекта сохраненное в журнале значение
-                    propertyState.ParentObject.JornalingOn();
-                    propertyState.PointerStatus =  JornalRecordPointerStatus.CURRENT_VALUE;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyState.Name));
-                }
-                //  this.Remove(propertyState); //Удаляем из журнала сохраненное изменение
+                next_picked_state = all_prop_states.OrderBy(r => r.Date).LastOrDefault();
             }
 
+            if (next_picked_state != null) next_picked_state.PointerStatus = JornalRecordPointerStatus.PICKED;
+
+            this.UnDo(next_picked_state);
+
+        }
+
+        public virtual void UnDo(PropertyStateRecord propertyState)
+        {
+            if (!(propertyState.ParentObject is IList ))
+            {
+                if (propertyState != null)
+                {
+                    var prop_info = propertyState.ParentObject.GetType().GetProperty(propertyState.Name); //Достаем с помощью рефлексии данные о свойстве из текущего объекта
+                    var prop_val = prop_info.GetValue(propertyState.ParentObject);
+
+                    if (prop_info.GetIndexParameters().Length == 0)//Если свойство не является индек..
+                    {
+                        propertyState.ParentObject.JornalingOff();
+                        prop_info.SetValue(propertyState.ParentObject, propertyState.Value); //Присваиваем свойству текущего объекта сохраненное в журнале значение
+                        propertyState.ParentObject.JornalingOn();
+                        propertyState.PointerStatus = JornalRecordPointerStatus.PICKED;
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyState.Name));
+                    }
+                }
+
+            }
+            else
+            {
+                if(propertyState.Status== JornalRecordStatus.REMOVED)
+                {
+                    (propertyState.Value as IJornalable).Status = JornalRecordStatus.MODIFIED;
+                    (propertyState.Value as IJornalable).IsVisible = true;
+                }
+
+            }
         }
 
         public void Save()
@@ -243,52 +251,71 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             foreach (PropertyStateRecord stateRecord in records_fo_delete)
                 this.Remove(stateRecord);
         }
-        private void SetCurrentPropertyStateRecord(PropertyStateRecord propertyState)
+        private void UnPickRecords()
         {
-            PropertyStateRecord current_prop_state = this.Where(ps => ps.PointerStatus == JornalRecordPointerStatus.CURRENT_VALUE).FirstOrDefault();
-            if (current_prop_state != null) current_prop_state.PointerStatus =  JornalRecordPointerStatus.UNPICKED;
-            propertyState.PointerStatus = JornalRecordPointerStatus.CURRENT_VALUE;
+            PropertyStateRecord current_prop_state = this.Where(ps => ps.PointerStatus == JornalRecordPointerStatus.PICKED).FirstOrDefault();
+            if (current_prop_state != null)
+            {
+                current_prop_state.PointerStatus = JornalRecordPointerStatus.UNPICKED;
+                current_prop_state.Date = DateTime.Now;
+         
+             }
+        //    propertyState.PointerStatus = JornalRecordPointerStatus.PICKED;
         }
 
-        public bool IsOnLastRecord() //Если казатель CURRENT_VALUE на последней записи
+        public bool IsOnLastRecord() //Если казатель PICKED на последней записи
         {
             Guid currentContextId = CurrentContextId;
-            var records = this.Where(rc => rc.ContextId == currentContextId).OrderBy(rc => rc.Date);
-            var current_last_record = records.LastOrDefault();
-            if (current_last_record != null && current_last_record.PointerStatus ==  JornalRecordPointerStatus.CURRENT_VALUE)
-                return true;
-            else
-                return false;
+            PropertyStateRecord picked_record = this.Where(r => r.ContextId == currentContextId &&
+                                            r.PointerStatus == JornalRecordPointerStatus.PICKED).FirstOrDefault();
+            PropertyStateRecord next_record = null;
+            if (picked_record != null)
+                next_record = this.Where(rc => rc.Date > picked_record.Date).OrderBy(rc => rc.Date).FirstOrDefault();
+
+            if (picked_record == null && next_record == null) return false;
+            if (picked_record != null && next_record == null) return true;
+            if (picked_record == null && next_record != null) return false;
+            if (picked_record != null && next_record != null) return false;
+
+            return false;
+
+
         }
-        public bool IsOnFirstRecord() //Если казатель CURRENT_VALUE на последней записи
+        public bool IsOnFirstRecord() //Если казатель PICKED на последней записи
         {
             Guid currentContextId = CurrentContextId;
-            var records = this.Where(rc => rc.ContextId == currentContextId).OrderBy(rc => rc.Date);
-            var current_first_record = records.FirstOrDefault();
-            if (current_first_record != null && current_first_record.PointerStatus ==  JornalRecordPointerStatus.CURRENT_VALUE)
-                return true;
-            else
-                return false;
+            PropertyStateRecord picked_record = this.Where(r => r.ContextId == currentContextId &&
+                                            r.PointerStatus == JornalRecordPointerStatus.PICKED).FirstOrDefault();
+            PropertyStateRecord privious_record = null;
+            if (picked_record != null)
+                privious_record = this.Where(rc => rc.Date < picked_record.Date).OrderBy(rc => rc.Date).LastOrDefault();
+
+            if (picked_record == null && privious_record == null) return false;
+            if (picked_record != null && privious_record == null) return true;
+            if (picked_record == null && privious_record != null) return false;
+            if (picked_record != null && privious_record != null) return false;
+
+            return false;
         }
-    } 
     }
+}
 
-    public class ObjectStateChangedEventArgs
+public class ObjectStateChangedEventArgs
+{
+    public string ObjectName { get; set; }
+    public IJornalable Object { get; set; }
+    public PropertyStateRecord PropertyStateRecord { get; set; }
+    public ObjectStateChangedEventArgs()
     {
-        public string ObjectName { get; set; }
-        public IJornalable Object { get; set; }
-        public PropertyStateRecord PropertyStateRecord { get; set; }
-        public ObjectStateChangedEventArgs()
-        {
 
-        }
-        public ObjectStateChangedEventArgs(string name, IJornalable obj, PropertyStateRecord propertyStateRecord)
-        {
-            ObjectName = name;
-            Object = obj;
-            PropertyStateRecord = propertyStateRecord;
-        }
     }
+    public ObjectStateChangedEventArgs(string name, IJornalable obj, PropertyStateRecord propertyStateRecord)
+    {
+        ObjectName = name;
+        Object = obj;
+        PropertyStateRecord = propertyStateRecord;
+    }
+}
 
 
 

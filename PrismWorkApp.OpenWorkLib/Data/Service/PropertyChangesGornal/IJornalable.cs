@@ -59,6 +59,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
     public enum JornalRecordPointerStatus
     {
         UNPICKED,
-        CURRENT_VALUE
+        PICKED
     }
 }

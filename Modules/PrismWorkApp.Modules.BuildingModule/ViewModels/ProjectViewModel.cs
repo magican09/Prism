@@ -132,9 +132,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedProject).ObservesCanExecute(()=>KeepAlive);
             UnDoLeftCommand = new NotifyCommand(OnUnDoLeft, () => { return !CommonChangeJornal.IsOnFirstRecord(); })
-                .ObservesEvent(CommonChangeJornal);
+                .ObservesPropertyChangedEvent(CommonChangeJornal);
             UnDoRightCommand = new NotifyCommand(OnUnDoRight, () => { return !CommonChangeJornal.IsOnLastRecord(); })
-                  .ObservesEvent(CommonChangeJornal); 
+                  .ObservesPropertyChangedEvent(CommonChangeJornal); 
             
               TestCommand = new NotifyCommand(OnTestCommand);
            

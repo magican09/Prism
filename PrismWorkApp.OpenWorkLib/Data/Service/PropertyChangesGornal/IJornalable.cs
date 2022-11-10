@@ -18,6 +18,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void JornalingOn();
         public JornalRecordStatus Status { get; set; }
         public Guid CurrentContextId { get; set; }
+        public bool IsVisible { get; set; }
         public PropertiesChangeJornal PropertiesChangeJornal { get; set; }
 
         public event ObjectStateChangeEventHandler ObjectChangedNotify;//Событие вызывается при изменении в данном объекте 
@@ -51,7 +52,13 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         DELETED,
         UNJOURNALED,
         ADDED,
-        REMOVED,
+        REMOVED
+       
+    }
+
+    public enum JornalRecordPointerStatus
+    {
+        UNPICKED,
         CURRENT_VALUE
     }
 }

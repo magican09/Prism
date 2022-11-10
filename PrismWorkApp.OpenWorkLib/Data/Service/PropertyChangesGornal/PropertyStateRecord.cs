@@ -59,7 +59,14 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public JornalRecordStatus Status
         {
             get { return _status; }
-            set {  SetProperty(ref _status, value); }
+            set { SetProperty(ref _status, value); }
+        }
+
+        private JornalRecordPointerStatus _pointerStatus;
+        public JornalRecordPointerStatus PointerStatus
+        {
+            get { return _pointerStatus; }
+            set { SetProperty(ref _pointerStatus, value); }
         }
 
         public IJornalable ParentObject { get; set; }
@@ -89,4 +96,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             ParentObject = parentObject;
         }
     }
+
+
 }

@@ -13,19 +13,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private bool _isDone;
         public bool IsDone
         {
-            get { IsAllWorksDone();  return _isDone; }
+            get {  return _isDone; }
             set {  _isDone= value; OnPropertyChanged("IsDone"); }
         }
-        private void   IsAllWorksDone()
-        {
-            bool is_all_done = true;
-            foreach(IbldWork work in this.Items )
-            {
-                if (!work.IsDone) is_all_done = false;
-            }
-            IsDone = is_all_done;
-        }
-        
+       
         public bldWorksGroup()
         {
             Name = "Ведомость работ:";

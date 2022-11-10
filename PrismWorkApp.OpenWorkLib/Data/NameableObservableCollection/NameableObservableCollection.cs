@@ -18,6 +18,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event PropertyChangedEventHandler PropertyBeforeChanged = delegate { };
+        public event CollectionChangedEventHandler CollectionChangedBeforeRemove = delegate { };
+        public event CollectionChangedEventHandler CollectionChangedBeforAdd = delegate { };
 
 
         public event ObjectStateChangeEventHandler ObjectChangedNotify;//Событие вызывается при изменении в данном объекте 
@@ -28,11 +30,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+         if(b_jornal_recording_flag)  PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
         public void OnPropertyBeforChanged([CallerMemberName] string prop = "")
         {
-            PropertyBeforeChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+            if (b_jornal_recording_flag) PropertyBeforeChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
         private Guid _id;
         public Guid Id
@@ -365,7 +367,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #endregion
 
-
+        public bool Remove(TEntity item)
+        {
+            item.IsVisible = false;
+            CollectionChangedBeforeRemove(this,new  CollectionChangedEventArgs(item));
+            return true;
+        }
 
         private void CountNotificationSet()
         {
@@ -382,6 +389,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             if (obj.ParentObjects == null) obj.ParentObjects = new ObservableCollection<IJornalable>();
                             if (!obj.ParentObjects.Contains(this))
                                 obj.ParentObjects.Add(this);*/
+                        CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(obj));
+
                         if (b_jornal_recording_flag && CurrentContextId != Guid.Empty)
                         {
                             List<Guid> AnatherWindowsIds = PropertiesChangeJornal.ContextIdHistory.Where(el => el != CurrentContextId).ToList();

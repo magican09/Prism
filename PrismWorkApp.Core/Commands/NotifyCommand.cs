@@ -107,7 +107,7 @@ namespace PrismWorkApp.Core.Commands
             }
             return this;
         }
-        public NotifyCommand ObservesEvent(INotifyPropertyChanged  obj)
+        public NotifyCommand ObservesPropertyChangedEvent(INotifyPropertyChanged  obj)
         {
             obj.PropertyChanged += RaiseCanExecuteChanged;//Подписываемся на событие PropertyChanged
             return this;

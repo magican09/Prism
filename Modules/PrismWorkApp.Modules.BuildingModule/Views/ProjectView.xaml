@@ -141,11 +141,11 @@
                     <DataGridTextColumn  Header="PropName"  
                                                      Binding = "{Binding Path=Name}" />
                     <DataGridTextColumn  Header="Status"  
-                                                     Binding = "{Binding Path=Status}" />
+                                                     Binding = "{Binding Path=PointerStatus}" />
                     <DataGridTextColumn  Header="Status"  
                                                      Binding = "{Binding Path=Value}" />
                     <DataGridTextColumn  Header="Status"  
-                                                     Binding = "{Binding Path=Data}" />
+                                                     Binding = "{Binding Path=Status}" />
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel  >

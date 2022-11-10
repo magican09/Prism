@@ -71,11 +71,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         }
         public void RegisterObject(IJornalable obj) //Регистрирем объет в журнале для наблюдения за имземениями
         {
-            if (obj is INotifyCollectionChanged)
+            if (obj is INotifyJornalableCollectionChanged collection)
             {
-                (obj as INotifyCollectionChanged).CollectionChanged += OnCollectionObjectChanged;
-                obj.PropertyBeforeChanged += OnPropertyBeforeChanged;
-
+                collection.CollectionChangedBeforAdd += OnCollectionChangedBeforAdd;
+                collection.CollectionChangedBeforeRemove += OnCollectionChangedBeforeRemove;
+                collection.PropertyBeforeChanged += OnCollectionPropertyChanged;
+                collection.PropertyChanged += OnPropertyObjectChanged;
             }
             else if (obj is INotifyPropertyChanged)
             {
@@ -105,6 +106,25 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             }
 
         }
+
+        private void OnCollectionPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+          
+        }
+
+        private void OnCollectionChangedBeforAdd(object sender, CollectionChangedEventArgs e)
+        {
+          
+        }
+
+        private void OnCollectionChangedBeforeRemove(object sender, CollectionChangedEventArgs e)
+        {
+            PropertyStateRecord stateRecord = new PropertyStateRecord(
+                    e.Item, JornalRecordStatus.REMOVED, e.Item.Id.ToString(),
+                    CurrentContextId,sender as IJornalable);
+            this.Add(stateRecord);
+        }
+
         private void OnPropertyBeforeChanged(object sender, PropertyChangedEventArgs e)
         {
             var properties_list = sender.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
@@ -131,27 +151,25 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             var properties_list = sender.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
             var property_current_value_prop_info = properties_list.Where(pri => pri.Name == e.PropertyName).FirstOrDefault();
             string prop_name = property_current_value_prop_info.Name;
+            if (sender is IList)
+                ;
+            (sender as IJornalable).JornalingOff();
             var property_current_value = property_current_value_prop_info.GetValue(sender);
-
+            (sender as IJornalable).JornalingOn();
             if (property_current_value is IJornalable current_value &&
                 property_current_value != null && !RegistedObjects.Contains(current_value))
             {
                 this.RegisterObject(current_value);
             }
         }
-        private void OnCollectionObjectChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-
-
-
-        }
+       
 
         public virtual void UnDoLeft()
         {
             Guid currentContextId = CurrentContextId;
             PropertyStateRecord propertyState = null;
             var all_prop_states = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date);
-            PropertyStateRecord current_prop_state = all_prop_states.Where(pr => pr.Status == JornalRecordStatus.CURRENT_VALUE).FirstOrDefault();
+            PropertyStateRecord current_prop_state = all_prop_states.Where(pr => pr.PointerStatus == JornalRecordPointerStatus.CURRENT_VALUE).FirstOrDefault();
 
             if (current_prop_state != null)
             {
@@ -160,7 +178,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 if (previous_prop_states.Count > 0)
                 {
                     propertyState = previous_prop_states.OrderBy(pr => pr.Date).LastOrDefault();
-                    current_prop_state.Status = JornalRecordStatus.MODIFIED;
+                    current_prop_state.PointerStatus = JornalRecordPointerStatus.UNPICKED;
                 }
             }
             else
@@ -175,8 +193,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 {
                     propertyState.ParentObject.JornalingOff();
                     prop_info.SetValue(propertyState.ParentObject, propertyState.Value); //Присваиваем свойству текущего объекта сохраненное в журнале значение
-                    propertyState.ParentObject.JornalingOn();
-                    propertyState.Status = JornalRecordStatus.CURRENT_VALUE;
+                   propertyState.ParentObject.JornalingOn();
+                    propertyState.PointerStatus = JornalRecordPointerStatus.CURRENT_VALUE;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyState.Name));
                 }
 
@@ -188,14 +206,14 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             Guid currentContextId = CurrentContextId;
             PropertyStateRecord propertyState = null;
             var all_prop_states = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date);
-            PropertyStateRecord current_prop_state = all_prop_states.Where(pr => pr.Status == JornalRecordStatus.CURRENT_VALUE).FirstOrDefault();
+            PropertyStateRecord current_prop_state = all_prop_states.Where(pr => pr.PointerStatus == JornalRecordPointerStatus.CURRENT_VALUE).FirstOrDefault();
             if (current_prop_state != null)
             {
                 var previous_prop_states = all_prop_states.Where(pr => pr.Date > current_prop_state.Date).ToList();
                 if (previous_prop_states.Count > 0)
                 {
                     propertyState = previous_prop_states.OrderByDescending(pr => pr.Date).LastOrDefault();
-                    current_prop_state.Status = JornalRecordStatus.MODIFIED;
+                    current_prop_state.PointerStatus = JornalRecordPointerStatus.UNPICKED;
                 }
             }
             else
@@ -210,12 +228,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     propertyState.ParentObject.JornalingOff();
                     prop_info.SetValue(propertyState.ParentObject, propertyState.Value); //Присваиваем свойству текущего объекта сохраненное в журнале значение
                     propertyState.ParentObject.JornalingOn();
-                    propertyState.Status = JornalRecordStatus.CURRENT_VALUE;
+                    propertyState.PointerStatus =  JornalRecordPointerStatus.CURRENT_VALUE;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyState.Name));
                 }
                 //  this.Remove(propertyState); //Удаляем из журнала сохраненное изменение
             }
-           
+
         }
 
         public void Save()
@@ -227,9 +245,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         }
         private void SetCurrentPropertyStateRecord(PropertyStateRecord propertyState)
         {
-            PropertyStateRecord current_prop_state = this.Where(ps => ps.Status == JornalRecordStatus.CURRENT_VALUE).FirstOrDefault();
-            if (current_prop_state != null) current_prop_state.Status = JornalRecordStatus.MODIFIED;
-            propertyState.Status = JornalRecordStatus.CURRENT_VALUE;
+            PropertyStateRecord current_prop_state = this.Where(ps => ps.PointerStatus == JornalRecordPointerStatus.CURRENT_VALUE).FirstOrDefault();
+            if (current_prop_state != null) current_prop_state.PointerStatus =  JornalRecordPointerStatus.UNPICKED;
+            propertyState.PointerStatus = JornalRecordPointerStatus.CURRENT_VALUE;
         }
 
         public bool IsOnLastRecord() //Если казатель CURRENT_VALUE на последней записи
@@ -237,7 +255,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             Guid currentContextId = CurrentContextId;
             var records = this.Where(rc => rc.ContextId == currentContextId).OrderBy(rc => rc.Date);
             var current_last_record = records.LastOrDefault();
-            if (current_last_record != null && current_last_record.Status == JornalRecordStatus.CURRENT_VALUE)
+            if (current_last_record != null && current_last_record.PointerStatus ==  JornalRecordPointerStatus.CURRENT_VALUE)
                 return true;
             else
                 return false;
@@ -247,7 +265,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             Guid currentContextId = CurrentContextId;
             var records = this.Where(rc => rc.ContextId == currentContextId).OrderBy(rc => rc.Date);
             var current_first_record = records.FirstOrDefault();
-            if (current_first_record != null && current_first_record.Status == JornalRecordStatus.CURRENT_VALUE)
+            if (current_first_record != null && current_first_record.PointerStatus ==  JornalRecordPointerStatus.CURRENT_VALUE)
                 return true;
             else
                 return false;

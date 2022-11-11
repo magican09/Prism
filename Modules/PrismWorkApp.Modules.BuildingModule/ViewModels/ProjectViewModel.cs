@@ -203,7 +203,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
           //  BuildingObjects = SelectedProject.BuildingObjects;
          //   BuildingObjects.Remove(BuildingObjects[0]);
-            SelectedProject.BuildingObjects.Remove(SelectedProject.BuildingObjects[0]);
+            SelectedProject.BuildingObjects.Remove(SelectedBuildingObject);
         }
 
         private void OnEditRemoveResponsibleEmployee()

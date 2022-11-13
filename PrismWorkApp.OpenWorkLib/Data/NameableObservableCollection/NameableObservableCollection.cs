@@ -369,7 +369,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public bool Remove(TEntity item)
         {
-            item.IsVisible = false;
             CollectionChangedBeforeRemove(this,new  CollectionChangedEventArgs(item));
             return true;
         }

@@ -95,6 +95,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             ContextId = currentContextId;
             ParentObject = parentObject;
         }
+
+        public PropertyStateRecord(PropertyStateRecord stateRecord):
+            this(stateRecord.Value, stateRecord.Status, stateRecord.Name,stateRecord.ContextId, stateRecord.ParentObject)
+        {
+            Date = DateTime.Now;
+        }
     }
 
 

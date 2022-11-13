@@ -218,7 +218,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             this.UnDo(next_picked_state);
 
         }
-
+        //cxcxcxcxc
         public virtual void UnDo(PropertyStateRecord propertyState)
         {
             var prop_info = propertyState.ParentObject.GetType().GetProperty(propertyState.Name); //Достаем с помощью рефлексии данные о свойстве из текущего объекта

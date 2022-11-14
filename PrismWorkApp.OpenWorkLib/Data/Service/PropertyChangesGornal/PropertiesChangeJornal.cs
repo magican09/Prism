@@ -119,16 +119,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
         private void OnCollectionChangedBeforeRemove(object sender, CollectionChangedEventArgs e)
         {
-           
-            
+
+
             PropertyStateRecord stateRecord = new PropertyStateRecord(
                     e.Item, JornalRecordStatus.REMOVED, e.Item.Id.ToString(),
                     CurrentContextId, sender as IJornalable);
             (e.Item as IJornalable).IsVisible = false;
 
-            this.UnPickRecords(); 
+            this.EraseNextRecords(stateRecord);
             this.Add(stateRecord);
-           
+
 
         }
 
@@ -147,9 +147,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 PropertyStateRecord stateRecord = new PropertyStateRecord(property_last_value, JornalRecordStatus.MODIFIED, e.PropertyName,
                     (sender as IJornalable).CurrentContextId, sender as IJornalable);
 
-                this.UnPickRecords();
+                this.EraseNextRecords(stateRecord);
                 this.Add(stateRecord);
-              
+
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(stateRecord.Name));
 
             }
@@ -176,7 +176,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public virtual void UnDoLeft()
         {
             Guid currentContextId = CurrentContextId;
-            var all_prop_states = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date);
+            var all_prop_states = this.Where(pr => pr.ContextId == currentContextId &&
+                                             pr.PointerStatus != JornalRecordPointerStatus.DEACTIVATED).OrderBy(pr => pr.Date);
             PropertyStateRecord picked_state = all_prop_states.Where(pr => pr.PointerStatus == JornalRecordPointerStatus.PICKED).FirstOrDefault();
             PropertyStateRecord previous_picked_state = null;
             if (picked_state != null) // Если не было выбранной сохраненой записи 
@@ -199,7 +200,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public virtual void UnDoRight()
         {
             Guid currentContextId = CurrentContextId;
-            var all_prop_states = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Date);
+            var all_prop_states = this.Where(pr => pr.ContextId == currentContextId&& 
+                                             pr.PointerStatus != JornalRecordPointerStatus.DEACTIVATED).OrderBy(pr => pr.Date);
             PropertyStateRecord picked_state = all_prop_states.Where(pr => pr.PointerStatus == JornalRecordPointerStatus.PICKED).FirstOrDefault();
             PropertyStateRecord next_picked_state = null;
             if (picked_state != null) // Если не было выбранной сохраненой записи 
@@ -253,23 +255,45 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void Save()
         {
             Guid currentContextId = CurrentContextId;
-            var records_fo_delete = this.Where(rc => rc.ContextId == currentContextId).ToList();
-            foreach (PropertyStateRecord stateRecord in records_fo_delete)
-                this.Remove(stateRecord);
-        }
-        private void UnPickRecords()
-        {
-            PropertyStateRecord current_prop_state = this.Where(ps => ps.PointerStatus == JornalRecordPointerStatus.PICKED).FirstOrDefault();
-             if (current_prop_state != null)
+            var records_for_delete = this.Where(rc => rc.ContextId == currentContextId &&
+                                                rc.ParentObject is INotifyJornalableCollectionChanged).GroupBy(g=>g.Name).Select(g=>g.FirstOrDefault()).ToList();
+
+            foreach (PropertyStateRecord stateRecord in records_for_delete)
             {
-                 var next_prop_state_records = this.Where(ps => ps.Name == current_prop_state.Name && ps.Date > current_prop_state.Date).ToList();
-                foreach (PropertyStateRecord record in next_prop_state_records)
+                if (stateRecord.Status == JornalRecordStatus.REMOVED)
+                {
+                    ((INotifyJornalableCollectionChanged)stateRecord.ParentObject).RemoveItem(stateRecord.Value as IJornalable);
+                   
+                }
+                var current_prop_records_for_delete = this.Where(r => r.ContextId == CurrentContextId && r.Name == stateRecord.Name).ToList();
+                foreach (PropertyStateRecord record in current_prop_records_for_delete)
                     this.Remove(record);
-                current_prop_state.PointerStatus = JornalRecordPointerStatus.UNPICKED;
-                current_prop_state.Date = DateTime.Now;
-           //     this.Add(new PropertyStateRecord(current_prop_state));
             }
-            //    propertyState.PointerStatus = JornalRecordPointerStatus.PICKED;
+
+
+        }
+        private void EraseNextRecords(PropertyStateRecord prop_last_state_record)
+        {
+            PropertyStateRecord current_prop_state = this.Where(ps => ps.PointerStatus == JornalRecordPointerStatus.PICKED &&
+                                ps.ContextId == prop_last_state_record.ContextId).FirstOrDefault();
+            if (current_prop_state != null)
+            {
+                var next_prop_state_records = this.Where(ps =>  ps.Date > current_prop_state.Date && 
+                                                         ps.ContextId == current_prop_state.ContextId &&
+                                                         ps.PointerStatus != JornalRecordPointerStatus.DEACTIVATED).ToList();
+                foreach (PropertyStateRecord record in next_prop_state_records)
+                   record.PointerStatus=JornalRecordPointerStatus.DEACTIVATED;
+              
+                if (prop_last_state_record.Value == prop_last_state_record.Value)
+                    this.Remove(current_prop_state);
+                else
+                {
+                    current_prop_state.PointerStatus = JornalRecordPointerStatus.UNPICKED;
+                    current_prop_state.Date = DateTime.Now;
+                }
+            }
+
+
         }
 
         public bool IsOnLastRecord() //Если казатель PICKED на последней записи
@@ -310,16 +334,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         private ObservableCollection<PropertyStateRecord> ChangesDetect(IJornalable obj)// Определяет не зажурналированные изменения в объетке и если они были  - возращает запись журанл
         {
             ObservableCollection<PropertyStateRecord> propertyStateRecords = new ObservableCollection<PropertyStateRecord>();
-        
+
             var properties_list = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
-             foreach(PropertyInfo propertyInfo in properties_list)
+            foreach (PropertyInfo propertyInfo in properties_list)
             {
                 var prop_val = propertyInfo.GetValue(obj);
                 string prop_name = propertyInfo.Name;
-                if(!(prop_val is IList))
+                if (!(prop_val is IList))
                 {
                     PropertyStateRecord last_state_record = this.Where(r => r.Name == prop_name).OrderBy(r => r.Date).LastOrDefault();
-                    
+
                 }
                 else
                 {

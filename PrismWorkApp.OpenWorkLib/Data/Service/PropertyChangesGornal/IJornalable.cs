@@ -59,6 +59,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
     public enum JornalRecordPointerStatus
     {
         UNPICKED,
-        PICKED
+        PICKED,
+        DEACTIVATED
     }
 }

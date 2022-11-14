@@ -367,6 +367,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #endregion
 
+        public bool RemoveItem(IJornalable item)
+        {
+            base.Remove((TEntity)item);
+            return true;
+        }
         public bool Remove(TEntity item)
         {
             CollectionChangedBeforeRemove(this,new  CollectionChangedEventArgs(item));

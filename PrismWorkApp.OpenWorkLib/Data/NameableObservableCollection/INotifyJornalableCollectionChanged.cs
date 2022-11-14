@@ -13,6 +13,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public event PropertyChangedEventHandler PropertyBeforeChanged;
         public event CollectionChangedEventHandler CollectionChangedBeforeRemove;
         public event CollectionChangedEventHandler CollectionChangedBeforAdd;
+        public bool RemoveItem(IJornalable item);
     }
   
     public class CollectionChangedEventArgs:EventArgs

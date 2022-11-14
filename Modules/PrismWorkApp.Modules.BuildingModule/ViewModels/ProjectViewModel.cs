@@ -95,6 +95,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand UnDoRightCommand { get; private set; }
 
         public NotifyCommand TestCommand { get; private set; }
+        public NotifyCommand TestCommand_1 { get; private set; }
         public NotifyCommand<object> CloseCommand { get; private set; }
 
         public NotifyCommand RemoveBuildingObjectCommand { get; private set; }
@@ -137,7 +138,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                   .ObservesPropertyChangedEvent(CommonChangeJornal); 
             
               TestCommand = new NotifyCommand(OnTestCommand);
-           
+            TestCommand_1 = new NotifyCommand(OnTestCommand_1);
+
             CloseCommand = new NotifyCommand<object>(OnClose).ObservesCanExecute(() => KeepAlive); ;
             AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
             AddParticipantCommand = new NotifyCommand(OnAddParticipant);
@@ -174,6 +176,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
         }
 
+        private void OnTestCommand_1()
+        {
+            CommonChangeJornal.Save();
+        }
+
         private bool CanUnDoRight()
         {
             return true;
@@ -204,6 +211,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
           //  BuildingObjects = SelectedProject.BuildingObjects;
          //   BuildingObjects.Remove(BuildingObjects[0]);
             SelectedProject.BuildingObjects.Remove(SelectedBuildingObject);
+
+        
         }
 
         private void OnEditRemoveResponsibleEmployee()

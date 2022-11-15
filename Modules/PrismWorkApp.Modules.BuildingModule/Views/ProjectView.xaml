@@ -136,7 +136,7 @@
                     HorizontalAlignment="Left" 
                     SelectedDate="{Binding SelectedProject.EndTime}" />
             </StackPanel>
-       <!--    <DataGrid ItemsSource="{Binding CommonChangeJornal}"  AutoGenerateColumns="False" Visibility="Hidden">
+           <DataGrid ItemsSource="{Binding CommonChangeJornal}"  AutoGenerateColumns="False" Visibility="Visible">
                 <DataGrid.Columns>
                     <DataGridTextColumn  Header="PropName"  
                                                      Binding = "{Binding Path=Name}" />
@@ -144,10 +144,10 @@
                                                      Binding = "{Binding Path=PointerStatus}" />
                     <DataGridTextColumn  Header="Status"  
                                                      Binding = "{Binding Path=Value}" />
-                    <DataGridTextColumn  Header="Status"  
-                                                     Binding = "{Binding Path=Status}" />
+                    <DataGridTextColumn  Header="Index"  
+                                                     Binding = "{Binding Path=Index}" />
                 </DataGrid.Columns>
-            </DataGrid> -->
+            </DataGrid> 
             <StackPanel  >
                 <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>
                 <StackPanel Orientation="Horizontal" x:Name="bldObjectStackPanel"  >
@@ -273,8 +273,6 @@
           
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
-            <Button  Content="Удалить из коллекции" Command="{Binding TestCommand}" />
-            <Button  Content="Сохранить тест " Command="{Binding TestCommand_1}" />
             <Button  Content="Сохранить" Command="{Binding SaveCommand}" />
             <Button  Content="Закрыть"  Command="{Binding CloseCommand}"
                                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,

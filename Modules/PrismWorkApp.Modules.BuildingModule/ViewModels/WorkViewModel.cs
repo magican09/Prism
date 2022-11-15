@@ -214,7 +214,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
                 (SelectedWork.NextWorks, SelectedNextWork, "Последующая работа",
-                () => SelectedNextWork = null, _dialogService);
+                () => SelectedNextWork = null, _dialogService,Id);
         }
 
         private void OnAddPreviousWork()
@@ -278,7 +278,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
                  (SelectedWork.PreviousWorks, SelectedPreviousWork, "Предыдущая работа",
-                 () => SelectedPreviousWork = null, _dialogService);
+                 () => SelectedPreviousWork = null, _dialogService,Id);
         }
         private void OnEditPreviousWork()
         {

@@ -35,7 +35,8 @@ namespace PrismWorkApp.Core
         }
 
         public static void RemoveElementFromCollectionWhithDialog<TContainer, T>
-               (TContainer collection, T element, string element_type_name, Action elm_erase_action, IDialogService dialogService)
+               (TContainer collection, T element, string element_type_name,
+            Action elm_erase_action, IDialogService dialogService, Guid current_context_id)
            where TContainer : ICollection<T>, INameableOservableCollection<T>
            where T : class, INameable, IRegisterable
         {
@@ -44,6 +45,7 @@ namespace PrismWorkApp.Core
                $"Вы действительно хотите удалить {element_type_name} \"{element.Name }\" ?!");
             dialog_par.Add("confirm_button_content", "Удалить");
             dialog_par.Add("refuse_button_content", "Отмена");
+            dialog_par.Add("current_context_id", current_context_id);
             string element_name = element.Name;
 
             dialogService.Show(typeof(ConfirmActionWhithoutCancelDialog).Name, dialog_par, result =>
@@ -51,7 +53,7 @@ namespace PrismWorkApp.Core
                if (result.Result == ButtonResult.Yes)
                {
                    // collection.Remove(element);
-                   collection.RemoveJournalable(element);
+                   (collection as INotifyJornalableCollectionChanged).Remove(element, current_context_id);
                    var res_massage = result.Parameters.GetValue<string>("confirm_dialog_param");
                    var p = new DialogParameters();
                    p.Add("message", $"{element_type_name.ToUpper()} " +

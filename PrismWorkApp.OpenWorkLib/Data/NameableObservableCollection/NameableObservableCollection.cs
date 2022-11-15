@@ -369,12 +369,23 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public bool RemoveItem(IJornalable item)
         {
-            base.Remove((TEntity)item);
+            base.Remove(item as TEntity);      
+            return true;
+        }
+        public bool Remove(IJornalable item, Guid currentContextId)
+        {
+            this.Remove(item as TEntity, currentContextId);
+            return true;
+        }
+
+       public bool Remove(TEntity item, Guid currentContextId)
+        {
+            CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, currentContextId));
             return true;
         }
         public bool Remove(TEntity item)
         {
-            CollectionChangedBeforeRemove(this,new  CollectionChangedEventArgs(item));
+            CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item));
             return true;
         }
 

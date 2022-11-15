@@ -203,7 +203,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
                  (SelectedConstruction.Works, SelectedWork, "Работа",
-                 () => { SelectedWork = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService);
+                 () => { SelectedWork = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
         }
 
 
@@ -243,7 +243,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
                  (SelectedChildConstruction.Constructions, SelectedChildConstruction, "Строительная конструкция",
-                 () => { SelectedChildConstruction = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService);
+                 () => { SelectedChildConstruction = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
         }
 
         private bool CanSave()

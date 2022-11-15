@@ -48,16 +48,7 @@ namespace PrismWorkApp.Core
             get { return _editMode; }
             set { SetProperty(ref _editMode, value); }
         }
-        public virtual void OnSave()
-        {
-
-        }
-        public virtual void OnClose(object obj)
-        {
-
-        }
-
-
+    
         public event EventHandler IsActiveChanged;
 
         private bool _isActive;
@@ -71,9 +62,13 @@ namespace PrismWorkApp.Core
             }
         }
 
-          private void Update()
+        public virtual void  OnSave()
         {
-            //implement logic
+            
+        }
+        public virtual void OnClose(object obj)
+        {
+
         }
 
         private void OnIsActiveChanged()

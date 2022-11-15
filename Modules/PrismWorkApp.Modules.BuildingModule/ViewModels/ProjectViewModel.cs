@@ -94,8 +94,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand UnDoLeftCommand { get; private set; }
         public NotifyCommand UnDoRightCommand { get; private set; }
 
-        public NotifyCommand TestCommand { get; private set; }
-        public NotifyCommand TestCommand_1 { get; private set; }
         public NotifyCommand<object> CloseCommand { get; private set; }
 
         public NotifyCommand RemoveBuildingObjectCommand { get; private set; }
@@ -110,19 +108,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand EditResponsibleEmployeeCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; set; }
-          private IApplicationCommands _applicationCommands;
+        private IApplicationCommands _applicationCommands;
         public IApplicationCommands ApplicationCommands
         {
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
-        private PropertiesChangeJornal _commonChangeJornal;
-        public PropertiesChangeJornal CommonChangeJornal
-        {
-            get { return _commonChangeJornal; }
-            set { SetProperty(ref _commonChangeJornal, value); }
-        }
-         
+       
 
         public ProjectViewModel(IDialogService dialogService, IBuildingUnitsRepository buildingUnitsRepository,
             IRegionManager regionManager, IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
@@ -132,15 +124,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedProject).ObservesCanExecute(()=>KeepAlive);
-            UnDoLeftCommand = new NotifyCommand(OnUnDoLeft, () => { return !CommonChangeJornal.IsOnFirstRecord(); })
-                .ObservesPropertyChangedEvent(CommonChangeJornal);
-            UnDoRightCommand = new NotifyCommand(OnUnDoRight, () => { return !CommonChangeJornal.IsOnLastRecord(); })
-                  .ObservesPropertyChangedEvent(CommonChangeJornal); 
-            
-              TestCommand = new NotifyCommand(OnTestCommand);
-            TestCommand_1 = new NotifyCommand(OnTestCommand_1);
+            UnDoLeftCommand = new NotifyCommand(()=>base.OnUnDoLeft(Id), 
+                () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
+               .ObservesPropertyChangedEvent(CommonChangeJornal);
+            UnDoRightCommand = new NotifyCommand(()=>base.OnUnDoRight(Id), 
+                () => { return !CommonChangeJornal.IsOnLastRecord(Id); })
+                  .ObservesPropertyChangedEvent(CommonChangeJornal);
 
             CloseCommand = new NotifyCommand<object>(OnClose).ObservesCanExecute(() => KeepAlive); ;
+            
             AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
             AddParticipantCommand = new NotifyCommand(OnAddParticipant);
             AddResponsibleEmployeesCommand = new NotifyCommand(OnAddResponsibleEmployees);
@@ -174,45 +166,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
              _applicationCommands.UnDoRightCommand.RegisterCommand(UnDoRightCommand);
             _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
-        }
-
-        private void OnTestCommand_1()
-        {
-            CommonChangeJornal.SaveAll(Id);
-        }
-
-        private bool CanUnDoRight()
-        {
-            return true;
-        }
-
-        private void OnUnDoRight()
-        {
-            _commonChangeJornal.UnDoRight();
-        }
-
-        private bool CanUnDoLeft()
-        {
-            return true;
-        }
-
-        private void OnUnDoLeft()
-        {
-            _commonChangeJornal.UnDoLeft();
-        }
-
-        private bool CanTest()
-        {
-           return  true;
-        }
-
-        private void OnTestCommand()
-        {
-          //  BuildingObjects = SelectedProject.BuildingObjects;
-         //   BuildingObjects.Remove(BuildingObjects[0]);
-            SelectedProject.BuildingObjects.Remove(SelectedBuildingObject);
-
-        
         }
 
         private void OnEditRemoveResponsibleEmployee()
@@ -374,7 +327,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldObjectsGroup, bldObject>
                   (SelectedProject.BuildingObjects, SelectedBuildingObject, "Строительный объект",
-                 () => { SelectedBuildingObject = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService);
+                 () => { SelectedBuildingObject = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
 
            
         }
@@ -382,14 +335,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
                 (SelectedProject.ResponsibleEmployees, SelectedResponsibleEmployee, "Ответсвенный представитель",
-                () => { SelectedResponsibleEmployee = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService);
+                () => { SelectedResponsibleEmployee = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
         }
         private void OnRemoveParticipant()
         {
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
                  (SelectedProject.Participants, SelectedParticipant, "Учасник строительства",
-                 () => { SelectedParticipant = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService);
+                 () => { SelectedParticipant = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
         }
 
 
@@ -419,6 +372,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             }
         }
 
+        public void RaiseCanExecuteChanged(object sender, EventArgs e)
+        {
+            SaveCommand.RaiseCanExecuteChanged();
+        }
+
         public virtual bool CanSave()
         {
             if (SelectedProject != null)
@@ -426,17 +384,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             else
                 return false;
         }
-        public void RaiseCanExecuteChanged(object sender, EventArgs e)
-        {
-            SaveCommand.RaiseCanExecuteChanged();
-        }
         public override void OnSave()
         {
-            this.OnSave<bldProject>(SelectedProject,Id, CommonChangeJornal);
+            base.OnSave<bldProject>(SelectedProject);
         }
         public override void OnClose(object obj)
         {
-            this.OnClose<bldProject>(obj, SelectedProject,Id,CommonChangeJornal);
+            base.OnClose<bldProject>(obj, SelectedProject);
            
         }
         public override void OnWindowClose()

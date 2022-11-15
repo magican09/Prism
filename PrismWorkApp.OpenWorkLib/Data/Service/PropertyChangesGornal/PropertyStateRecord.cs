@@ -54,7 +54,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             get { return _value; }
             set { SetProperty(ref _value, value); }
         }
-
+        private int  _index;
+        public int Index
+        {
+            get { return _index; }
+            set { SetProperty(ref _index, value); }
+        }
         private JornalRecordStatus _status;
         public JornalRecordStatus Status
         {
@@ -95,7 +100,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             ContextId = currentContextId;
             ParentObject = parentObject;
         }
-
+        public PropertyStateRecord(object prop, JornalRecordStatus recordStatus, string name, Guid currentContextId, IJornalable parentObject, int index)
+        {
+            Value = prop;
+            Date = DateTime.Now;
+            Status = recordStatus;
+            Name = name;
+            ContextId = currentContextId;
+            ParentObject = parentObject;
+            Index = index;
+        }
         public PropertyStateRecord(PropertyStateRecord stateRecord):
             this(stateRecord.Value, stateRecord.Status, stateRecord.Name,stateRecord.ContextId, stateRecord.ParentObject)
         {

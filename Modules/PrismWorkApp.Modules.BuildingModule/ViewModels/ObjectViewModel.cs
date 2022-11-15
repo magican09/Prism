@@ -175,7 +175,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                {
                    SelectedChildBuildingObject = null;
                    SaveCommand.RaiseCanExecuteChanged();
-               }, _dialogService);
+               }, _dialogService,Id);
         }
 
         private void OnEditConstruction()
@@ -230,7 +230,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
                  (SelectedBuildingObject.Constructions, SelectedConstruction, "Строительная конструкция",
-                 () => { SelectedConstruction = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService);
+                 () => { SelectedConstruction = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
         }
 
         public  void RaiseCanExecuteChanged(object sender, EventArgs e)

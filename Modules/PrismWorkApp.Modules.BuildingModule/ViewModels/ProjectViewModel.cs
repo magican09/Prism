@@ -178,7 +178,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnTestCommand_1()
         {
-            CommonChangeJornal.Save();
+            CommonChangeJornal.SaveAll(Id);
         }
 
         private bool CanUnDoRight()
@@ -432,12 +432,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public override void OnSave()
         {
-           CommonChangeJornal.Save();
-            //  this.OnSave<bldProject>(SelectedProject);
+            this.OnSave<bldProject>(SelectedProject,Id, CommonChangeJornal);
         }
         public override void OnClose(object obj)
         {
-            this.OnClose<bldProject>(obj, SelectedProject);
+            this.OnClose<bldProject>(obj, SelectedProject,Id,CommonChangeJornal);
            
         }
         public override void OnWindowClose()

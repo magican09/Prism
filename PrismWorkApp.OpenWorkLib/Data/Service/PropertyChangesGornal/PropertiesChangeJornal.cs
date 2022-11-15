@@ -252,24 +252,44 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 }
             }
         }
-        public void Save()
+        public void UnDoAll(Guid currentContextId)
         {
-            Guid currentContextId = CurrentContextId;
-            var records_for_delete = this.Where(rc => rc.ContextId == currentContextId &&
-                                                rc.ParentObject is INotifyJornalableCollectionChanged).GroupBy(g=>g.Name).Select(g=>g.FirstOrDefault()).ToList();
+            var records_for_undo = this.Where(r => r.ContextId == currentContextId).OrderByDescending(r=>r.Date).ToList();
 
-            foreach (PropertyStateRecord stateRecord in records_for_delete)
+            foreach (PropertyStateRecord record in records_for_undo)
             {
-                if (stateRecord.Status == JornalRecordStatus.REMOVED)
-                {
-                    ((INotifyJornalableCollectionChanged)stateRecord.ParentObject).RemoveItem(stateRecord.Value as IJornalable);
-                   
-                }
-                var current_prop_records_for_delete = this.Where(r => r.ContextId == CurrentContextId && r.Name == stateRecord.Name).ToList();
-                foreach (PropertyStateRecord record in current_prop_records_for_delete)
-                    this.Remove(record);
+                this.UnDo(record);
+                this.Remove(record);
             }
 
+        }
+        public void Save(PropertyStateRecord propertyState)
+        {
+            if(propertyState.ParentObject is INotifyJornalableCollectionChanged)
+            {
+                if (propertyState.Status == JornalRecordStatus.REMOVED)
+                {
+                    ((INotifyJornalableCollectionChanged)propertyState.ParentObject).RemoveItem(propertyState.Value as IJornalable);
+                }
+            }
+            else
+            {
+                var current_prop_records_for_delete = this.Where(r => r.ContextId == propertyState.ContextId && r.Name == propertyState.Name).ToList();
+
+                foreach (PropertyStateRecord record in current_prop_records_for_delete) //Удаляем вс предыдущие изменения объекта в журнале
+                    this.Remove(propertyState);
+            }
+        }
+
+            public void SaveAll(Guid currentContextId)
+        {
+           
+            var records_for_delete_objects = this.Where(rc => rc.ContextId == currentContextId &&
+                                                rc.ParentObject is INotifyJornalableCollectionChanged).GroupBy(g=>g.Name).Select(g=>g.FirstOrDefault()).ToList();
+        foreach (PropertyStateRecord stateRecord in records_for_delete_objects)
+            {
+               this.Save(stateRecord);
+            }
 
         }
         private void EraseNextRecords(PropertyStateRecord prop_last_state_record)

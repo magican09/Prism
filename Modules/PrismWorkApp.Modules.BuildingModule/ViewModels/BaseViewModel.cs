@@ -7,6 +7,7 @@ using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
@@ -16,8 +17,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         protected IDialogService _dialogService;
         protected IRegionManager _regionManager;
 
-
-        public virtual void OnSave<T>(T selected_obj,string object_name="") where T : IJornalable, INameable, IRegisterable, IBindableBase
+        public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
         {
             CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
             {
@@ -27,13 +27,77 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                 if (result.Result == ButtonResult.No)
                 {
-                    selected_obj.UnDoAll(Id);
+                   selected_obj.UnDoAll(Id);
+                }
+
+            }, _dialogService);
+        }
+
+        public virtual void OnSave<T>(T selected_obj, Guid cuntextId, PropertiesChangeJornal propertiesChangeJornal,string object_name="") where T : IJornalable, INameable, IRegisterable, IBindableBase
+        {
+            CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
+            {
+                if (result.Result == ButtonResult.Yes)
+                {
+                    propertiesChangeJornal.SaveAll(Id);
+                }
+                if (result.Result == ButtonResult.No)
+                {
+              //      propertiesChangeJornal.UnDoAll(Id);
                 }
 
             }, _dialogService);
         }
         public  virtual void OnWindowClose()
         {
+
+        }
+
+        public virtual void OnClose<T>(object view, T selected_obj, Guid cuntextId, PropertiesChangeJornal propertiesChangeJornal, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
+        {
+            if (propertiesChangeJornal != null && propertiesChangeJornal.Where(r => r.ContextId == cuntextId).FirstOrDefault() != null)//selected_obj!=null&&добавлено 27,10,22
+            {
+                CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
+                {
+                    if (view != null)
+                    {
+                        if (result.Result == ButtonResult.Yes)
+                        {
+                            propertiesChangeJornal.SaveAll(Id);
+                            if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
+                            {
+                                _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
+                                _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
+                            }
+                            OnWindowClose();
+                        }
+                        else if (result.Result == ButtonResult.No)
+                        {
+                            propertiesChangeJornal.UnDoAll(Id);
+                            if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
+                            {
+                                _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
+                                _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
+                            }
+                            OnWindowClose();
+                        }
+                        else if (result.Result == ButtonResult.Cancel)
+                        {
+
+                        }
+                    }
+                }, _dialogService);
+
+            }
+            else
+            {
+                if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
+                {
+                    _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
+                    _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
+                }
+                OnWindowClose();
+            }
 
         }
 

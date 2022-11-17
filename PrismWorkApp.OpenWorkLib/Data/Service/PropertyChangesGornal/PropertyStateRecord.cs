@@ -60,15 +60,15 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             get { return _index; }
             set { SetProperty(ref _index, value); }
         }
-        private JornalRecordStatus _status;
-        public JornalRecordStatus Status
+        private JornalRecordType _status;
+        public JornalRecordType Status
         {
             get { return _status; }
             set { SetProperty(ref _status, value); }
         }
 
-        private JornalRecordPointerStatus _pointerStatus= JornalRecordPointerStatus.UNPICKED;
-        public JornalRecordPointerStatus PointerStatus
+        private JornalRecordState _pointerStatus= JornalRecordState.UNPICKED;
+        public JornalRecordState PointerStatus
         {
             get { return _pointerStatus; }
             set { SetProperty(ref _pointerStatus, value); }
@@ -76,14 +76,14 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
         public IJornalable ParentObject { get; set; }
         public PropertiesChangeJornal ParentJornal { get; set; }
-        public PropertyStateRecord(object prop, JornalRecordStatus recordStatus, string name ="" )
+        public PropertyStateRecord(object prop, JornalRecordType recordStatus, string name ="" )
         {
             Value = prop;
             Date = DateTime.Now;
             Status = recordStatus;
             Name = name;
         }
-        public PropertyStateRecord(object prop, JornalRecordStatus recordStatus, string name, Guid currentContextId)
+        public PropertyStateRecord(object prop, JornalRecordType recordStatus, string name, Guid currentContextId)
         {
             Value = prop;
             Date = DateTime.Now;
@@ -91,7 +91,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             Name = name;
             ContextId = currentContextId;
         }
-        public PropertyStateRecord(object prop, JornalRecordStatus recordStatus, string name, Guid currentContextId, IJornalable parentObject)
+        public PropertyStateRecord(object prop, JornalRecordType recordStatus, string name, Guid currentContextId, IJornalable parentObject)
         {
             Value = prop;
             Date = DateTime.Now;
@@ -100,7 +100,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             ContextId = currentContextId;
             ParentObject = parentObject;
         }
-        public PropertyStateRecord(object prop, JornalRecordStatus recordStatus, string name, Guid currentContextId, IJornalable parentObject, int index)
+        public PropertyStateRecord(object prop, JornalRecordType recordStatus, string name, Guid currentContextId, IJornalable parentObject, int index)
         {
             Value = prop;
             Date = DateTime.Now;

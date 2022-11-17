@@ -16,7 +16,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void UnDoAll(Guid currentContextId);
         public void JornalingOff();
         public void JornalingOn();
-        public JornalRecordStatus Status { get; set; }
+        public JornalRecordType Status { get; set; }
         public Guid CurrentContextId { get; set; }
         public bool IsVisible { get; set; }
         public PropertiesChangeJornal PropertiesChangeJornal { get; set; }
@@ -45,7 +45,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         NONE
     }
 
-    public enum JornalRecordStatus
+    public enum JornalRecordType
     {
         CREATED,
         MODIFIED,
@@ -56,10 +56,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
        
     }
 
-    public enum JornalRecordPointerStatus
+    public enum JornalRecordState
     {
         UNPICKED,
         PICKED,
-        DEACTIVATED
+        DEACTIVATED,
+        UNDO_COMPLETE,
+        SAVED
     }
 }

@@ -18,7 +18,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public decimal UnitPrice { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bldUnitOfMeasurement UnitOfMeasurement { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public decimal Cost { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public JornalRecordStatus Status { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public JornalRecordType Status { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public bool IsVisible { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Guid CurrentContextId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public StructureLevel StructureLevel { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

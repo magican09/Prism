@@ -98,7 +98,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         private bool b_jornal_recording_flag = true;
         private bool visible = true;
-        private JornalRecordStatus status;
+        private JornalRecordType status;
         private Guid _currentContextId;
         [NotMapped]
         public Guid CurrentContextId
@@ -146,7 +146,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NotMapped]
         public ObservableCollection<IJornalable> ChildObjects { get; set; }
         [NotMapped]
-        public JornalRecordStatus Status
+        public JornalRecordType Status
         {
             get
             {
@@ -155,7 +155,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set
             {
                 status = value;
-                IsVisible = (status != JornalRecordStatus.REMOVED) ? true : false;
+                IsVisible = (status != JornalRecordType.REMOVED) ? true : false;
             }
         }
         [NotMapped]
@@ -413,12 +413,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     List<Guid> AnatherWindowsIds = PropertiesChangeJornal.ContextIdHistory.Where(el => el != CurrentContextId).ToList(); //Ищем в журнале Id других окон в цепочке изменений
                     foreach (Guid prev_wnd_is in AnatherWindowsIds) //Если существуют другие контекты из которых производителись изменения свойство данного бъекта, то сохраняем текущее значение свойства в журнале
                     {
-                        PropertyStateRecord propertyStateRecord_1 = new PropertyStateRecord(member, JornalRecordStatus.MODIFIED, propertyName, prev_wnd_is);
+                        PropertyStateRecord propertyStateRecord_1 = new PropertyStateRecord(member, JornalRecordType.MODIFIED, propertyName, prev_wnd_is);
                         propertyStateRecord_1.ParentObject = (IEntityObject)this;
                         PropertiesChangeJornal.Add(propertyStateRecord_1);
                         ObjectChangedNotify?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord_1));
                     }
-                    PropertyStateRecord propertyStateRecord = new PropertyStateRecord(member, JornalRecordStatus.MODIFIED, propertyName, CurrentContextId);
+                    PropertyStateRecord propertyStateRecord = new PropertyStateRecord(member, JornalRecordType.MODIFIED, propertyName, CurrentContextId);
                     propertyStateRecord.ParentObject = (IEntityObject)this;
                     PropertiesChangeJornal.Add(propertyStateRecord);
                     ObjectChangedNotify?.Invoke(this, new ObjectStateChangedEventArgs("", this, propertyStateRecord));

@@ -156,10 +156,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             if (obj_validate_result == false)
             {
                 var property_last_value = property_last_value_prop_info.GetValue(sender);
-                PropertyStateRecord last_state_record = this.Where(r => r.ContextId == (sender as IJornalable).CurrentContextId).OrderBy(r => r.Index).LastOrDefault();
-                int last_index = 0;
-                if (last_state_record != null)
-                    last_index = last_state_record.Index + 1;
+       
                 PropertyStateRecord stateRecord = new PropertyStateRecord(property_last_value,
                                                         JornalRecordType.MODIFIED,
                                                          e.PropertyName, (sender as IJornalable).CurrentContextId,
@@ -179,8 +176,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             var properties_list = sender.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
             var property_current_value_prop_info = properties_list.Where(pri => pri.Name == e.PropertyName).FirstOrDefault();
             string prop_name = property_current_value_prop_info.Name;
-            if (sender is IList)
-                ;
             (sender as IJornalable).JornalingOff();
             var property_current_value = property_current_value_prop_info.GetValue(sender);
             (sender as IJornalable).JornalingOn();
@@ -189,7 +184,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             {
                 this.RegisterObject(current_value);
             }
-
         }
         public virtual void UnDoLeft(Guid currentContextId)
         {
@@ -213,7 +207,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 this.UnDo(first_undo_comlete_state);
                 first_undo_comlete_state.State = JornalRecordState.SAVED;
             }
-
         }
         //cxcxcxcdsdsdsxc
         public virtual void UnDo(PropertyStateRecord propertyState)
@@ -247,41 +240,27 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void UnDoAll(Guid currentContextId)
         {
             var records_for_undo = this.Where(r => r.ContextId == currentContextId).OrderByDescending(r => r.Date).ToList();
-
             foreach (PropertyStateRecord record in records_for_undo)
             {
                 this.UnDo(record);
                 this.Remove(record);
             }
-
         }
         public void Save(PropertyStateRecord propertyState)
         {
             if (propertyState.ParentObject is INotifyJornalableCollectionChanged)
             {
                 if (propertyState.Status == JornalRecordType.REMOVED)
-                {
-                    ((INotifyJornalableCollectionChanged)propertyState.ParentObject).RemoveItem(propertyState.Value as IJornalable);
-                }
+                  if(((IList)propertyState.ParentObject).Contains(propertyState.Value as IJornalable))
+                        ((INotifyJornalableCollectionChanged)propertyState.ParentObject).RemoveItem(propertyState.Value as IJornalable);
             }
-            else
-            {
-                var current_prop_records_for_delete = this.Where(r => r.ContextId == propertyState.ContextId && r.Name == propertyState.Name).ToList();
-
-                foreach (PropertyStateRecord record in current_prop_records_for_delete) //Удаляем вс предыдущие изменения объекта в журнале
-                    this.Remove(propertyState);
-            }
+           this.Remove(propertyState);
         }
         public void SaveAll(Guid currentContextId)
         {
-
-            var records_for_delete_objects = this.Where(rc => rc.ContextId == currentContextId &&
-                                                rc.ParentObject is INotifyJornalableCollectionChanged).GroupBy(g => g.Name).Select(g => g.FirstOrDefault()).ToList();
-            foreach (PropertyStateRecord stateRecord in records_for_delete_objects)
-            {
-                this.Save(stateRecord);
-            }
-
+            var records_for_delete = this.Where(r => r.ContextId == currentContextId ).ToList();
+            foreach (PropertyStateRecord record in records_for_delete)
+                this.Save(record);
         }
         private bool SetRecordIndex(PropertyStateRecord prop_last_state_record)
         {

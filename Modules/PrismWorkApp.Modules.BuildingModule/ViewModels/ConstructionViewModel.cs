@@ -8,6 +8,7 @@ using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
@@ -21,7 +22,7 @@ using BindableBase = Prism.Mvvm.BindableBase;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class ConstructionViewModel : BaseViewModel<bldConstruction>//, IRegionMemberLifetime
+    public class ConstructionViewModel : BaseViewModel<bldConstruction>, INavigationAware// IRegionMemberLifetime
 
     {
         private string _title = "Конструкция";
@@ -68,22 +69,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _Works; }
             set { SetProperty(ref _Works, value); }
         }
-      
-
-        private bool _keepAlive = true;
-
-        public bool KeepAlive
-        {
-            get { return _keepAlive; }
-            set { _keepAlive = value; }
-        }
-
 
 
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
-        public NotifyCommand SaveCommand { get; private set; }
-        public NotifyCommand<object> CloseCommand { get; private set; }
-
         public NotifyCommand RemoveConstructionCommand { get; private set; }
         public NotifyCommand RemoveWorkCommand { get; private set; }
 
@@ -97,12 +85,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private IApplicationCommands _applicationCommands;
 
         public ConstructionViewModel(IDialogService dialogService,
-            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
+            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands,
+              IPropertiesChangeJornal propertiesChangeJornal)
         {
-          
+            CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
+
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
-            SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(()=>SelectedConstruction);
-             CloseCommand = new NotifyCommand<object>(OnClose);
+            base.SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedChildConstruction);
+            base.CloseCommand = new NotifyCommand<object>(OnClose);
+            base.UnDoLeftCommand = new NotifyCommand(() => OnUnDoLeft(Id),
+                                          () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
+                                                  .ObservesPropertyChangedEvent(CommonChangeJornal);
+            base.UnDoRightCommand = new NotifyCommand(() => OnUnDoRight(Id),
+                           () => { return !CommonChangeJornal.IsOnLastRecord(Id); })
+                             .ObservesPropertyChangedEvent(CommonChangeJornal);
 
             RemoveConstructionCommand = new NotifyCommand(OnRemoveConstruction,
                                         () => SelectedChildConstruction != null)
@@ -125,7 +121,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _regionManager = regionManager;
             _applicationCommands = applicationCommands;
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
-
+            _applicationCommands.UnDoRightCommand.RegisterCommand(UnDoRightCommand);
+            _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
         }
 
 
@@ -187,7 +184,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      }
                      if (result.Result == ButtonResult.No)
                      {
-                         SelectedConstruction.Works.UnDoAll(Id);
+                         CommonChangeJornal.UnDoAll(Id);
                      }
                  },
                 typeof(AddbldWorkToCollectionDialogView).Name,
@@ -196,14 +193,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 "Форма для редактирования состава работ текушей коснтрукции.",
                 "Работы текущей конструкции", "Все работы");
 
-          
+
         }
         private void OnRemoveWork()
         {
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
                  (SelectedConstruction.Works, SelectedWork, "Работа",
-                 () => { SelectedWork = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
+                 () => { SelectedWork = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, Id);
         }
 
 
@@ -229,7 +226,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      }
                      if (result.Result == ButtonResult.No)
                      {
-                         SelectedConstruction.Constructions.UnDoAll(Id);
+                         CommonChangeJornal.UnDoAll(Id);
                      }
                  },
                 typeof(AddbldConstructionToCollectionDialogView).Name,
@@ -243,7 +240,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
                  (SelectedChildConstruction.Constructions, SelectedChildConstruction, "Строительная конструкция",
-                 () => { SelectedChildConstruction = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
+                 () => { SelectedChildConstruction = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, Id);
         }
 
         private bool CanSave()
@@ -258,20 +255,25 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SaveCommand.RaiseCanExecuteChanged();
         }
 
-        public override void OnSave()
+        public virtual void OnSave()
         {
             this.OnSave<bldConstruction>(SelectedConstruction);
         }
-        public override void OnClose(object obj)
+        public virtual void OnClose(object obj)
         {
             this.OnClose<bldConstruction>(obj, SelectedConstruction);
         }
         public override void OnWindowClose()
         {
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
-            base.OnWindowClose();
+            _applicationCommands.UnDoRightCommand.UnregisterCommand(UnDoRightCommand);
+            _applicationCommands.UnDoLeftCommand.UnregisterCommand(UnDoLeftCommand);
         }
 
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+
+        }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
 
@@ -297,11 +299,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 return true;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-
-        }
-
+      
 
 
     }

@@ -147,8 +147,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnUnDoLast()
         {
-           PropertyStateRecord last_record = _commonPropertiesChangeJornal.OrderBy(r => r.Date).LastOrDefault();
-            last_record.ParentObject.UnDoLast(last_record.ContextId);
         }
 
         private void OnSaveAll()
@@ -195,8 +193,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             }
                         }
 
-                        AllProjectsContext.ClearChangesJornal();
-                        SaveDataToDBCommand.RaiseCanExecuteChanged();
+                         SaveDataToDBCommand.RaiseCanExecuteChanged();
                         _buildingUnitsRepository.Complete();
                     }
                 }, _dialogService);

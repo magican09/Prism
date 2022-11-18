@@ -177,7 +177,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private bool CanSave()
         {
             if (SelectedAOSRDocument != null)
-                return !SelectedAOSRDocument.HasErrors && SelectedAOSRDocument.PropertiesChangeJornal.Count > 0;
+                return !SelectedAOSRDocument.HasErrors ;
             else
                 return false;
         }

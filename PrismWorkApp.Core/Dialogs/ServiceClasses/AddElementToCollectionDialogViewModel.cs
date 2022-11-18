@@ -169,7 +169,7 @@ namespace PrismWorkApp.Core.Dialogs
         {
             //  CoreFunctions.SetAllIdToZero(SelectedElement);
             CommonCollection.Add(SelectedElement);
-            CurrentCollection.RemoveJournalable(SelectedElement);
+            CurrentCollection.Remove(SelectedElement);
           ///  SelectedElement = null;
         }
 
@@ -208,7 +208,6 @@ namespace PrismWorkApp.Core.Dialogs
             CoreFunctions.CopyObjectNewInstances<IEntityObject>(SelectedElement, new_element, new_element.RestrictionPredicate);
             CoreFunctions.SetAllIdToZero(new_element, false);
             CoreFunctions.SetAllIdToZero(new_element,true);
-            new_element.ClearChangesJornal();
             new_element.Id = Guid.Empty;
              ConveyanceObject conveyanceObject =
                 new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
@@ -217,8 +216,7 @@ namespace PrismWorkApp.Core.Dialogs
             {
                 if (result.Result == ButtonResult.Yes)
                 {
-                    new_element.ResetObjectsStructure();
-                   CurrentCollection.Add(new_element);
+                     CurrentCollection.Add(new_element);
                //    CurrentCollection.ResetObjectsStructure();
                   // CurrentCollection.AdjustObjectsStructure();
 

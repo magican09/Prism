@@ -8,6 +8,7 @@ using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
@@ -29,7 +30,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-      
+
         private bldObject _selectedObject;
         public bldObject SelectedBuildingObject
         {
@@ -48,7 +49,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _ChildSelectedBuildingObject; }
             set { SetProperty(ref _ChildSelectedBuildingObject, value); }
         }
-       
+
         private bldObjectsGroup _objects;
         public bldObjectsGroup Objects
         {
@@ -68,7 +69,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _buildingObjects, value); }
         }
 
-      
+
         private bldConstruction _selectedConstruction;
         public bldConstruction SelectedConstruction
         {
@@ -76,8 +77,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _selectedConstruction, value); }
         }
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
-        public NotifyCommand SaveCommand { get; private set; }
-        public NotifyCommand<object> CloseCommand { get; private set; }
         public NotifyCommand AddBuildingObjectsCommand { get; private set; }
         public NotifyCommand AddConstructionCommand { get; private set; }
         public NotifyCommand EditBuildingObjectCommand { get; private set; }
@@ -85,61 +84,65 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand RemoveBuildingObjectCommand { get; private set; }
         public NotifyCommand RemoveConstructionCommand { get; private set; }
 
-     
+
         private readonly IBuildingUnitsRepository _buildingUnitsRepository;
         private IApplicationCommands _applicationCommands;
         public ObjectViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
-             IApplicationCommands applicationCommands)
+             IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
         {
-
-            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
-            SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(()=>SelectedBuildingObject);
-            CloseCommand = new NotifyCommand<object>(OnClose);
+            CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
+            base.SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedBuildingObject);
+            base.CloseCommand = new NotifyCommand<object>(OnClose);
+            base.UnDoLeftCommand = new NotifyCommand(() => OnUnDoLeft(Id),
+                                          () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
+                                                  .ObservesPropertyChangedEvent(CommonChangeJornal);
+            base.UnDoRightCommand = new NotifyCommand(() => OnUnDoRight(Id),
+                           () => { return !CommonChangeJornal.IsOnLastRecord(Id); })
+                             .ObservesPropertyChangedEvent(CommonChangeJornal);
             RemoveBuildingObjectCommand = new NotifyCommand(OnRemoveBuildingObject,
-                                      () => SelectedChildBuildingObject != null)
-                  .ObservesProperty(() => SelectedChildBuildingObject);
+                                     () => SelectedChildBuildingObject != null)
+                 .ObservesProperty(() => SelectedChildBuildingObject);
             RemoveConstructionCommand = new NotifyCommand(OnRemoveConstruction,
                                         () => SelectedConstruction != null)
                 .ObservesProperty(() => SelectedConstruction);
             AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
-           
             AddConstructionCommand = new NotifyCommand(OnAddConstruction);
-
-
             EditBuildingObjectCommand = new NotifyCommand(OnEditBuildingObject,
                                          () => SelectedChildBuildingObject != null)
                      .ObservesProperty(() => SelectedChildBuildingObject);
-
             EditConstructionCommand = new NotifyCommand(OnEditConstruction,
                                          () => SelectedConstruction != null)
                      .ObservesProperty(() => SelectedConstruction);
-             
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+
             _dialogService = dialogService;
             _regionManager = regionManager;
             _buildingUnitsRepository = buildingUnitsRepository;
             _applicationCommands = applicationCommands;
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            _applicationCommands.UnDoRightCommand.RegisterCommand(UnDoRightCommand);
+            _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
         }
         private void OnDataGridLostSocus(object obj)
         {
 
             if (obj == SelectedChildBuildingObject)
             {
-                    SelectedConstruction = null;
-                  return;
+                SelectedConstruction = null;
+                return;
             }
             if (obj == SelectedConstruction)
             {
                 SelectedChildBuildingObject = null;
-                  return;
+                return;
             }
-            
+
         }
-       
+
         private void OnEditBuildingObject()
         {
-              CoreFunctions.EditElementDialog<bldObject>(SelectedBuildingObject, "Строительный объект",
-               (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Id);
+            CoreFunctions.EditElementDialog<bldObject>(SelectedBuildingObject, "Строительный объект",
+             (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Id);
         }
         private void OnAddBuildingObject()
         {
@@ -149,14 +152,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                   (SelectedBuildingObject.BuildingObjects, BuildingObjects, _dialogService,
                     (result) =>
                     {
-
                         if (result.Result == ButtonResult.Yes)
                         {
                             SaveCommand.RaiseCanExecuteChanged();
                         }
                         if (result.Result == ButtonResult.No)
                         {
-                            SelectedBuildingObject.BuildingObjects.UnDoAll(Id);
+                            CommonChangeJornal.UnDoAll(Id);
                         }
                     },
                    typeof(AddbldObjectToCollectionDialogView).Name,
@@ -168,25 +170,22 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnRemoveBuildingObject()
         {
-
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldObjectsGroup, bldObject>
                (SelectedBuildingObject.BuildingObjects, SelectedChildBuildingObject, "Строительный объект"
                , () =>
                {
                    SelectedChildBuildingObject = null;
                    SaveCommand.RaiseCanExecuteChanged();
-               }, _dialogService,Id);
+               }, _dialogService, Id);
         }
-
         private void OnEditConstruction()
         {
             CoreFunctions.EditElementDialog<bldConstruction>(SelectedConstruction, "Учасник строительства",
                   (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", Id);
-       
         }
         private void OnAddConstruction()
         {
-            bldConstructionsGroup Constructions =  
+            bldConstructionsGroup Constructions =
             new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync());
             NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_1 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_1.Name = "Показать только из текущего проекта.";
@@ -203,7 +202,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             nameablePredicatesCollection.Add(predicate_2);
             nameablePredicatesCollection.Add(predicate_3);
             CoreFunctions.AddElementToCollectionWhithDialog_Test<bldConstructionsGroup, bldConstruction>
-                (SelectedBuildingObject.Constructions, Constructions, 
+                (SelectedBuildingObject.Constructions, Constructions,
                 nameablePredicatesCollection,
                 _dialogService,
                  (result) =>
@@ -216,7 +215,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      }
                      if (result.Result == ButtonResult.No)
                      {
-                         SelectedBuildingObject.Constructions.UnDoAll(Id);
+                         CommonChangeJornal.UnDoAll(Id);
                      }
                  },
                 typeof(AddbldConstructionToCollectionDialogView).Name,
@@ -227,25 +226,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnRemoveConstruction()
         {
-
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
                  (SelectedBuildingObject.Constructions, SelectedConstruction, "Строительная конструкция",
-                 () => { SelectedConstruction = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
+                 () => { SelectedConstruction = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, Id);
         }
-
-        public  void RaiseCanExecuteChanged(object sender, EventArgs e)
+        public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             SaveCommand.RaiseCanExecuteChanged();
         }
-
         public virtual bool CanSave()
         {
-
             if (SelectedBuildingObject != null)
                 return !SelectedBuildingObject.HasErrors;// && SelectedBuildingObject.PropertiesChangeJornal.Count > 0;
             else
                 return false;
-
         }
         public virtual void OnSave()
         {
@@ -259,23 +253,24 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public override void OnWindowClose()
         {
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
-        //    base.OnWindowClose();
+            _applicationCommands.UnDoRightCommand.UnregisterCommand(UnDoRightCommand);
+            _applicationCommands.UnDoLeftCommand.UnregisterCommand(UnDoLeftCommand);
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_object"];
-                    
-                if (((bldObject)navigane_message.Object).Id != SelectedBuildingObject.Id)
-                    return false;
-                else
-                    return true;
-             
+
+            if (((bldObject)navigane_message.Object).Id != SelectedBuildingObject.Id)
+                return false;
+            else
+                return true;
+
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-           
+
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -285,10 +280,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             {
                 ResivedObject = (bldObject)navigane_message.Object;
                 EditMode = navigane_message.EditMode;
-                 if (SelectedBuildingObject != null) SelectedBuildingObject.ErrorsChanged -= RaiseCanExecuteChanged;
+                if (SelectedBuildingObject != null) SelectedBuildingObject.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedBuildingObject = ResivedObject;
                 SelectedBuildingObject.ErrorsChanged += RaiseCanExecuteChanged;
-               
+
                 Title = ResivedObject.Name;
             }
         }

@@ -50,12 +50,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 {
                     if (result.Result == ButtonResult.Yes)
                     {
-                        if (EditMode) SelectedWork.SaveAll(Id);
+                        CommonChangeJornal.SaveAll(Id);
                         RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
                     }
                     else
                     {
-                        if (EditMode) SelectedWork.SaveAll(Id);
+                        CommonChangeJornal.SaveAll(Id);
                         RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                     }
                 }, _dialogService);

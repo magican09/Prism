@@ -88,13 +88,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _keepAlive , value); }
         }
 
-        
-        // public  NotifyCommand SaveCommand { get; private set; }
-        public NotifyCommand SaveCommand { get; private set; }
-        public NotifyCommand UnDoLeftCommand { get; private set; }
-        public NotifyCommand UnDoRightCommand { get; private set; }
-
-        public NotifyCommand<object> CloseCommand { get; private set; }
+         
 
         public NotifyCommand RemoveBuildingObjectCommand { get; private set; }
         public NotifyCommand RemoveParticipantCommand { get; private set; }
@@ -119,11 +113,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public ProjectViewModel(IDialogService dialogService, IBuildingUnitsRepository buildingUnitsRepository,
             IRegionManager regionManager, IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
         {
-            //  SaveCommand = new NotifyCommand(OnSave, CanSave);
-            CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
+             CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
 
-            SaveCommand = new NotifyCommand(OnSave, CanSave)
-                .ObservesProperty(() => SelectedProject).ObservesCanExecute(()=>KeepAlive);
+            SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedProject);
+            CloseCommand = new NotifyCommand<object>(OnClose);
             UnDoLeftCommand = new NotifyCommand(()=>base.OnUnDoLeft(Id), 
                 () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
                .ObservesPropertyChangedEvent(CommonChangeJornal);
@@ -131,7 +124,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 () => { return !CommonChangeJornal.IsOnLastRecord(Id); })
                   .ObservesPropertyChangedEvent(CommonChangeJornal);
 
-            CloseCommand = new NotifyCommand<object>(OnClose).ObservesCanExecute(() => KeepAlive); ;
             
             AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
             AddParticipantCommand = new NotifyCommand(OnAddParticipant);
@@ -259,7 +251,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      }
                      if (result.Result == ButtonResult.No)
                      {
-                         SelectedProject.Participants.UnDoAll(Id);
+                         CommonChangeJornal.UnDoAll(Id);
                      }
                  },
                 typeof(AddbldParticipantToCollectionDialogView).Name,
@@ -312,7 +304,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      }
                      if (result.Result == ButtonResult.No)
                      {
-                         SelectedProject.BuildingObjects.UnDoAll(Id);
+                         CommonChangeJornal.UnDoAll(Id);
                      }
                  },
                 typeof(AddbldObjectToCollectionDialogView).Name,
@@ -396,7 +388,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public override void OnWindowClose()
         {
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
-        //   base.OnCloseWindow();
+            _applicationCommands.UnDoRightCommand.UnregisterCommand(UnDoRightCommand);
+            _applicationCommands.UnDoLeftCommand.UnregisterCommand(UnDoLeftCommand);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {

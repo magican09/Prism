@@ -315,7 +315,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void Save()
         {
             //CoreFunctions.CopyObjectReflectionNewInstances(SelectedConstruction, ResivedConstruction);
-            SelectedConstruction.SaveAll(Id);
+            CommonChangeJornal.SaveAll(Id);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {

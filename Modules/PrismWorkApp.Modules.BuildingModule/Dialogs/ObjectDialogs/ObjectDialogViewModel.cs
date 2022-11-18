@@ -4,6 +4,7 @@ using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
     public class ObjectDialogViewModel : ObjectViewModel,IDialogAware
     {
 
-        public ObjectDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
-            :base(dialogService, regionManager, buildingUnitsRepository, applicationCommands)
+        public ObjectDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
+            IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
+            :base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, propertiesChangeJornal)
         {
 
         }
@@ -51,12 +53,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 {
                     if (result.Result == ButtonResult.Yes)
                     {
-                        if (EditMode) SelectedBuildingObject.SaveAll(Id);
+                        CommonChangeJornal.SaveAll(Id);
                         RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
                     }
                     else
                     {
-                        if (EditMode) SelectedBuildingObject.UnDoAll(Id);
+                       CommonChangeJornal.UnDoAll(Id);
                         RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                     }
 

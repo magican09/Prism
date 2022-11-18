@@ -17,7 +17,18 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
     {
         protected IDialogService _dialogService;
         protected IRegionManager _regionManager;
-        private PropertiesChangeJornal _commonChangeJornal;
+        public NotifyCommand UnDoLeftCommand { get; protected set; }
+        public NotifyCommand UnDoRightCommand { get; protected set; }
+        public NotifyCommand SaveCommand { get; protected set; }
+        public NotifyCommand<object> CloseCommand { get; protected set; }
+
+        private bool _keepAlive = true;
+      public bool KeepAlive
+        {
+            get { return _keepAlive; }
+            set { _keepAlive = value; }
+        }
+        protected PropertiesChangeJornal _commonChangeJornal;
         public PropertiesChangeJornal CommonChangeJornal
         {
             get { return _commonChangeJornal; }
@@ -26,9 +37,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public BaseViewModel()
         {
-           
+            
+
         }
-      
+
         public virtual void OnUnDoRight(Guid curentContextIds)
         {
             _commonChangeJornal.UnDoRight(curentContextIds);

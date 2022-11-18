@@ -58,7 +58,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
     public enum JornalRecordState
     {
-        UNPICKED,
+        NONE,
         PICKED,
         DEACTIVATED,
         UNDO_COMPLETE,

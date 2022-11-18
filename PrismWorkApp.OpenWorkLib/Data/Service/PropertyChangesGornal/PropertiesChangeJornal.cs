@@ -120,28 +120,28 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         private void OnCollectionChangedBeforeRemove(object sender, CollectionChangedEventArgs e)
         {
             PropertyStateRecord stateRecord;
-         
+
             PropertyStateRecord last_state_record = this.Where(r => r.ContextId == (sender as IJornalable).CurrentContextId).OrderBy(r => r.Index).LastOrDefault();
             int last_index = 0;
             if (last_state_record != null)
                 last_index = ++last_state_record.Index;
 
 
-            if (e.CurrentContextId!=Guid.Empty)
-             stateRecord = new PropertyStateRecord(
-                    e.Item, JornalRecordType.REMOVED, e.Item.Id.ToString(),
-                    e.CurrentContextId, sender as IJornalable, last_index);
+            if (e.CurrentContextId != Guid.Empty)
+                stateRecord = new PropertyStateRecord(
+                       e.Item, JornalRecordType.REMOVED, e.Item.Id.ToString(),
+                       e.CurrentContextId, sender as IJornalable, last_index);
             else
                 stateRecord = new PropertyStateRecord(
                    e.Item, JornalRecordType.REMOVED, e.Item.Id.ToString(),
                  CurrentContextId, sender as IJornalable, last_index);
 
             (e.Item as IJornalable).IsVisible = false;
-          
-               this.SetRecordIndex(stateRecord);
-            this.Add(stateRecord);
-
-
+            if (this.SetRecordIndex(stateRecord))
+            {
+                this.Add(stateRecord);
+                stateRecord.State = JornalRecordState.SAVED;
+            }
         }
 
         private void OnPropertyBeforeChanged(object sender, PropertyChangedEventArgs e)
@@ -157,24 +157,20 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             {
                 var property_last_value = property_last_value_prop_info.GetValue(sender);
                 PropertyStateRecord last_state_record = this.Where(r => r.ContextId == (sender as IJornalable).CurrentContextId).OrderBy(r => r.Index).LastOrDefault();
-                int last_index=0;
+                int last_index = 0;
                 if (last_state_record != null)
-                    last_index = last_state_record.Index+1;
-                PropertyStateRecord stateRecord = new PropertyStateRecord(property_last_value, 
-                                                        JornalRecordType.MODIFIED, 
-                                                         e.PropertyName, (sender as IJornalable).CurrentContextId, 
+                    last_index = last_state_record.Index + 1;
+                PropertyStateRecord stateRecord = new PropertyStateRecord(property_last_value,
+                                                        JornalRecordType.MODIFIED,
+                                                         e.PropertyName, (sender as IJornalable).CurrentContextId,
                                                          sender as IJornalable, 0);
-               
-
                 if (this.SetRecordIndex(stateRecord))
                 {
-                //    stateRecord.PointerStatus = JornalRecordState.PICKED;
-                    stateRecord.PointerStatus = JornalRecordState.SAVED;
                     this.Add(stateRecord);
+                    stateRecord.State = JornalRecordState.SAVED;
 
                 }
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(stateRecord.Name));
-
             }
         }
         private void OnPropertyObjectChanged(object sender, PropertyChangedEventArgs e)
@@ -195,35 +191,27 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             }
 
         }
-
-
         public virtual void UnDoLeft(Guid currentContextId)
         {
-           // Guid currentContextId = CurrentContextId;
             var all_prop_states = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Index);
-         
-            PropertyStateRecord last_saved_state = all_prop_states.Where(pr => pr.PointerStatus == JornalRecordState.SAVED)
-                                                                         .OrderBy(r=>r.Index).LastOrDefault();
-           
+            PropertyStateRecord last_saved_state = all_prop_states.Where(pr => pr.State == JornalRecordState.SAVED)
+                                                                         .OrderBy(r => r.Index).LastOrDefault();
             PropertyStateRecord previous_picked_state = null;
             if (last_saved_state != null) // Если не было выбранной сохраненой записи 
             {
-            this.UnDo(last_saved_state);
-                last_saved_state.PointerStatus = JornalRecordState.UNDO_COMPLETE;
+                this.UnDo(last_saved_state);
+                last_saved_state.State = JornalRecordState.UNDO_COMPLETE;
             }
         }
         public virtual void UnDoRight(Guid currentContextId)
         {
-            // Guid currentContextId = CurrentContextId;
             var all_prop_states = this.Where(pr => pr.ContextId == currentContextId).OrderBy(pr => pr.Index);
-
-            PropertyStateRecord first_undo_comlete_state = all_prop_states.Where(pr => pr.PointerStatus == JornalRecordState.UNDO_COMPLETE)
+            PropertyStateRecord first_undo_comlete_state = all_prop_states.Where(pr => pr.State == JornalRecordState.UNDO_COMPLETE)
                                                                          .OrderBy(r => r.Index).FirstOrDefault();
-
             if (first_undo_comlete_state != null) // Если не было выбранной сохраненой записи 
             {
                 this.UnDo(first_undo_comlete_state);
-                first_undo_comlete_state.PointerStatus = JornalRecordState.SAVED;
+                first_undo_comlete_state.State = JornalRecordState.SAVED;
             }
 
         }
@@ -233,12 +221,11 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             var prop_info = propertyState.ParentObject.GetType().GetProperty(propertyState.Name); //Достаем с помощью рефлексии данные о свойстве из текущего объекта
             if (prop_info != null && prop_info.GetIndexParameters().Length == 0)//Если свойство не является индек..
             {
-
                 var prop_val = prop_info.GetValue(propertyState.ParentObject);
                 propertyState.ParentObject.JornalingOff();
                 prop_info.SetValue(propertyState.ParentObject, propertyState.Value); //Присваиваем свойству текущего объекта сохраненное в журнале значение
                 propertyState.ParentObject.JornalingOn();
-                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyState.Name));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyState.Name));
             }
             if (propertyState.ParentObject is IList)
             {
@@ -254,13 +241,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                         break;
                     default:
                         break;
-
                 }
             }
         }
         public void UnDoAll(Guid currentContextId)
         {
-            var records_for_undo = this.Where(r => r.ContextId == currentContextId).OrderByDescending(r=>r.Date).ToList();
+            var records_for_undo = this.Where(r => r.ContextId == currentContextId).OrderByDescending(r => r.Date).ToList();
 
             foreach (PropertyStateRecord record in records_for_undo)
             {
@@ -271,7 +257,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         }
         public void Save(PropertyStateRecord propertyState)
         {
-            if(propertyState.ParentObject is INotifyJornalableCollectionChanged)
+            if (propertyState.ParentObject is INotifyJornalableCollectionChanged)
             {
                 if (propertyState.Status == JornalRecordType.REMOVED)
                 {
@@ -286,45 +272,62 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     this.Remove(propertyState);
             }
         }
-
-            public void SaveAll(Guid currentContextId)
+        public void SaveAll(Guid currentContextId)
         {
-           
+
             var records_for_delete_objects = this.Where(rc => rc.ContextId == currentContextId &&
-                                                rc.ParentObject is INotifyJornalableCollectionChanged).GroupBy(g=>g.Name).Select(g=>g.FirstOrDefault()).ToList();
-        foreach (PropertyStateRecord stateRecord in records_for_delete_objects)
+                                                rc.ParentObject is INotifyJornalableCollectionChanged).GroupBy(g => g.Name).Select(g => g.FirstOrDefault()).ToList();
+            foreach (PropertyStateRecord stateRecord in records_for_delete_objects)
             {
-               this.Save(stateRecord);
+                this.Save(stateRecord);
             }
 
         }
-        private bool  SetRecordIndex(PropertyStateRecord prop_last_state_record)
+        private bool SetRecordIndex(PropertyStateRecord prop_last_state_record)
         {
-            if(this.Where(r=>r.PointerStatus== JornalRecordState.SAVED).ToList().Count==this.Count)//Если все записи со статусом SAVED
+            var saved_records = this.Where(r => r.State == JornalRecordState.SAVED).ToList();
+            var undo_comlete_records = this.Where(r => r.State == JornalRecordState.UNDO_COMPLETE).ToList();
+            var last_saved_record = saved_records.OrderBy(r => r.Index).LastOrDefault();
+            int save_recorsd_last_index = 0;
+            int undo_complete_first_index = 0;
+            if (saved_records.Count > 0)
+                save_recorsd_last_index = saved_records.OrderBy(r => r.Index).LastOrDefault().Index;
+            if (undo_comlete_records.Count > 0)
+                undo_complete_first_index = undo_comlete_records.OrderBy(r => r.Index).FirstOrDefault().Index;
+            prop_last_state_record.Index = save_recorsd_last_index + 1;
+            if (last_saved_record != null && last_saved_record.Name==prop_last_state_record.Name &&
+                                           last_saved_record.Value == prop_last_state_record.Value)
             {
-
+                return false;
             }
-
+            foreach (PropertyStateRecord record in undo_comlete_records)
+            {
+                record.Index = ++save_recorsd_last_index + 1;
+            }
             return true;
-
         }
 
         public bool IsOnLastRecord(Guid currentContextId) //Если казатель PICKED на последней записи
         {
-            if (this.Where(r => r.PointerStatus == JornalRecordState.SAVED).ToList().Count >0  &&
-                 this.Where(r => r.PointerStatus == JornalRecordState.UNDO_COMPLETE).ToList().Count == 0)
+            var saved_records = this.Where(r => r.State == JornalRecordState.SAVED).ToList();
+            var undo_comlete_records = this.Where(r => r.State == JornalRecordState.UNDO_COMPLETE).ToList();
+            if (saved_records.Count > 0 &&
+               undo_comlete_records.Count == 0)
                 return true;
             else
                 return false;
         }
         public bool IsOnFirstRecord(Guid currentContextId) //Если казатель PICKED на последней записи
         {
-              if (this.Where(r => r.PointerStatus == JornalRecordState.SAVED).ToList().Count==0 &&
-                this.Where(r=>r.PointerStatus== JornalRecordState.UNDO_COMPLETE).ToList().Count>0)
+            var saved_records = this.Where(r => r.State == JornalRecordState.SAVED).ToList();
+            var undo_comlete_records = this.Where(r => r.State == JornalRecordState.UNDO_COMPLETE).ToList();
+
+            if (saved_records.Count == 0 &&
+               undo_comlete_records.Count > 0)
                 return true;
             else
                 return false;
-         }
+        }
 
         private ObservableCollection<PropertyStateRecord> ChangesDetect(IJornalable obj)// Определяет не зажурналированные изменения в объетке и если они были  - возращает запись журанл
         {

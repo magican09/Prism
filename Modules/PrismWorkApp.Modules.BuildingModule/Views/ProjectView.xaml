@@ -141,7 +141,7 @@
                     <DataGridTextColumn  Header="PropName"  
                                                      Binding = "{Binding Path=Name}" />
                     <DataGridTextColumn  Header="Status"  
-                                                     Binding = "{Binding Path=PointerStatus}" />
+                                                     Binding = "{Binding Path=State}" />
                     <DataGridTextColumn  Header="Status"  
                                                      Binding = "{Binding Path=Value}" />
                     <DataGridTextColumn  Header="Index"  

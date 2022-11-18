@@ -67,11 +67,11 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             set { SetProperty(ref _status, value); }
         }
 
-        private JornalRecordState _pointerStatus= JornalRecordState.UNPICKED;
-        public JornalRecordState PointerStatus
+        private JornalRecordState _state= JornalRecordState.NONE;
+        public JornalRecordState State
         {
-            get { return _pointerStatus; }
-            set { SetProperty(ref _pointerStatus, value); }
+            get { return _state; }
+            set { SetProperty(ref _state, value); }
         }
 
         public IJornalable ParentObject { get; set; }

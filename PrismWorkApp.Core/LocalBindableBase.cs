@@ -7,6 +7,8 @@ using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using BindableBase = Prism.Mvvm.BindableBase;
@@ -22,14 +24,31 @@ namespace PrismWorkApp.Core
         public Guid Id
         {
             get { return _id; }
-            set { SetProperty(ref _id, value); }
-        }
+            set
+            {
+                 SetProperty(ref _id, value);
+                SetPropertiesCurrentId();
 
+            }
+        }
+        private void SetPropertiesCurrentId()
+        {
+            var prop_infoes = this.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0 &&
+                                                                    pr.PropertyType is IJornalable);
+            foreach(PropertyInfo prop_info in prop_infoes)
+            {
+                IJornalable prop_val = (IJornalable) prop_info.GetValue(this);
+                if(prop_val !=null)
+                {
+                    prop_val.CurrentContextId = Id;
+                }
+            }
+        }
         protected override bool SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = null)
         {
             if (val is ICuntextIdable)
             {
-                ((ICuntextIdable)val).CurrentContextId = Id; 
+                ((ICuntextIdable)val).CurrentContextId = Id;
             }
             return base.SetProperty(ref member, val, propertyName);
         }
@@ -42,13 +61,13 @@ namespace PrismWorkApp.Core
         }
         private bool _editMode;
 
-       
+
         public bool EditMode
         {
             get { return _editMode; }
             set { SetProperty(ref _editMode, value); }
         }
-    
+
         public event EventHandler IsActiveChanged;
 
         private bool _isActive;
@@ -62,9 +81,9 @@ namespace PrismWorkApp.Core
             }
         }
 
-        public virtual void  OnSave()
+        public virtual void OnSave()
         {
-            
+
         }
         public virtual void OnClose(object obj)
         {
@@ -77,12 +96,12 @@ namespace PrismWorkApp.Core
             IsActiveChanged?.Invoke(this, new EventArgs()); //invoke the event for all listeners
         }
 
-     
+
         //public virtual void RaiseCanExecuteChanged(object sender, EventArgs e)
         //{
 
         //}
-     
-       
+
+
     }
 }

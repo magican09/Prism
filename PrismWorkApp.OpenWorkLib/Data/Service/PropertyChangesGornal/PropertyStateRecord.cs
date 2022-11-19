@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public class PropertyStateRecord : INotifyPropertyChanged
+    public class PropertyStateRecord :ObservableCollection<PropertyStateRecord>, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         protected virtual bool  SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = "")
@@ -17,14 +17,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
              PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
         }
-
-
         public Guid Id { get; set; } = Guid.NewGuid();
-
         public Guid _сontextId;
-
-      
-        public Guid ContextId
+         public Guid ContextId
         {
             get
             {
@@ -114,6 +109,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             this(stateRecord.Value, stateRecord.Status, stateRecord.Name,stateRecord.ContextId, stateRecord.ParentObject)
         {
             Date = DateTime.Now;
+        }
+        public PropertyStateRecord()
+        {
+
         }
     }
 

@@ -135,7 +135,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             EditParticipantCommand = new NotifyCommand(OnEditParticipant,
                                      () => SelectedParticipant != null)
                  .ObservesProperty(() => SelectedParticipant);
-            EditResponsibleEmployeeCommand = new NotifyCommand(OnEditRemoveResponsibleEmployee,
+            EditResponsibleEmployeeCommand = new NotifyCommand(OnEditResponsibleEmployee,
                                         () => SelectedResponsibleEmployee != null)
                     .ObservesProperty(() => SelectedResponsibleEmployee);
 
@@ -160,18 +160,22 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
         }
 
-        private void OnEditRemoveResponsibleEmployee()
+        private void OnEditResponsibleEmployee()
         {
+            CommonChangeJornal.ContextIdHistory.Add(Id); 
             CoreFunctions.EditElementDialog<bldResponsibleEmployee>(SelectedResponsibleEmployee, "Отвественне лицо",
                   (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ResponsibleEmployeeDialogView).Name, "Редактировать", Id);
             SaveCommand.RaiseCanExecuteChanged();
+            CommonChangeJornal.ContextIdHistory.Remove(Id);
         }
 
         private void OnEditParticipant()
         {
+            CommonChangeJornal.ContextIdHistory.Add(Id);
             CoreFunctions.EditElementDialog<bldParticipant>(SelectedParticipant, "Учасник строительства",
                   (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ParticipantDialogView).Name, "Редактировать", Id);
-           
+            CommonChangeJornal.ContextIdHistory.Remove(Id);
+
         }
 
 
@@ -266,8 +270,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnEditBuildingObject()
         {
+            CommonChangeJornal.ContextIdHistory.Add(Id);
             CoreFunctions.EditElementDialog<bldObject>(SelectedBuildingObject, "Строительный объект",
                 (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Id);
+            CommonChangeJornal.ContextIdHistory.Remove(Id);
         }
         private void OnAddBuildingObject()
         {

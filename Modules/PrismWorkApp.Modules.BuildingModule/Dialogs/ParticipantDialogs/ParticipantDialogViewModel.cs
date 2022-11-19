@@ -81,8 +81,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             {
                 ResivedParticipant =(bldParticipant) navigate_message.Object;
                 EditMode = navigate_message.EditMode;
-                if (!EditMode)
-                    Id = CurrentContextId;
+                Id = CurrentContextId;
 
                 if (SelectedParticipant != null) SelectedParticipant.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedParticipant = ResivedParticipant;

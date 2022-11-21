@@ -205,7 +205,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }//Код
 
 
-
+        public bool IsPointerContainer { get; set; }
         public bool CopingEnable { get; set; } = true;
 
 

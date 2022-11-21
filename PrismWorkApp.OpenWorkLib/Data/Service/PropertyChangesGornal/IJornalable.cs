@@ -52,7 +52,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         DELETED,
         UNJOURNALED,
         ADDED,
-        REMOVED
+        REMOVED,
+        COMPLEX_RECORD
        
     }
 

@@ -55,14 +55,11 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     stateRecord.ParentJornal = this;
                     if (JornalChangedNotify != null)
                     {
-
                     }
                     else
                         ;
                 }
             }
-
-
         }
         public IJornalable ParentObject { get; set; }
         private bool IsContainsRecord(Guid currentContextId)
@@ -176,6 +173,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                             {
                                 this.Add(prop_state_record);
                                 prop_state_record.State = JornalRecordState.SAVED;
+                                prop_state_record.Status = JornalRecordType.COMPLEX_RECORD;
                             }
                             PropertyStateRecord record = new PropertyStateRecord(stateRecord);
                             record.ContextId = currentId;
@@ -183,6 +181,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                             {
                                 prop_state_record.Add(record);
                                 record.State = JornalRecordState.SAVED;
+                                record.Status = JornalRecordType.COMPLEX_RECORD;
                             }
                         }
                     }
@@ -259,13 +258,15 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     }
                 }
             }
-            else //Еасли  изменене не одно свойсто 
+            else if(propertyState.Count>0 && propertyState.Status == JornalRecordType.COMPLEX_RECORD)//Еасли  изменене не одно свойсто 
             {
+                
                 List<PropertyStateRecord> records = null;
                 if (_undo_left_direction)
                     records = propertyState.OrderByDescending(r => r.Index).ToList();
                 else
                     records = propertyState.OrderBy(r => r.Index).ToList();
+
                 foreach (PropertyStateRecord record in records)
                 {
                     UnDo(record);

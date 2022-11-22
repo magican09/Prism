@@ -111,15 +111,22 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
         private void OnCollectionChangedBeforAdd(object sender, CollectionChangedEventArgs e)
         {
-
+            PropertyStateRecord stateRecord;
+            stateRecord = new PropertyStateRecord(e.Item, JornalRecordType.ADDED, e.Item.Id.ToString(),
+                                                               e.CurrentContextId, sender as IJornalable, 0);
+            if (this.SetRecordIndex(stateRecord))
+            {
+                this.Add(stateRecord);
+                stateRecord.State = JornalRecordState.SAVED;
+                IfContextHistoryNotNullFunction(stateRecord);
+            }
         }
 
         private void OnCollectionChangedBeforeRemove(object sender, CollectionChangedEventArgs e)
         {
             PropertyStateRecord stateRecord;
-
-            PropertyStateRecord last_state_record = this.Where(r => r.ContextId == (sender as IJornalable).CurrentContextId).OrderBy(r => r.Index).LastOrDefault();
-            int last_index = 0;
+            /* PropertyStateRecord last_state_record = this.Where(r => r.ContextId == (sender as IJornalable).CurrentContextId).OrderBy(r => r.Index).LastOrDefault();
+             int last_index = 0;
             if (last_state_record != null)
                 last_index = ++last_state_record.Index;
 
@@ -132,12 +139,15 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 stateRecord = new PropertyStateRecord(
                    e.Item, JornalRecordType.REMOVED, e.Item.Id.ToString(),
                  CurrentContextId, sender as IJornalable, last_index);
-
+            */
+            stateRecord = new PropertyStateRecord(e.Item, JornalRecordType.REMOVED, e.Item.Id.ToString(),
+                                                     e.CurrentContextId, sender as IJornalable, 0);
             (e.Item as IJornalable).IsVisible = false;
             if (this.SetRecordIndex(stateRecord))
             {
                 this.Add(stateRecord);
                 stateRecord.State = JornalRecordState.SAVED;
+                IfContextHistoryNotNullFunction(stateRecord);
             }
         }
 
@@ -162,31 +172,35 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 {
                     this.Add(stateRecord);
                     stateRecord.State = JornalRecordState.SAVED;
-                    foreach (Guid currentId in ContextIdHistory)
-                    {
-                        PropertyStateRecord prop_state_record = this.Where(r => r.Name == currentId.ToString()).FirstOrDefault();
-                        if (prop_state_record == null)
-                            prop_state_record = new PropertyStateRecord(sender, JornalRecordType.MODIFIED, currentId.ToString(), currentId, null);
-                        if (SetRecordIndex(prop_state_record))
-                        {
-                            if (!this.Contains(prop_state_record))
-                            {
-                                this.Add(prop_state_record);
-                                prop_state_record.State = JornalRecordState.SAVED;
-                                prop_state_record.Status = JornalRecordType.COMPLEX_RECORD;
-                            }
-                            PropertyStateRecord record = new PropertyStateRecord(stateRecord);
-                            record.ContextId = currentId;
-                            if (SetRecordIndex(record, prop_state_record))
-                            {
-                                prop_state_record.Add(record);
-                                record.State = JornalRecordState.SAVED;
-                                record.Status = JornalRecordType.COMPLEX_RECORD;
-                            }
-                        }
-                    }
+                    IfContextHistoryNotNullFunction(stateRecord);
                 }
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(stateRecord.Name));
+            }
+        }
+        private void IfContextHistoryNotNullFunction(PropertyStateRecord stateRecord)
+        {
+            foreach (Guid currentId in ContextIdHistory)
+            {
+                PropertyStateRecord prop_state_record = this.Where(r => r.Name == currentId.ToString()).FirstOrDefault();
+                if (prop_state_record == null)
+                    prop_state_record = new PropertyStateRecord(stateRecord.ParentObject, JornalRecordType.MODIFIED, currentId.ToString(), currentId, null);
+                if (SetRecordIndex(prop_state_record))
+                {
+                    if (!this.Contains(prop_state_record))
+                    {
+                        this.Add(prop_state_record);
+                        prop_state_record.State = JornalRecordState.SAVED;
+                        prop_state_record.Status = JornalRecordType.COMPLEX_RECORD;
+                    }
+                    PropertyStateRecord record = new PropertyStateRecord(stateRecord);
+                    record.ContextId = currentId;
+                    if (SetRecordIndex(record, prop_state_record))
+                    {
+                        prop_state_record.Add(record);
+                        record.State = JornalRecordState.SAVED;
+                        record.Status = JornalRecordType.COMPLEX_RECORD;
+                    }
+                }
             }
         }
         private void OnPropertyObjectChanged(object sender, PropertyChangedEventArgs e)

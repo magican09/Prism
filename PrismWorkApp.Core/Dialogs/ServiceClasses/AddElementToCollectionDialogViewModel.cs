@@ -11,8 +11,8 @@ using PrismWorkApp.OpenWorkLib.Core;
 namespace PrismWorkApp.Core.Dialogs
 {
     public abstract class AddElementToCollectionDialogViewModel<TConteiner, T> : LocalBindableBase, IDialogAware
-        where TConteiner :IEnumerable<T>, INameable,INameableOservableCollection<T>, new()
-        where T : class, IRegisterable,IEntityObject, new()
+        where TConteiner : IEnumerable<T>, INameable, INameableOservableCollection<T>, new()
+        where T : class, IRegisterable, IEntityObject, new()
     {
         private string _title = "Диалоговое окно сообщения";
         public string Title
@@ -101,7 +101,7 @@ namespace PrismWorkApp.Core.Dialogs
 
         private NameablePredicateObservableCollection<TConteiner, T> _predicateCollection;
 
-        public NameablePredicateObservableCollection<TConteiner,T> PredicateCollection
+        public NameablePredicateObservableCollection<TConteiner, T> PredicateCollection
         {
             get { return _predicateCollection; }
             set { _predicateCollection = value; }
@@ -109,7 +109,7 @@ namespace PrismWorkApp.Core.Dialogs
         private NameablePredicate<TConteiner, T> _selectedPredicate;
 
 
-        public NameablePredicate<TConteiner,T>  SelectedPredicate
+        public NameablePredicate<TConteiner, T> SelectedPredicate
         {
             get { return _selectedPredicate; }
             set { SetProperty(ref _selectedPredicate, value); }
@@ -123,7 +123,7 @@ namespace PrismWorkApp.Core.Dialogs
         public DelegateCommand AddToCollectionCommand { get; private set; }
         public DelegateCommand RemoveFromCollectionCommand { get; private set; }
         public DelegateCommand SortingCommand { get; private set; }
-        
+
         public event Action<IDialogResult> RequestClose;
         public event Action<IDialogResult> RequestNewObject;
         public string NewObjectDialogName { get; set; }
@@ -142,7 +142,7 @@ namespace PrismWorkApp.Core.Dialogs
             RemoveFromCollectionCommand = new DelegateCommand(OnRemoveFromCollection, CanRemoveFromCollection)
                       .ObservesProperty(() => SelectedElement);
             SortingCommand = new DelegateCommand(OnSortingCommand, CanSorting)
-                .ObservesProperty(()=> SelectedPredicate);
+                .ObservesProperty(() => SelectedPredicate);
             _dialogService = dialogService;
         }
 
@@ -170,7 +170,7 @@ namespace PrismWorkApp.Core.Dialogs
             //  CoreFunctions.SetAllIdToZero(SelectedElement);
             CommonCollection.Add(SelectedElement);
             CurrentCollection.Remove(SelectedElement);
-          ///  SelectedElement = null;
+            ///  SelectedElement = null;
         }
 
         private bool CanAddToCollection()
@@ -184,7 +184,7 @@ namespace PrismWorkApp.Core.Dialogs
             CurrentCollection.Add(SelectedElement);
             CommonCollection.Remove(SelectedElement);
             var selected_element = CurrentCollection.Where(el => el.Id == selected_item_id).FirstOrDefault();
-        //    CoreFunctions.SetAllIdToZero(selected_element);
+            //    CoreFunctions.SetAllIdToZero(selected_element);
         }
 
         private bool CanCreateElementOnPatternInstance()
@@ -207,25 +207,20 @@ namespace PrismWorkApp.Core.Dialogs
             T new_element = new T();
             CoreFunctions.CopyObjectNewInstances<IEntityObject>(SelectedElement, new_element, new_element.RestrictionPredicate);
             CoreFunctions.SetAllIdToZero(new_element, false);
-            CoreFunctions.SetAllIdToZero(new_element,true);
+            CoreFunctions.SetAllIdToZero(new_element, true);
             new_element.Id = Guid.Empty;
-             ConveyanceObject conveyanceObject =
-                new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
+            new_element.CurrentContextId = Id;
+            ConveyanceObject conveyanceObject =
+            new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
             dialog_par.Add("selected_element_conveyance_object", conveyanceObject);
             _dialogService.ShowDialog(NewObjectDialogName, dialog_par, (result) =>
             {
                 if (result.Result == ButtonResult.Yes)
                 {
-                     CurrentCollection.Add(new_element);
-               //    CurrentCollection.ResetObjectsStructure();
-                  // CurrentCollection.AdjustObjectsStructure();
-
-                    //  CommonCollection.Add(new_element);
-                }
+                    CurrentCollection.Add(new_element);
+                 }
                 if (result.Result == ButtonResult.No)
                 {
-                    //CurrentCollection.Add(new_element);
-                    //  CommonCollection.Add(new_element);
                 }
             }
             );
@@ -239,29 +234,28 @@ namespace PrismWorkApp.Core.Dialogs
             TConteiner current_collection = new TConteiner();
             TConteiner common_collection = new TConteiner();
             current_collection = CurrentCollection;
+
             common_collection = CoreFunctions.GetCollectionElementsList<TConteiner, T>(CommonCollection);
+
             dialog_par.Add("current_collection", current_collection);
             dialog_par.Add("common_collection", common_collection);
             T new_element = new T(); //Создаем новый элемент
+            new_element.Id = Guid.Empty;
+            new_element.CurrentContextId = Id;
             ConveyanceObject conveyanceObject =
                 new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
             dialog_par.Add("selected_element_conveyance_object", conveyanceObject);
-            dialog_par.Add("current_context_id", CurrentContextId);
+            dialog_par.Add("current_context_id", Id);
 
             _dialogService.ShowDialog(NewObjectDialogName, dialog_par, (result) =>
             {
                 if (result.Result == ButtonResult.Yes)
                 {
                     CurrentCollection.Add(new_element);
-              //      CommonCollection.Add(new_element);
-                }
+                  }
                 if (result.Result == ButtonResult.No)
                 {
-                   // CurrentCollection.UnDoAll(Id);
-                    //      CommonCollection.Add(new_element);
                 }
-
-
             }
             );
         }
@@ -297,7 +291,7 @@ namespace PrismWorkApp.Core.Dialogs
             Title = parameters.GetValue<string>("title");
             Message = parameters.GetValue<string>("message");
             CurrentContextId = parameters.GetValue<Guid>("current_context_id");
-            Id = CurrentContextId;
+            if(CurrentContextId!= Guid.Empty) Id = CurrentContextId;
             CommonCollectionName = parameters.GetValue<string>("common_collection_name");
             CurrentCollectionName = parameters.GetValue<string>("current_collection_name");
             CommonCollection = (TConteiner)parameters.GetValue<object>("common_collection");

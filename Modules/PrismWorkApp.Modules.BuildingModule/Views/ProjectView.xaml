@@ -148,6 +148,11 @@
                                                      Binding = "{Binding Path=Index}" />
                     <DataGridTextColumn  Header="CuntextId"  
                                                      Binding = "{Binding Path=ContextId}" />
+                    <DataGridTextColumn  Header="Status"  
+                                                     Binding = "{Binding Path=Status}" />
+            
+
+
                 </DataGrid.Columns>
             </DataGrid> 
             <StackPanel  >

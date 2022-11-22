@@ -137,10 +137,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             ObjectChangedNotify?.Invoke(this, null);
         }
-
-
-
-
         public void JornalingOff()
         {
             if (b_jornal_recording_flag == true)
@@ -167,15 +163,41 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public bool Remove(TEntity item, Guid currentContextId)
         {
-            CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, currentContextId));
+            if (b_jornal_recording_flag) CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, currentContextId));
             return true;
         }
         public bool Remove(TEntity item)
         {
-            CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item));
+            if (b_jornal_recording_flag) CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, CurrentContextId));
             return true;
         }
+        public void Add(TEntity item, Guid currentContextId)//Если используется интерфейс iCollection(T)
+        {
+            if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(item, currentContextId));
+            base.Add(item);
+        }
+        public void Add(TEntity item)//Если используется интерфейс iCollection(T)
+        {
+            if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(item, CurrentContextId));
+            base.Add(item);
 
+        }
+        public int Add(object? value, Guid currentContextId) //Если используется интрефейс IList
+        {
+            if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(value as IJornalable, currentContextId));
+            base.Add(value as TEntity);
+            return this.IndexOf(value as TEntity);
+        }
+
+        public int Add(object? value) //Если используется интрефейс IList
+        {
+
+            if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(value as IJornalable, CurrentContextId));
+            base.Add(value as TEntity);
+
+            return this.IndexOf(value as TEntity);
+
+        }
         public virtual object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject
         {
             if (!CopingEnable)

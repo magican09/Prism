@@ -44,8 +44,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         {
             if (EditMode == ConveyanceObjectModes.EditMode.FOR_EDIT)
             {
-
-                /*     CoreFunctions.ConfirmActionOnElementDialog<bldObject>(SelectedBuildingObject, 
+                      CoreFunctions.ConfirmActionOnElementDialog<bldObject>(SelectedBuildingObject, 
                          "Сохранить", "строительный объект",
                          "Сохранить",
                           "Не сохранять",
@@ -53,22 +52,18 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                      {
                          if (result.Result == ButtonResult.Yes)
                          {
-                             CommonChangeJornal.SaveAll(Id);
+                             //CommonChangeJornal.SaveAll(Id);
+                             base.OnSave<bldObject>(SelectedBuildingObject);
                              RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
                          }
                          else
                          {
-                            CommonChangeJornal.UnDoAll(Id);
-                             RequestClose?.Invoke(new DialogResult(ButtonResult.No));
+                           // CommonChangeJornal.UnDoAll(Id);
+                           RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                          }
 
                      }, _dialogService);
-                     */
-                base.OnSave<bldObject>(SelectedBuildingObject);
             }
-            
-
-
         }
         override public  void OnClose(object obj)
         {
@@ -87,7 +82,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             {
                 ResivedObject = (bldObject)navigane_message.Object;
                 EditMode = navigane_message.EditMode;
-               // Id = CurrentContextId;
+                Id = CurrentContextId;
                 if (SelectedBuildingObject != null) SelectedBuildingObject.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedBuildingObject = ResivedObject;
                 SelectedBuildingObject.ErrorsChanged += RaiseCanExecuteChanged;

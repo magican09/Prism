@@ -209,6 +209,7 @@ namespace PrismWorkApp.Core.Dialogs
             CoreFunctions.SetAllIdToZero(new_element, false);
             CoreFunctions.SetAllIdToZero(new_element, true);
             new_element.Id = Guid.Empty;
+            new_element.StoredId = Guid.NewGuid();
             new_element.CurrentContextId = Id;
             ConveyanceObject conveyanceObject =
             new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
@@ -241,6 +242,7 @@ namespace PrismWorkApp.Core.Dialogs
             dialog_par.Add("common_collection", common_collection);
             T new_element = new T(); //Создаем новый элемент
             new_element.Id = Guid.Empty;
+            new_element.StoredId = Guid.NewGuid();
             new_element.CurrentContextId = Id;
             ConveyanceObject conveyanceObject =
                 new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
@@ -291,7 +293,10 @@ namespace PrismWorkApp.Core.Dialogs
             Title = parameters.GetValue<string>("title");
             Message = parameters.GetValue<string>("message");
             CurrentContextId = parameters.GetValue<Guid>("current_context_id");
-            if(CurrentContextId!= Guid.Empty) Id = CurrentContextId;
+            if (CurrentContextId != Guid.Empty)
+                Id = CurrentContextId;
+            else
+                Id = Guid.NewGuid();
             CommonCollectionName = parameters.GetValue<string>("common_collection_name");
             CurrentCollectionName = parameters.GetValue<string>("current_collection_name");
             CommonCollection = (TConteiner)parameters.GetValue<object>("common_collection");
@@ -301,7 +306,7 @@ namespace PrismWorkApp.Core.Dialogs
             NewObjectDialogName = parameters.GetValue<string>("new_object_dialog_name");
             PredicateCollection =
                 parameters.GetValue<NameablePredicateObservableCollection<TConteiner, T>>("predicate_collection");
-
+             
 
         }
     }

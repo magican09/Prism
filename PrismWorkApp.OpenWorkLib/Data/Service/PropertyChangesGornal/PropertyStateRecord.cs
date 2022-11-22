@@ -40,6 +40,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     _сontextId = value;
             }
         }
+        public Guid ChildWindowContextId { get; set; }
         public ContextIdStructure ContextIdStructure{ get; set; }
         public string Name { get; set; }
         public DateTime Date { get ; set ; }

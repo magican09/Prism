@@ -34,7 +34,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _id; }
             set { SetProperty(ref _id, value); }
         }
-
+        private Guid _storedId;
+        public Guid StoredId
+        {
+            get { return _storedId; }
+            set { SetProperty(ref _storedId, value); }
+        }
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)

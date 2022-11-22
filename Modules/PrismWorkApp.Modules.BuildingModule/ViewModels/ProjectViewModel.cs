@@ -159,7 +159,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
              _applicationCommands.UnDoRightCommand.RegisterCommand(UnDoRightCommand);
             _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
         }
-
+       
         private void OnEditResponsibleEmployee()
         {
             CommonChangeJornal.ContextIdHistory.Add(Id); 
@@ -297,7 +297,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             nameablePredicatesCollection.Add(predicate_1);
             nameablePredicatesCollection.Add(predicate_2);
             nameablePredicatesCollection.Add(predicate_3);
-            CommonChangeJornal.ContextIdHistory.Add(Id);
+           // CommonChangeJornal.ContextIdHistory.Add(Id);
             CoreFunctions.AddElementToCollectionWhithDialog_Test<bldObjectsGroup,bldObject>
                 (SelectedProject.BuildingObjects, All_BuildingObjects,
                  nameablePredicatesCollection,
@@ -320,7 +320,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 "Редактирование списка объектов",
                 "Форма для редактирования состава объектов текушего проекта.",
                 "Объекты текущего проекта", "Все объекта");
-            CommonChangeJornal.ContextIdHistory.Remove(Id);
+          //  CommonChangeJornal.ContextIdHistory.Remove(Id);
         }
         private void OnRemoveBuildingObject()
         {

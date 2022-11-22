@@ -112,7 +112,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         private void OnCollectionChangedBeforAdd(object sender, CollectionChangedEventArgs e)
         {
             PropertyStateRecord stateRecord;
-            stateRecord = new PropertyStateRecord(e.Item, JornalRecordType.ADDED, e.Item.Id.ToString(),
+            stateRecord = new PropertyStateRecord(e.Item, JornalRecordType.ADDED, e.Item.StoredId.ToString(),
                                                                e.CurrentContextId, sender as IJornalable, 0);
             if (this.SetRecordIndex(stateRecord))
             {
@@ -125,22 +125,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         private void OnCollectionChangedBeforeRemove(object sender, CollectionChangedEventArgs e)
         {
             PropertyStateRecord stateRecord;
-            /* PropertyStateRecord last_state_record = this.Where(r => r.ContextId == (sender as IJornalable).CurrentContextId).OrderBy(r => r.Index).LastOrDefault();
-             int last_index = 0;
-            if (last_state_record != null)
-                last_index = ++last_state_record.Index;
-
-
-            if (e.CurrentContextId != Guid.Empty)
-                stateRecord = new PropertyStateRecord(
-                       e.Item, JornalRecordType.REMOVED, e.Item.Id.ToString(),
-                       e.CurrentContextId, sender as IJornalable, last_index);
-            else
-                stateRecord = new PropertyStateRecord(
-                   e.Item, JornalRecordType.REMOVED, e.Item.Id.ToString(),
-                 CurrentContextId, sender as IJornalable, last_index);
-            */
-            stateRecord = new PropertyStateRecord(e.Item, JornalRecordType.REMOVED, e.Item.Id.ToString(),
+            stateRecord = new PropertyStateRecord(e.Item, JornalRecordType.REMOVED, e.Item.StoredId.ToString(),
                                                      e.CurrentContextId, sender as IJornalable, 0);
             (e.Item as IJornalable).IsVisible = false;
             if (this.SetRecordIndex(stateRecord))
@@ -181,9 +166,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             foreach (Guid currentId in ContextIdHistory)
             {
-                PropertyStateRecord prop_state_record = this.Where(r => r.Name == currentId.ToString()).FirstOrDefault();
+                //PropertyStateRecord prop_state_record = this.Where(r => r.Name == currentId.ToString()).FirstOrDefault();
+                PropertyStateRecord prop_state_record = this.Where(r => r.ContextId == currentId && 
+                                                            r.ChildWindowContextId == stateRecord.ContextId &&
+                                                            r.Status== JornalRecordType.COMPLEX_RECORD).FirstOrDefault();
                 if (prop_state_record == null)
-                    prop_state_record = new PropertyStateRecord(stateRecord.ParentObject, JornalRecordType.MODIFIED, currentId.ToString(), currentId, null);
+                //   prop_state_record = new PropertyStateRecord(stateRecord.ParentObject, JornalRecordType.MODIFIED, currentId.ToString(), currentId, null);
+                {
+                    prop_state_record = new PropertyStateRecord(stateRecord.ParentObject, JornalRecordType.MODIFIED, "Complex_prop_changes", currentId, null);
+                    prop_state_record.ChildWindowContextId = stateRecord.ContextId;
+                }
                 if (SetRecordIndex(prop_state_record))
                 {
                     if (!this.Contains(prop_state_record))
@@ -286,6 +278,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     UnDo(record);
                 }
             }
+
+            PropertyChanged?.Invoke(this, new  PropertyChangedEventArgs("Undo") );
         }
         public void UnDoAll(Guid currentContextId)
         {
@@ -305,6 +299,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                         ((INotifyJornalableCollectionChanged)propertyState.ParentObject).RemoveItem(propertyState.Value as IJornalable);
             }
             this.Remove(propertyState);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Save"));
         }
         public void SaveAll(Guid currentContextId)
         {
@@ -340,13 +335,19 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
         public bool IsOnLastRecord(Guid currentContextId) //Если казатель PICKED на последней записи
         {
-            var saved_records = this.Where(r => r.State == JornalRecordState.SAVED).ToList();
+             var saved_records = this.Where(r => r.State == JornalRecordState.SAVED).ToList();
             var undo_comlete_records = this.Where(r => r.State == JornalRecordState.UNDO_COMPLETE).ToList();
             if (saved_records.Count > 0 &&
                undo_comlete_records.Count == 0)
+            {
                 return true;
+            }
             else
+            {
+            //   if(this.Where(r=>r.ContextId==currentContextId).ToList().Count>0)
+              //      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsOnLastRecord"));
                 return false;
+            }
         }
         public bool IsOnFirstRecord(Guid currentContextId) //Если казатель PICKED на последней записи
         {
@@ -355,9 +356,15 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
             if (saved_records.Count == 0 &&
                undo_comlete_records.Count > 0)
-                return true;
+            {
+                 return true;
+            }
             else
+            {
+               // if (this.Where(r => r.ContextId == currentContextId).ToList().Count > 0)
+               //     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsOnFirstRecord"));
                 return false;
+            }
         }
 
         private ObservableCollection<PropertyStateRecord> ChangesDetect(IJornalable obj)// Определяет не зажурналированные изменения в объетке и если они были  - возращает запись журанл

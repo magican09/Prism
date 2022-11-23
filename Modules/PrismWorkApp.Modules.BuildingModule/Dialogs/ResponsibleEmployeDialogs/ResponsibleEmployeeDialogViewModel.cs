@@ -1,8 +1,10 @@
 ﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
@@ -12,8 +14,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
     public class ResponsibleEmployeeDialogViewModel : ResponsibleEmployeeViewModel, IDialogAware
     {
-            public ResponsibleEmployeeDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
-            : base( dialogService,  regionManager,  buildingUnitsRepository)
+            public ResponsibleEmployeeDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
+                 IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
+              : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, propertiesChangeJornal)
         {
 
         }
@@ -47,13 +50,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 {
                     if (result.Result == ButtonResult.Yes)
                     {
-                        CommonChangeJornal.SaveAll(Id);
+                        base.OnSave<bldResponsibleEmployee>(SelectedResposibleEmployee);
                         RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
                     }
                     else
                     {
-                        CommonChangeJornal.UnDoAll(Id);
-                        RequestClose?.Invoke(new DialogResult(ButtonResult.No));
+                         RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                     }
 
                 }, _dialogService);
@@ -74,8 +76,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             {
                 ResivedResposibleEmployee = (bldResponsibleEmployee)navigane_message.Object;
                 EditMode = navigane_message.EditMode;
-                if (!EditMode)
+                if (CurrentContextId != Guid.Empty)
                     Id = CurrentContextId;
+                else
+                    Id = Guid.NewGuid();
 
                 if (SelectedResposibleEmployee != null) SelectedResposibleEmployee.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedResposibleEmployee = ResivedResposibleEmployee;

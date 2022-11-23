@@ -55,14 +55,14 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                     {
                         if (result.Result == ButtonResult.Yes)
                         {
-                             CommonChangeJornal.SaveAll(Id);
+                            base.OnSave<bldConstruction>(SelectedConstruction);
 
                             RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
 
                         }
                         else
                         {
-                          CommonChangeJornal.UnDoAll(Id);
+                         // CommonChangeJornal.UnDoAll(Id);
                             RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                         }
 
@@ -87,8 +87,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             {
                 ResivedConstruction = (bldConstruction)navigane_message.Object;
                 EditMode = navigane_message.EditMode;
-                if (!EditMode)
+                if (CurrentContextId != Guid.Empty)
                     Id = CurrentContextId;
+                else
+                    Id = Guid.NewGuid();
                 if (SelectedConstruction != null) SelectedConstruction.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedConstruction = ResivedConstruction;
                 SelectedConstruction.ErrorsChanged += RaiseCanExecuteChanged;

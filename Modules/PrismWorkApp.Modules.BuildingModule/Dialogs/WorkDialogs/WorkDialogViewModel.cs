@@ -4,6 +4,7 @@ using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             set { _currentContextId = value; }
         }
 
-        public WorkDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
-            :base(dialogService, regionManager, buildingUnitsRepository, applicationCommands)
+        public WorkDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
+               IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
+              : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, propertiesChangeJornal)
+
         {
 
         }
@@ -50,12 +53,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 {
                     if (result.Result == ButtonResult.Yes)
                     {
-                        CommonChangeJornal.SaveAll(Id);
+                        base.OnSave<bldWork>(SelectedWork);
                         RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
                     }
                     else
                     {
-                        CommonChangeJornal.SaveAll(Id);
+                  //      CommonChangeJornal.SaveAll(Id);
                         RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                     }
                 }, _dialogService);
@@ -79,8 +82,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             {
                 ResivedWork = (bldWork)navigane_message.Object;
                 EditMode = navigane_message.EditMode;
-                if (!EditMode)
+                if (CurrentContextId != Guid.Empty)
                     Id = CurrentContextId;
+                else
+                    Id = Guid.NewGuid();
                 if (SelectedWork != null) SelectedWork.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedWork = ResivedWork;
                 SelectedWork.ErrorsChanged += RaiseCanExecuteChanged;

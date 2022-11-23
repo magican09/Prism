@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Views;
@@ -79,9 +80,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;
             _dialogService = dialogService;
-            SentProjectCommand = new DelegateCommand(SentProject, CanSentProject);
-            TreeViewItemSelectedCommand = new DelegateCommand<object>(OnTreeViewItemSelected);
-            TreeViewItemExpandedCommand = new DelegateCommand<object>(onTreeViewItemExpanded);
+            SentProjectCommand = new NotifyCommand(SentProject, CanSentProject);
+            TreeViewItemSelectedCommand = new NotifyCommand<object>(OnTreeViewItemSelected);
+            TreeViewItemExpandedCommand = new NotifyCommand<object>(onTreeViewItemExpanded);
             _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
              ThreadOption.PublisherThread, false,
              message => message.Recipient == "ProjectExplorer");
@@ -214,10 +215,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             return SelectedProject != null;
         }
 
-        public DelegateCommand SentProjectCommand { get; private set; }
-        //   public DelegateCommand LoadProjectCommand { get; private set; }
-        public DelegateCommand<object> TreeViewItemSelectedCommand { get; private set; }
-        public DelegateCommand<object> TreeViewItemExpandedCommand { get; private set; }
+        public NotifyCommand SentProjectCommand { get; private set; }
+        //   public NotifyCommand LoadProjectCommand { get; private set; }
+        public NotifyCommand<object> TreeViewItemSelectedCommand { get; private set; }
+        public NotifyCommand<object> TreeViewItemExpandedCommand { get; private set; }
         private void SentProject()
         {
             _eventAggregator.GetEvent<ProjectSentEvent>().Publish(SelectedProject);

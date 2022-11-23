@@ -3,7 +3,9 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
@@ -62,25 +64,26 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
              
         }
 
-        public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
-        public DelegateCommand SaveCommand { get; private set; }
-        public DelegateCommand<object> CloseCommand { get; private set; }
-        public DelegateCommand AddConstructionCompanyCommand { get; private set; }
-        public DelegateCommand EditConstructionCompanyCommand { get; private set; }
-        public DelegateCommand RemoveConstructionCompanyCommand { get; private set; }
+        public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
+        //public NotifyCommand SaveCommand { get; private set; }
+        //public NotifyCommand<object> CloseCommand { get; private set; }
+        public NotifyCommand AddConstructionCompanyCommand { get; private set; }
+        public NotifyCommand EditConstructionCompanyCommand { get; private set; }
+        public NotifyCommand RemoveConstructionCompanyCommand { get; private set; }
         
-        public DelegateCommand AddEmployerCommand { get; private set; }
-        public DelegateCommand EditEmployerCommand { get; private set; }
-        public DelegateCommand RemoveEmployerCommand { get; private set; }
+        public NotifyCommand AddEmployerCommand { get; private set; }
+        public NotifyCommand EditEmployerCommand { get; private set; }
+        public NotifyCommand RemoveEmployerCommand { get; private set; }
 
-        public ParticipantViewModel(IDialogService dialogService,IRegionManager regionManager,IBuildingUnitsRepository buildingUnitsRepository )
+        public ParticipantViewModel(IDialogService dialogService,IRegionManager regionManager,IBuildingUnitsRepository buildingUnitsRepository,
+             IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
         {
-            DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
-            SaveCommand = new DelegateCommand(OnSave, CanSave);
-            CloseCommand = new DelegateCommand<object>(OnClose);
-            SaveCommand = new DelegateCommand(OnSave, CanSave);
-
-            EditConstructionCompanyCommand = new DelegateCommand(OnEditConstructionCompany, () => SelectedConstructionCompany != null);
+            CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+            base.SaveCommand = new NotifyCommand(OnSave, CanSave);
+            base.CloseCommand = new NotifyCommand<object>(OnClose);
+         
+            EditConstructionCompanyCommand = new NotifyCommand(OnEditConstructionCompany, () => SelectedConstructionCompany != null);
 
 
            _dialogService = dialogService;

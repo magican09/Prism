@@ -1,8 +1,10 @@
 ﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
@@ -21,8 +23,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             set { _currentContextId = value; }
         }
 
-        public ParticipantDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
-           : base(dialogService, regionManager, buildingUnitsRepository)
+        public ParticipantDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
+            IApplicationCommands applicationCommands,IPropertiesChangeJornal propertiesChangeJornal)
+            : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, propertiesChangeJornal)
         {
 
         }
@@ -45,8 +48,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                     "Сохрать", "Не сохранять","Отмена", (result) => {
                     if (result.Result == ButtonResult.Yes)
                     {
-                    //    CoreFunctions.CopyObjectReflectionNewInstances(SelectedParticipant, ResivedParticipant);
-                        RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
+                            base.OnSave<bldParticipant>(SelectedParticipant);
+                            RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
                     }
                     else
                     {
@@ -81,7 +84,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             {
                 ResivedParticipant =(bldParticipant) navigate_message.Object;
                 EditMode = navigate_message.EditMode;
-                Id = CurrentContextId;
+                if (CurrentContextId != Guid.Empty)
+                    Id = CurrentContextId;
+                else
+                    Id = Guid.NewGuid();
 
                 if (SelectedParticipant != null) SelectedParticipant.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedParticipant = ResivedParticipant;

@@ -175,6 +175,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 {
                     prop_state_record = new PropertyStateRecord(stateRecord.ParentObject, JornalRecordType.MODIFIED, "Complex_prop_changes", currentId, null);
                     prop_state_record.ChildWindowContextId = stateRecord.ContextId;
+                    prop_state_record.Status = JornalRecordType.COMPLEX_RECORD;
                 }
                 if (SetRecordIndex(prop_state_record))
                 {
@@ -182,7 +183,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     {
                         this.Add(prop_state_record);
                         prop_state_record.State = JornalRecordState.SAVED;
-                        prop_state_record.Status = JornalRecordType.COMPLEX_RECORD;
                     }
                     PropertyStateRecord record = new PropertyStateRecord(stateRecord);
                     record.ContextId = currentId;
@@ -190,7 +190,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     {
                         prop_state_record.Add(record);
                         record.State = JornalRecordState.SAVED;
-                        record.Status = JornalRecordType.COMPLEX_RECORD;
+                        record.Status = JornalRecordType.MODIFIED;
                     }
                 }
             }
@@ -236,7 +236,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         //cxcxcxcdsdsdsxc
         public virtual void UnDo(PropertyStateRecord propertyState,bool _undo_left_direction = true)
         {
-            if (propertyState.ParentObject != null)
+            if (propertyState.ParentObject != null && propertyState.Status!= JornalRecordType.COMPLEX_RECORD)
             {
                 var prop_info = propertyState.ParentObject.GetType().GetProperty(propertyState.Name); //Достаем с помощью рефлексии данные о свойстве из текущего объекта
                 if (prop_info != null && prop_info.GetIndexParameters().Length == 0)//Если свойство не является индек..

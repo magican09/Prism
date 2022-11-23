@@ -6,6 +6,7 @@ using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
@@ -136,7 +137,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         public WorkViewModel(IDialogService dialogService,
-            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
+            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands
+            , IPropertiesChangeJornal propertiesChangeJornal)
         {
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
             SaveCommand = new NotifyCommand(OnSave, CanSave)

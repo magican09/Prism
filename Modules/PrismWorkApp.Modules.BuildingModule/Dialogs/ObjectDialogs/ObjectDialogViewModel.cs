@@ -82,7 +82,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             {
                 ResivedObject = (bldObject)navigane_message.Object;
                 EditMode = navigane_message.EditMode;
-                Id = CurrentContextId;
+                if (CurrentContextId != Guid.Empty)
+                    Id = CurrentContextId;
+                else
+                    Id = Guid.NewGuid();
+
                 if (SelectedBuildingObject != null) SelectedBuildingObject.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedBuildingObject = ResivedObject;
                 SelectedBuildingObject.ErrorsChanged += RaiseCanExecuteChanged;

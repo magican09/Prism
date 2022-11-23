@@ -3,6 +3,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
@@ -117,32 +118,32 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
 
-        public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
-        public DelegateCommand SaveCommand { get; private set; }
-        public DelegateCommand<object> CloseCommand { get; private set; }
+        public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
+        public NotifyCommand SaveCommand { get; private set; }
+        public NotifyCommand<object> CloseCommand { get; private set; }
 
-        public DelegateCommand RemovePreviousWorkCommand { get; private set; }
-        public DelegateCommand RemoveNextWorkCommand { get; private set; }
+        public NotifyCommand RemovePreviousWorkCommand { get; private set; }
+        public NotifyCommand RemoveNextWorkCommand { get; private set; }
 
-        public DelegateCommand AddPreviousWorkCommand { get; private set; }
-        public DelegateCommand AddNextWorkCommand { get; private set; }
+        public NotifyCommand AddPreviousWorkCommand { get; private set; }
+        public NotifyCommand AddNextWorkCommand { get; private set; }
 
-        public DelegateCommand EditPreviousWorkCommand { get; private set; }
-        public DelegateCommand EditNextWorkCommand { get; private set; }
+        public NotifyCommand EditPreviousWorkCommand { get; private set; }
+        public NotifyCommand EditNextWorkCommand { get; private set; }
 
-        public DelegateCommand GenerateWordDocumentCommand { get; private set; }
+        public NotifyCommand GenerateWordDocumentCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
 
         public AOSRDocumentViewModel(IDialogService dialogService,
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
         {
-            DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
-            SaveCommand = new DelegateCommand(OnSave, CanSave)
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+            SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedAOSRDocument);
-            CloseCommand = new DelegateCommand<object>(OnClose);
+            CloseCommand = new NotifyCommand<object>(OnClose);
 
-            GenerateWordDocumentCommand = new DelegateCommand(OnGenerateWordDocumentCommand);
+            GenerateWordDocumentCommand = new NotifyCommand(OnGenerateWordDocumentCommand);
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;

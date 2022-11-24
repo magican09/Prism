@@ -151,7 +151,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnGenerateWordDocumentCommand()
         {
-            ProjectService.SaveAOSRToWord(SelectedAOSRDocument);
+           //  ProjectService.SaveAOSRToWord(SelectedAOSRDocument);
+            SelectedAOSRDocument.SaveToWord();
         }
 
 

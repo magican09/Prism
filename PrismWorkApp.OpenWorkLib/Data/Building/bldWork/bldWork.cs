@@ -204,5 +204,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
             //NextWorks.CopingEnable = true; //отключаем при копировании
 
         }
+        public void SaveAOSRToWord(string pathToSave = "")
+        {
+            foreach (bldAOSRDocument bldAOSR in AOSRDocuments)
+                bldAOSR.SaveToWord(pathToSave);
+        }
     }
 }

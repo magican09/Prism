@@ -165,6 +165,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
        //     this.bldObject = (pointer as bldConstruction).bldObject;
         }
 
-        
+        public void SaveAOSRsToWord(string pathToSave = "")
+        {
+            foreach (bldWork work in Works)
+                work.SaveAOSRToWord(pathToSave);
+        }
     }
 }

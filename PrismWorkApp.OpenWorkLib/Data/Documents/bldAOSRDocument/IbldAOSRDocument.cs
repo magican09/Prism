@@ -13,5 +13,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public DateTime EndTime { get; set; }
 
         bldWork bldWork { get; set; }
+        public void SaveToWord(string pathToSave = "");
     }
 }

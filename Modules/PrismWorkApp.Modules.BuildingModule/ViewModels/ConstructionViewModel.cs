@@ -80,6 +80,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand EditConstructionCommand { get; private set; }
         public NotifyCommand EditWorkCommand { get; private set; }
+        public NotifyCommand GenerateAOSRsCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private IApplicationCommands _applicationCommands;
@@ -117,6 +118,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             EditWorkCommand = new NotifyCommand(OnEditWork,
                                         () => SelectedWork != null)
                     .ObservesProperty(() => SelectedWork);
+
+            GenerateAOSRsCommand = new NotifyCommand(OnGenerateAOSRsCommand);
+
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
@@ -126,7 +130,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
         }
 
-
+        private void OnGenerateAOSRsCommand()
+        {
+            SelectedConstruction.SaveAOSRsToWord();
+        }
 
         private void OnDataGridLostSocus(object obj)
         {

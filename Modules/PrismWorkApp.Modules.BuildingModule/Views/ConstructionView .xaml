@@ -127,6 +127,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
                 <TextBlock  Style="{StaticResource inlineText}">Дата начала строительства:</TextBlock>
+                <Button  Content="Сформировть акт в Word" Command="{Binding GenerateAOSRsCommand}" />
                 <DatePicker  IsDropDownOpen="False"
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
@@ -136,6 +137,7 @@
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
                     SelectedDate="{Binding SelectedConstruction.EndTime}" />
+                
             </StackPanel>
             <StackPanel  >
                 <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>

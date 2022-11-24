@@ -57,25 +57,37 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public NameableObservableCollection()
         {
             Id = Guid.NewGuid();
+            CollectionChanged += OnCollectionCahnged;
 
         }
+
+        private void OnCollectionCahnged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (this.Count > 0) IsVisible = (status != JornalRecordType.REMOVED) ? true : false;
+            else IsVisible = false;
+        }
+
         public NameableObservableCollection(string name) : this()
         {
             Id = Guid.NewGuid();
             Name = name;
+            CollectionChanged += OnCollectionCahnged;
         }
         public NameableObservableCollection(List<TEntity> list) : base(list)
         {
             Id = Guid.NewGuid();
+            CollectionChanged += OnCollectionCahnged;
         }
         public NameableObservableCollection(ICollection<TEntity> collection) : base(collection)
         {
             Id = Guid.NewGuid();
+            CollectionChanged += OnCollectionCahnged;
 
         }
         public NameableObservableCollection(IEnumerable<TEntity> entities) : base(entities)
         {
             Id = Guid.NewGuid();
+            CollectionChanged += OnCollectionCahnged;
         }
         #region Validating
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
@@ -213,8 +225,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
             //   Functions.SetAllIdToZero(new_object_collection);
             return new_object_collection;
         }
+        private bool _isVisible = false;
 
-        public bool IsVisible { get; set; } = true;
+       [NotJornaling]
+        public bool IsVisible 
+        { 
+            get { return _isVisible; }
+            set { _isVisible = value; OnPropertyChanged("IsVisible"); } }
 
         private string _code;
         public string Code

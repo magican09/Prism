@@ -136,7 +136,7 @@
                     HorizontalAlignment="Left" 
                     SelectedDate="{Binding SelectedProject.EndTime}" />
             </StackPanel>
-          <DataGrid ItemsSource="{Binding CommonChangeJornal}"  AutoGenerateColumns="False" Visibility="Visible">
+         <!-- <DataGrid ItemsSource="{Binding CommonChangeJornal}"  AutoGenerateColumns="False" Visibility="Visible">
                 <DataGrid.Columns>
                     <DataGridTextColumn  Header="PropName"  
                                                      Binding = "{Binding Path=Name}" />
@@ -156,7 +156,7 @@
 
 
                 </DataGrid.Columns>
-            </DataGrid> 
+            </DataGrid> -->
             <StackPanel  >
                 <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>
                 <StackPanel Orientation="Horizontal" x:Name="bldObjectStackPanel"  >

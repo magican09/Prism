@@ -120,10 +120,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
-        public NotifyCommand SaveCommand { get; private set; }
-        public NotifyCommand<object> CloseCommand { get; private set; }
-
-        public NotifyCommand RemovePreviousWorkCommand { get; private set; }
+       public NotifyCommand RemovePreviousWorkCommand { get; private set; }
         public NotifyCommand RemoveNextWorkCommand { get; private set; }
 
         public NotifyCommand AddPreviousWorkCommand { get; private set; }
@@ -133,17 +130,30 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand EditNextWorkCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
+     
         private IApplicationCommands _applicationCommands;
+        public IApplicationCommands ApplicationCommands
+        {
+            get { return _applicationCommands; }
+            set { SetProperty(ref _applicationCommands, value); }
+        }
 
 
         public WorkViewModel(IDialogService dialogService,
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands
             , IPropertiesChangeJornal propertiesChangeJornal)
         {
-            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
-            SaveCommand = new NotifyCommand(OnSave, CanSave)
-                .ObservesProperty(() => SelectedWork);
+            CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
+              SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedWork);
             CloseCommand = new NotifyCommand<object>(OnClose);
+        
+            UnDoLeftCommand = new NotifyCommand(() => base.OnUnDoLeft(Id),
+                () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
+               .ObservesPropertyChangedEvent(CommonChangeJornal);
+         
+            UnDoRightCommand = new NotifyCommand(() => base.OnUnDoRight(Id),
+                () => { return !CommonChangeJornal.IsOnLastRecord(Id); })
+                  .ObservesPropertyChangedEvent(CommonChangeJornal);
 
             RemovePreviousWorkCommand = new NotifyCommand(OnRemovePreviousWork,
                                         () => SelectedPreviousWork != null)
@@ -161,11 +171,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             EditNextWorkCommand = new NotifyCommand(OnEditNextWork,
                                         () => SelectedNextWork != null)
                     .ObservesProperty(() => SelectedNextWork);
+
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+
+
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
             _applicationCommands = applicationCommands;
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            _applicationCommands.UnDoRightCommand.RegisterCommand(UnDoRightCommand);
+            _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
         }
 
 
@@ -288,6 +304,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                   (result) => { }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", Id);
         }
 
+       
+        public void RaiseCanExecuteChanged(object sender, EventArgs e)
+        {
+            SaveCommand.RaiseCanExecuteChanged();
+        }
+
         private bool CanSave()
         {
             if (SelectedWork != null)
@@ -295,30 +317,23 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             else
                 return false;
         }
-        public void RaiseCanExecuteChanged(object sender, EventArgs e)
+        public override void OnSave()
         {
-            SaveCommand.RaiseCanExecuteChanged();
+            base.OnSave<bldWork>(SelectedWork);
         }
-        
-        public virtual void OnSave()
+        public override void OnClose(object obj)
         {
-            this.OnSave<bldWork>(SelectedWork);
-        }
-        public virtual void OnClose(object obj)
-        {
-            this.OnClose<bldWork>(obj, SelectedWork);
+            base.OnClose<bldWork>(obj, SelectedWork);
         }
         public override void OnWindowClose()
         {
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+            _applicationCommands.UnDoRightCommand.UnregisterCommand(UnDoRightCommand);
+            _applicationCommands.UnDoLeftCommand.UnregisterCommand(UnDoLeftCommand);
             base.OnWindowClose();
         }
 
-        private void Save()
-        {
-            //CoreFunctions.CopyObjectReflectionNewInstances(SelectedConstruction, ResivedConstruction);
-            CommonChangeJornal.SaveAll(Id);
-        }
+      
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
 

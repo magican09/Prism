@@ -9,6 +9,7 @@ using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.ProjectModel.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -49,12 +50,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _testText; }
             set { SetProperty(ref _testText, value); }
         }
+
         private readonly IEventAggregator _eventAggregator;
         private readonly IRegionManager _regionManager;
 
         private ObservableCollection<Project> _projects;
         public ObservableCollection<Project> Projects
         { get { return _projects; } set { _projects = value; OnPropertyChanged("Projects"); } }
+          
+        private NameableObservabelObjectsCollection _context = new NameableObservabelObjectsCollection();
+
+        public NameableObservabelObjectsCollection Context
+        { get { return _context; } set { _context = value; OnPropertyChanged("Context"); } }
+
         private bldProjectsGroup _bldprojects = new bldProjectsGroup();
         public bldProjectsGroup bld_Projects
         {
@@ -86,7 +94,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
              ThreadOption.PublisherThread, false,
              message => message.Recipient == "ProjectExplorer");
-        
+            
+         
+
         }
 
         private void onTreeViewItemExpanded(object obj)
@@ -227,6 +237,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             bldProject bld_project = (bldProject)navigationContext.Parameters["bld_project"];
+            Context.Name = "asdsds";
+            bld_Projects.Name = "Проекты";
+            Context.Add(bld_Projects);
             //  if (bld_project != null && bld_Projects.Where(pr => pr.Id == bld_project.Id).FirstOrDefault() == null && bld_project != null)
             if (bld_project != null && bld_Projects.Where(pr => pr.Id == bld_project.Id).FirstOrDefault() == null)
             {

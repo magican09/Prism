@@ -162,7 +162,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Visibility.Hidden;
+            return ((bool)value==true)? Visibility.Visible: Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -373,7 +373,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     }
                 case nameof(bldDocumentsGroup):
                     {
-                        return value;
+                             return value;
                         break;
                     }
 
@@ -386,9 +386,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     }
                 case nameof(NameableObservabelObjectsCollection):
                     {
+                     //   collection.Add(((NameableObservabelObjectsCollection)value).Name);
                         return value;
                         break;
                     }
+
 
                 
 

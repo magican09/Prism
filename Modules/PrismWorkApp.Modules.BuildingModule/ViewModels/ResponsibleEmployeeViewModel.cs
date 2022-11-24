@@ -57,12 +57,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
 
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
-        public NotifyCommand SaveCommand { get; private set; }
-        public NotifyCommand<object> CloseCommand { get; private set; }
+    //    public NotifyCommand SaveCommand { get; private set; }
+    //    public NotifyCommand<object> CloseCommand { get; private set; }
        
         public ResponsibleEmployeeViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
              IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
         {
+
+            CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
             SaveCommand = new NotifyCommand(OnSave, CanSave);
             CloseCommand = new NotifyCommand<object>(OnClose);
 

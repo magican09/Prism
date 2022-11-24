@@ -9,14 +9,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldObject: BindableBase ,IbldObject, IEntityObject,IJornalable
     {
-       
-        private Guid _storedId;
-        public Guid StoredId
-        {
-            get { return _storedId; }
-            set { SetProperty(ref _storedId, value); }
-        }
-      
         private DateTime _date;
         public DateTime Date
         {

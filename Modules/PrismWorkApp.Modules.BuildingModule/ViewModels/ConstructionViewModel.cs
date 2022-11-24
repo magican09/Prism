@@ -91,12 +91,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
 
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
-            base.SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedChildConstruction);
-            base.CloseCommand = new NotifyCommand<object>(OnClose);
-            base.UnDoLeftCommand = new NotifyCommand(() => OnUnDoLeft(Id),
+            SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedConstruction);
+            CloseCommand = new NotifyCommand<object>(OnClose);
+         
+            UnDoLeftCommand = new NotifyCommand(() => OnUnDoLeft(Id),
                                           () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
                                                   .ObservesPropertyChangedEvent(CommonChangeJornal);
-            base.UnDoRightCommand = new NotifyCommand(() => OnUnDoRight(Id),
+            UnDoRightCommand = new NotifyCommand(() => OnUnDoRight(Id),
                            () => { return !CommonChangeJornal.IsOnLastRecord(Id); })
                              .ObservesPropertyChangedEvent(CommonChangeJornal);
 
@@ -239,7 +240,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
-                 (SelectedChildConstruction.Constructions, SelectedChildConstruction, "Строительная конструкция",
+                 (SelectedConstruction.Constructions, SelectedChildConstruction, "Строительная конструкция",
                  () => { SelectedChildConstruction = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, Id);
         }
 
@@ -255,13 +256,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SaveCommand.RaiseCanExecuteChanged();
         }
 
-        public virtual void OnSave()
+        public override void OnSave()
         {
-            this.OnSave<bldConstruction>(SelectedConstruction);
+            base.OnSave<bldConstruction>(SelectedConstruction);
         }
-        public virtual void OnClose(object obj)
+        public override void OnClose(object obj)
         {
-            this.OnClose<bldConstruction>(obj, SelectedConstruction);
+            base.OnClose<bldConstruction>(obj, SelectedConstruction);
         }
         public override void OnWindowClose()
         {

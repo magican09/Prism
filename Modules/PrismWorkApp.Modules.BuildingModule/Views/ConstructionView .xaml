@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <Grid   ShowGridLines="False">
         <Grid.Resources>
 
@@ -109,17 +109,20 @@
                         <ColumnDefinition   x:Name="shortProjectNameRightGridColumn"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" >Полное наименование проекта:</TextBlock>
-                    <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedObject.FullName}"/>
+                    <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedConstruction.FullName}"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
                 <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="92*" />
+                        <ColumnDefinition Width="67*"/>
+                        <ColumnDefinition Width="34*"/>
+                        <ColumnDefinition Width="377*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"  Style="{StaticResource inlineText}" >Короткое наименование</TextBlock>
-                    <TextBox Grid.Column="1" Text="{Binding SelectedObject.ShortName}"/>
+                    <TextBlock Grid.Column="0"  Style="{StaticResource inlineText}" Margin="10,5,10,0" >Короткое наименование</TextBlock>
+                    <TextBox Grid.Column="1" Text="{Binding SelectedConstruction.ShortName}" Grid.ColumnSpan="4"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
@@ -127,12 +130,12 @@
                 <DatePicker  IsDropDownOpen="False"
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
-                    SelectedDate="{Binding SelectedObject.StartTime}" />
+                    SelectedDate="{Binding SelectedConstruction.StartTime}" />
                 <TextBlock  Style="{StaticResource inlineText}">Дата окончания строительства:</TextBlock>
                 <DatePicker  IsDropDownOpen="False"
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
-                    SelectedDate="{Binding SelectedObject.EndTime}" />
+                    SelectedDate="{Binding SelectedConstruction.EndTime}" />
             </StackPanel>
             <StackPanel  >
                 <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>
@@ -162,7 +165,7 @@
                             <Button  Command="{ Binding AddConstructionCommand}">Добавить</Button>
                             <Button Command="{Binding RemoveConstructionCommand}" >Удалить</Button>
                             <Button Command="{Binding EditConstructionCommand}" >Изменить</Button>
-                       
+
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -189,7 +192,7 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding = "{Binding Path=Name}"  
                                                 Header="Нименование работ" Width="Auto" />
-                               
+
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
@@ -200,7 +203,7 @@
                     </Grid>
                 </StackPanel>
             </StackPanel>
-          
+
 
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >

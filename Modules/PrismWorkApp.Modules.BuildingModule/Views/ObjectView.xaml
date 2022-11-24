@@ -142,11 +142,12 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=FullName}"  
-                                                Header="Фамилия Имя Отчество" Width="Auto" />
-                                <DataGridTextColumn Binding = "{Binding Path=RoleOfResponsible}" 
-                                                Header="Роль отвественного в строительстве" Width="Auto"   />
+                                <DataGridTextColumn  Header="Код"  
+                                                     Binding = "{Binding Path=Code}" />
+                                <DataGridTextColumn  Header="Наименование объекта"  
+                                                     Binding = "{Binding Path=ShortName}" />
                             </DataGrid.Columns>
+
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
                             <Button  Command="{ Binding AddBuildingObjectsCommand}">Добавить</Button>

@@ -7,6 +7,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public class bldAOSRDocument:bldDocument,IbldAOSRDocument,INameable, IEntityObject
     {
         private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup ();
+        public delegate  void  SaveToWord(bldAOSRDocument aOSRDocument, string pathToSave = "");
+
         public virtual bldResponsibleEmployeesGroup ResponsibleEmployees
         {
             get { return _responsibleEmployees; }

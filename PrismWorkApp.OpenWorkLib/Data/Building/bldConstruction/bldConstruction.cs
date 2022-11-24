@@ -41,6 +41,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { SetProperty(ref _shortName, value); }
         }
+
         private string _fullName;
         public string FullName
         {

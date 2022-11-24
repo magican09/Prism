@@ -339,7 +339,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
 
             return bld_project;
         }
-        public static void SaveAOSRToWord(bldAOSRDocument aOSRDocument)
+        public static void SaveAOSRToWord(bldAOSRDocument aOSRDocument,string pathToSave="")
         {
             string templates_path = Directory.GetCurrentDirectory() + "\\Шаблоны";
 
@@ -353,7 +353,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             world_application.Visible = true;
             //   using (Microsoft.Office.Interop.Word._Application world_application = new Microsoft.Office.Interop.Word._Application())
             {
-
                 world_document = world_application.Documents.Add(templates_path + "\\АОСР.docx");
 
 
@@ -724,6 +723,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 }
                 world_application.Visible = true;
             }
+            if (pathToSave != "")
+            {
+                world_document.SaveAs2($"{pathToSave}/{aOSRDocument.FullName}"; 
+            } 
+
         }
         public static void SaveAOSRToWord(bldWork work)
         {

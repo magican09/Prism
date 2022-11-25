@@ -138,7 +138,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (b_jornal_recording_flag == false)
                  b_jornal_recording_flag = true;
          }
-    
+        
        #endregion
 
 

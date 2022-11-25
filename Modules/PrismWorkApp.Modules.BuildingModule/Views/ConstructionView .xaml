@@ -127,7 +127,6 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
                 <TextBlock  Style="{StaticResource inlineText}">Дата начала строительства:</TextBlock>
-                <Button  Content="Сформировть акт в Word" Command="{Binding GenerateAOSRsCommand}" />
                 <DatePicker  IsDropDownOpen="False"
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
@@ -159,8 +158,10 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn  Header="Наименование консрукции"  
-                                                     Binding = "{Binding Path=Name}" />
+                                <DataGridTextColumn  Header="Код"   Width="65"
+                                                     Binding = "{Binding Path=Code}" />
+                                <DataGridTextColumn  Header="Наименование консрукции"   Width="*" 
+                                                     Binding = "{Binding Path=FullName}" />
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
@@ -192,8 +193,10 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=Name}"  
-                                                Header="Нименование работ" Width="Auto" />
+                                <DataGridTextColumn  Header="Код"   Width="65"
+                                                     Binding = "{Binding Path=Code}" />
+                                <DataGridTextColumn  Header="Наименование работы"   Width="*" 
+                                                     Binding = "{Binding Path=FullName}" />
 
                             </DataGrid.Columns>
                         </DataGrid>
@@ -209,8 +212,9 @@
 
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
-            <Button  Content="Сохранить" Command="{Binding SaveCommand}" />
-            <Button  Content="Закрыть"  Command="{Binding CloseCommand}"
+            <Button  Content="Сформировть ИД" Width="Auto" Command="{Binding GenerateAxecDocsCommand}" />
+            <Button  Content="Сохранить" Width="Auto" Command="{Binding SaveCommand}" />
+            <Button  Content="Закрыть" Width="Auto" Command="{Binding CloseCommand}"
                                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
                                                      AncestorType={x:Type UserControl}}}"/>
         </StackPanel>

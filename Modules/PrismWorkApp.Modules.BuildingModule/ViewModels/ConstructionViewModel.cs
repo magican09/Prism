@@ -5,6 +5,7 @@ using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Dialogs;
+using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
@@ -80,7 +81,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand EditConstructionCommand { get; private set; }
         public NotifyCommand EditWorkCommand { get; private set; }
-        public NotifyCommand GenerateAOSRsCommand { get; private set; }
+      
+        public NotifyCommand GenerateAxecDocsCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private IApplicationCommands _applicationCommands;
@@ -119,7 +121,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                         () => SelectedWork != null)
                     .ObservesProperty(() => SelectedWork);
 
-            GenerateAOSRsCommand = new NotifyCommand(OnGenerateAOSRsCommand);
+            GenerateAxecDocsCommand = new NotifyCommand(OnGenerateAxecDocsCommand);
 
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
@@ -129,11 +131,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.UnDoRightCommand.RegisterCommand(UnDoRightCommand);
             _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
         }
-
-        private void OnGenerateAOSRsCommand()
+        private void OnGenerateAxecDocsCommand()
         {
-            SelectedConstruction.SaveAOSRsToWord();
+            SelectedConstruction.SaveAOSRsToWord(ProjectService.SelectFileDirectory());
         }
+
+      
 
         private void OnDataGridLostSocus(object obj)
         {

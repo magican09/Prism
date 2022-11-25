@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
@@ -10,7 +11,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public string Levels
         {
             get { return _levels; }
-            set { SetProperty(ref _levels, value); }
+            set { SetProperty(ref _levels, value.TrimEnd()); }
         }//Отметки
         private string _axes;
         public string Axes
@@ -18,21 +19,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _axes; }
             set { SetProperty(ref _axes, value); }
         } //Оси
-       
-        
-        private Guid _storedId;
-        public Guid StoredId
+        [NotMapped]
+        public string PlaceFullName
         {
-            get { return _storedId; }
-            set { SetProperty(ref _storedId, value); }
+            get
+            {
+                string plase = "";
+                if (Axes != ""&& Axes != null) plase += $" в осях {Axes}";
+                if (Levels != "" && Levels !=null) plase += $" {Levels}";
+                return plase;
+            }
         }
-        private string _code;
-        public string Code
-        {
-            get { return _code; }
-            set { SetProperty(ref _code, value); }
-        }//Код
-      
         private string _name = "Место проведения работ";
         public string Name
         {

@@ -167,6 +167,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public void SaveAOSRsToWord(string pathToSave = "")
         {
+            if (pathToSave != "" && Works.Count>1)
+            {
+                pathToSave = System.IO.Path.Combine(pathToSave, $"{Code} {Name}");
+                System.IO.Directory.CreateDirectory(pathToSave);
+            }
             foreach (bldWork work in Works)
                 work.SaveAOSRToWord(pathToSave);
         }

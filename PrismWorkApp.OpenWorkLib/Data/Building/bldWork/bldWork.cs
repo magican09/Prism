@@ -43,7 +43,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private string _fullName;
         public string FullName
         {
-            get { return _fullName; }
+            get
+            {
+               if(bldConstruction?.bldObject?.bldProject!=null && WorkArea!=null)
+                _fullName =  $"{Name} {this?.WorkArea.Levels} в осях {this?.WorkArea.Axes} {bldConstruction.bldObject.bldProject.ShortName}.";
+                
+                return _fullName; 
+            }
             set { SetProperty(ref _fullName, value); }
         }
 
@@ -206,6 +212,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void SaveAOSRToWord(string pathToSave = "")
         {
+            if(pathToSave!=""&& AOSRDocuments.Count>1)
+            {
+                 pathToSave = System.IO.Path.Combine(pathToSave, $"{Code} {Name}");
+                System.IO.Directory.CreateDirectory(pathToSave);
+            }
             foreach (bldAOSRDocument bldAOSR in AOSRDocuments)
                 bldAOSR.SaveToWord(pathToSave);
         }

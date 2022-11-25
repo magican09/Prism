@@ -4,6 +4,7 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
+using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
@@ -128,6 +129,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand EditPreviousWorkCommand { get; private set; }
         public NotifyCommand EditNextWorkCommand { get; private set; }
+        
+        public NotifyCommand GenerateAxecDocsCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
      
@@ -173,6 +176,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     .ObservesProperty(() => SelectedNextWork);
 
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+            GenerateAxecDocsCommand = new NotifyCommand(OnGenerateAxecDocsCommand);
 
 
             _dialogService = dialogService;
@@ -184,15 +188,24 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
         }
 
+        private void OnGenerateAxecDocsCommand()
+        {
+            SelectedWork.SaveAOSRToWord(ProjectService.SelectFileDirectory());
+        }
 
 
-
+        private void OnEditPreviousWork()
+        {
+            CoreFunctions.EditElementDialog<bldWork>(SelectedPreviousWork, "Перыдыдущая работа",
+                  (result) => { }, _dialogService, typeof(WorkDialogView).Name, "Редактировать", Id);
+        }
         private void OnEditNextWork()
         {
             CoreFunctions.EditElementDialog<bldWork>(SelectedNextWork, "Последующая работа",
                  (result) => { }, _dialogService, typeof(WorkDialogView).Name, "Редактировать", Id);
 
         }
+
         private void OnAddNextWork()
         {
             bldWorksGroup AllWorks = new bldWorksGroup(SelectedWork.bldConstruction.Works.Where(wr=>wr.Id!=SelectedWork.Id).ToList());
@@ -298,11 +311,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                  (SelectedWork.PreviousWorks, SelectedPreviousWork, "Предыдущая работа",
                  () => SelectedPreviousWork = null, _dialogService,Id);
         }
-        private void OnEditPreviousWork()
-        {
-            CoreFunctions.EditElementDialog<bldWork>(SelectedPreviousWork, "Перыдыдущая работа",
-                  (result) => { }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", Id);
-        }
+      
 
        
         public void RaiseCanExecuteChanged(object sender, EventArgs e)

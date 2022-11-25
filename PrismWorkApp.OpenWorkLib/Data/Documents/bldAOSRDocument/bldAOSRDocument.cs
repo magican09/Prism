@@ -445,7 +445,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             if (pathToSave != "")
             {
-                world_document.SaveAs2($"{pathToSave}/{aOSRDocument.FullName}");
+                string file_name = $"{pathToSave}\\АОСР {aOSRDocument.RegId} от {aOSRDocument.Date.ToString("d")} {aOSRDocument.bldWork.Name} {aOSRDocument.bldWork.WorkArea.PlaceFullName}.docx";
+                file_name= file_name.Replace('/', '_');
+                file_name = file_name.Replace('-', ' ');
+                file_name = file_name.TrimEnd();
+                world_document.SaveAs2(file_name);
+                world_document.Close();
+                world_application.Quit();
             }
 
         }

@@ -86,7 +86,6 @@
                     <TextBox Grid.Column="1"  Text="{Binding SelectedWork.Name}"/>
                 </Grid>
             </StackPanel>
-
             <StackPanel Orientation="Horizontal" >
                 <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
@@ -109,6 +108,28 @@
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
+                <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="34*" />
+                        <ColumnDefinition Width="61*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"  Style="{StaticResource inlineText}" Margin="10,5,10,0" > Место проведения оси</TextBlock>
+                    <TextBox Grid.Column="1" Text="{Binding SelectedWork.WorkArea.Axes}" Grid.ColumnSpan="2"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="34*" />
+                        <ColumnDefinition Width="61*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"  Style="{StaticResource inlineText}" Margin="10,5,10,0" >Место проведения отм.</TextBlock>
+                    <TextBox Grid.Column="1" Text="{Binding SelectedWork.WorkArea.Levels}" Grid.ColumnSpan="2"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
                 <TextBlock  Style="{StaticResource inlineText}">Дата начала:</TextBlock>
                 <DatePicker  IsDropDownOpen="False"
                     SelectedDateFormat="Short" 
@@ -120,19 +141,21 @@
                     HorizontalAlignment="Left" 
                     SelectedDate="{Binding SelectedWork.EndTime}" />
             </StackPanel>
+
             <StackPanel  >
                 <TextBlock Style="{StaticResource inlineText}">Предыдущие работы:</TextBlock>
                 <StackPanel Orientation="Horizontal" x:Name="bldObjectStackPanel"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*" x:Name="DataGridLeftCulumn"/>
+                            <ColumnDefinition Width="106*" x:Name="DataGridLeftCulumn"/>
+                            <ColumnDefinition Width="521*"/>
                             <ColumnDefinition  Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <DataGrid x:Name="bldPreviousWorksDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedWork.PreviousWorks}"
+                        <DataGrid x:Name="bldPreviousWorksDataGrid" Grid.Column="0"  ItemsSource="{Binding SelectedWork.PreviousWorks}"
                                                   SelectedItem="{Binding SelectedPreviousWork}"  
                                                   Style="{StaticResource inlineDataGrid }" 
                                AutoGenerateColumns="False"  IsReadOnly="True" 
-                                   HorizontalContentAlignment="Stretch"    >
+                                   HorizontalContentAlignment="Stretch" Grid.ColumnSpan="2" Margin="5,10,5,10"    >
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="SelectedCellsChanged">
                                     <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
@@ -140,11 +163,13 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn  Header="Наименование работы"   Width="Auto"
-                                                     Binding = "{Binding Path=Name}" />
+                                <DataGridTextColumn  Header="Код"   Width="65"
+                                                     Binding = "{Binding Path=Code}" />
+                                <DataGridTextColumn  Header="Наименование работы"   Width="*" 
+                                                     Binding = "{Binding Path=FullName}" />
                             </DataGrid.Columns>
                         </DataGrid>
-                        <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
+                        <StackPanel Grid.Column="2" Width="100" HorizontalAlignment="Center" >
                             <Button  Command="{ Binding AddPreviousWorkCommand}">Добавить</Button>
                             <Button Command="{Binding RemovePreviousWorkCommand}" >Удалить</Button>
                             <Button Command="{Binding EditPreviousWorkCommand}" >Изменить</Button>
@@ -173,8 +198,10 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=Name}"  
-                                                Header="Наименование работ" Width="Auto" />
+                                <DataGridTextColumn  Header="Код"   Width="65"
+                                                     Binding = "{Binding Path=Code}" />
+                                <DataGridTextColumn  Header="Наименование работы"   Width="*" 
+                                                     Binding = "{Binding Path=FullName}" />
 
                             </DataGrid.Columns>
                         </DataGrid>
@@ -207,8 +234,10 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=Name}"  
-                                                Header="Наименование работ" Width="Auto" />
+                                <DataGridTextColumn  Header="Код"   Width="65"
+                                                     Binding = "{Binding Path=Code}" />
+                                <DataGridTextColumn  Header="Наименование материала"   Width="*" 
+                                                     Binding = "{Binding Path=FullName}" />
 
                             </DataGrid.Columns>
                         </DataGrid>
@@ -243,14 +272,14 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding = "{Binding Path=Name}"  
                                                 Header="Наименование категории документов" Width="Auto" />
-                         </DataGrid.Columns>
+                            </DataGrid.Columns>
                             <DataGrid.RowDetailsTemplate>
                                 <DataTemplate>
                                     <ListBox ItemsSource="{Binding SelectedDocumentsList}">
                                         <ListBoxItem>
                                             <StackPanel Orientation="Horizontal">
-                                              <TextBlock Text="{Binding Name}"/>
-                                               <TextBlock Text="{Binding Count}"/>
+                                                <TextBlock Text="{Binding Name}"/>
+                                                <TextBlock Text="{Binding Count}"/>
                                             </StackPanel>
                                         </ListBoxItem>
                                     </ListBox>
@@ -267,11 +296,24 @@
             </StackPanel>
 
         </StackPanel>
-        <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
-            <Button  Content="Сохранить" Command="{Binding SaveCommand}" />
-            <Button  Content="Закрыть"  Command="{Binding CloseCommand}"
+        <StackPanel Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"  Orientation="Horizontal" Width="Auto"  VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
+            <Grid   Width="Auto"  >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0"  Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Left" >
+                    <Button  Content="Сформировать ИД" Command="{Binding GenerateAxecDocsCommand}" Width="Auto" HorizontalAlignment="Left" />
+                </StackPanel>
+                <StackPanel Grid.Column="1"   Orientation="Horizontal"   VerticalAlignment="Center"  HorizontalAlignment="Right"  >
+                    <Button  Content="Сохранить" Width="Auto" Command="{Binding SaveCommand}"  />
+                    <Button  Content="Закрыть" Width="Auto"  Command="{Binding CloseCommand}"
                                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
                                                      AncestorType={x:Type UserControl}}}"/>
+                </StackPanel>
+            </Grid>
+
+
         </StackPanel>
 
 

@@ -149,6 +149,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             ObjectChangedNotify?.Invoke(this, null);
         }
+
         public void JornalingOff()
         {
             if (b_jornal_recording_flag == true)
@@ -172,7 +173,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             this.Remove(item as TEntity, currentContextId);
             return true;
         }
-
         public bool Remove(TEntity item, Guid currentContextId)
         {
             if (b_jornal_recording_flag) CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, currentContextId));
@@ -200,7 +200,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             base.Add(value as TEntity);
             return this.IndexOf(value as TEntity);
         }
-
         public int Add(object? value) //Если используется интрефейс IList
         {
 
@@ -210,6 +209,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             return this.IndexOf(value as TEntity);
 
         }
+
         public virtual object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject
         {
             if (!CopingEnable)
@@ -225,8 +225,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             //   Functions.SetAllIdToZero(new_object_collection);
             return new_object_collection;
         }
-        private bool _isVisible = false;
 
+        private bool _isVisible = false;
        [NotJornaling]
         public bool IsVisible 
         { 
@@ -242,7 +242,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { _code = value; OnPropertyChanged("Code"); }
         }//Код
-
 
         public bool IsPointerContainer { get; set; }
         public bool CopingEnable { get; set; } = true;

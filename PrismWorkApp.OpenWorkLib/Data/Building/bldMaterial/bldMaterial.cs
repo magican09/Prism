@@ -7,20 +7,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public class bldMaterial:BindableBase, IbldMaterial, IEntityObject
     {
       
-        private Guid _storedId;
-        public Guid StoredId
-        {
-            get { return _storedId; }
-            set { SetProperty(ref _storedId, value); }
-        }
-
-        private string _code;
-        public string Code
-        {
-            get { return _code; }
-            set { SetProperty(ref _code, value); }
-        }//Код
-
         private DateTime _date;
         public DateTime Date
         {

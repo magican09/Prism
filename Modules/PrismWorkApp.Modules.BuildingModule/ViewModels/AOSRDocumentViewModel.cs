@@ -119,8 +119,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
-        public NotifyCommand SaveCommand { get; private set; }
-        public NotifyCommand<object> CloseCommand { get; private set; }
+      //  public NotifyCommand SaveCommand { get; private set; }
+        //public NotifyCommand<object> CloseCommand { get; private set; }
 
         public NotifyCommand RemovePreviousWorkCommand { get; private set; }
         public NotifyCommand RemoveNextWorkCommand { get; private set; }
@@ -131,7 +131,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand EditPreviousWorkCommand { get; private set; }
         public NotifyCommand EditNextWorkCommand { get; private set; }
 
-        public NotifyCommand GenerateWordDocumentCommand { get; private set; }
+        public NotifyCommand GenerateAxecDocsCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
 
@@ -143,16 +143,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 .ObservesProperty(() => SelectedAOSRDocument);
             CloseCommand = new NotifyCommand<object>(OnClose);
 
-            GenerateWordDocumentCommand = new NotifyCommand(OnGenerateWordDocumentCommand);
+            GenerateAxecDocsCommand = new NotifyCommand(OnGenerateAxecDocsCommand);
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
         }
 
-        private void OnGenerateWordDocumentCommand()
+        private void OnGenerateAxecDocsCommand()
         {
-           //  ProjectService.SaveAOSRToWord(SelectedAOSRDocument);
-            SelectedAOSRDocument.SaveToWord();
+            SelectedAOSRDocument.SaveToWord(ProjectService.SelectFileDirectory());
         }
 
 

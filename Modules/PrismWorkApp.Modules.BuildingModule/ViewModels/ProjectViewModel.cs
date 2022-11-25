@@ -371,7 +371,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public override void OnSave()
         {
-            base.OnSave<bldProject>(SelectedProject);
+          base.OnSave<bldProject>(SelectedProject);
+        //    bldObject bobj = SelectedProject.BuildingObjects[0];
+        //    SelectedProject.BuildingObjects.RemoveItem(bobj);
+         //   SelectedProject.BuildingObjects.Add(bobj);
         }
         public override void OnClose(object obj)
         {

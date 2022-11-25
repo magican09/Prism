@@ -19,5 +19,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Name = name;
         }
+
+        
     }
 }

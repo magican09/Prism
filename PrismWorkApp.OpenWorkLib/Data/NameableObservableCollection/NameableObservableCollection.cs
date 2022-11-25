@@ -163,24 +163,32 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #endregion
 
-        public bool RemoveItem(IJornalable item)
+       /* public bool RemoveItem(IJornalable item)
         {
             base.Remove(item as TEntity);
             return true;
-        }
+        }*/
         public bool Remove(IJornalable item, Guid currentContextId)
         {
             this.Remove(item as TEntity, currentContextId);
+
             return true;
         }
         public bool Remove(TEntity item, Guid currentContextId)
         {
             if (b_jornal_recording_flag) CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, currentContextId));
+            base.Remove(item as TEntity);
+            return true;
+        }
+        public bool Remove(IJornalable item)
+        {
+            this.Remove(item as TEntity);
             return true;
         }
         public bool Remove(TEntity item)
         {
             if (b_jornal_recording_flag) CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, CurrentContextId));
+            base.Remove(item as TEntity);
             return true;
         }
         public void Add(TEntity item, Guid currentContextId)//Если используется интерфейс iCollection(T)

@@ -208,39 +208,65 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnAddNextWork()
         {
-            bldWorksGroup AllWorks = new bldWorksGroup(SelectedWork.bldConstruction.Works.Where(wr=>wr.Id!=SelectedWork.Id).ToList());
+            bldWorksGroup All_Works = new bldWorksGroup(_buildingUnitsRepository.Works.GetbldWorksAsync());
+
+            NameablePredicate<bldWorksGroup, bldWork> predicate_1 = new NameablePredicate<bldWorksGroup, bldWork>();
+            NameablePredicate<bldWorksGroup, bldWork> predicate_2 = new NameablePredicate<bldWorksGroup, bldWork>();
+            NameablePredicate<bldWorksGroup, bldWork> predicate_3 = new NameablePredicate<bldWorksGroup, bldWork>();
+            NameablePredicate<bldWorksGroup, bldWork> predicate_4 = new NameablePredicate<bldWorksGroup, bldWork>();
+
+            predicate_1.Name = "Показать все из текущего проекта.";
+            predicate_1.Predicate = cl => cl.Where(el => el.bldConstruction?.bldObject?.bldProject != null &&
+                                    el.bldConstruction?.bldObject?.bldProject.Id == SelectedWork.bldConstruction?.bldObject?.bldProject.Id).ToList();
+            predicate_2.Name = "Показать все из текущего объекта";
+            predicate_2.Predicate = cl => cl.Where(el => el.bldConstruction?.bldObject != null &&
+                                    el.bldConstruction?.bldObject?.Id == SelectedWork.bldConstruction?.bldObject?.Id).ToList();
+            predicate_3.Name = "Показать все из текущеей конструкции";
+            predicate_3.Predicate = cl => cl.Where(el => el.bldConstruction != null &&
+                                 el.bldConstruction?.Id == SelectedWork.bldConstruction?.Id).ToList();
+            predicate_4.Name = "Показать все";
+            predicate_4.Predicate = cl => cl;
+
+            NameablePredicateObservableCollection<bldWorksGroup, bldWork> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldWorksGroup, bldWork>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
+            nameablePredicatesCollection.Add(predicate_3);
+            nameablePredicatesCollection.Add(predicate_4);
+          
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<bldWorksGroup, bldWork>
+              (SelectedWork.NextWorks, All_Works,
+               nameablePredicatesCollection,
+              _dialogService,
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       SaveCommand.RaiseCanExecuteChanged();
+                       foreach (bldWork bld_worck in SelectedWork.NextWorks)
+                       {
+                           bld_worck.bldConstruction = SelectedWork.bldConstruction;
+                           if (!SelectedWork.bldConstruction.Works.Contains(bld_worck))
+                               SelectedWork.bldConstruction.Works.Add(bld_worck);
+                           bld_worck.PreviousWorks.Add(SelectedWork);
+                       }
+
+                   }
+                   if (result.Result == ButtonResult.No)
+                   {
+                       CommonChangeJornal.UnDoAll(Id);
+                   }
+               },
+              typeof(AddbldWorkToCollectionDialogView).Name,
+              typeof(WorkDialogView).Name, Id,
+              "Редактирование списка последущих работ",
+              "Форма для редактирования состава последущих работ.",
+              "Работы текущей конструкции", "Список работ");
+
+
             //new bldWorksGroup(_buildingUnitsRepository.Works.GetAllBldWorks());
-            CoreFunctions.AddElementToCollectionWhithDialog<bldWorksGroup, bldWork>
-                 (SelectedWork.NextWorks, AllWorks, _dialogService,
-                 (result) =>
-                 {
-                     if (result.Result == ButtonResult.Yes)
-                     {
-                         bldWorksGroup new_nextWork_collection = (bldWorksGroup)
-                                result.Parameters.GetValue<object>("current_collection");
-
-                         bldWorksGroup add_works = new bldWorksGroup();
-
-                         foreach (bldWork work in new_nextWork_collection)//Добавляем выбранные работы в писок
-                         { 
-                             if (SelectedWork.NextWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault() == null)//Если работы в списке нет...
-                             {
-                                 bldWork new_work = AllWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault();
-                                 add_works.Add(new_work);
-                                  SelectedWork.NextWorks.Add(new_work);
-                             }
-                         }
-                         //CoreFunctions.CopyObjectReflectionNewInstances(new_nextWork_collection, SelectedWork.NextWorks);
-                         foreach (bldWork work in add_works)
-                               work?.PreviousWorks.Add(SelectedWork);
-                     }
-                 },
-                 typeof(AddbldWorkToCollectionDialogView).Name,
-                 typeof(WorkDialogView).Name,Id,
-                  "Редактирование списка последующих работ",
-                 "Форма для редактирования спика последующих работ.",
-                 "Список всех работ текущей коснрукции", "Последущие работы");
+          
         }
+
         private void OnRemoveNextWork()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
@@ -250,44 +276,61 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnAddPreviousWork()
         {
-             bldWorksGroup AllWorks = new bldWorksGroup(SelectedWork.bldConstruction.Works.Where(wr=>wr.Id!=SelectedWork.Id).ToList());
-            // new bldWorksGroup(_buildingUnitsRepository.Works.GetAllBldWorks());
-            CoreFunctions.AddElementToCollectionWhithDialog<bldWorksGroup, bldWork>
-                (SelectedWork.PreviousWorks, AllWorks, _dialogService,
-                 (result) =>
-                 {
-                     if (result.Result == ButtonResult.Yes)
+            bldWorksGroup All_Works = new bldWorksGroup(_buildingUnitsRepository.Works.GetbldWorksAsync());
 
-                     {
-                         bldWorksGroup new_previousWork_collection = (bldWorksGroup)
-                           result.Parameters.GetValue<object>("current_collection");
+            NameablePredicate<bldWorksGroup, bldWork> predicate_1 = new NameablePredicate<bldWorksGroup, bldWork>();
+            NameablePredicate<bldWorksGroup, bldWork> predicate_2 = new NameablePredicate<bldWorksGroup, bldWork>();
+            NameablePredicate<bldWorksGroup, bldWork> predicate_3 = new NameablePredicate<bldWorksGroup, bldWork>();
+            NameablePredicate<bldWorksGroup, bldWork> predicate_4 = new NameablePredicate<bldWorksGroup, bldWork>();
 
-                         bldWorksGroup add_works = new bldWorksGroup();
+            predicate_1.Name = "Показать все из текущего проекта.";
+            predicate_1.Predicate = cl => cl.Where(el => el.bldConstruction?.bldObject?.bldProject != null &&
+                                    el.bldConstruction?.bldObject?.bldProject.Id == SelectedWork.bldConstruction?.bldObject?.bldProject.Id).ToList();
+            predicate_2.Name = "Показать все из текущего объекта";
+            predicate_2.Predicate = cl => cl.Where(el => el.bldConstruction?.bldObject != null &&
+                                    el.bldConstruction?.bldObject?.Id == SelectedWork.bldConstruction?.bldObject?.Id).ToList();
+            predicate_3.Name = "Показать все из текущеей конструкции";
+            predicate_3.Predicate = cl => cl.Where(el => el.bldConstruction != null &&
+                                 el.bldConstruction?.Id == SelectedWork.bldConstruction?.Id).ToList();
+            predicate_4.Name = "Показать все";
+            predicate_4.Predicate = cl => cl;
 
-                         foreach (bldWork work in new_previousWork_collection)
-                         {
-                             if (SelectedWork.PreviousWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault() == null)
-                             {
-                                 bldWork new_work = AllWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault();
-                                 add_works.Add(new_work);
-                                 SelectedWork.PreviousWorks.Add(new_work);
-                            //     SelectedWork.PreviousWorks.Name = "1111111";
-                             }
-                         }
-                         // RiseEvent  SelectedWork.PreviousWorks.CollectionChanged(N);
-                         foreach (bldWork work in add_works)
-                         {
-                             work?.NextWorks.Add(SelectedWork);
-                          //   work.NextWorks.Name = "222222";
-                         }
-                     }
+            NameablePredicateObservableCollection<bldWorksGroup, bldWork> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldWorksGroup, bldWork>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
+            nameablePredicatesCollection.Add(predicate_3);
+            nameablePredicatesCollection.Add(predicate_4);
 
-                 },
-                typeof(AddbldWorkToCollectionDialogView).Name,
-                typeof(WorkDialogView).Name, Id,
-                "Редактирование списка предыдущих работ",
-                "Форма для редактирования.",
-                "Список работ", "Все работы");
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<bldWorksGroup, bldWork>
+              (SelectedWork.PreviousWorks, All_Works,
+               nameablePredicatesCollection,
+              _dialogService,
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       SaveCommand.RaiseCanExecuteChanged();
+                       foreach (bldWork bld_worck in SelectedWork.PreviousWorks)
+                       {
+                           bld_worck.bldConstruction = SelectedWork.bldConstruction;
+                           if (!SelectedWork.bldConstruction.Works.Contains(bld_worck))
+                               SelectedWork.bldConstruction.Works.Add(bld_worck);
+                           bld_worck.NextWorks.Add(SelectedWork);
+                       }
+
+                   }
+                   if (result.Result == ButtonResult.No)
+                   {
+                       CommonChangeJornal.UnDoAll(Id);
+                   }
+               },
+              typeof(AddbldWorkToCollectionDialogView).Name,
+              typeof(WorkDialogView).Name, Id,
+              "Редактирование списка предшествующих работ",
+              "Форма для редактирования состава предшествующих работ.",
+              "Работы текущей конструкции", "Список работ");
+
+
         }
         private void OnDataGridLostSocus(object obj)
         {

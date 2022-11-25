@@ -127,7 +127,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             PropertyStateRecord stateRecord;
             stateRecord = new PropertyStateRecord(e.Item, JornalRecordType.REMOVED, e.Item.StoredId.ToString(),
                                                      e.CurrentContextId, sender as IJornalable, 0);
-            (e.Item as IJornalable).IsVisible = false;
+         //   (e.Item as IJornalable).IsVisible = false;
             if (this.SetRecordIndex(stateRecord))
             {
                 this.Add(stateRecord);
@@ -252,7 +252,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     switch (propertyState.Status)
                     {
                         case JornalRecordType.REMOVED:
+
+                            ((IList)propertyState.ParentObject).Add(propertyState.Value);
                             propertyState.Status = JornalRecordType.ADDED;
+
                             (propertyState.Value as IJornalable).IsVisible = true;
                             break;
                         case JornalRecordType.ADDED:
@@ -296,7 +299,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             {
                 if (propertyState.Status == JornalRecordType.REMOVED)
                     if (((IList)propertyState.ParentObject).Contains(propertyState.Value as IJornalable))
-                        ((INotifyJornalableCollectionChanged)propertyState.ParentObject).RemoveItem(propertyState.Value as IJornalable);
+                        ((IList)propertyState.ParentObject).Remove(propertyState.Value as IJornalable);
             }
             this.Remove(propertyState);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Save"));

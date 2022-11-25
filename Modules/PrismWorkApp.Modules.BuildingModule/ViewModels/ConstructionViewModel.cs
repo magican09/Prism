@@ -81,7 +81,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand EditConstructionCommand { get; private set; }
         public NotifyCommand EditWorkCommand { get; private set; }
-      
+
         public NotifyCommand GenerateAxecDocsCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
@@ -96,7 +96,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
             SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedConstruction);
             CloseCommand = new NotifyCommand<object>(OnClose);
-         
+
             UnDoLeftCommand = new NotifyCommand(() => OnUnDoLeft(Id),
                                           () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
                                                   .ObservesPropertyChangedEvent(CommonChangeJornal);
@@ -136,7 +136,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SelectedConstruction.SaveAOSRsToWord(ProjectService.SelectFileDirectory());
         }
 
-      
+
 
         private void OnDataGridLostSocus(object obj)
         {
@@ -166,12 +166,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 new bldWorksGroup(_buildingUnitsRepository.Works.GetbldWorksAsync());
             NameablePredicate<bldWorksGroup, bldWork> predicate_1 = new NameablePredicate<bldWorksGroup, bldWork>();
             predicate_1.Name = "Показать только из текущего объекта.";
-            predicate_1.Predicate = cl => cl.Where(el => el.bldConstruction.bldObject != null &&
-                                                        el.bldConstruction.bldObject.Id == SelectedConstruction.bldObject.Id).ToList();
+            predicate_1.Predicate = cl => cl.Where(el => el.bldConstruction?.bldObject != null &&
+                                                        el.bldConstruction?.bldObject?.Id == SelectedConstruction?.bldObject?.Id).ToList();
             NameablePredicate<bldWorksGroup, bldWork> predicate_2 = new NameablePredicate<bldWorksGroup, bldWork>();
             predicate_2.Name = "Показать все кроме текущего объекта";
-            predicate_2.Predicate = cl => cl.Where(el => el.bldConstruction.bldObject != null &&
-                                                          el.bldConstruction?.bldObject.Id != SelectedConstruction?.bldObject.Id).ToList();
+            predicate_2.Predicate = cl => cl.Where(el => el.bldConstruction?.bldObject != null &&
+                                                          el.bldConstruction?.bldObject?.Id != SelectedConstruction?.bldObject?.Id).ToList();
             NameablePredicate<bldWorksGroup, bldWork> predicate_3 = new NameablePredicate<bldWorksGroup, bldWork>();
             predicate_3.Name = "Показать все";
             predicate_3.Predicate = cl => cl;
@@ -208,10 +208,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnRemoveWork()
         {
-
+            bldWork rem_work = SelectedWork; 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
                  (SelectedConstruction.Works, SelectedWork, "Работа",
-                 () => { SelectedWork = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, Id);
+                 () =>
+                 {
+                     foreach (bldWork work in SelectedConstruction.Works)
+                     {
+                         if (work.PreviousWorks.Contains(rem_work))
+                             work.PreviousWorks.Remove(rem_work);
+                         if (work.NextWorks.Contains(rem_work))
+                             work.NextWorks.Remove(rem_work);
+                     }
+                     SelectedWork = null;
+                     SaveCommand.RaiseCanExecuteChanged();
+                 }, _dialogService, Id);
         }
 
 
@@ -310,7 +321,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 return true;
         }
 
-      
+
 
 
     }

@@ -1,6 +1,7 @@
 ﻿
 using PrismWorkApp.OpenWorkLib.Core;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public event PropertyChangedEventHandler PropertyBeforeChanged = delegate { };
+        public event PropertyBeforeChangeEventHandler _PropertyBeforeChanged = delegate { };
 
 
         public event ObjectStateChangeEventHandler ObjectChangedNotify;//Событие вызывается при изменении в данном объекте 
@@ -49,9 +51,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
 
             if (object.Equals(val, member)) return false;
-           if(b_jornal_recording_flag)
+            if (b_jornal_recording_flag)
+            {
                 PropertyBeforeChanged(this, new PropertyChangedEventArgs(propertyName));
-            member = val;
+                _PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
+            }
+                member = val;
             //Type tp = Children[Children.Count - 1].GetType();
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;

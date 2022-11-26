@@ -53,7 +53,7 @@ namespace PrismWorkApp.Core
                if (result.Result == ButtonResult.Yes)
                {
                    // collection.Remove(element);
-                   (collection as INotifyJornalableCollectionChanged).Remove(element, current_context_id);
+                 //  (collection as INotifyJornalableCollectionChanged).Remove(element, current_context_id);
                    var res_massage = result.Parameters.GetValue<string>("confirm_dialog_param");
                    var p = new DialogParameters();
                    p.Add("message", $"{element_type_name.ToUpper()} " +
@@ -66,6 +66,36 @@ namespace PrismWorkApp.Core
                    elm_erase_action.Invoke();
                }
            });
+
+        }
+        public static void RemoveElementWhithDialog<TContainer, T>
+             (T element, string element_type_name,
+          Action elm_erase_action, IDialogService dialogService)
+          where T : class, INameable, IRegisterable
+        {
+            var dialog_par = new DialogParameters();
+            dialog_par.Add("massege",
+               $"Вы действительно хотите удалить {element_type_name} \"{element.Name }\" ?!");
+            dialog_par.Add("confirm_button_content", "Удалить");
+            dialog_par.Add("refuse_button_content", "Отмена");
+            string element_name = element.Name;
+
+            dialogService.Show(typeof(ConfirmActionWhithoutCancelDialog).Name, dialog_par, result =>
+            {
+                if (result.Result == ButtonResult.Yes)
+                {
+                    elm_erase_action.Invoke();
+                    var res_massage = result.Parameters.GetValue<string>("confirm_dialog_param");
+                    var p = new DialogParameters();
+                    p.Add("message", $"{element_type_name.ToUpper()} " +
+                        $"\"{element.Name}\" удален!");
+                    dialogService.Show(typeof(MessageDialog).Name, p, (r) => { });
+                }
+                if (result.Result == ButtonResult.No)
+                {
+                    elm_erase_action.Invoke();
+                }
+            });
 
         }
 

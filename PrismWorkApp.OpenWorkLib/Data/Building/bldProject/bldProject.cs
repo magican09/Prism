@@ -1,4 +1,5 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.OpenWorkLib.Services;
 using System;
 using System.Collections.Generic;
@@ -12,16 +13,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldProject : BindableBase, IbldProject, IEntityObject//, IJornalable
     {
-        
 
-        private Guid _storedId;
-      
-        public Guid StoredId
-        {
-            get { return _storedId; }
-            set { SetProperty(ref _storedId, value); }
-        }
-      
         private DateTime _date;
         public DateTime Date
         {
@@ -39,17 +31,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get
             {
-               /* int short_name_leng = 40;
-                string short_name = "";
-                if (Name?.Length < short_name_leng) short_name = $"{Name}";
-                else short_name = $"{Name?.Substring(0, short_name_leng)}...";
-                SetProperty(ref _shortName, short_name);*/
                 return _shortName;
             }
             set { SetProperty(ref _shortName, value); }
         }
         private string _fullName;
-       
+
         public string FullName
         {
             get { return _fullName; }
@@ -152,10 +139,27 @@ namespace PrismWorkApp.OpenWorkLib.Data
             project.ResponsibleEmployees = (bldResponsibleEmployeesGroup)ResponsibleEmployees.Clone();
             return project;
         }
-       
-      
-       
-      
+        [NotMapped]
+        public ObservedCommand<bldObject> RemoveBuildindObjectCommand { get; set; }
+        public bldProject()
+        {
+            RemoveBuildindObjectCommand = new ObservedCommand<bldObject>(OnRemoveBuildindObject_Execute, OnRemoveBuildindObject_CanExecute);
 
+        }
+
+        private bool OnRemoveBuildindObject_CanExecute()
+        {
+            return _removedBuldingObjectSatck.Count != 0 && BuildingObjects.Count!=0;  
+        }
+     
+        private Stack<bldObject> _removedBuldingObjectSatck = new Stack<bldObject>();
+        private Stack<bldObject> _addBuldingObjectSatck = new Stack<bldObject>();
+        private void OnRemoveBuildindObject_Execute(bldObject obj)
+        {
+            RemoveFromCollectionCommand<bldObjectsGroup, bldObject> fromCollectionCommand =
+                new RemoveFromCollectionCommand<bldObjectsGroup, bldObject>(BuildingObjects, obj);
+
+            ((IObservedCommand)RemoveBuildindObjectCommand).ObservedCommandExecuted.Invoke(this,new ObservedCommandExecuteEventsArgs(fromCollectionCommand));
+        }
     }
 }

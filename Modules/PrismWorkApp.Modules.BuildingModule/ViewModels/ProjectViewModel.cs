@@ -9,6 +9,7 @@ using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
@@ -100,7 +101,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand EditBuildingObjectCommand { get; private set; }
         public NotifyCommand EditParticipantCommand { get; private set; }
         public NotifyCommand EditResponsibleEmployeeCommand { get; private set; }
-
         public IBuildingUnitsRepository _buildingUnitsRepository { get; set; }
         private IApplicationCommands _applicationCommands;
         public IApplicationCommands ApplicationCommands
@@ -108,7 +108,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
-       
+
+        public UnDoReDoSystem UnDoReDo = new UnDoReDoSystem(); 
 
         public ProjectViewModel(IDialogService dialogService, IBuildingUnitsRepository buildingUnitsRepository,
             IRegionManager regionManager, IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
@@ -117,14 +118,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedProject);
             CloseCommand = new NotifyCommand<object>(OnClose);
-            UnDoLeftCommand = new NotifyCommand(()=>base.OnUnDoLeft(Id), 
-                () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
-               .ObservesPropertyChangedEvent(CommonChangeJornal);
-            UnDoRightCommand = new NotifyCommand(()=>base.OnUnDoRight(Id), 
-                () => { return !CommonChangeJornal.IsOnLastRecord(Id); })
-                  .ObservesPropertyChangedEvent(CommonChangeJornal);
+            //UnDoLeftCommand = new NotifyCommand(()=>base.OnUnDoLeft(Id), 
+            //    () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
+            //   .ObservesPropertyChangedEvent(CommonChangeJornal);
+            //UnDoRightCommand = new NotifyCommand(()=>base.OnUnDoRight(Id), 
+            //    () => { return !CommonChangeJornal.IsOnLastRecord(Id); })
+            //      .ObservesPropertyChangedEvent(CommonChangeJornal);
+            UnDoLeftCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
+               () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            UnDoRightCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
+               () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
 
-            
             AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
             AddParticipantCommand = new NotifyCommand(OnAddParticipant);
             AddResponsibleEmployeesCommand = new NotifyCommand(OnAddResponsibleEmployees);
@@ -162,19 +166,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
        
         private void OnEditResponsibleEmployee()
         {
-            CommonChangeJornal.ContextIdHistory.Add(Id); 
+            
             CoreFunctions.EditElementDialog<bldResponsibleEmployee>(SelectedResponsibleEmployee, "Отвественне лицо",
                   (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ResponsibleEmployeeDialogView).Name, "Редактировать", Id);
             SaveCommand.RaiseCanExecuteChanged();
-            CommonChangeJornal.ContextIdHistory.Remove(Id);
+            
         }
 
         private void OnEditParticipant()
         {
-            CommonChangeJornal.ContextIdHistory.Add(Id);
+           
             CoreFunctions.EditElementDialog<bldParticipant>(SelectedParticipant, "Учасник строительства",
                   (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ParticipantDialogView).Name, "Редактировать", Id);
-            CommonChangeJornal.ContextIdHistory.Remove(Id);
+            
 
         }
 
@@ -240,7 +244,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             nameablePredicatesCollection.Add(predicate_1);
             nameablePredicatesCollection.Add(predicate_2);
             nameablePredicatesCollection.Add(predicate_3);
-            CommonChangeJornal.ContextIdHistory.Add(Id);
+           
 
             CoreFunctions.AddElementToCollectionWhithDialog_Test<bldParticipantsGroup, bldParticipant>
                 (SelectedProject.Participants, All_Participants,
@@ -265,17 +269,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 "Форма для редактирования состава объектов текушего проекта.",
                 "Объекты текущего проекта", "Все объекта");
 
-            CommonChangeJornal.ContextIdHistory.Remove(Id);
-
-
         }
 
         private void OnEditBuildingObject()
         {
-            CommonChangeJornal.ContextIdHistory.Add(Id);
+            UnDoReDo.Register(SelectedBuildingObject);
             CoreFunctions.EditElementDialog<bldObject>(SelectedBuildingObject, "Строительный объект",
                 (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Guid.Empty);
-            CommonChangeJornal.ContextIdHistory.Remove(Id);
+            
         }
         private void OnAddBuildingObject()
         {
@@ -297,7 +298,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             nameablePredicatesCollection.Add(predicate_1);
             nameablePredicatesCollection.Add(predicate_2);
             nameablePredicatesCollection.Add(predicate_3);
-           // CommonChangeJornal.ContextIdHistory.Add(Id);
+           //
             CoreFunctions.AddElementToCollectionWhithDialog_Test<bldObjectsGroup,bldObject>
                 (SelectedProject.BuildingObjects, All_BuildingObjects,
                  nameablePredicatesCollection,
@@ -320,14 +321,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 "Редактирование списка объектов",
                 "Форма для редактирования состава объектов текушего проекта.",
                 "Объекты текущего проекта", "Все объекта");
-          //  CommonChangeJornal.ContextIdHistory.Remove(Id);
+          //  
         }
         private void OnRemoveBuildingObject()
         {
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldObjectsGroup, bldObject>
                   (SelectedProject.BuildingObjects, SelectedBuildingObject, "Строительный объект",
-                 () => { SelectedBuildingObject = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
+                 () => 
+                 {
+                     SelectedProject.RemoveBuildindObjectCommand.Execute(SelectedBuildingObject);
+                     SelectedBuildingObject = null;
+                     SaveCommand.RaiseCanExecuteChanged();
+                 }, _dialogService,Id);
 
            
         }
@@ -411,6 +417,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedProject = ResivedProject;
                 SelectedProject.ErrorsChanged += RaiseCanExecuteChanged;
                 Title = ResivedProject.ShortName;
+                UnDoReDo.Register(SelectedProject);
             }
         }
         

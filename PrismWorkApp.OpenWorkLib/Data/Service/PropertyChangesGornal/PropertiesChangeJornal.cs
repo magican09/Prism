@@ -294,9 +294,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             if (propertyState.ParentObject is INotifyJornalableCollectionChanged)
             {
-                if (propertyState.Status == JornalRecordType.REMOVED)
-                    if (((IList)propertyState.ParentObject).Contains(propertyState.Value as IJornalable))
-                        ((INotifyJornalableCollectionChanged)propertyState.ParentObject).RemoveItem(propertyState.Value as IJornalable);
+             //   if (propertyState.Status == JornalRecordType.REMOVED)
+                 //   if (((IList)propertyState.ParentObject).Contains(propertyState.Value as IJornalable))
+                    //    ((INotifyJornalableCollectionChanged)propertyState.ParentObject).RemoveItem(propertyState.Value as IJornalable);
             }
             this.Remove(propertyState);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Save"));

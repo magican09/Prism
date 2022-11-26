@@ -1,4 +1,5 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,15 +26,17 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public event ObjectStateChangeEventHandler ObjectChangeSaved; //Событие вызывается при сохранении изменений в данном объекте
         public event ObjectStateChangeEventHandler ObjectChangeUndo; //Событие вызывается при отмете изменений в данном объекте
         public event PropertyChangedEventHandler PropertyBeforeChanged;
-     //   public ObservableCollection<IJornalable> ParentObjects { get; set; }
-      //  public ObservableCollection<IJornalable> ChildObjects { get; set; }
+        public event PropertyBeforeChangeEventHandler _PropertyBeforeChanged ;
 
-      //  public void AdjustObjectsStructure(PropertiesChangeJornal changesJornal, IJornalable sourse = null);
-     //   public void ResetObjectsStructure(IJornalable sourse = null);
-     //   public void ClearChangesJornal();
+        //   public ObservableCollection<IJornalable> ParentObjects { get; set; }
+        //  public ObservableCollection<IJornalable> ChildObjects { get; set; }
 
-      //  public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId);
-      //  public AdjustStatus AdjustedStatus { get; set; }
+        //  public void AdjustObjectsStructure(PropertiesChangeJornal changesJornal, IJornalable sourse = null);
+        //   public void ResetObjectsStructure(IJornalable sourse = null);
+        //   public void ClearChangesJornal();
+
+        //  public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId);
+        //  public AdjustStatus AdjustedStatus { get; set; }
 
     }
     public enum AdjustStatus

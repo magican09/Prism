@@ -1,5 +1,6 @@
 ﻿using PrismWorkApp.OpenWorkLib.Core;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event PropertyChangedEventHandler PropertyBeforeChanged = delegate { };
+        public event PropertyBeforeChangeEventHandler _PropertyBeforeChanged = delegate { };
+
         public event CollectionChangedEventHandler CollectionChangedBeforeRemove = delegate { };
         public event CollectionChangedEventHandler CollectionChangedBeforAdd = delegate { };
 
@@ -150,54 +153,55 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #endregion
 
-        public bool RemoveItem(IJornalable item)
-        {
-            base.Remove(item as TEntity);
-            return true;
-        }
-        public bool Remove(IJornalable item, Guid currentContextId)
-        {
-            this.Remove(item as TEntity, currentContextId);
-            return true;
-        }
+        //public bool RemoveItem(IJornalable item)
+        //{
+        //    base.Remove(item as TEntity);
+        //    return true;
+        //}
+        //public bool Remove(IJornalable item, Guid currentContextId)
+        //{
+        //    this.Remove(item as TEntity, currentContextId);
+        //    return true;
+        //}
 
-        public bool Remove(TEntity item, Guid currentContextId)
-        {
-            if (b_jornal_recording_flag) CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, currentContextId));
-            return true;
-        }
-        public bool Remove(TEntity item)
-        {
-            if (b_jornal_recording_flag) CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, CurrentContextId));
-            return true;
-        }
-        public void Add(TEntity item, Guid currentContextId)//Если используется интерфейс iCollection(T)
-        {
-            if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(item, currentContextId));
-            base.Add(item);
-        }
-        public void Add(TEntity item)//Если используется интерфейс iCollection(T)
-        {
-            if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(item, CurrentContextId));
-            base.Add(item);
+        //public bool Remove(TEntity item, Guid currentContextId)
+        //{
+        //    if (b_jornal_recording_flag) CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, currentContextId));
+        //    return true;
+        //}
+        //public bool Remove(TEntity item)
+        //{
+        //    if (b_jornal_recording_flag) CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, CurrentContextId));
+        //    return true;
+        //}
+        //public void Add(TEntity item, Guid currentContextId)//Если используется интерфейс iCollection(T)
+        //{
+        //    if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(item, currentContextId));
+        //    base.Add(item);
+        //}
+        //public void Add(TEntity item)//Если используется интерфейс iCollection(T)
+        //{
+        //    if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(item, CurrentContextId));
+        //    base.Add(item);
 
-        }
-        public int Add(object? value, Guid currentContextId) //Если используется интрефейс IList
-        {
-            if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(value as IJornalable, currentContextId));
-            base.Add(value as TEntity);
-            return this.IndexOf(value as TEntity);
-        }
+        //}
+        //public int Add(object? value, Guid currentContextId) //Если используется интрефейс IList
+        //{
+        //    if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(value as IJornalable, currentContextId));
+        //    base.Add(value as TEntity);
+        //    return this.IndexOf(value as TEntity);
+        //}
 
-        public int Add(object? value) //Если используется интрефейс IList
-        {
+        //public int Add(object? value) //Если используется интрефейс IList
+        //{
 
-            if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(value as IJornalable, CurrentContextId));
-            base.Add(value as TEntity);
+        //    if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(value as IJornalable, CurrentContextId));
+        //    base.Add(value as TEntity);
 
-            return this.IndexOf(value as TEntity);
+        //    return this.IndexOf(value as TEntity);
 
-        }
+        //}
+        
         public virtual object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject
         {
             if (!CopingEnable)

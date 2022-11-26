@@ -5,6 +5,7 @@ using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,13 +18,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
     {
         protected IDialogService _dialogService;
         protected IRegionManager _regionManager;
-        public NotifyCommand UnDoLeftCommand { get; protected set; }
-        public NotifyCommand UnDoRightCommand { get; protected set; }
+        public NotifyCommand UnDoCommand { get; protected set; }
+        public NotifyCommand ReDoCommand { get; protected set; }
         public NotifyCommand SaveCommand { get; protected set; }
         public NotifyCommand<object> CloseCommand { get; protected set; }
 
         private bool _keepAlive = true;
-      public bool KeepAlive
+        public bool KeepAlive
         {
             get { return _keepAlive; }
             set { _keepAlive = value; }
@@ -34,7 +35,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _commonChangeJornal; }
             set { SetProperty(ref _commonChangeJornal, value); }
         }
-
+       
+        private IUnDoReDoSystem _UnDoReDoSystem = new UnDoReDoSystem();
+        public IUnDoReDoSystem UnDoReDoSystem
+        {
+            get { return _UnDoReDoSystem; }
+            set { SetProperty(ref _UnDoReDoSystem, value); }
+        }
         public BaseViewModel()
         {
             
@@ -56,7 +63,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             {
                 if (result.Result == ButtonResult.Yes)
                 {
-                    _commonChangeJornal.SaveAll(Id);
+                    _UnDoReDoSystem.ClearStacks();
                 }
                 if (result.Result == ButtonResult.No)
                 {
@@ -72,7 +79,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public virtual void OnClose<T>(object view, T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
         {
-            if (_commonChangeJornal != null && _commonChangeJornal.Where(r => r.ContextId == Id).FirstOrDefault() != null)//selected_obj!=null&&добавлено 27,10,22
+            if (!_UnDoReDoSystem.AllUnDoIsDone())//selected_obj!=null&&добавлено 27,10,22
             {
                 CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
                 {
@@ -80,7 +87,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     {
                         if (result.Result == ButtonResult.Yes)
                         {
-                            _commonChangeJornal.SaveAll(Id);
+                            _UnDoReDoSystem.ClearStacks();
                             if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
@@ -90,7 +97,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         }
                         else if (result.Result == ButtonResult.No)
                         {
-                            _commonChangeJornal.UnDoAll(Id);
+                            _UnDoReDoSystem.UnDoAll();
                             if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);

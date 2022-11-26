@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -18,50 +19,94 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, IEntityObject, IJornalable, INameableOservableCollection<TEntity> where TEntity : class, IEntityObject, IJornalable
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        public event PropertyChangedEventHandler PropertyBeforeChanged = delegate { };
-        public event PropertyBeforeChangeEventHandler _PropertyBeforeChanged = delegate { };
-
-        public event CollectionChangedEventHandler CollectionChangedBeforeRemove = delegate { };
-        public event CollectionChangedEventHandler CollectionChangedBeforAdd = delegate { };
-
-
-        public event ObjectStateChangeEventHandler ObjectChangedNotify;//Событие вызывается при изменении в данном объекте 
-        public event ObjectStateChangeEventHandler ObjectChangeSaved; //Событие вызывается при сохранении изменений в данном объекте
-        public event ObjectStateChangeEventHandler ObjectChangeUndo; //Событие вызывается при отмете изменений в данном объекте
-
-        public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе с данных объектом по умолчанию
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
+        public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated = delegate { };
+        protected virtual bool BaseSetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = "")
         {
-            if (b_jornal_recording_flag) PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+
+            if (object.Equals(val, member)) return false;
+            if (b_jornal_recording_flag)
+            {
+                PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
+            }
+            member = val;
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            return true;
         }
-        public void OnPropertyBeforChanged([CallerMemberName] string prop = "")
+        protected bool SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = null, bool jornal_mode = false)
         {
-            if (b_jornal_recording_flag) PropertyBeforeChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+            if (member != null)
+                ValidateProperty(propertyName, val);
+            return BaseSetProperty<T>(ref member, val, propertyName);
         }
+        #region Validating
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
+        private Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
+        public IEnumerable GetErrors(string propertyName)
+        {
+            if (_errors.ContainsKey(propertyName))
+                return _errors[propertyName];
+            else
+                return null;
+        }
+        public bool HasErrors
+        {
+            get { return _errors.Count > 0; }
+        }
+        private void ValidateProperty<T>(string propertyName, T value)
+        {
+            var results = new List<ValidationResult>();
+            ValidationContext context = new ValidationContext(this);
+            context.MemberName = propertyName;
+            Validator.TryValidateProperty(value, context, results);
+
+            if (results.Any())
+            {
+
+                _errors[propertyName] = results.Select(c => c.ErrorMessage).ToList();
+            }
+            else
+            {
+                _errors.Remove(propertyName);
+            }
+            ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+        #endregion
         private Guid _id;
         public Guid Id
         {
             get { return _id; }
-            set { OnPropertyBeforChanged("Id"); _id = value; OnPropertyChanged("Id"); }
+            set { SetProperty(ref _id, value); }
         }
         private Guid _storedId;
         public Guid StoredId
         {
             get { return _storedId; }
-            set { OnPropertyBeforChanged("Id"); _storedId = value; OnPropertyChanged("StoredId"); }
+            set { SetProperty(ref _storedId, value); }
         }
+        private string _code;
+        public string Code
+        {
+            get
+            {
+                return _code;
+            }
+            set { SetProperty(ref _code, value); }
+        }//Код
         private string _name;
         public string Name
         {
             get { return _name; }
-            set { OnPropertyBeforChanged("Id"); _name = value; OnPropertyChanged("Name"); }
+            set { SetProperty(ref _name, value); }
         }
         public NameableObservableCollection()
         {
             Id = Guid.NewGuid();
-
+            CollectionChanged += OnCollectionChangedMethod;
         }
+
+        
+
         public NameableObservableCollection(string name) : this()
         {
             Id = Guid.NewGuid();
@@ -80,12 +125,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Id = Guid.NewGuid();
         }
-        #region Validating
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
-
-
-        #endregion
-
         #region Changes Jornaling
 
         private bool b_jornal_recording_flag = true;
@@ -108,38 +147,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 IsVisible = (status != JornalRecordType.REMOVED) ? true : false;
             }
         }
-        public PropertiesChangeJornal PropertiesChangeJornal { get; set; }
         public ObservableCollection<IJornalable> ParentObjects { get; set; }
         public ObservableCollection<IJornalable> ChildObjects { get; set; }
         public AdjustStatus AdjustedStatus { get; set; } = AdjustStatus.UNADJUSTED;
-
-        public void OnChildObjectChanges(object sender, ObjectStateChangedEventArgs e)//Вызывается дочерними объектами если в них были произведены изменения
-        {
-            if (e != null && !PropertiesChangeJornal.Contains(e.PropertyStateRecord))
-            {
-                PropertiesChangeJornal.Add(e.PropertyStateRecord);
-            }
-            ObjectChangedNotify?.Invoke(this, e);
-
-        }
-        public void OnChildObjectChangeSaved(object sender, ObjectStateChangedEventArgs e)
-        {
-            if (e != null && PropertiesChangeJornal.Contains(e.PropertyStateRecord))
-            {
-                PropertiesChangeJornal.Remove(e.PropertyStateRecord);
-                ObjectChangeSaved?.Invoke(this, e);
-            }
-            ObjectChangedNotify?.Invoke(this, null);
-        }
-        public void OnChildObjectChangeUndo(object sender, ObjectStateChangedEventArgs e)
-        {
-            if (PropertiesChangeJornal.Contains(e.PropertyStateRecord))
-            {
-                PropertiesChangeJornal.Remove(e.PropertyStateRecord);
-                ObjectChangeUndo?.Invoke(this, e);
-            }
-            ObjectChangedNotify?.Invoke(this, null);
-        }
         public void JornalingOff()
         {
             if (b_jornal_recording_flag == true)
@@ -153,84 +163,19 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #endregion
 
-        //public bool RemoveItem(IJornalable item)
-        //{
-        //    base.Remove(item as TEntity);
-        //    return true;
-        //}
-        //public bool Remove(IJornalable item, Guid currentContextId)
-        //{
-        //    this.Remove(item as TEntity, currentContextId);
-        //    return true;
-        //}
-
-        //public bool Remove(TEntity item, Guid currentContextId)
-        //{
-        //    if (b_jornal_recording_flag) CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, currentContextId));
-        //    return true;
-        //}
-        //public bool Remove(TEntity item)
-        //{
-        //    if (b_jornal_recording_flag) CollectionChangedBeforeRemove(this, new CollectionChangedEventArgs(item, CurrentContextId));
-        //    return true;
-        //}
-        //public void Add(TEntity item, Guid currentContextId)//Если используется интерфейс iCollection(T)
-        //{
-        //    if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(item, currentContextId));
-        //    base.Add(item);
-        //}
-        //public void Add(TEntity item)//Если используется интерфейс iCollection(T)
-        //{
-        //    if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(item, CurrentContextId));
-        //    base.Add(item);
-
-        //}
-        //public int Add(object? value, Guid currentContextId) //Если используется интрефейс IList
-        //{
-        //    if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(value as IJornalable, currentContextId));
-        //    base.Add(value as TEntity);
-        //    return this.IndexOf(value as TEntity);
-        //}
-
-        //public int Add(object? value) //Если используется интрефейс IList
-        //{
-
-        //    if (b_jornal_recording_flag) CollectionChangedBeforAdd(this, new CollectionChangedEventArgs(value as IJornalable, CurrentContextId));
-        //    base.Add(value as TEntity);
-
-        //    return this.IndexOf(value as TEntity);
-
-        //}
-        
-        public virtual object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject
+        // private void OnCollectionChanged(object sender,CollectionChangeEventArgs e)
+        // { }
+        private void OnCollectionChangedMethod(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (!CopingEnable)
-                return null;
-
-            object new_object_collection = Activator.CreateInstance(this.GetType());
-            foreach (IEntityObject element in this)
-            {
-                var new_element = Activator.CreateInstance(element.GetType());
-                new_element = element.Clone<TSourse>(predicate);
-                ((IList)new_object_collection).Add(new_element);
-            }
-            //   Functions.SetAllIdToZero(new_object_collection);
-            return new_object_collection;
+            IsVisible = Count > 0;
         }
-
-        public bool IsVisible { get; set; } = true;
-
-        private string _code;
-        public string Code
+        private bool _isVisible;
+        public bool IsVisible
         {
-            get
-            {
-                return _code;
-            }
-            set { _code = value; OnPropertyChanged("Code"); }
-        }//Код
-
-
+            get { return _isVisible; }
+            set { SetProperty(ref _isVisible, value); }
+        }
+         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе с данных объектом по умолчанию
         public bool IsPointerContainer { get; set; }
         public bool CopingEnable { get; set; } = true;
 

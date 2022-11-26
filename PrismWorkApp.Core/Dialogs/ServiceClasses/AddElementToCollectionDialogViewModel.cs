@@ -11,7 +11,7 @@ using PrismWorkApp.OpenWorkLib.Core;
 namespace PrismWorkApp.Core.Dialogs
 {
     public abstract class AddElementToCollectionDialogViewModel<TConteiner, T> : LocalBindableBase, IDialogAware
-        where TConteiner : IEnumerable<T>, INameable, INameableOservableCollection<T>, new()
+        where TConteiner : ICollection<T>/*, INameable, INameableOservableCollection<T>*/, new()
         where T : class, IRegisterable, IEntityObject, new()
     {
         private string _title = "Диалоговое окно сообщения";

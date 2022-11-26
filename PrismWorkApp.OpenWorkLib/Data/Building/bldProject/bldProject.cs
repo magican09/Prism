@@ -61,7 +61,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _netExecutionTime; }
             set { SetProperty(ref _netExecutionTime, value); }
         }//Чистое время выполнения
-
         private decimal _quantity;
         public decimal Quantity
         {
@@ -139,39 +138,51 @@ namespace PrismWorkApp.OpenWorkLib.Data
             project.ResponsibleEmployees = (bldResponsibleEmployeesGroup)ResponsibleEmployees.Clone();
             return project;
         }
-        [NotMapped]
-        public ObservedCommand<bldObject> RemoveBuildindObjectCommand { get; set; }
-        [NotMapped]
-        public ObservedCommand<bldParticipant> RemoveParticipantCommand { get; set; }
-
+      
         public bldProject()
         {
-            RemoveBuildindObjectCommand = new ObservedCommand<bldObject>(OnRemoveBuildindObject, CanRemoveBuildindObject);
-            RemoveParticipantCommand = new ObservedCommand<bldParticipant>(OnRemoveParticipant, CanRemoveParticipant);
         }
 
-      
+
         #region EditMethods
-        private bool CanRemoveBuildindObject()
+        public void  RemoveBuildindObject(bldObject obj)
         {
-            return  BuildingObjects.Count!=0;  
-        }
-           private void OnRemoveBuildindObject(bldObject obj)
-        {
-            RemoveFromCollectionCommand<bldObjectsGroup, bldObject> fromCollectionCommand =
+            RemoveFromCollectionCommand<bldObjectsGroup, bldObject> Command =
                 new RemoveFromCollectionCommand<bldObjectsGroup, bldObject>(BuildingObjects, obj);
-            RemoveBuildindObjectCommand.SendCommandToUndoRedoSystem(fromCollectionCommand);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-        private bool CanRemoveParticipant()
+        public  void  RemoveParticipant(bldParticipant participant )
         {
-            return BuildingObjects.Count != 0;
+            RemoveFromCollectionCommand<bldParticipantsGroup,bldParticipant> Command =
+                 new RemoveFromCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, participant);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-        private void OnRemoveParticipant(bldParticipant obj)
+        public void RemoveResponsibleEmployee(bldResponsibleEmployee empl)
         {
-            RemoveFromCollectionCommand<bldParticipantsGroup,bldParticipant> removeFromCollectionCommand =
-                 new RemoveFromCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, obj);
-            RemoveParticipantCommand.SendCommandToUndoRedoSystem(removeFromCollectionCommand);
+            RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+                 new RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
         }
+        public void AddBuildindObject(bldObject obj)
+        {
+            obj.bldProject = this;
+            AddToCollectionCommand<bldObjectsGroup, bldObject> Command =
+                new AddToCollectionCommand<bldObjectsGroup, bldObject>(BuildingObjects, obj);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddParticipant(bldParticipant participant)
+        {
+            AddToCollectionCommand<bldParticipantsGroup, bldParticipant> Command =
+                 new AddToCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, participant);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddResponsibleEmployee(bldResponsibleEmployee empl)
+        {
+            AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+                 new AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+
         #endregion
     }
 }

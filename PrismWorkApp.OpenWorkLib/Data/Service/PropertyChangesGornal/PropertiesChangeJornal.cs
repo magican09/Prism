@@ -70,15 +70,15 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             if (obj is INotifyJornalableCollectionChanged collection)
             {
-                collection.CollectionChangedBeforAdd += OnCollectionChangedBeforAdd;
-                collection.CollectionChangedBeforeRemove += OnCollectionChangedBeforeRemove;
-                collection.PropertyBeforeChanged += OnCollectionPropertyChanged;
-                collection.PropertyChanged += OnPropertyObjectChanged;
+                //collection.CollectionChangedBeforAdd += OnCollectionChangedBeforAdd;
+                //collection.CollectionChangedBeforeRemove += OnCollectionChangedBeforeRemove;
+                //collection.PropertyBeforeChanged += OnCollectionPropertyChanged;
+                //collection.PropertyChanged += OnPropertyObjectChanged;
             }
             else if (obj is INotifyPropertyChanged)
             {
                 (obj as INotifyPropertyChanged).PropertyChanged += OnPropertyObjectChanged;
-                obj.PropertyBeforeChanged += OnPropertyBeforeChanged;
+             //   obj.PropertyBeforeChanged += OnPropertyBeforeChanged;
             }
             if (!RegistedObjects.Contains(obj))
                 RegistedObjects.Add(obj);

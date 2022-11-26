@@ -18,18 +18,18 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public abstract class BindableBase : INotifyPropertyChanged, IJornalable, IValidateable, IBindableBase, ICopingEnableable
+    public abstract class BindableBase : INotifyPropertyChanged, IJornalable, IValidateable, IBindableBase
     {
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public event PropertyChangedEventHandler PropertyBeforeChanged = delegate { };
-        public event PropertyBeforeChangeEventHandler _PropertyBeforeChanged = delegate { };
-
-
-        public event ObjectStateChangeEventHandler ObjectChangedNotify;//Событие вызывается при изменении в данном объекте 
-        public event ObjectStateChangeEventHandler ObjectChangeSaved; //Событие вызывается при сохранении изменений в данном объекте
-        public event ObjectStateChangeEventHandler ObjectChangeUndo; //Событие вызывается при отмете изменений в данном объекте
+  //      public event PropertyChangedEventHandler PropertyBeforeChanged = delegate { };
+        public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
+        public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated = delegate { };
+        public void InvokeUnDoReDoCommandCreatedEvent(IUnDoRedoCommand command)
+        {
+            UnDoReDoCommandCreated.Invoke(this, new UnDoReDoCommandCreateEventsArgs(command));
+        }
         private Guid _id;
         public Guid Id
         {
@@ -54,7 +54,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (b_jornal_recording_flag)
             {
               //  PropertyBeforeChanged(this, new PropertyChangedEventArgs(propertyName));
-                _PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
+                PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
             }
                 member = val;
             //Type tp = Children[Children.Count - 1].GetType();
@@ -65,10 +65,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             if (member != null)
                 ValidateProperty(propertyName, val);
-         //   PropertyChangesRegistrate(ref member, val, propertyName);
             return BaseSetProperty<T>(ref member, val, propertyName);
         }
-
 
         #region Validating
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
@@ -131,8 +129,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 b_jornal_recording_flag = true;
             }
         }
-    
-        
+         
         public void JornalingOff()
         {
             if (b_jornal_recording_flag == true)
@@ -149,10 +146,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public BindableBase()
         {
-            //PropertiesChangeJornal = new PropertiesChangeJornal();
-            //PropertiesChangeJornal.ParentObject = this;
-            //     31.10.2022   PropertiesChangeJornal.JornalChangedNotify += OnPropertyChanges;
-        }
+         }
         private string _code;
         public string Code
         {
@@ -170,21 +164,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bool CopingEnable { get; set; } = true;
         
 
-        public virtual void SetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate)
-            where TSourse : IEntityObject
-        {
-            Functions.CopyObjectReflectionNewInstances(this, pointer, predicate);
-            Functions.SetAllIdToZero(pointer);
-        }
-        public virtual object Clone<TSourse>(Func<TSourse, bool> predicate) where TSourse : IEntityObject
-        {
-            if (!CopingEnable)
-                return null;
-            object new_object = Activator.CreateInstance(this.GetType());
-            Functions.GetCopyEntitityObject(this, new_object, predicate);
-            Functions.SetAllIdToZero(new_object);
-            return new_object;
-        }
+       
 
 
 

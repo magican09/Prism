@@ -157,12 +157,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             return MemberwiseClone();
         }
-        public override void SetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate)
-        {
-            
-            base.SetCopy(pointer, predicate);
-       //     this.bldObject = (pointer as bldConstruction).bldObject;
-        }
+       
 
         
     }

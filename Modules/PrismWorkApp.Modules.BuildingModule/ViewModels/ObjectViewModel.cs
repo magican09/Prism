@@ -93,10 +93,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
             base.SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedBuildingObject);
             base.CloseCommand = new NotifyCommand<object>(OnClose);
-            base.UnDoLeftCommand = new NotifyCommand(() => OnUnDoLeft(Id),
+            base.UnDoCommand = new NotifyCommand(() => OnUnDoLeft(Id),
                                           () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
                                                   .ObservesPropertyChangedEvent(CommonChangeJornal);
-            base.UnDoRightCommand = new NotifyCommand(() => OnUnDoRight(Id),
+            base.ReDoCommand = new NotifyCommand(() => OnUnDoRight(Id),
                            () => { return !CommonChangeJornal.IsOnLastRecord(Id); })
                              .ObservesPropertyChangedEvent(CommonChangeJornal);
             RemoveBuildingObjectCommand = new NotifyCommand(OnRemoveBuildingObject,
@@ -120,8 +120,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _buildingUnitsRepository = buildingUnitsRepository;
             _applicationCommands = applicationCommands;
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
-            _applicationCommands.UnDoRightCommand.RegisterCommand(UnDoRightCommand);
-            _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
+            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
         }
         private void OnDataGridLostSocus(object obj)
         {
@@ -253,8 +253,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public override void OnWindowClose()
         {
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
-            _applicationCommands.UnDoRightCommand.UnregisterCommand(UnDoRightCommand);
-            _applicationCommands.UnDoLeftCommand.UnregisterCommand(UnDoLeftCommand);
+            _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

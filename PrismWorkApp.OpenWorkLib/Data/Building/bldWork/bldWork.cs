@@ -183,26 +183,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             return MemberwiseClone();
         }
 
-        public override void SetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate)
-        {
-           
-         //   PreviousWorks.CopingEnable = false; //отключаем при копировании
-         //   NextWorks.CopingEnable = false; //отключаем при копировании
-         //   base.SetCopy(pointer, predicate);
-         ////   this.bldConstruction = (pointer as bldWork).bldConstruction;
-         //   PreviousWorks.CopingEnable = true; //отключаем при копировании
-         //   NextWorks.CopingEnable = true; //отключаем при копировании
-           
-        }
-        public override object Clone<TSourse>(Func<TSourse, bool> predicate)
-        {
-
-            //PreviousWorks.CopingEnable = false; //отключаем при копировании
-            //NextWorks.CopingEnable = false; //отключаем при копировании
-             return base.Clone(predicate);
-            //PreviousWorks.CopingEnable = true; //отключаем при копировании
-            //NextWorks.CopingEnable = true; //отключаем при копировании
-
-        }
+       
+        
     }
 }

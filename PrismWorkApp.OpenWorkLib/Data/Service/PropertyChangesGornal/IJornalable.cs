@@ -21,13 +21,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public Guid CurrentContextId { get; set; }
         public bool IsVisible { get; set; }
        // public PropertiesChangeJornal PropertiesChangeJornal { get; set; }
-
-        public event ObjectStateChangeEventHandler ObjectChangedNotify;//Событие вызывается при изменении в данном объекте 
-        public event ObjectStateChangeEventHandler ObjectChangeSaved; //Событие вызывается при сохранении изменений в данном объекте
-        public event ObjectStateChangeEventHandler ObjectChangeUndo; //Событие вызывается при отмете изменений в данном объекте
-        public event PropertyChangedEventHandler PropertyBeforeChanged;
-        public event PropertyBeforeChangeEventHandler _PropertyBeforeChanged ;
-
+  //  public event PropertyChangedEventHandler PropertyBeforeChanged;
+        public event PropertyBeforeChangeEventHandler PropertyBeforeChanged ;
+        public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
         //   public ObservableCollection<IJornalable> ParentObjects { get; set; }
         //  public ObservableCollection<IJornalable> ChildObjects { get; set; }
 

@@ -14,6 +14,7 @@ using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -108,8 +109,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
-
-        public UnDoReDoSystem UnDoReDo = new UnDoReDoSystem(); 
+       
+     
 
         public ProjectViewModel(IDialogService dialogService, IBuildingUnitsRepository buildingUnitsRepository,
             IRegionManager regionManager, IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
@@ -118,16 +119,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedProject);
             CloseCommand = new NotifyCommand<object>(OnClose);
-            //UnDoLeftCommand = new NotifyCommand(()=>base.OnUnDoLeft(Id), 
-            //    () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
-            //   .ObservesPropertyChangedEvent(CommonChangeJornal);
-            //UnDoRightCommand = new NotifyCommand(()=>base.OnUnDoRight(Id), 
-            //    () => { return !CommonChangeJornal.IsOnLastRecord(Id); })
-            //      .ObservesPropertyChangedEvent(CommonChangeJornal);
-            UnDoLeftCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
-               () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-            UnDoRightCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
-               () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            UnDoCommand = new NotifyCommand(() => { UnDoReDoSystem.UnDo(1); },
+               () => { return UnDoReDoSystem.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDoSystem);
+            ReDoCommand = new NotifyCommand(() => UnDoReDoSystem.ReDo(1),
+               () => { return UnDoReDoSystem.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDoSystem);
 
             AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
             AddParticipantCommand = new NotifyCommand(OnAddParticipant);
@@ -160,8 +155,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _regionManager = regionManager;
             _applicationCommands = applicationCommands;
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
-             _applicationCommands.UnDoRightCommand.RegisterCommand(UnDoRightCommand);
-            _applicationCommands.UnDoLeftCommand.RegisterCommand(UnDoLeftCommand);
+             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
         }
        
         private void OnEditResponsibleEmployee()
@@ -273,7 +268,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnEditBuildingObject()
         {
-            UnDoReDo.Register(SelectedBuildingObject);
+            UnDoReDoSystem.Register(SelectedBuildingObject);
             CoreFunctions.EditElementDialog<bldObject>(SelectedBuildingObject, "Строительный объект",
                 (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Guid.Empty);
             
@@ -282,9 +277,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldObjectsGroup All_BuildingObjects = new bldObjectsGroup(_buildingUnitsRepository.Objects.GetldObjectsAsync());//.GetBldObjects(SelectedProject.Id));
 
-            NameablePredicate<bldObjectsGroup, bldObject> predicate_1 = new NameablePredicate<bldObjectsGroup, bldObject>();
-            NameablePredicate<bldObjectsGroup, bldObject> predicate_2 = new NameablePredicate<bldObjectsGroup, bldObject>();
-            NameablePredicate<bldObjectsGroup, bldObject> predicate_3 = new NameablePredicate<bldObjectsGroup, bldObject>(); 
+            NameablePredicate<ObservableCollection<bldObject>, bldObject> predicate_1 = new NameablePredicate<ObservableCollection<bldObject>, bldObject>();
+            NameablePredicate<ObservableCollection<bldObject>, bldObject> predicate_2 = new NameablePredicate<ObservableCollection<bldObject>, bldObject>();
+            NameablePredicate<ObservableCollection<bldObject>, bldObject> predicate_3 = new NameablePredicate< ObservableCollection<bldObject> , bldObject>(); 
             predicate_1.Name = "Показать только из текущего проекта.";
             predicate_1.Predicate = cl => cl.Where(el => el.bldProject  != null &&
                                                         el.bldProject.Id == SelectedProject.Id).ToList();
@@ -294,22 +289,28 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             predicate_3.Name = "Показать все";
             predicate_3.Predicate = cl => cl;
 
-            NameablePredicateObservableCollection<bldObjectsGroup, bldObject> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldObjectsGroup, bldObject>();
+            NameablePredicateObservableCollection<ObservableCollection<bldObject>, bldObject> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldObject>, bldObject>();
             nameablePredicatesCollection.Add(predicate_1);
             nameablePredicatesCollection.Add(predicate_2);
             nameablePredicatesCollection.Add(predicate_3);
-           //
-            CoreFunctions.AddElementToCollectionWhithDialog_Test<bldObjectsGroup,bldObject>
-                (SelectedProject.BuildingObjects, All_BuildingObjects,
+            ObservableCollection<bldObject> objects_for_add_collection = new ObservableCollection<bldObject>();
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<ObservableCollection<bldObject>, bldObject>
+                (objects_for_add_collection, All_BuildingObjects,
                  nameablePredicatesCollection,
                 _dialogService,
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)
                      {
+                          /* foreach (bldObject bld_obj in SelectedProject.BuildingObjects)
+                              bld_obj.bldProject=SelectedProject;*/
+                         foreach (bldObject bld_obj in objects_for_add_collection)
+                         {
+                             UnDoReDoSystem.Register(bld_obj);
+                             SelectedProject.AddBuildindObject(bld_obj);
+                         }
                          SaveCommand.RaiseCanExecuteChanged();
-                         foreach (bldObject bld_obj in SelectedProject.BuildingObjects)
-                             bld_obj.bldProject=SelectedProject;
+
                      }
                      if (result.Result == ButtonResult.No)
                      {
@@ -330,7 +331,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                   (SelectedProject.BuildingObjects, SelectedBuildingObject, "Строительный объект",
                  () => 
                  {
-                     SelectedProject.RemoveBuildindObjectCommand.Execute(SelectedBuildingObject);
+                     SelectedProject.RemoveBuildindObject(SelectedBuildingObject);
                      SelectedBuildingObject = null;
                      SaveCommand.RaiseCanExecuteChanged();
                  }, _dialogService,Id);
@@ -340,22 +341,27 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnRemoveResponsibleEmployee()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
-                (SelectedProject.ResponsibleEmployees, SelectedResponsibleEmployee, "Ответсвенный представитель",
-                () => { SelectedResponsibleEmployee = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
-        }
+                 (SelectedProject.ResponsibleEmployees, SelectedResponsibleEmployee, "Ответсвенный представитель",
+                () =>
+                {
+                    SelectedProject.RemoveResponsibleEmployee(SelectedResponsibleEmployee);
+                    SelectedResponsibleEmployee = null;
+                    SaveCommand.RaiseCanExecuteChanged();
+                }, _dialogService, Id);
+
+           }
         private void OnRemoveParticipant()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
                  (SelectedProject.Participants, SelectedParticipant, "Учасник строительства",
                 () =>
                 {
-                    SelectedProject.RemoveParticipantCommand.Execute(SelectedParticipant);
+                    SelectedProject.RemoveParticipant(SelectedParticipant);
                     SelectedParticipant = null;
                     SaveCommand.RaiseCanExecuteChanged();
                 }, _dialogService, Id);
 
         }
-
 
         private void OnDataGridLostSocus(object obj)
         {
@@ -382,12 +388,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 return;
             }
         }
-
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             SaveCommand.RaiseCanExecuteChanged();
         }
-
         public virtual bool CanSave()
         {
             if (SelectedProject != null)
@@ -407,8 +411,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public override void OnWindowClose()
         {
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
-            _applicationCommands.UnDoRightCommand.UnregisterCommand(UnDoRightCommand);
-            _applicationCommands.UnDoLeftCommand.UnregisterCommand(UnDoLeftCommand);
+            _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -422,10 +426,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedProject = ResivedProject;
                 SelectedProject.ErrorsChanged += RaiseCanExecuteChanged;
                 Title = ResivedProject.ShortName;
-                UnDoReDo.Register(SelectedProject);
+                UnDoReDoSystem.Register(SelectedProject);
             }
         }
-        
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_project"];
@@ -435,7 +438,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             else
                 return true;
         }
-
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
         

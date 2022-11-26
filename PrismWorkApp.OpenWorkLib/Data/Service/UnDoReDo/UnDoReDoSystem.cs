@@ -9,28 +9,36 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
 {
-    public class UnDoReDoSystem : INotifyPropertyChanged
+    public class UnDoReDoSystem :  IUnDoReDoSystem
     {
         private Stack<IUnDoRedoCommand> _UnDoCommands = new Stack<IUnDoRedoCommand>();
         private Stack<IUnDoRedoCommand> _ReDoCommands = new Stack<IUnDoRedoCommand>();
         private ObservableCollection<IJornalable> _RegistedModels = new ObservableCollection<IJornalable>();
 
-        public event PropertyChangedEventHandler PropertyChanged =  delegate{};
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public void ReDo(int levels)
         {
-            for(int ii=0;ii< levels;ii++)
+            for (int ii = 0; ii < levels; ii++)
             {
-                if(_ReDoCommands.Count>0)
+                if (_ReDoCommands.Count > 0)
                 {
                     IUnDoRedoCommand command = _ReDoCommands.Pop();
                     command.Execute();
                     _UnDoCommands.Push(command);
                 }
             }
-            PropertyChanged?.Invoke(this,new PropertyChangedEventArgs("ReDo"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ReDo"));
         }
-        public void UnDo (int levels)
+        public void UnDoAll()
+        {
+            while (_UnDoCommands.Count > 0)
+            {
+                UnDo(1);
+            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnDoAll"));
+        }
+        public void UnDo(int levels)
         {
             for (int ii = 0; ii < levels; ii++)
             {
@@ -43,7 +51,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnDo"));
         }
-
+        public bool AllUnDoIsDone()
+        {
+            return _UnDoCommands.Count == 0;
+        }
+        public void ClearStacks()
+        {
+            _UnDoCommands.Clear();
+            _ReDoCommands.Clear();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClearStacks"));
+        }
         public bool CanUnDoExecute()
         {
             return _UnDoCommands.Count > 0;
@@ -58,36 +75,26 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
                 return;
             else
                 _RegistedModels.Add(obj);
-            obj._PropertyBeforeChanged += OnModelPropertyBeforeChanged;
-            var prop_infoes = obj.GetType().GetProperties().Where(pr=>pr.GetIndexParameters().Length==0);
-            foreach(PropertyInfo property_info in prop_infoes)
-            {
-                var prop_value = property_info.GetValue(obj);
-                if (prop_value is IObservedCommand command)
-                {
-                    command.ObservedCommandExecuted += OnObservedCommandCreated;
-                }
-            }
+            obj.PropertyBeforeChanged += OnModelPropertyBeforeChanged;
+            obj.UnDoReDoCommandCreated += OnObservedCommandCreated;
         }
 
-        private void OnObservedCommandCreated(object sender, ObservedCommandExecuteEventsArgs e)
+        private void OnObservedCommandCreated(object sender, UnDoReDoCommandCreateEventsArgs e)
         {
             _UnDoCommands.Push(e.Command);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OnCommandCreated"));
         }
-
-
         private void OnModelPropertyBeforeChanged(object sender, PropertyBeforeChangeEvantArgs e)
         {
-            PropertySetCommand setCommand = 
-                new PropertySetCommand(sender as IJornalable,e.PropertyName,e.NewValue,e.LastValue);
-           _UnDoCommands.Push(setCommand);
+            PropertySetCommand setCommand =
+                new PropertySetCommand(sender as IJornalable, e.PropertyName, e.NewValue, e.LastValue);
+            _UnDoCommands.Push(setCommand);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OnModelPropertyBeforeChanged"));
         }
         public UnDoReDoSystem()
         {
-            
+
         }
-     
+
     }
 }

@@ -17,8 +17,8 @@ namespace PrismWorkApp.Core.Commands
     public interface IApplicationCommands
     {
         NotifyCompositeCommand SaveAllCommand { get; }
-       NotifyCompositeCommand UnDoLeftCommand { get; }
-        NotifyCompositeCommand UnDoRightCommand { get; }
+       NotifyCompositeCommand UnDoCommand { get; }
+        NotifyCompositeCommand ReDoCommand { get; }
     }
     public class ApplicationCommands : IApplicationCommands
     {
@@ -28,12 +28,12 @@ namespace PrismWorkApp.Core.Commands
             get { return _saveAllCommand; }
         }
         private NotifyCompositeCommand _unDoLeftCommand = new NotifyCompositeCommand();
-        public NotifyCompositeCommand UnDoLeftCommand
+        public NotifyCompositeCommand UnDoCommand
         {
             get { return _unDoLeftCommand; }
         }
         private NotifyCompositeCommand _unDoRightCommand = new NotifyCompositeCommand();
-        public NotifyCompositeCommand UnDoRightCommand
+        public NotifyCompositeCommand ReDoCommand
         {
             get { return _unDoRightCommand; }
         }

@@ -7,7 +7,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
 {
     public class ObservedCommand<TEntity> : IObservedCommand
     {
-        public event ObservedCommandExecuteEvenHandler ObservedCommandExecuted;
+    //    public event ObservedCommandExecuteEvenHandler ObservedCommandExecuted;
         public UnDoReDoSystem UnDoReDoSystem;
         private Action<TEntity> _ExecuteAction;
     //    private Action<TEntity> _UnExecuteAction;
@@ -46,7 +46,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
         public void SendCommandToUndoRedoSystem(IUnDoRedoCommand command)
         {
             Command = command;
-            ObservedCommandExecuted?.Invoke(this, new ObservedCommandExecuteEventsArgs(command));
+       //     ObservedCommandExecuted?.Invoke(this, new ObservedCommandExecuteEventsArgs(command));
         }
     }
 }

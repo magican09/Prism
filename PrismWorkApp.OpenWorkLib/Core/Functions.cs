@@ -21,105 +21,105 @@ namespace PrismWorkApp.OpenWorkLib.Core
         public static int InitialRecursive_depth { get; set; } = 0;
         public static int Cicling_recursive_depth { get; set; } = 0;//Глубина рекурсии
      
-        public static void GetCopyEntitityObject<TSourse>(object sourse, object target, Func<TSourse, bool> predicate, bool objectsTreeCatalogReset = true)
-        where TSourse : IEntityObject
-        {
-            if (sourse == null) { target = null; return; } //Если источник не инециализирован - выходим
+        //public static void GetCopyEntitityObject<TSourse>(object sourse, object target, Func<TSourse, bool> predicate, bool objectsTreeCatalogReset = true)
+        //where TSourse : IEntityObject
+        //{
+        //    if (sourse == null) { target = null; return; } //Если источник не инециализирован - выходим
 
-            if (target == null) //Если  цель не инициализирована - создаем в соотвесвии с иточником
-                target = Activator.CreateInstance(sourse.GetType());
+        //    if (target == null) //Если  цель не инициализирована - создаем в соотвесвии с иточником
+        //        target = Activator.CreateInstance(sourse.GetType());
 
-            Guid sourse_parsing_id = Guid.Empty;
-            if (GetParsingId(sourse) != Guid.Empty) //Определяем Id - сперва ищем в источнике, потом в приемнике (последовательно)
-                sourse_parsing_id = GetParsingId(sourse);
-            else if (GetParsingId(target) != Guid.Empty)
-                sourse_parsing_id = GetParsingId(target);
+        //    Guid sourse_parsing_id = Guid.Empty;
+        //    if (GetParsingId(sourse) != Guid.Empty) //Определяем Id - сперва ищем в источнике, потом в приемнике (последовательно)
+        //        sourse_parsing_id = GetParsingId(sourse);
+        //    else if (GetParsingId(target) != Guid.Empty)
+        //        sourse_parsing_id = GetParsingId(target);
 
-            if (objectsTreeCatalogReset) //Сбрасываем таблица с данными уже скопированных объектов, счетчик глубины рекурсии и навигациооного объекта, если уставновлен флаг
-            {
-                Recursive_depth = 0;
-            }
-            Recursive_depth++;
+        //    if (objectsTreeCatalogReset) //Сбрасываем таблица с данными уже скопированных объектов, счетчик глубины рекурсии и навигациооного объекта, если уставновлен флаг
+        //    {
+        //        Recursive_depth = 0;
+        //    }
+        //    Recursive_depth++;
 
-            var target_props = target.GetType().GetProperties() //Выбираем все не идексные свойства
-                    .Where(p => p.GetIndexParameters().Length == 0);
-            var sourse_props = sourse.GetType().GetProperties()
-                    .Where(p => p.GetIndexParameters().Length == 0);
+        //    var target_props = target.GetType().GetProperties() //Выбираем все не идексные свойства
+        //            .Where(p => p.GetIndexParameters().Length == 0);
+        //    var sourse_props = sourse.GetType().GetProperties()
+        //            .Where(p => p.GetIndexParameters().Length == 0);
 
-            foreach (PropertyInfo target_prop_info in target_props)
-            {
-                var sourse_prop_info = sourse_props.FirstOrDefault(p => p.Name == target_prop_info.Name);
+        //    foreach (PropertyInfo target_prop_info in target_props)
+        //    {
+        //        var sourse_prop_info = sourse_props.FirstOrDefault(p => p.Name == target_prop_info.Name);
 
-                if (sourse_prop_info != null && sourse_prop_info.CanWrite == true)
-                {
-                    var sourse_prop_value = sourse_prop_info.GetValue(sourse);
-                    var target_prop_value = target_prop_info.GetValue(target);
-                    var new_target_prop_value = target_prop_info.GetValue(target);
+        //        if (sourse_prop_info != null && sourse_prop_info.CanWrite == true)
+        //        {
+        //            var sourse_prop_value = sourse_prop_info.GetValue(sourse);
+        //            var target_prop_value = target_prop_info.GetValue(target);
+        //            var new_target_prop_value = target_prop_info.GetValue(target);
 
-                    var target_prop = target.GetType().GetProperty(target_prop_info.Name);
-                    var sourse_prop = sourse.GetType().GetProperty(sourse_prop_info.Name);
+        //            var target_prop = target.GetType().GetProperty(target_prop_info.Name);
+        //            var sourse_prop = sourse.GetType().GetProperty(sourse_prop_info.Name);
 
-                    bool sourse_prop_is_navigate_prop = GetNavigateProperties(sourse).Where(pr => pr.Name == sourse_prop_info?.Name).FirstOrDefault() != null;
-                    bool taget_prop_is_navigate_prop = GetNavigateProperties(target).Where(pr => pr.Name == sourse_prop_info?.Name).FirstOrDefault() != null;
-                    bool set_value_skip_flag = false;
+        //            bool sourse_prop_is_navigate_prop = GetNavigateProperties(sourse).Where(pr => pr.Name == sourse_prop_info?.Name).FirstOrDefault() != null;
+        //            bool taget_prop_is_navigate_prop = GetNavigateProperties(target).Where(pr => pr.Name == sourse_prop_info?.Name).FirstOrDefault() != null;
+        //            bool set_value_skip_flag = false;
 
-                    if ((sourse_prop_value is IEntityObject || target_prop_value is IEntityObject)) //Если свойство является объектом..&&!(sourse is IList)
-                    {
-                        Guid ParsingId = Guid.Empty;
-                        if (GetParsingId(sourse_prop_value) != Guid.Empty)
-                            ParsingId = GetParsingId(sourse_prop_value);
-                        else if (GetParsingId(target_prop_value) != Guid.Empty)
-                            ParsingId = GetParsingId(target_prop_value);
+        //            if ((sourse_prop_value is IEntityObject || target_prop_value is IEntityObject)) //Если свойство является объектом..&&!(sourse is IList)
+        //            {
+        //                Guid ParsingId = Guid.Empty;
+        //                if (GetParsingId(sourse_prop_value) != Guid.Empty)
+        //                    ParsingId = GetParsingId(sourse_prop_value);
+        //                else if (GetParsingId(target_prop_value) != Guid.Empty)
+        //                    ParsingId = GetParsingId(target_prop_value);
 
-                        if (predicate.Invoke((TSourse)sourse))
-                        {
-                            if (!sourse_prop_is_navigate_prop) //Если свойтва не навигационное ссылающеся на верние уровни ...
-                            {
+        //                if (predicate.Invoke((TSourse)sourse))
+        //                {
+        //                    if (!sourse_prop_is_navigate_prop) //Если свойтва не навигационное ссылающеся на верние уровни ...
+        //                    {
 
-                                new_target_prop_value = (sourse_prop_value as IEntityObject).Clone<TSourse>(predicate);
-                            }
-                            else
+        //                        new_target_prop_value = (sourse_prop_value as IEntityObject).Clone<TSourse>(predicate);
+        //                    }
+        //                    else
 
-                                ;
-                        }
-                        else
+        //                        ;
+        //                }
+        //                else
 
-                            ;
+        //                    ;
 
-                    //   set_value_skip_flag = true;
-                    }
-                    else if(!sourse_prop_info.PropertyType.FullName.Contains("System."))
-                    {
-                        GetCopyEntitityObject(sourse_prop_value, new_target_prop_value, predicate);
-                        set_value_skip_flag = true;
-                    }
-                    else 
-                              new_target_prop_value = sourse_prop_value;
+        //            //   set_value_skip_flag = true;
+        //            }
+        //            else if(!sourse_prop_info.PropertyType.FullName.Contains("System."))
+        //            {
+        //                GetCopyEntitityObject(sourse_prop_value, new_target_prop_value, predicate);
+        //                set_value_skip_flag = true;
+        //            }
+        //            else 
+        //                      new_target_prop_value = sourse_prop_value;
 
-                    if (target_prop.CanWrite && !set_value_skip_flag) target_prop.SetValue(target, new_target_prop_value);
+        //            if (target_prop.CanWrite && !set_value_skip_flag) target_prop.SetValue(target, new_target_prop_value);
 
-                    set_value_skip_flag = false;
-                }
-            }
-        /*    if(sourse is IList)
-            {
-                foreach(IEntityObject element in (IEnumerable<IEntityObject>)sourse)
-                {
-                    var new_target_object = Activator.CreateInstance(element.GetType());//  element.Clone<TSourse>(predicate);
+        //            set_value_skip_flag = false;
+        //        }
+        //    }
+        ///*    if(sourse is IList)
+        //    {
+        //        foreach(IEntityObject element in (IEnumerable<IEntityObject>)sourse)
+        //        {
+        //            var new_target_object = Activator.CreateInstance(element.GetType());//  element.Clone<TSourse>(predicate);
                   
-                    //  GetCopyEntitityObject(element, new_target_object, predicate);
+        //            //  GetCopyEntitityObject(element, new_target_object, predicate);
                 
-                         //((IList)target).Add(new_target_object);
-                }
-            }*/
+        //                 //((IList)target).Add(new_target_object);
+        //        }
+        //    }*/
 
-            Recursive_depth--;
-            if (Recursive_depth == 0)
-            {
+        //    Recursive_depth--;
+        //    if (Recursive_depth == 0)
+        //    {
 
-                NavigateParametrDepth = 0;
-            }
-        }
+        //        NavigateParametrDepth = 0;
+        //    }
+        //}
 
         public static void CopyObjectReflectionNewInstances<TSourse>(object sourse, object target, Func<TSourse, bool> predicate, bool objectsTreeCatalogReset = true)
        where TSourse : IEntityObject

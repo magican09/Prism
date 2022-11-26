@@ -259,12 +259,16 @@
                 
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self},Path=DataContext.Count}" Value="0">
+                    <!--    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self},Path=DataContext.Count}" Value="0">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Setter Property = "Foreground" Value = "Red" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=IsVisible,Converter={StaticResource bool2VisibilityConverter}}"  Value="Collapsed">
+                        -->
+                        <DataTrigger Binding="{Binding Path=IsVisible,Converter={StaticResource treeViewVisibilityFromObject}}"  Value="Collapsed">
                             <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=IsVisible,Converter={StaticResource treeViewVisibilityFromObject}}"  Value="Visible">
+                            <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
                         <Trigger Property = "IsMouseOver" Value = "True">
                             <Setter Property = "Foreground" Value = "Green" />

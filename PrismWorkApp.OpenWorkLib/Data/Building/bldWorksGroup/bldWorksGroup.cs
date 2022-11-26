@@ -14,7 +14,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bool IsDone
         {
             get {  return _isDone; }
-            set {  _isDone= value; OnPropertyChanged("IsDone"); }
+            set { SetProperty(ref _isDone, value);  }
         }
        
         public bldWorksGroup()

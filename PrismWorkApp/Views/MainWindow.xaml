@@ -56,13 +56,13 @@
             </Setter>
         </Style>
        
-        <Style TargetType="{x:Type DataGridRow}">
+    <!--    <Style TargetType="{x:Type DataGridRow}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=IsVisible,Converter={StaticResource bool2VisibilityConverter}}"  Value="Collapsed">
                     <Setter Property="Visibility" Value="Collapsed"/>
                 </DataTrigger>
             </Style.Triggers>
-        </Style>
+        </Style>-->
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -82,13 +82,14 @@
         </Grid.RowDefinitions>
         <GridSplitter Grid.Column="1" Grid.Row="2" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
         <GridSplitter Grid.Column="3" Grid.Row="2" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
-
-        <TabControl  Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" prism:RegionManager.RegionName="{x:Static core:RegionNames.ContentRegion}" >
+        <ScrollViewer  Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2">
+        <TabControl  prism:RegionManager.RegionName="{x:Static core:RegionNames.ContentRegion}" >
            
         </TabControl>
-        <TabControl  Grid.Row="2" Grid.Column="0" prism:RegionManager.RegionName="{x:Static core:RegionNames.SolutionExplorerRegion}">
+        </ScrollViewer>
+            <TabControl  Grid.Row="2" Grid.Column="0" prism:RegionManager.RegionName="{x:Static core:RegionNames.SolutionExplorerRegion}">
         
-        </TabControl>
+         </TabControl>
         
         <TabControl  Grid.Row="2" Grid.Column="4" prism:RegionManager.RegionName="{x:Static core:RegionNames.PropertiesRegion}"/>
         <Ribbon Grid.Row="0" Grid.Column="0"  Grid.ColumnSpan="5" DockPanel.Dock="Top" Title=""

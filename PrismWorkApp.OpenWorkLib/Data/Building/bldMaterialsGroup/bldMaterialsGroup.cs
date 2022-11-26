@@ -24,7 +24,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get {
                 CalcTotalCost();
                  return _cost; }
-            set {  _cost= value; OnPropertyChanged(); }
+            set { SetProperty(ref  _cost, value);  }
         }
         private void  CalcTotalCost()
         {

@@ -53,7 +53,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (object.Equals(val, member)) return false;
             if (b_jornal_recording_flag)
             {
-                PropertyBeforeChanged(this, new PropertyChangedEventArgs(propertyName));
+              //  PropertyBeforeChanged(this, new PropertyChangedEventArgs(propertyName));
                 _PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
             }
                 member = val;

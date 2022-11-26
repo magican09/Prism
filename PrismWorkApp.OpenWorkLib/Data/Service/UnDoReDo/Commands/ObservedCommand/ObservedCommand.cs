@@ -43,6 +43,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
           //  _UnExecuteAction = unExecute;
             _canExecuteAction = canExecute;
         }
-
+        public void SendCommandToUndoRedoSystem(IUnDoRedoCommand command)
+        {
+            Command = command;
+            ObservedCommandExecuted?.Invoke(this, new ObservedCommandExecuteEventsArgs(command));
+        }
     }
 }

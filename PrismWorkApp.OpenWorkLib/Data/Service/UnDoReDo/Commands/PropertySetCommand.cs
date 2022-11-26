@@ -30,7 +30,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
             _Buffer = _Value;
             _Value = _LastValue;
             _LastValue = _Buffer;
-
+            _ModelObject.JornalingOff();
+            _ModelObject.GetType().GetProperty(Name).SetValue(_ModelObject, _Value);
+            _ModelObject.JornalingOn();
         }
         public void UnExecute()
         {

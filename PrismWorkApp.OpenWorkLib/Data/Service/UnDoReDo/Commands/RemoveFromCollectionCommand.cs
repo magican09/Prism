@@ -17,8 +17,11 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
         }
         public virtual void Execute(object parameter=null)
         {
-            _RemovedObject =(TEntity) parameter;
-            _Collection.Remove((TEntity)parameter);
+            
+            if(parameter!=null ) 
+                _RemovedObject =(TEntity) parameter;
+            _Collection.Remove((TEntity)_RemovedObject);
+          
         }
 
         public virtual void UnExecute()

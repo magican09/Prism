@@ -65,7 +65,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
                 var prop_value = property_info.GetValue(obj);
                 if (prop_value is IObservedCommand command)
                 {
-                    command.ObservedCommandCreated += OnObservedCommandCreated;
+                    command.ObservedCommandExecuted += OnObservedCommandCreated;
                 }
             }
         }

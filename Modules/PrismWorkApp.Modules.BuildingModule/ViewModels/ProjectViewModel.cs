@@ -345,10 +345,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnRemoveParticipant()
         {
-
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
                  (SelectedProject.Participants, SelectedParticipant, "Учасник строительства",
-                 () => { SelectedParticipant = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService,Id);
+                () =>
+                {
+                    SelectedProject.RemoveParticipantCommand.Execute(SelectedParticipant);
+                    SelectedParticipant = null;
+                    SaveCommand.RaiseCanExecuteChanged();
+                }, _dialogService, Id);
+
         }
 
 

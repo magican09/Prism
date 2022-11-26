@@ -141,25 +141,37 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         [NotMapped]
         public ObservedCommand<bldObject> RemoveBuildindObjectCommand { get; set; }
+        [NotMapped]
+        public ObservedCommand<bldParticipant> RemoveParticipantCommand { get; set; }
+
         public bldProject()
         {
-            RemoveBuildindObjectCommand = new ObservedCommand<bldObject>(OnRemoveBuildindObject_Execute, OnRemoveBuildindObject_CanExecute);
-
+            RemoveBuildindObjectCommand = new ObservedCommand<bldObject>(OnRemoveBuildindObject, CanRemoveBuildindObject);
+            RemoveParticipantCommand = new ObservedCommand<bldParticipant>(OnRemoveParticipant, CanRemoveParticipant);
         }
 
-        private bool OnRemoveBuildindObject_CanExecute()
+      
+        #region EditMethods
+        private bool CanRemoveBuildindObject()
         {
-            return _removedBuldingObjectSatck.Count != 0 && BuildingObjects.Count!=0;  
+            return  BuildingObjects.Count!=0;  
         }
-     
-        private Stack<bldObject> _removedBuldingObjectSatck = new Stack<bldObject>();
-        private Stack<bldObject> _addBuldingObjectSatck = new Stack<bldObject>();
-        private void OnRemoveBuildindObject_Execute(bldObject obj)
+           private void OnRemoveBuildindObject(bldObject obj)
         {
             RemoveFromCollectionCommand<bldObjectsGroup, bldObject> fromCollectionCommand =
                 new RemoveFromCollectionCommand<bldObjectsGroup, bldObject>(BuildingObjects, obj);
-
-            ((IObservedCommand)RemoveBuildindObjectCommand).ObservedCommandExecuted.Invoke(this,new ObservedCommandExecuteEventsArgs(fromCollectionCommand));
+            RemoveBuildindObjectCommand.SendCommandToUndoRedoSystem(fromCollectionCommand);
         }
+        private bool CanRemoveParticipant()
+        {
+            return BuildingObjects.Count != 0;
+        }
+        private void OnRemoveParticipant(bldParticipant obj)
+        {
+            RemoveFromCollectionCommand<bldParticipantsGroup,bldParticipant> removeFromCollectionCommand =
+                 new RemoveFromCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, obj);
+            RemoveParticipantCommand.SendCommandToUndoRedoSystem(removeFromCollectionCommand);
+        }
+        #endregion
     }
 }

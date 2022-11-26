@@ -17,8 +17,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
         }
         public virtual void Execute(object parameter = null)
         {
-            _AddObject = (TEntity)parameter;
-            _Collection.Add((TEntity)parameter);
+            if(parameter!=null)
+                _AddObject = (TEntity)parameter;
+            _Collection.Add(_AddObject);
         }
 
         public virtual void UnExecute()

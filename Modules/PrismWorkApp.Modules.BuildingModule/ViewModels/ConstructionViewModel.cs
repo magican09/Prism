@@ -172,9 +172,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      {
                          foreach (bldWork work in objects_for_add_collection)
                          {
-                             UnDoReDoSystem.Register(work);
+                           //  UnDoReDoSystem.Register(work);
                              SelectedConstruction.AddWork(work);
-                             UnDoReDoSystem.UnRegister(work);
+                          //   UnDoReDoSystem.UnRegister(work);
                          }
                          SaveCommand.RaiseCanExecuteChanged();
                      }
@@ -281,7 +281,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private bool CanSave()
         {
             if (SelectedConstruction != null)
-                return !SelectedConstruction.HasErrors;// && SelectedConstruction.PropertiesChangeJornal.Count > 0;
+                return !SelectedConstruction.HasErrors;
             else
                 return false;
         }
@@ -292,11 +292,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public virtual void OnSave()
         {
-            this.OnSave<bldConstruction>(SelectedConstruction);
+            base.OnSave<bldConstruction>(SelectedConstruction);
         }
         public virtual void OnClose(object obj)
         {
-            this.OnClose<bldConstruction>(obj, SelectedConstruction);
+            base.OnClose<bldConstruction>(obj, SelectedConstruction);
         }
         public override void OnWindowClose()
         {
@@ -322,6 +322,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedConstruction = ResivedConstruction;
                 SelectedConstruction.ErrorsChanged += RaiseCanExecuteChanged;
                 Title = ResivedConstruction.Name;
+                UnDoReDoSystem.Register(SelectedConstruction);
             }
         }
 

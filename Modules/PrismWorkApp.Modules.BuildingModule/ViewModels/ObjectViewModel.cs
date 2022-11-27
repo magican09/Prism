@@ -103,7 +103,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
              IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
         {
             CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
-            SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedProject);
+            SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedBuildingObject);
             CloseCommand = new NotifyCommand<object>(OnClose);
             #region Add Commands
             AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);

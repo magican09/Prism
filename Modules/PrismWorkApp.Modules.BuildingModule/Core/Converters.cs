@@ -1,7 +1,9 @@
 ﻿using PrismWorkApp.Core;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -227,15 +229,31 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 case nameof(bldConstruction):
                     {
                         if (((bldConstruction)value).Constructions != null) collection.Add(((bldConstruction)value).Constructions);
-                        if (((bldConstruction)value).Works != null) collection.Add(((bldConstruction)value).Works);
+                        if (((bldConstruction)value).Works != null)
+                        {
+                            /*ListCollectionView view = new ListCollectionView((IList)((bldConstruction)value).Works);
+                            SortDescription sort = new SortDescription("Date", ListSortDirection.Ascending);
+                            view.SortDescriptions.Add(sort);
+                            collection.Add(view);*/
+                    //        bldWorksGroup  sorted_coll = new bldWorksGroup(((bldConstruction)value).Works);
+                            collection.Add(((bldConstruction)value).Works);
 
+                        }
                         break;
                     }
                 case nameof(bldWorksGroup):
                     {
 
-
-                        return value;
+                        //  bldWorksGroup sorted_coll = new bldWorksGroup(((bldWorksGroup)value).OrderByDescending(w=>w.Date));
+                        /*  CollectionViewSource collectionViewSource = new CollectionViewSource();
+                          collectionViewSource.Source = value;
+                            collectionViewSource.View.SortDescriptions.Add(sort);
+                          */
+                        SortDescription sort = new SortDescription("StartTime", ListSortDirection.Ascending);
+                        ICollectionView collectionView;
+                        collectionView = CollectionViewSource.GetDefaultView((bldWorksGroup)value);
+                        collectionView.SortDescriptions.Add(sort);
+                        return collectionView;
                         break;
                     }
                 case nameof(bldWork):
@@ -393,6 +411,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             }
 
             return collection;
+        }
+
+        private bool FilterWorks(object obj)
+        {
+            if (obj is bldWork work) return true;
+            return true;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

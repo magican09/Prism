@@ -65,7 +65,7 @@
             </StackPanel>
         </HierarchicalDataTemplate>
 
-        <HierarchicalDataTemplate ItemsSource="{Binding  }" DataType="{x:Type bld:bldWorksGroup}">
+        <HierarchicalDataTemplate ItemsSource="{Binding   Converter={StaticResource getCollectionFromObjectConvecter}}" DataType="{x:Type bld:bldWorksGroup}">
             <StackPanel Orientation="Horizontal">
                 <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
                 <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
@@ -233,7 +233,8 @@
             <RowDefinition Height="0.5*"/>
         </Grid.RowDefinitions>
 
-        <TreeView  x:Name="treeViewProjectSolution"    Grid.Row="0"  Margin="3"   ItemsSource="{Binding bld_Projects}"  >
+        <TreeView  x:Name="treeViewProjectSolution"    Grid.Row="0"  Margin="3"   ItemsSource="{Binding bld_Projects}"
+                  >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <prism:InvokeCommandAction Command="{Binding TreeViewItemSelectedCommand}" CommandParameter="{Binding SelectedItem, ElementName=treeViewProjectSolution}"/>

@@ -300,11 +300,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public virtual void OnSave()
         {
-            this.OnSave<bldWork>(SelectedWork);
+            base.OnSave<bldWork>(SelectedWork);
         }
         public virtual void OnClose(object obj)
         {
-            this.OnClose<bldWork>(obj, SelectedWork);
+            base.OnClose<bldWork>(obj, SelectedWork);
         }
         public override void OnWindowClose()
         {

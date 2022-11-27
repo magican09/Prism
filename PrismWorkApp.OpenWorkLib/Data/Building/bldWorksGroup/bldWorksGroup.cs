@@ -25,6 +25,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Name = "Ведомость работ:";
         }
-
+        public bldWorksGroup(IEnumerable<bldWork> works_list) : base(works_list)
+        {
+            Name = "Ведомость работ:";
+        }
     }
 }

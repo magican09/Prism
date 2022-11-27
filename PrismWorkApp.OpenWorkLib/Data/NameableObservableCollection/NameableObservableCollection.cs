@@ -108,19 +108,23 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Id = Guid.NewGuid();
             Name = name;
+            CollectionChanged += OnCollectionChangedMethod;
         }
         public NameableObservableCollection(List<TEntity> list) : base(list)
         {
             Id = Guid.NewGuid();
+            CollectionChanged += OnCollectionChangedMethod;
         }
         public NameableObservableCollection(ICollection<TEntity> collection) : base(collection)
         {
             Id = Guid.NewGuid();
+            CollectionChanged += OnCollectionChangedMethod;
 
         }
         public NameableObservableCollection(IEnumerable<TEntity> entities) : base(entities)
         {
             Id = Guid.NewGuid();
+            CollectionChanged += OnCollectionChangedMethod;
         }
         #region Changes Jornaling
 
@@ -162,9 +166,33 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         // private void OnCollectionChanged(object sender,CollectionChangeEventArgs e)
         // { }
+        public Func<TEntity, bool> SortPridicate;
+        public string SortedPropertyName;
         private void OnCollectionChangedMethod(object sender, NotifyCollectionChangedEventArgs e)
         {
             IsVisible = Count > 0;
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+            /*   // var inserted_elements = e.NewItems.OrderBy
+                foreach (TEntity _element in e.NewItems)
+                {
+                   var _element_prop_val = GetPropertyValue(SortedPropertyName,_element);
+                    for (int ii = this.Count - e.NewItems.Count; ii > 0; ii--)
+                    {
+                       var ii_element_prop_val = GetPropertyValue(SortedPropertyName,Items[ii]);
+                        if ()
+                    }
+                }
+                */
+            }
+
+            //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CollectionChanged"));
+        }
+        private object GetPropertyValue(string propName,object obj)
+        {
+            var obj_prop_val = obj.GetType().GetProperty(SortedPropertyName)?.GetValue(obj);
+
+            return obj_prop_val;
         }
         private bool _isVisible;
         public bool IsVisible

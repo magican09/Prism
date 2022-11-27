@@ -147,8 +147,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #region EditMethods
         public void AddWork(bldWork work)
         {
-            AddToCollectionCommand<bldWorksGroup, bldWork> Command =
-                 new AddToCollectionCommand<bldWorksGroup, bldWork>(Works, work);
+            /*   AddToCollectionCommand<bldWorksGroup, bldWork> Command =
+                    new AddToCollectionCommand<bldWorksGroup, bldWork>(Works, work);*/
+            AddWorkCommand Command = new AddWorkCommand(this, work);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void AddResponsibleEmployee(bldResponsibleEmployee empl)
@@ -184,9 +185,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
 
-
         #endregion
-
 
 
     }

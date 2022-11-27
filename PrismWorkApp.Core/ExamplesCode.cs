@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.Core
+﻿namespace PrismWorkApp.Core
 {
     class ExamplesCode
     {

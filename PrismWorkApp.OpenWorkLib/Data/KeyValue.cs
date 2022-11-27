@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -18,20 +15,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public string Key
         {
             get { return _key; }
-            set {  _key= value; OnPropertyChanged("Key"); }
+            set { _key = value; OnPropertyChanged("Key"); }
         }
         private object _value;
         public object Value
         {
             get { return _value; }
-            set {  _value = value; OnPropertyChanged("Key"); }
+            set { _value = value; OnPropertyChanged("Key"); }
         }
-       
+
         public KeyValue()
         {
 
         }
-        public KeyValue(string key,object value)
+        public KeyValue(string key, object value)
         {
             Key = key;
             Value = value;

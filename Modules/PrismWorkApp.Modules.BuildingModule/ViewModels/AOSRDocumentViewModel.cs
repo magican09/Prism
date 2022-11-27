@@ -1,19 +1,14 @@
 ﻿using Prism.Commands;
-using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Modules.BuildingModule.Core;
-using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 //using BindableBase = Prism.Mvvm.BindableBase;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
@@ -130,7 +125,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public DelegateCommand EditPreviousWorkCommand { get; private set; }
         public DelegateCommand EditNextWorkCommand { get; private set; }
 
-        public DelegateCommand GenerateWordDocumentCommand { get; private set; }
+        public DelegateCommand SaveToWordCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
 
@@ -142,15 +137,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 .ObservesProperty(() => SelectedAOSRDocument);
             CloseCommand = new DelegateCommand<object>(OnClose);
 
-            GenerateWordDocumentCommand = new DelegateCommand(OnGenerateWordDocumentCommand);
+            SaveToWordCommand = new DelegateCommand(OnSaveToWordCommand);
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
         }
 
-        private void OnGenerateWordDocumentCommand()
+        private void OnSaveToWordCommand()
         {
-            ProjectService.SaveAOSRToWord(SelectedAOSRDocument);
+            string folder_path = Functions.GetFolderPath();
+            SelectedAOSRDocument.SaveAOSRToWord(folder_path);
         }
 
 
@@ -177,7 +173,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private bool CanSave()
         {
             if (SelectedAOSRDocument != null)
-                return !SelectedAOSRDocument.HasErrors ;
+                return !SelectedAOSRDocument.HasErrors;
             else
                 return false;
         }

@@ -4,13 +4,9 @@ using Prism.Modularity;
 using Prism.Regions;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Console;
-using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
-using System;
-using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {

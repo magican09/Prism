@@ -1,5 +1,4 @@
 ﻿using PrismWorkApp.Services.Interfaces;
-using System.Threading.Tasks;
 
 namespace PrismWorkApp.Services
 {

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldParticipant : BindableBase, IbldParticipant, IEntityObject
     {
-        
+
         private Guid _storedId;
         public Guid StoredId
         {
@@ -38,64 +35,64 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _fullName; }
             set { SetProperty(ref _fullName, value); }
         }
-       
+
         private bldConstructionCompanyGroup _constructionCompanies = new bldConstructionCompanyGroup();
-        public  bldConstructionCompanyGroup ConstructionCompanies
+        public bldConstructionCompanyGroup ConstructionCompanies
         {
             get { return _constructionCompanies; }
             set { SetProperty(ref _constructionCompanies, value); }
         }
-       /* private bldConstructionCompany _company;
-        public virtual  bldConstructionCompany Company 
-        {
-            get { return _company; }
-            set { SetProperty(ref _company, value); }
-        }   
-        */
+        /* private bldConstructionCompany _company;
+         public virtual  bldConstructionCompany Company 
+         {
+             get { return _company; }
+             set { SetProperty(ref _company, value); }
+         }   
+         */
         private ParticipantRole _role;
         public ParticipantRole Role
         {
             get { return _role; }
-            set 
+            set
             {
-               
-                    switch (value)
-                    {
-                        case ParticipantRole.DEVELOPER:
-                        FullName  = "Застройщик(технический заказчик, эксплуатирующая организация или региональный оператор)";
+
+                switch (value)
+                {
+                    case ParticipantRole.DEVELOPER:
+                        FullName = "Застройщик(технический заказчик, эксплуатирующая организация или региональный оператор)";
                         Name = "Застройщик";
 
                         break;
-                        case ParticipantRole.GENERAL_CONTRACTOR:
+                    case ParticipantRole.GENERAL_CONTRACTOR:
                         FullName = "Генеральный подрядчик(лицо, осуществляющее строительство)";
                         Name = "Генподрядчик";
 
                         break;
-                        case ParticipantRole.DISIGNER:
+                    case ParticipantRole.DISIGNER:
                         FullName = "Проектировщик (Лицо, осуществляющее подготовку проектной документации";
                         Name = "Проектировщик";
                         break;
-                        case ParticipantRole.BUILDER:
+                    case ParticipantRole.BUILDER:
                         FullName = "Подрядчик(лицо, выполнившеее работы)";
-                       Name = "Подрядчик";
+                        Name = "Подрядчик";
                         break;
-                        default:
+                    default:
                         Name = "Не определено";
-                            break;
-                    }
-                    SetProperty(ref _role, value);
+                        break;
+                }
+                SetProperty(ref _role, value);
             }
         }
         private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup();
-        public  bldResponsibleEmployeesGroup ResponsibleEmployees
-         {
-             get { return _responsibleEmployees; }
-             set { SetProperty(ref _responsibleEmployees, value); }
-         }
-         
+        public bldResponsibleEmployeesGroup ResponsibleEmployees
+        {
+            get { return _responsibleEmployees; }
+            set { SetProperty(ref _responsibleEmployees, value); }
+        }
+
         [NavigateProperty]
         public bldProject bldProject { get; set; }
-       
+
 
         public object Clone()
         {

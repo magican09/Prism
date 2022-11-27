@@ -1,16 +1,11 @@
 ﻿using Prism.Commands;
 using Prism.Events;
-using Prism.Mvvm;
 using Prism.Regions;
 using PrismWorkApp.Core;
-using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.ProjectModel.Data.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -23,7 +18,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
-       
+
         private string _title = "";
         public string Title
         {
@@ -32,8 +27,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private readonly IEventAggregator _eventAggregator;
         private AOSRDocument _selectedAOSRDocument;
-        public AOSRDocument  SelectedAOSRDocument { get { return _selectedAOSRDocument; } 
-            set { _selectedAOSRDocument = value; OnPropertyChanged("SelectedAOSRDocument"); } }
+        public AOSRDocument SelectedAOSRDocument
+        {
+            get { return _selectedAOSRDocument; }
+            set { _selectedAOSRDocument = value; OnPropertyChanged("SelectedAOSRDocument"); }
+        }
         private ObservableCollection<AOSRDocument> _aOSRDocuments;
         public ObservableCollection<AOSRDocument> AOSRDocuments
         {
@@ -44,11 +42,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public BuildingConstruction SelectedBuildingConstruction
         {
             get { return _selectedBuildingConstruction; }
-            set { _selectedBuildingConstruction = value;  OnPropertyChanged("SelectedBuildingConstruction"); }
+            set { _selectedBuildingConstruction = value; OnPropertyChanged("SelectedBuildingConstruction"); }
         }
         public AOSRDocumentsTableViewModel()
         {
-            CreateAOSRCommand = new DelegateCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedAOSRDocument );
+            CreateAOSRCommand = new DelegateCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedAOSRDocument);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -61,7 +59,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void CreateAOSR()
         {
-           // ProjectService.SaveAOSRToWord(SelectedAOSRDocument);
+            // ProjectService.SaveAOSRToWord(SelectedAOSRDocument);
 
         }
         private bool CanCreateAOSR()

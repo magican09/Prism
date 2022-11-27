@@ -1,15 +1,12 @@
 ﻿using PrismWorkApp.Core;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media.Imaging;
 
 namespace PrismWorkApp.Modules.BuildingModule.Core
 {
@@ -77,12 +74,13 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
         {
             Type node_object_type = value.GetType();
             string img_suffix = "";
-           
-            switch(value.GetType().Name)
+
+            switch (value.GetType().Name)
             {
                 case nameof(bldParticipant):
-                    { bldParticipant participant = (bldParticipant)value;
-                        switch(participant.Role)
+                    {
+                        bldParticipant participant = (bldParticipant)value;
+                        switch (participant.Role)
                         {
                             case ParticipantRole.DEVELOPER:
                                 img_suffix = "_DEVELOPER";
@@ -101,7 +99,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                                 break;
                         }
 
-                    break;
+                        break;
                     }
                 case nameof(bldResponsibleEmployee):
                     {
@@ -138,12 +136,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             }
 
             string type_name = node_object_type.Name;
-            
+
             var image = "Images/Ribbon/32x32/add.png";
             image = $"Images/bldProjectImages/{type_name}{img_suffix}.png";
             Uri img_uri = new Uri($"/PrismWorkApp.Modules.BuildingModule;component/Resourses/{image}", UriKind.Relative);
 
-           
+
 
 
             // Uri img_uri_ = new Uri($"pack://application:,,,/Resourses/Images/Ribbon/32x32/add.png");
@@ -162,7 +160,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (((bool)value)==true) ? Visibility.Visible: Visibility.Collapsed;
+            return (((bool)value) == true) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -192,9 +190,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                               collection.Add(obj);
                          */
                         bldObjectsGroup bld_objects = value as bldObjectsGroup;
-                        if (bld_objects.Count > 0) 
+                        if (bld_objects.Count > 0)
                             return value;
-                        else 
+                        else
                             return null;
                         break;
                         return value;
@@ -203,11 +201,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 case nameof(bldObject):
                     {
                         bldObject bld_object = value as bldObject;
-                          if (bld_object.BuildingObjects != null) collection.Add(bld_object.BuildingObjects);
-                          if (bld_object.Constructions != null) collection.Add(bld_object.Constructions);
-                      //  bld_object.BuildingObjects.Add(new bldObject());
+                        if (bld_object.BuildingObjects != null) collection.Add(bld_object.BuildingObjects);
+                        if (bld_object.Constructions != null) collection.Add(bld_object.Constructions);
+                        //  bld_object.BuildingObjects.Add(new bldObject());
                         // collection.Add(bld_object.BuildingObjects);
-                       //  collection.Add(bld_object.Constructions);
+                        //  collection.Add(bld_object.Constructions);
 
                         break;
                     }
@@ -235,8 +233,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     }
                 case nameof(bldWorksGroup):
                     {
-                    
-                        
+
+
                         return value;
                         break;
                     }
@@ -268,13 +266,13 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             NameableObservabelObjectsCollection materials_docs = new NameableObservabelObjectsCollection();
                             materials_docs.Name = "Документы на материалы";
                             foreach (bldMaterial material in work.Materials)
-                               foreach(bldDocument document in material.Documents)
+                                foreach (bldDocument document in material.Documents)
                                     materials_docs.Add(document);
                             docs_treeViewItem.Add(materials_docs);
-                         
+
                         }
                         collection.Add(docs_treeViewItem);
-                         break;
+                        break;
                     }
                 case nameof(bldParticipant):
                     {
@@ -284,7 +282,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             collection.Add(company);
                             var employees = company?.ResponsibleEmployees
                                 .Where(emp => bldProjectFuncions.ResponsibleRoleComparer(participant.Role, emp.RoleOfResponsible)).ToList();
-                           foreach (bldResponsibleEmployee employee in employees)
+                            foreach (bldResponsibleEmployee employee in employees)
                             {
                                 collection.Add(employee);
                             }
@@ -335,7 +333,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     {
                         bldMaterial material = value as bldMaterial;
                         if (material?.Documents != null) collection.Add(material.Documents);
-                      
+
                         break;
                     }
                 case nameof(bldMaterialCertificate):
@@ -390,11 +388,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         break;
                     }
 
-                
+
 
             }
 
-           return collection;
+            return collection;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
+using System;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldConstruction : BindableBase,IbldConstruction,ICloneable, IEntityObject
+    public class bldConstruction : BindableBase, IbldConstruction, IEntityObject,ICloneable
     {
         private Guid _storedId;
         public Guid StoredId
@@ -14,7 +13,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _storedId; }
             set { SetProperty(ref _storedId, value); }
         }
-      
+
         private DateTime _date;
         public DateTime Date
         {
@@ -32,11 +31,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get
             {
-             /*   int short_name_leng = 40;
-                string short_name = "";
-                if (Name?.Length < short_name_leng) short_name = $"{Name}";
-                else short_name = $"{Name?.Substring(0, short_name_leng)}...";
-                SetProperty(ref _shortName, short_name);*/
                 return _shortName;
             }
             set { SetProperty(ref _shortName, value); }
@@ -103,7 +97,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _scopeOfWork; }
             set { SetProperty(ref _scopeOfWork, value); }
         }
-        private  bldConstructionsGroup _constructions = new bldConstructionsGroup();
+        private bldConstructionsGroup _constructions = new bldConstructionsGroup();
         public virtual bldConstructionsGroup Constructions
         {
             get { return _constructions; }
@@ -117,48 +111,83 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _works, value); }
         }
 
+        private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup();
+        [NotMapped]
+        public bldResponsibleEmployeesGroup? ResponsibleEmployees
+        {
+            get { return _responsibleEmployees; }
+            set { SetProperty(ref _responsibleEmployees, value); }
+        }
+
         [NavigateProperty]
         public bldObject? bldObject { get; set; }
-         public bldConstruction()
-        {
-            Works.CollectionChanged += OnWorkAdd;
-            Constructions.CollectionChanged+=OnConstructionAdd;
-        }
 
-        private void OnConstructionAdd(object sender, NotifyCollectionChangedEventArgs e)
+        public bldConstruction()
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (bldConstruction construction  in e.NewItems)
-                {
-                  //  construction.bldConstruction = this;
-                }
-            }
-        }
-
-        private void OnWorkAdd(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if(e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach(bldWork work in e.NewItems)
-                {
-                    work.bldConstruction = this;
-                }
-            }
-        }
-
-        public bldWork GetWork(Guid id)
-        {
-            foreach (bldWork work in Works)
-                if (work.Id == id) return work;
-            return null;
+ 
         }
         public object Clone()
         {
-            return MemberwiseClone();
+            throw new NotImplementedException();
         }
-       
+        public void SaveAOSRsToWord(string folderPath = null)
+        {
+            if (Works.Count > 1)
+            {
+                folderPath = System.IO.Path.Combine(folderPath, this.Name);
+                System.IO.Directory.CreateDirectory(folderPath);
+            }
+            foreach (bldWork work in Works)
+            {
+                work.SaveAOSRsToWord(folderPath);
 
-        
+            }
+
+        }
+        #region EditMethods
+        public void AddWork(bldWork work)
+        {
+            AddToCollectionCommand<bldWorksGroup, bldWork> Command =
+                 new AddToCollectionCommand<bldWorksGroup, bldWork>(Works, work);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddResponsibleEmployee(bldResponsibleEmployee empl)
+        {
+            AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+                 new AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddConstruction(bldConstruction construction)
+        {
+            construction.bldObject = null; ///Спорное решение с установкой в null
+            AddToCollectionCommand<bldConstructionsGroup, bldConstruction> Command =
+                new AddToCollectionCommand<bldConstructionsGroup, bldConstruction>(Constructions, construction);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+
+        public void RemoveWork(bldWork work)
+        {
+            RemoveFromCollectionCommand<bldWorksGroup, bldWork> Command =
+                 new RemoveFromCollectionCommand<bldWorksGroup, bldWork>(Works, work);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void RemoveResponsibleEmployee(bldResponsibleEmployee empl)
+        {
+            RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+                 new RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+       public void RemoveConstruction(bldConstruction constr)
+        {
+            RemoveFromCollectionCommand<bldConstructionsGroup, bldConstruction> Command =
+                new RemoveFromCollectionCommand<bldConstructionsGroup, bldConstruction>(Constructions, constr);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+
+
+        #endregion
+
+
+
     }
 }

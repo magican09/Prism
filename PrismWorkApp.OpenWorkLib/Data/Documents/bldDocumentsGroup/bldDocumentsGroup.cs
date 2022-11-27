@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace PrismWorkApp.OpenWorkLib.Data 
+namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldDocumentsGroup: NameableObservableCollection<bldDocument>,IbldDocumentsGroup, IEntityObject
+    public class bldDocumentsGroup : NameableObservableCollection<bldDocument>, IbldDocumentsGroup, IEntityObject
     {
         public bldDocumentsGroup()
         {

@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Core
 {
@@ -20,7 +18,7 @@ namespace PrismWorkApp.OpenWorkLib.Core
         public static int NavigateParametrDepth { get; set; } = 0;//Глубина навигационного свойства
         public static int InitialRecursive_depth { get; set; } = 0;
         public static int Cicling_recursive_depth { get; set; } = 0;//Глубина рекурсии
-     
+
         //public static void GetCopyEntitityObject<TSourse>(object sourse, object target, Func<TSourse, bool> predicate, bool objectsTreeCatalogReset = true)
         //where TSourse : IEntityObject
         //{
@@ -106,9 +104,9 @@ namespace PrismWorkApp.OpenWorkLib.Core
         //        foreach(IEntityObject element in (IEnumerable<IEntityObject>)sourse)
         //        {
         //            var new_target_object = Activator.CreateInstance(element.GetType());//  element.Clone<TSourse>(predicate);
-                  
+
         //            //  GetCopyEntitityObject(element, new_target_object, predicate);
-                
+
         //                 //((IList)target).Add(new_target_object);
         //        }
         //    }*/

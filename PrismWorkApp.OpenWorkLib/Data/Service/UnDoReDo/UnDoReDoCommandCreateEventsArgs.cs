@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
+﻿namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
 {
     public delegate void UnDoReDoCommandCreateEventHandler(object sender, UnDoReDoCommandCreateEventsArgs e);
 
@@ -10,7 +6,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
     {
         public string CommandName { get; set; }
         public IUnDoRedoCommand Command { get; set; }
-        public UnDoReDoCommandCreateEventsArgs(IUnDoRedoCommand command,string command_name ="")
+        public UnDoReDoCommandCreateEventsArgs(IUnDoRedoCommand command, string command_name = "")
         {
             Command = command;
             CommandName = command_name;

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using System.Windows.Input;
 
 namespace PrismWorkApp.Core.Commands
@@ -57,7 +56,7 @@ namespace PrismWorkApp.Core.Commands
             var body = (MemberExpression)canExecuteExpression.Body;
             var view_model_expression = (ConstantExpression)body.Expression;
             var view_model = view_model_expression.Value; //Значение родиельского объекта VeiwModel
-            var notify_view_model = (INotifyPropertyChanged)view_model; 
+            var notify_view_model = (INotifyPropertyChanged)view_model;
             PropertyInfo member_prop_info = body.Member as PropertyInfo;
             string prop_name = member_prop_info.Name; //Получаем имся свойства к которому привязываемся
             Func<bool> prop_get_Delegate = () => { return (bool)member_prop_info.GetValue(view_model); };//Получаем делегат метода get свойства
@@ -91,7 +90,7 @@ namespace PrismWorkApp.Core.Commands
         /// <typeparam name="T"></typeparam>
         /// <param name="propertyExpression"></param>
         /// <returns></returns>
-        public  NotifyCommand ObservesProperty<T>(Expression<Func<T>> propertyExpression)
+        public NotifyCommand ObservesProperty<T>(Expression<Func<T>> propertyExpression)
         {
 
             var body = (MemberExpression)propertyExpression.Body;
@@ -107,13 +106,13 @@ namespace PrismWorkApp.Core.Commands
             }
             return this;
         }
-        public NotifyCommand ObservesPropertyChangedEvent(INotifyPropertyChanged  obj)
+        public NotifyCommand ObservesPropertyChangedEvent(INotifyPropertyChanged obj)
         {
             obj.PropertyChanged += RaiseCanExecuteChanged;//Подписываемся на событие PropertyChanged
             return this;
         }
 
-     
+
 
         /// <summary>
         /// Метод вызываемый собятием PropertyChanged  объктом ViewModel на котором находятис свойства на изменения которых подписаны
@@ -129,7 +128,7 @@ namespace PrismWorkApp.Core.Commands
         private void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             RaiseCanExecuteChanged();
-         //   CanExecuteChanged(this, EventArgs.Empty);
+            //   CanExecuteChanged(this, EventArgs.Empty);
         }
         public void RaiseCanExecuteChanged()
         {
@@ -137,11 +136,11 @@ namespace PrismWorkApp.Core.Commands
         }
         protected override void Execute(object parameter)
         {
-          Execute(parameter);
+            Execute(parameter);
         }
         protected override bool CanExecute(object parameter)
         {
-           return CanExecute(parameter);
+            return CanExecute(parameter);
         }
     }
     public class NotifyCommand<T> : DelegateCommandBase, ICommand, IActiveAware
@@ -150,12 +149,12 @@ namespace PrismWorkApp.Core.Commands
         public event EventHandler IsActiveChanged;
         public event EventHandler CanExecuteChanged = delegate { };
         protected Action<T> _TargetExecuteMetod;
-        protected Func<T,bool> _TargetCanExecuteMethod;
+        protected Func<T, bool> _TargetCanExecuteMethod;
         public NotifyCommand(Action<T> executeMethod)
         {
             _TargetExecuteMetod = executeMethod;
         }
-        public NotifyCommand(Action<T> executeMethod, Func<T,bool> canExecuteMehtod)
+        public NotifyCommand(Action<T> executeMethod, Func<T, bool> canExecuteMehtod)
         {
             _TargetExecuteMetod = executeMethod;
             _TargetCanExecuteMethod = canExecuteMehtod;
@@ -195,10 +194,10 @@ namespace PrismWorkApp.Core.Commands
             PropertyInfo member_prop_info = body.Member as PropertyInfo;
             string prop_name = member_prop_info.Name;
             var sd = member_prop_info.GetValue(view_model);
-            Func<T,bool> prop_get_Delegate = (param) => { return (bool)member_prop_info.GetValue(view_model); };
+            Func<T, bool> prop_get_Delegate = (param) => { return (bool)member_prop_info.GetValue(view_model); };
             if (!ObservesCanExecutePropertiesDictationary.ContainsKey(prop_name))
             {
-                ObservesCanExecutePropertiesDictationary.Add(prop_name, (Func<T,bool>)prop_get_Delegate);
+                ObservesCanExecutePropertiesDictationary.Add(prop_name, (Func<T, bool>)prop_get_Delegate);
                 notify_view_model.PropertyChanged += ObservesCanExecutePropertyChanged;
             }
             return this;
@@ -214,7 +213,7 @@ namespace PrismWorkApp.Core.Commands
                 _TargetCanExecuteMethod = buffer_delegate;//Востанавливаем состяние делегата
             }
         }
-        private Dictionary<string, Func<T,bool>> ObservesCanExecutePropertiesDictationary = new Dictionary<string, Func<T,bool>>();
+        private Dictionary<string, Func<T, bool>> ObservesCanExecutePropertiesDictationary = new Dictionary<string, Func<T, bool>>();
         private List<string> ObservesPropertiesNames = new List<string>();
         public NotifyCommand<T> ObservesProperty<TType>(Expression<Func<TType>> propertyExpression)
         {

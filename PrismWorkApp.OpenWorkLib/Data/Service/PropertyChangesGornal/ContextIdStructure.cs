@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-   public  class ContextIdStructure
+    public class ContextIdStructure
     {
         public Guid ContextId { get; set; }
         public ContextIdStructure Children { get; set; }

@@ -6,14 +6,13 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
     public class ValidatableBindableBase : BindableBase, INotifyDataErrorInfo
     {
         private Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
-      
+
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
 
         public System.Collections.IEnumerable GetErrors(string propertyName)
@@ -29,11 +28,11 @@ namespace PrismWorkApp.Modules.BuildingModule
             get { return _errors.Count > 0; }
         }
 
-        protected override bool   SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = null)
+        protected override bool SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = null)
         {
             ValidateProperty(propertyName, val);
             return base.SetProperty<T>(ref member, val, propertyName);
-             
+
 
         }
 

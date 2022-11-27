@@ -1,23 +1,10 @@
-﻿using Microsoft.Win32;
-using OfficeOpenXml;
-using Prism.Commands;
-using Prism.Events;
-using Prism.Mvvm;
+﻿using Prism.Events;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Console;
 using PrismWorkApp.Core.Events;
-using PrismWorkApp.Modules.BuildingModule.Core;
-using PrismWorkApp.ProjectModel.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -38,7 +25,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-         private IModulesContext _modulesContext;
+        private IModulesContext _modulesContext;
         public IModulesContext ModulesContext
         {
             get { return _modulesContext; }
@@ -50,15 +37,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _moduleInfoData; }
             set { SetProperty(ref _moduleInfoData, value); }
         }
-        public RibbonTabViewModel(IModulesContext  modulesContext, IEventAggregator eventAggregator  )
+        public RibbonTabViewModel(IModulesContext modulesContext, IEventAggregator eventAggregator)
         {
             ModulesContext = modulesContext;
             _eventAggregator = eventAggregator;
             ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
             //IsModuleEnable =  ModuleInfo.IsEnable;
-          //  _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
-        //       ThreadOption.PublisherThread, false,
-          //      message => message.Recipient == "RibbonTab");
+            //  _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
+            //       ThreadOption.PublisherThread, false,
+            //      message => message.Recipient == "RibbonTab");
             EventMessage message = new EventMessage();
             message.From = CURRENT_MODULE_ID;
             message.To = CURRENT_MODULE_ID; ;
@@ -66,21 +53,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             message.Recipient = "RibonGroup";
             message.ParameterName = "Command";
             message.Value = "GetRibbobGroupEntity";
-        //    _eventAggregator.GetEvent<MessageConveyEvent>().Publish(message);
+            //    _eventAggregator.GetEvent<MessageConveyEvent>().Publish(message);
         }
         private void OnGetMessage(EventMessage message)
         {
             switch (message.ParameterName)
             {
                 case "Project":
-                   
+
                     break;
             }
         }
 
-     
-       
-       
+
+
+
 
     }
 

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldMaterial:BindableBase, IbldMaterial, IEntityObject
+    public class bldMaterial : BindableBase, IbldMaterial, IEntityObject
     {
-      
+
         private Guid _storedId;
         public Guid StoredId
         {
@@ -62,7 +60,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _quantity, value); }
         }//Количесво 
         private bldUnitOfMeasurement _unitOfMeasurement;
-        public virtual  bldUnitOfMeasurement UnitOfMeasurement
+        public virtual bldUnitOfMeasurement UnitOfMeasurement
         {
             get { return _unitOfMeasurement; }
             set { SetProperty(ref _unitOfMeasurement, value); }
@@ -76,7 +74,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }//Общая стоимость
 
         private bldDocumentsGroup _documents = new bldDocumentsGroup("Документация");
-        public  bldDocumentsGroup Documents
+        public bldDocumentsGroup Documents
         {
             get { return _documents; }
             set { SetProperty(ref _documents, value); }

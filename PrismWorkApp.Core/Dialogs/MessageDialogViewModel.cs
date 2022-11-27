@@ -2,14 +2,12 @@
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.Core.Dialogs
 {
-  public    class MessageDialogViewModel:BindableBase ,IDialogAware
+    public class MessageDialogViewModel : BindableBase, IDialogAware
     {
-         private string _title="Диалоговое окно сообщения";
+        private string _title = "Диалоговое окно сообщения";
         public string Title
         {
             get { return _title; }
@@ -33,7 +31,7 @@ namespace PrismWorkApp.Core.Dialogs
         {
             var result = ButtonResult.OK;
             var p = new DialogParameters();
-            p.Add("my_param","Диалоговое окно закрыто пользователем!");
+            p.Add("my_param", "Диалоговое окно закрыто пользователем!");
             RequestClose.Invoke(new DialogResult(result, p));
         }
 
@@ -44,15 +42,15 @@ namespace PrismWorkApp.Core.Dialogs
 
         public void OnDialogClosed()
         {
-          
+
         }
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            Message = parameters.GetValue<string>("message");  
+            Message = parameters.GetValue<string>("message");
         }
-        
-        public DelegateCommand  CloseDialogCommand { get; }
-      
+
+        public DelegateCommand CloseDialogCommand { get; }
+
     }
 }

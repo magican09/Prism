@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
 {
@@ -17,7 +16,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
         }
         public virtual void Execute(object parameter = null)
         {
-            if(parameter!=null)
+            if (parameter != null)
                 _AddObject = (TEntity)parameter;
             _Collection.Add(_AddObject);
         }

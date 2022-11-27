@@ -1,18 +1,8 @@
-﻿using Microsoft.Win32;
-//using OfficeOpenXml;
-using Prism.Commands;
+﻿//using OfficeOpenXml;
 using Prism.Mvvm;
 using PrismWorkApp.Core.Console;
-using PrismWorkApp.ProjectModel.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace PrismWorkApp.Modules.MainModule.ViewModels
 {
@@ -25,7 +15,7 @@ namespace PrismWorkApp.Modules.MainModule.ViewModels
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
         private string _title = "Диспетчер";
-        private  IModulesContext _modulesContext;
+        private IModulesContext _modulesContext;
         public IModulesContext ModulesContext
         {
             get { return _modulesContext; }
@@ -37,11 +27,11 @@ namespace PrismWorkApp.Modules.MainModule.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-          public ModulesRibbonTabViewModel(IModulesContext modulesContext )
+        public ModulesRibbonTabViewModel(IModulesContext modulesContext)
         {
             _modulesContext = modulesContext;
         }
-    
+
     }
 
 }

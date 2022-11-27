@@ -1,20 +1,17 @@
-﻿using PrismWorkApp.OpenWorkLib.Data.Service;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldWork : BindableBase, IbldWork,ICloneable, IEntityObject//, IJornalable
+    public class bldWork : BindableBase, IbldWork, ICloneable, IEntityObject//, IJornalable
     {
-    
+
         private Guid _storedId;
         public Guid StoredId
         {
             get { return _storedId; }
             set { SetProperty(ref _storedId, value); }
         }
-        
+
         private DateTime _date;
         public DateTime Date
         {
@@ -30,13 +27,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private string _shortName;
         public string ShortName
         {
-            get {
-              /*  int short_name_leng = 40;
-                string short_name = "";
-                if (Name?.Length < short_name_leng)   short_name = $"{Name}"; 
-                else short_name = $"{Name?.Substring(0, short_name_leng)}...";
-                SetProperty(ref _shortName, short_name);*/
-                return _shortName;
+            get
+            {
+               return _shortName;
             }
             set { SetProperty(ref _shortName, value); }
         }
@@ -103,18 +96,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _scopeOfWork; }
             set { SetProperty(ref _scopeOfWork, value); }
         }
-        
+
         private bldMaterialsGroup _materials = new bldMaterialsGroup("Использованные материалы:");
         public virtual bldMaterialsGroup Materials
         {
             get { return _materials; }
             set { SetProperty(ref _materials, value); }
         }//Используемые материала
-        private bldWorkArea _workArea ;
-        public virtual bldWorkArea WorkArea 
+        private bldWorkArea _workArea;
+        public virtual bldWorkArea WorkArea
         {
-            get { return _workArea ; }
-            set { SetProperty(ref _workArea , value); }
+            get { return _workArea; }
+            set { SetProperty(ref _workArea, value); }
         }
         private bool _isDone;
         public bool IsDone
@@ -122,34 +115,34 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _isDone; }
             set { SetProperty(ref _isDone, value); }
         }
-        private bldWorksGroup  _previousWorks = new bldWorksGroup("Предыдущие работы");  
-        public  bldWorksGroup PreviousWorks
+        private bldWorksGroup _previousWorks = new bldWorksGroup("Предыдущие работы");
+        public bldWorksGroup PreviousWorks
         {
             get { return _previousWorks; }
             set { SetProperty(ref _previousWorks, value); }
         }
         private bldWorksGroup _nextWorks = new bldWorksGroup("Последующие работы");
-        public  bldWorksGroup NextWorks
+        public bldWorksGroup NextWorks
         {
             get { return _nextWorks; }
             set { SetProperty(ref _nextWorks, value); }
         }
         private bldLaboratoryReportsGroup _laboratoryReports = new bldLaboratoryReportsGroup("Лабораторные испытания");
-        public  bldLaboratoryReportsGroup LaboratoryReports
+        public bldLaboratoryReportsGroup LaboratoryReports
         {
             get { return _laboratoryReports; }
             set { SetProperty(ref _laboratoryReports, value); }
         }
 
         private bldExecutiveSchemesGroup _executiveSchemes = new bldExecutiveSchemesGroup("Исполнительные схемы");
-        public  bldExecutiveSchemesGroup ExecutiveSchemes
+        public bldExecutiveSchemesGroup ExecutiveSchemes
         {
             get { return _executiveSchemes; }
             set { SetProperty(ref _executiveSchemes, value); }
         }
 
-        private  bldAOSRDocumentsGroup _aOSRDocuments = new bldAOSRDocumentsGroup("Акты АОСР");
-        public  bldAOSRDocumentsGroup AOSRDocuments
+        private bldAOSRDocumentsGroup _aOSRDocuments = new bldAOSRDocumentsGroup("Акты АОСР");
+        public bldAOSRDocumentsGroup AOSRDocuments
         {
             get { return _aOSRDocuments; }
             set { SetProperty(ref _aOSRDocuments, value); }
@@ -182,8 +175,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             return MemberwiseClone();
         }
+        public void SaveAOSRsToWord(string folderPath)
+        {
+            if (AOSRDocuments.Count > 1)
+            {
+                folderPath = System.IO.Path.Combine(folderPath, this.Name);
+                System.IO.Directory.CreateDirectory(folderPath);
+            }
+            foreach (bldAOSRDocument aOSRDocument in AOSRDocuments)
+                aOSRDocument.SaveAOSRToWord(folderPath);
 
-       
-        
+        }
+
+
     }
 }

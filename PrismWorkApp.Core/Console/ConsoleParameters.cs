@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.Core.Console
+﻿namespace PrismWorkApp.Core.Console
 {
     public static class ConsoleParameters
     {
@@ -13,12 +9,12 @@ namespace PrismWorkApp.Core.Console
         }
         public static class ModuleNameParameter
         {
-            public const string  ALL_MODULE_NAME = "All";
-          //  public const string MAIN_MODULE_NAME = "MainModule";
+            public const string ALL_MODULE_NAME = "All";
+            //  public const string MAIN_MODULE_NAME = "MainModule";
         }
 
     }
 
-   
+
 
 }

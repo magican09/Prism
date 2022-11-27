@@ -1,20 +1,15 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
-using Prism.Regions;
+﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
+using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
-using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using BindableBase = Prism.Mvvm.BindableBase;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -100,7 +95,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedDocumentsList; }
             set { SetProperty(ref _selectedDocumentsList, value); }
         }
-       
+
         private bool _editMode;
         public bool EditMode
         {
@@ -130,7 +125,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand EditPreviousWorkCommand { get; private set; }
         public NotifyCommand EditNextWorkCommand { get; private set; }
-
+        public NotifyCommand SaveAOSRsToWordCommand { get; private set; }
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private IApplicationCommands _applicationCommands;
 
@@ -159,6 +154,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             EditNextWorkCommand = new NotifyCommand(OnEditNextWork,
                                         () => SelectedNextWork != null)
                     .ObservesProperty(() => SelectedNextWork);
+            SaveAOSRsToWordCommand = new NotifyCommand(OnSaveAOSRsToWord);
+
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
@@ -166,8 +163,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
         }
 
-
-
+        private void OnSaveAOSRsToWord()
+        {
+            string folder_path = Functions.GetFolderPath();
+            SelectedWork.SaveAOSRsToWord(folder_path);
+        }
 
         private void OnEditNextWork()
         {
@@ -177,7 +177,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnAddNextWork()
         {
-            bldWorksGroup AllWorks = new bldWorksGroup(SelectedWork.bldConstruction.Works.Where(wr=>wr.Id!=SelectedWork.Id).ToList());
+            bldWorksGroup AllWorks = new bldWorksGroup(SelectedWork.bldConstruction.Works.Where(wr => wr.Id != SelectedWork.Id).ToList());
             //new bldWorksGroup(_buildingUnitsRepository.Works.GetAllBldWorks());
             CoreFunctions.AddElementToCollectionWhithDialog<bldWorksGroup, bldWork>
                  (SelectedWork.NextWorks, AllWorks, _dialogService,
@@ -191,21 +191,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          bldWorksGroup add_works = new bldWorksGroup();
 
                          foreach (bldWork work in new_nextWork_collection)//Добавляем выбранные работы в писок
-                         { 
+                         {
                              if (SelectedWork.NextWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault() == null)//Если работы в списке нет...
                              {
                                  bldWork new_work = AllWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault();
                                  add_works.Add(new_work);
-                                  SelectedWork.NextWorks.Add(new_work);
+                                 SelectedWork.NextWorks.Add(new_work);
                              }
                          }
                          //CoreFunctions.CopyObjectReflectionNewInstances(new_nextWork_collection, SelectedWork.NextWorks);
                          foreach (bldWork work in add_works)
-                               work?.PreviousWorks.Add(SelectedWork);
+                             work?.PreviousWorks.Add(SelectedWork);
                      }
                  },
                  typeof(AddbldWorkToCollectionDialogView).Name,
-                 typeof(WorkDialogView).Name,Id,
+                 typeof(WorkDialogView).Name, Id,
                   "Редактирование списка последующих работ",
                  "Форма для редактирования спика последующих работ.",
                  "Список всех работ текущей коснрукции", "Последущие работы");
@@ -214,12 +214,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
                 (SelectedWork.NextWorks, SelectedNextWork, "Последующая работа",
-                () => SelectedNextWork = null, _dialogService,Id);
+                () => SelectedNextWork = null, _dialogService, Id);
         }
 
         private void OnAddPreviousWork()
         {
-             bldWorksGroup AllWorks = new bldWorksGroup(SelectedWork.bldConstruction.Works.Where(wr=>wr.Id!=SelectedWork.Id).ToList());
+            bldWorksGroup AllWorks = new bldWorksGroup(SelectedWork.bldConstruction.Works.Where(wr => wr.Id != SelectedWork.Id).ToList());
             // new bldWorksGroup(_buildingUnitsRepository.Works.GetAllBldWorks());
             CoreFunctions.AddElementToCollectionWhithDialog<bldWorksGroup, bldWork>
                 (SelectedWork.PreviousWorks, AllWorks, _dialogService,
@@ -240,14 +240,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                  bldWork new_work = AllWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault();
                                  add_works.Add(new_work);
                                  SelectedWork.PreviousWorks.Add(new_work);
-                            //     SelectedWork.PreviousWorks.Name = "1111111";
+                                 //     SelectedWork.PreviousWorks.Name = "1111111";
                              }
                          }
                          // RiseEvent  SelectedWork.PreviousWorks.CollectionChanged(N);
                          foreach (bldWork work in add_works)
                          {
                              work?.NextWorks.Add(SelectedWork);
-                          //   work.NextWorks.Name = "222222";
+                             //   work.NextWorks.Name = "222222";
                          }
                      }
 
@@ -278,7 +278,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
                  (SelectedWork.PreviousWorks, SelectedPreviousWork, "Предыдущая работа",
-                 () => SelectedPreviousWork = null, _dialogService,Id);
+                 () => SelectedPreviousWork = null, _dialogService, Id);
         }
         private void OnEditPreviousWork()
         {
@@ -297,7 +297,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             SaveCommand.RaiseCanExecuteChanged();
         }
-        
+
         public virtual void OnSave()
         {
             this.OnSave<bldWork>(SelectedWork);
@@ -322,31 +322,31 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             ConveyanceObject navigane_message_work = (ConveyanceObject)navigationContext.Parameters["bld_work"];
             ConveyanceObject navigane_message_construction = (ConveyanceObject)navigationContext.Parameters["bld_construction"];
-             if (navigane_message_work != null)
+            if (navigane_message_work != null)
             {
                 ResivedWork = (bldWork)navigane_message_work.Object;
                 ResivedConstruction = (bldConstruction)navigane_message_construction.Object;
                 //  ResivedObject = (bldObject)navigane_message_object.Object;
                 SelectedWork = ResivedWork;
-                 EditMode = navigane_message_work.EditMode;
+                EditMode = navigane_message_work.EditMode;
                 if (SelectedWork != null) SelectedWork.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedWork = ResivedWork;
                 SelectedWork.ErrorsChanged += RaiseCanExecuteChanged;
                 SelectedConstruction = ResivedConstruction;
                 SelectedObject = new bldObject();
-             //   CoreFunctions.CopyObjectReflectionNewInstances(ResivedConstruction, SelectedConstruction);
-              //  SelectedWork = SelectedConstruction.Works.Where(wr => wr.Id == ResivedWork.Id).FirstOrDefault();
+                //   CoreFunctions.CopyObjectReflectionNewInstances(ResivedConstruction, SelectedConstruction);
+                //  SelectedWork = SelectedConstruction.Works.Where(wr => wr.Id == ResivedWork.Id).FirstOrDefault();
                 AllDocuments.Clear();
-                if(SelectedWork.AOSRDocuments.Count>0) AllDocuments.Add(SelectedWork.AOSRDocuments.Id, SelectedWork.AOSRDocuments);
+                if (SelectedWork.AOSRDocuments.Count > 0) AllDocuments.Add(SelectedWork.AOSRDocuments.Id, SelectedWork.AOSRDocuments);
                 if (SelectedWork.LaboratoryReports.Count > 0) AllDocuments.Add(SelectedWork.LaboratoryReports.Id, SelectedWork.LaboratoryReports);
                 if (SelectedWork.ExecutiveSchemes.Count > 0) AllDocuments.Add(SelectedWork.ExecutiveSchemes.Id, SelectedWork.ExecutiveSchemes);
-                 Title = ResivedWork.ShortName;
+                Title = ResivedWork.ShortName;
             }
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-          //  AllDocuments.Clear();
+            //  AllDocuments.Clear();
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_work"];
             if (((bldWork)navigane_message.Object).Id != SelectedWork.Id)
                 return false;

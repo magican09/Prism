@@ -1,14 +1,9 @@
-﻿using PrismWorkApp.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PrismWorkApp.ProjectModel.Data.Models
 {
-    public class Participant :oldNode, INotifyPropertyChanged
+    public class Participant : oldNode, INotifyPropertyChanged
     {
         /*public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -31,8 +26,11 @@ namespace PrismWorkApp.ProjectModel.Data.Models
             ResponsibleEmployees = new ObservableCollection<ResponsibleEmployee>();
         }
         private string _fullName;
-        public string FullName {
-            get { switch (Role)
+        public string FullName
+        {
+            get
+            {
+                switch (Role)
                 {
                     case ParticipantRole.DEVELOPER:
                         _fullName = "Застройщик(технический заказчик, эксплуатирующая организация или региональный оператор)";
@@ -42,7 +40,7 @@ namespace PrismWorkApp.ProjectModel.Data.Models
                         break;
                     case ParticipantRole.DISIGNER:
                         _fullName = "Проектировщик (Лицо, осуществляющее подготовку проектной документации";
-                            break;
+                        break;
                     case ParticipantRole.BUILDER:
                         _fullName = "Подрядчик(лицо, выполнившеее работы)";
                         break;
@@ -51,13 +49,17 @@ namespace PrismWorkApp.ProjectModel.Data.Models
                         break;
                 }
 
-                return _fullName; }
-            set { _fullName = value;
+                return _fullName;
+            }
+            set
+            {
+                _fullName = value;
                 OnPropertyChanged("FullName");
-            } }///Временно!!
+            }
+        }///Временно!!
 
-        private string _name ;
-        public string  Name
+        private string _name;
+        public string Name
         {
             get
             {

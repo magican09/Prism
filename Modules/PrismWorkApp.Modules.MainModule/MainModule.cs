@@ -1,19 +1,13 @@
 ﻿using Prism.Events;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Mvvm;
 using Prism.Regions;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Console;
 using PrismWorkApp.Core.Events;
-using PrismWorkApp.Modules.MainModule.Views;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows.Controls.Ribbon;
 
 namespace PrismWorkApp.Modules.MainModule
 {
@@ -25,7 +19,7 @@ namespace PrismWorkApp.Modules.MainModule
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
-       
+
         private readonly IContainerProvider _containerProvider;
         private readonly IRegionManager _regionManager;
         private readonly IEventAggregator _eventAggregator;
@@ -83,14 +77,14 @@ namespace PrismWorkApp.Modules.MainModule
                                     moduleInfoData.Name = (command_str[2]);
                                     moduleInfoData.IsEnable = true;
                                     ModulesContext.ModulesInfoData.Add(moduleInfoData);
-                                 /*   EventMessage requestEventMessage = new EventMessage();
-                                    requestEventMessage.From = ModuleId;
-                                    requestEventMessage.To = eventMessage.From;
-                                    requestEventMessage.ParameterName = "Command";
-                                    requestEventMessage.Value = $"get_ribbon_tab {moduleInfoData.Id.ToString()} {moduleInfoData.Name}"; //Запрашиваем RibbonTab
-                                    _eventAggregator.GetEvent<MessageConveyEvent>().Publish(requestEventMessage);
-                                    requestEventMessage.Value = $"quick_access_tool_bar {moduleInfoData.Id.ToString()} {moduleInfoData.Name}"; //Запрашиваем RibbonTab
-                                    _eventAggregator.GetEvent<MessageConveyEvent>().Publish(requestEventMessage);*/
+                                    /*   EventMessage requestEventMessage = new EventMessage();
+                                       requestEventMessage.From = ModuleId;
+                                       requestEventMessage.To = eventMessage.From;
+                                       requestEventMessage.ParameterName = "Command";
+                                       requestEventMessage.Value = $"get_ribbon_tab {moduleInfoData.Id.ToString()} {moduleInfoData.Name}"; //Запрашиваем RibbonTab
+                                       _eventAggregator.GetEvent<MessageConveyEvent>().Publish(requestEventMessage);
+                                       requestEventMessage.Value = $"quick_access_tool_bar {moduleInfoData.Id.ToString()} {moduleInfoData.Name}"; //Запрашиваем RibbonTab
+                                       _eventAggregator.GetEvent<MessageConveyEvent>().Publish(requestEventMessage);*/
                                     break;
                                 }
 
@@ -109,7 +103,7 @@ namespace PrismWorkApp.Modules.MainModule
                     }
 
             }
-            
+
 
 
         }
@@ -123,7 +117,7 @@ namespace PrismWorkApp.Modules.MainModule
             mainModuleInfo.IsEnable = true;
             _modulesContext = modulesContext;
             ModulesContext.ModulesInfoData.Add(mainModuleInfo);
-         
+
             _containerProvider = containerProvider;
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
@@ -143,8 +137,8 @@ namespace PrismWorkApp.Modules.MainModule
             // var ribbonAppMenuItem = new RibbonApplicationMenuItem();
             // ribbonAppMenuItem.Header = "Ghbdtn dfd";
             //     _regionManager.Regions[RegionNames.RibbonRegion].Add(ribbonAppMenuItem);
-         //   _regionManager.Regions[RegionNames.RibbonRegion].Add(new ModulesRibbonTabView());
-          //  _regionManager.AddToRegion(RegionNames.RibbonQuickAccessToolBarRegion,new QuickAccessToolBarView());
+            //   _regionManager.Regions[RegionNames.RibbonRegion].Add(new ModulesRibbonTabView());
+            //  _regionManager.AddToRegion(RegionNames.RibbonQuickAccessToolBarRegion,new QuickAccessToolBarView());
 
         }
     }

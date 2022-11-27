@@ -2,8 +2,6 @@
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.Core.Dialogs
 {
@@ -42,7 +40,7 @@ namespace PrismWorkApp.Core.Dialogs
             set { SetProperty(ref _cancel, value); }
         }
         public event Action<IDialogResult> RequestClose;
-        public DelegateCommand  CloseDialogCommand { get; private set; }
+        public DelegateCommand CloseDialogCommand { get; private set; }
         public DelegateCommand ConfirmDialogCommand { get; private set; }
         public DelegateCommand CancelDialogCommand { get; private set; }
 
@@ -83,7 +81,7 @@ namespace PrismWorkApp.Core.Dialogs
 
         public void OnDialogClosed()
         {
-           
+
         }
 
         public void OnDialogOpened(IDialogParameters parameters)

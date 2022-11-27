@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace PrismWorkApp.OpenWorkLib.Data 
+namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class EmployeePosition:BindableBase,IEmployeePosition, IEntityObject
+    public class EmployeePosition : BindableBase, IEmployeePosition, IEntityObject
     {
         private Guid _id;
         public Guid Id
@@ -18,7 +16,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _storedId; }
             set { SetProperty(ref _storedId, value); }
         }
-       
+
         private DateTime _date;
         public DateTime Date
         {
@@ -49,7 +47,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public EmployeePosition(string name)
         {
-            Name=name;
+            Name = name;
         }
     }
 }

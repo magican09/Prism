@@ -5,18 +5,13 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Console;
 using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule;
-using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.MainModule;
-using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Services;
 using PrismWorkApp.Services;
 using PrismWorkApp.Services.Interfaces;
 using PrismWorkApp.Services.Repositories;
 using PrismWorkApp.Views;
 using System;
-using System.Collections;
-using System.Linq;
 using System.Windows;
 
 namespace PrismWorkApp
@@ -26,7 +21,7 @@ namespace PrismWorkApp
     /// </summary>
     public partial class App
     {
-      
+
         protected override Window CreateShell()
         {
             return Container.Resolve<MainWindow>();
@@ -39,14 +34,14 @@ namespace PrismWorkApp
             containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
             containerRegistry.RegisterSingleton<IModulesContext, ModulesContext>();
             containerRegistry.RegisterSingleton<IBuildingUnitsRepository, BuildingUnitsRepository>();
-            containerRegistry.RegisterSingleton<IPropertiesChangeJornal, PropertiesChangeJornal>(); 
+            containerRegistry.RegisterSingleton<IPropertiesChangeJornal, PropertiesChangeJornal>();
 
             containerRegistry.RegisterDialog<MessageDialog, MessageDialogViewModel>();
             containerRegistry.RegisterDialog<ConfirmActionDialog, ConfirmActionDialogViewModel>();
             containerRegistry.RegisterDialog<ConfirmActionWhithoutCancelDialog, ConfirmActionWhithoutCancelDialogViewModel>();
             containerRegistry.RegisterDialogWindow<CommonDialogWindow>();
 
-      ;
+            ;
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
@@ -57,17 +52,17 @@ namespace PrismWorkApp
         protected override void ConfigureViewModelLocator()
         {
             base.ConfigureViewModelLocator();
-               ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType)=>
-               {
-                   var viewName = viewType.FullName.Replace("Views", "ViewModels");
+            ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType) =>
+            {
+                var viewName = viewType.FullName.Replace("Views", "ViewModels");
                    //viewName = viewName.TrimEnd("View");
                    var viewAssemblyName = viewType.Assembly.FullName;
-                   var viewModelName = $"{viewName}ViewModel, {viewAssemblyName}";
-                   viewModelName=viewModelName.Replace("ViewView", "View");
-                   return  Type.GetType(viewModelName);
+                var viewModelName = $"{viewName}ViewModel, {viewAssemblyName}";
+                viewModelName = viewModelName.Replace("ViewView", "View");
+                return Type.GetType(viewModelName);
 
-               });  
-            
+            });
+
         }
 
     }

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldLaboratoryReport:IbldDocument
+    public interface IbldLaboratoryReport : IbldDocument
     {
-        public string  LaboratoryReportPeeoperty { get; set; }
+        public string LaboratoryReportPeeoperty { get; set; }
     }
 }

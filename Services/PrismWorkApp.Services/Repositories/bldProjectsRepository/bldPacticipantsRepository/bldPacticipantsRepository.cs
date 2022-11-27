@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrismWorkApp.OpenWorkLib.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace PrismWorkApp.Services.Repositories
 {
@@ -20,12 +18,12 @@ namespace PrismWorkApp.Services.Repositories
             this.Dispose();
         }
 
-     
+
         public List<bldParticipant> GetAllParticipants()//(Guid id)
         {
             PlutoContext.Participants
                     .Include(pr => pr.ConstructionCompanies);
-            
+
             return PlutoContext.Participants.ToList();//out_val;
         }
 

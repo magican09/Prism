@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace PrismWorkApp.Services.Repositories
 {
@@ -19,7 +18,7 @@ namespace PrismWorkApp.Services.Repositories
 
         public void Add(TEntity entity)
         {
-          Context.Set<TEntity>().Add(entity);
+            Context.Set<TEntity>().Add(entity);
         }
 
         public void AddRange(IEnumerable<TEntity> entities)

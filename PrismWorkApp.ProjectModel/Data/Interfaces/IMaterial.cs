@@ -1,9 +1,7 @@
 ﻿
 using PrismWorkApp.ProjectModel.Data.Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace PrismWorkApp.ProjectModel.Data.Interfaces
 {
@@ -14,10 +12,10 @@ namespace PrismWorkApp.ProjectModel.Data.Interfaces
         string Code { get; set; }
         double Quantity { get; set; }
         string Measure { get; set; }
-        DateTime  Date { get; set; }
-        ObservableCollection<Document>  Documents { get; set; }
-      
-      
+        DateTime Date { get; set; }
+        ObservableCollection<Document> Documents { get; set; }
+
+
 
     }
 }

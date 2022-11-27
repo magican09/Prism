@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
 {
     public class ObservedCommand<TEntity> : IObservedCommand
     {
-    //    public event ObservedCommandExecuteEvenHandler ObservedCommandExecuted;
+        //    public event ObservedCommandExecuteEvenHandler ObservedCommandExecuted;
         public UnDoReDoSystem UnDoReDoSystem;
         private Action<TEntity> _ExecuteAction;
-    //    private Action<TEntity> _UnExecuteAction;
+        //    private Action<TEntity> _UnExecuteAction;
         private Func<bool> _canExecuteAction;
         private Action<bldObject> onRemoveBuildindObject_Execute;
         private Action<bldObject> onRemoveBuildindObject_UnExecute;
@@ -37,16 +34,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
         //    _UnExecuteAction((TEntity)parameter);
         //    ObservedCommandCreated?.Invoke(this, new ObservedCommandExecuteEventsArgs(Command, "ObservedCommand"));
         //}
-        public ObservedCommand(Action<TEntity> execute,  Func<bool> canExecute = null)
+        public ObservedCommand(Action<TEntity> execute, Func<bool> canExecute = null)
         {
             _ExecuteAction = execute;
-          //  _UnExecuteAction = unExecute;
+            //  _UnExecuteAction = unExecute;
             _canExecuteAction = canExecute;
         }
         public void SendCommandToUndoRedoSystem(IUnDoRedoCommand command)
         {
             Command = command;
-       //     ObservedCommandExecuted?.Invoke(this, new ObservedCommandExecuteEventsArgs(command));
+            //     ObservedCommandExecuted?.Invoke(this, new ObservedCommandExecuteEventsArgs(command));
         }
     }
 }

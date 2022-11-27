@@ -1,16 +1,10 @@
 ﻿using Prism;
-using Prism.Mvvm;
-using Prism.Regions;
-using Prism.Services.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 using BindableBase = Prism.Mvvm.BindableBase;
 
 namespace PrismWorkApp.Core
@@ -26,7 +20,7 @@ namespace PrismWorkApp.Core
             get { return _id; }
             set
             {
-                 SetProperty(ref _id, value);
+                SetProperty(ref _id, value);
                 SetPropertiesCurrentId();
 
             }
@@ -35,10 +29,10 @@ namespace PrismWorkApp.Core
         {
             var prop_infoes = this.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0 &&
                                                                     pr.PropertyType is IJornalable);
-            foreach(PropertyInfo prop_info in prop_infoes)
+            foreach (PropertyInfo prop_info in prop_infoes)
             {
-                IJornalable prop_val = (IJornalable) prop_info.GetValue(this);
-                if(prop_val !=null)
+                IJornalable prop_val = (IJornalable)prop_info.GetValue(this);
+                if (prop_val != null)
                 {
                     prop_val.CurrentContextId = Id;
                 }

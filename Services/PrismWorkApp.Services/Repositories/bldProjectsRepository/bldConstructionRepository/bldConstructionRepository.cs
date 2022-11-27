@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrismWorkApp.OpenWorkLib.Data;
-using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace PrismWorkApp.Services.Repositories
 {
@@ -20,7 +18,7 @@ namespace PrismWorkApp.Services.Repositories
         {
             this.Dispose();
         }
-       public List<bldConstruction> GetBldConstruction(Guid constr_id)
+        public List<bldConstruction> GetBldConstruction(Guid constr_id)
         {
             PlutoContext.Constructions
                     .Include(ob => ob.Constructions)
@@ -28,7 +26,7 @@ namespace PrismWorkApp.Services.Repositories
                     .ThenInclude(cn => cn.PreviousWorks)
                     .ToList();
 
-            return PlutoContext.Constructions.Where(ob=>ob.Id== constr_id).ToList();
+            return PlutoContext.Constructions.Where(ob => ob.Id == constr_id).ToList();
         }
         public List<bldConstruction> GetAllBldConstructions()
         {

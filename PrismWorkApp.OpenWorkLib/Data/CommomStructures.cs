@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
 
     public enum ParticipantRole
@@ -27,9 +23,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
     {
         public static bool ResponsibleRoleComparer(ParticipantRole participantRole, RoleOfResponsible roleOfResponsible)
         {
-            switch(participantRole)
+            switch (participantRole)
             {
-              case ParticipantRole.DEVELOPER:
+                case ParticipantRole.DEVELOPER:
                     if (roleOfResponsible == RoleOfResponsible.CUSTOMER) return true;
                     break;
                 case ParticipantRole.GENERAL_CONTRACTOR:

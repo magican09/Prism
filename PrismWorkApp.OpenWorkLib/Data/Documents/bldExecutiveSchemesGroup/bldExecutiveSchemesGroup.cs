@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldExecutiveSchemesGroup: NameableObservableCollection<bldExecutiveScheme>, IbldExecutiveSchemesGroup,IEntityObject
+    public class bldExecutiveSchemesGroup : NameableObservableCollection<bldExecutiveScheme>, IbldExecutiveSchemesGroup, IEntityObject
     {
         public bldExecutiveSchemesGroup()
         {

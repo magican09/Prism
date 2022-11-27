@@ -1,22 +1,16 @@
-﻿using PrismWorkApp.ProjectModel.Data.Interfaces;
-using PrismWorkApp.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PrismWorkApp.ProjectModel.Data.Models
 {
-    public class BuildingConstruction:oldNode , INotifyPropertyChanged
+    public class BuildingConstruction : oldNode, INotifyPropertyChanged
     {
-       /* public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }*/
+        /* public event PropertyChangedEventHandler PropertyChanged;
+         public void OnPropertyChanged([CallerMemberName] string prop = "")
+         {
+             if (PropertyChanged != null)
+                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
+         }*/
         private string _name;
         public string Name { get { return _name; } set { _name = value; NodeName = _name; OnPropertyChanged("Name"); } }
         private string _fullname;
@@ -24,15 +18,21 @@ namespace PrismWorkApp.ProjectModel.Data.Models
         private Project _project;
         public Project Project { get { return _project; } set { _project = value; OnPropertyChanged("Project"); } }
         private BuildingObject _buildingObject;
-        public BuildingObject BuildingObject  { get { return _buildingObject; } 
-            set { _buildingObject = value; OnPropertyChanged("BuildingObject"); } }
+        public BuildingObject BuildingObject
+        {
+            get { return _buildingObject; }
+            set { _buildingObject = value; OnPropertyChanged("BuildingObject"); }
+        }
 
         private ObservableCollection<Work> _works;
         public ObservableCollection<Work> Works { get { return _works; } set { _works = value; OnPropertyChanged("Works"); } }
         private ObservableCollection<AOSRDocument> _aOSRDocuments;
-        public ObservableCollection<AOSRDocument> AOSRDocuments { get { return _aOSRDocuments; } 
-            set { _aOSRDocuments = value; OnPropertyChanged("AOSRDocuments"); } }
-       
+        public ObservableCollection<AOSRDocument> AOSRDocuments
+        {
+            get { return _aOSRDocuments; }
+            set { _aOSRDocuments = value; OnPropertyChanged("AOSRDocuments"); }
+        }
+
         public BuildingConstruction()
         {
 

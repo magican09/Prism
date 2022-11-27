@@ -5,8 +5,6 @@ using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
@@ -33,28 +31,29 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 
         public void OnDialogClosed()
         {
-          
+
         }
-       public override  void OnSave()
+        public override void OnSave()
         {
             if (EditMode == ConveyanceObjectModes.EditMode.FOR_EDIT)
             {
 
                 CoreFunctions.ConfirmActionOnElementDialog<bldParticipant>(SelectedParticipant,
                     "Сохранить", "участника строительства",
-                    "Сохрать", "Не сохранять","Отмена", (result) => {
-                    if (result.Result == ButtonResult.Yes)
+                    "Сохрать", "Не сохранять", "Отмена", (result) =>
                     {
-                    //    CoreFunctions.CopyObjectReflectionNewInstances(SelectedParticipant, ResivedParticipant);
-                        RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
-                    }
-                    else
-                    {
+                        if (result.Result == ButtonResult.Yes)
+                        {
+                            //    CoreFunctions.CopyObjectReflectionNewInstances(SelectedParticipant, ResivedParticipant);
+                            RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
+                        }
+                        else
+                        {
 
-                        RequestClose?.Invoke(new DialogResult(ButtonResult.No));
-                    }
+                            RequestClose?.Invoke(new DialogResult(ButtonResult.No));
+                        }
 
-                }, _dialogService);
+                    }, _dialogService);
 
             }
             else
@@ -75,11 +74,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         }
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            ConveyanceObject navigate_message =(ConveyanceObject) parameters.GetValue<object>("selected_element_conveyance_object");
+            ConveyanceObject navigate_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
             CurrentContextId = (Guid)parameters.GetValue<object>("current_context_id");
-            if (navigate_message!=null)
+            if (navigate_message != null)
             {
-                ResivedParticipant =(bldParticipant) navigate_message.Object;
+                ResivedParticipant = (bldParticipant)navigate_message.Object;
                 EditMode = navigate_message.EditMode;
                 Id = CurrentContextId;
 

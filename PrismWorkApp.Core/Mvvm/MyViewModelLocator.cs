@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 
 namespace PrismWorkApp.Core.Mvvm
 {
-    public  class MyViewModelLocator : DependencyObject
+    public class MyViewModelLocator : DependencyObject
     {
-        public static bool  GetAutoWireViewModel(DependencyObject obj)
+        public static bool GetAutoWireViewModel(DependencyObject obj)
         {
-           return (bool)obj.GetValue(AutoWireViewModelProperty);
+            return (bool)obj.GetValue(AutoWireViewModelProperty);
         }
-        public static void SetAutoWireViewModel(DependencyObject obj, bool  value)
+        public static void SetAutoWireViewModel(DependencyObject obj, bool value)
         {
-     //       obj.SetValue(AutoWireViewModelProperty, value);
+            //       obj.SetValue(AutoWireViewModelProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for AutoWireViewModel.  This enables animation, styling, binding, etc...
@@ -22,9 +20,9 @@ namespace PrismWorkApp.Core.Mvvm
 
         private static object AutoWireViewCoerce(DependencyObject d, object baseValue)
         {
-           if((bool)baseValue==true)
+            if ((bool)baseValue == true)
             {
-                FrameworkElement element =(FrameworkElement) d;
+                FrameworkElement element = (FrameworkElement)d;
                 string asf = element.GetType().ToString();
             }
             throw new NotImplementedException();

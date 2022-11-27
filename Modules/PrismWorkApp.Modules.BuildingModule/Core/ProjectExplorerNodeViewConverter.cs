@@ -1,9 +1,6 @@
 ﻿using PrismWorkApp.ProjectModel.Data.Models;
-using PrismWorkApp.Services.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Windows.Data;
 
 namespace PrismWorkApp.Modules.BuildingModule.Core
@@ -15,17 +12,17 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             oldNode node = (oldNode)values[0];
             string out_str;
             var node_value_type = node.Value?.GetType();
-          /*  if (node.NodeName!=""  && node.Value != null && !node_value_type.Name.Contains("ObservableCollection"))
-                out_str = $"{node.NodeName}: {((IItem)node.Value)?.Name}.";
-            else if (node.Value != null && !node_value_type.Name.Contains("ObservableCollection"))
-                out_str = $"{((IItem)node.Value)?.Name}.";
-            else
-                out_str = $"{node.NodeName}";
-            */
-               switch (node.Type)
-                {
-                    case  oldNode.NodeType.ROOT_NODE:
-                         out_str = $"{node.NodeName}";
+            /*  if (node.NodeName!=""  && node.Value != null && !node_value_type.Name.Contains("ObservableCollection"))
+                  out_str = $"{node.NodeName}: {((IItem)node.Value)?.Name}.";
+              else if (node.Value != null && !node_value_type.Name.Contains("ObservableCollection"))
+                  out_str = $"{((IItem)node.Value)?.Name}.";
+              else
+                  out_str = $"{node.NodeName}";
+              */
+            switch (node.Type)
+            {
+                case oldNode.NodeType.ROOT_NODE:
+                    out_str = $"{node.NodeName}";
                     break;
                 case oldNode.NodeType.TERMINAL_NODE:
                     out_str = $"{node.NodeName}";
@@ -38,7 +35,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     out_str = "unDefined!!!!!";
                     break;
             }
-           
+
 
             return out_str;
         }

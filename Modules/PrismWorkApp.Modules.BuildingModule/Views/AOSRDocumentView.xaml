@@ -109,7 +109,7 @@
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
                     SelectedDate="{Binding SelectedAOSRDocument.EndTime}" />
-                <Button  Content="Сформировть акт в Word" Command="{Binding GenerateWordDocumentCommand}" />
+              
             </StackPanel>
           
             <StackPanel >
@@ -194,8 +194,9 @@
 
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
-            <Button  Content="Сохранить" Command="{Binding SaveCommand}" />
-            <Button  Content="Закрыть"  Command="{Binding CloseCommand}"
+            <Button  Content="Сохранить в Word" Width="Auto" Command="{Binding SaveToWordCommand}" />
+            <Button  Content="Сохранить" Width="Auto" Command="{Binding SaveCommand}" />
+            <Button  Content="Закрыть"  Width="Auto" Command="{Binding CloseCommand}"
                                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
                                                      AncestorType={x:Type UserControl}}}"/>
         </StackPanel>

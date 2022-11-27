@@ -7,19 +7,17 @@ using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
-    public class ConstructionDialogViewModel : ConstructionViewModel,IDialogAware
+    public class ConstructionDialogViewModel : ConstructionViewModel, IDialogAware
     {
-       
+
 
         public ConstructionDialogViewModel(IDialogService dialogService, IRegionManager regionManager
             , IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands,
              IPropertiesChangeJornal propertiesChangeJornal)
-            :base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, propertiesChangeJornal)
+            : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, propertiesChangeJornal)
         {
 
         }
@@ -55,14 +53,14 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                     {
                         if (result.Result == ButtonResult.Yes)
                         {
-                             CommonChangeJornal.SaveAll(Id);
+                            CommonChangeJornal.SaveAll(Id);
 
                             RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
 
                         }
                         else
                         {
-                          CommonChangeJornal.UnDoAll(Id);
+                            CommonChangeJornal.UnDoAll(Id);
                             RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                         }
 
@@ -92,7 +90,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 if (SelectedConstruction != null) SelectedConstruction.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedConstruction = ResivedConstruction;
                 SelectedConstruction.ErrorsChanged += RaiseCanExecuteChanged;
-              
+
             }
 
         }

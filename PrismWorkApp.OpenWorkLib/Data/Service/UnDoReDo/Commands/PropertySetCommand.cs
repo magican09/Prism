@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
 {
     public class PropertySetCommand : IUnDoRedoCommand
     {
-        public string Name { get ; set; }
-        private  IJornalable _ModelObject { get; set; }
+        public string Name { get; set; }
+        private IJornalable _ModelObject { get; set; }
         private object _Value;
         private object _LastValue;
         private object _Buffer;
         public event EventHandler CanExecuteChanged;
-        public PropertySetCommand(IJornalable model,string propName,object new_value,object last_value)
+        public PropertySetCommand(IJornalable model, string propName, object new_value, object last_value)
         {
             _ModelObject = model;
             Name = propName;
@@ -25,7 +22,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
             throw new NotImplementedException();
         }
 
-        public void Execute(object parameter=null)
+        public void Execute(object parameter = null)
         {
             _Buffer = _Value;
             _Value = _LastValue;

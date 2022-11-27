@@ -46,28 +46,18 @@
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
       </ItemGroup>
   <ItemGroup>
-    <COMReference Include="Microsoft.Office.Interop.Word">
-      <WrapperTool>tlbimp</WrapperTool>
-      <VersionMinor>7</VersionMinor>
-      <VersionMajor>8</VersionMajor>
-      <Guid>00020905-0000-0000-c000-000000000046</Guid>
-      <Lcid>0</Lcid>
-      <Isolated>false</Isolated>
-      <EmbedInteropTypes>true</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="EPPlus" Version="5.8.7" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.WindowsAPICodePack-Core" Version="1.1.0.2" />
+    <PackageReference Include="Microsoft.WindowsAPICodePack-Shell" Version="1.1.0" />
     <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\PrismWorkApp.Core\PrismWorkApp.Core.csproj" />
     <ProjectReference Include="..\..\PrismWorkApp.OpenWorkLib\PrismWorkApp.OpenWorkLib.csproj" />
-    <ProjectReference Include="..\..\PrismWorkApp.ProjectModel\PrismWorkApp.ProjectModel.csproj" />
     <ProjectReference Include="..\..\Services\PrismWorkApp.Services.Interfaces\PrismWorkApp.Services.Interfaces.csproj" />
     <ProjectReference Include="..\..\Services\PrismWorkApp.Services\PrismWorkApp.Services.csproj" />
   </ItemGroup>

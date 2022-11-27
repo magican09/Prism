@@ -1,8 +1,5 @@
 ﻿using Prism.Regions;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Controls.Ribbon;
 
 namespace PrismWorkApp.Core
@@ -21,12 +18,13 @@ namespace PrismWorkApp.Core
         {
             _ribbonTarget = regionTarget;
 
-            region.Views.CollectionChanged += delegate {
+            region.Views.CollectionChanged += delegate
+            {
                 foreach (RibbonTab tab in region.Views.Cast<RibbonTab>())
                 {
                     if (!_ribbonTarget.Items.Contains(tab))
                     {
-                       _ribbonTarget.Items.Add(tab);
+                        _ribbonTarget.Items.Add(tab);
                     }
                 }
             };

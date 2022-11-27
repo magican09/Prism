@@ -1,8 +1,4 @@
-﻿using Microsoft.Win32;
-using OfficeOpenXml;
-using Prism.Commands;
-using Prism.Events;
-using Prism.Mvvm;
+﻿using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
@@ -14,17 +10,12 @@ using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Services;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -105,7 +96,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                     IPropertiesChangeJornal propertiesChangeJornal)
         {
             _regionManager = regionManager;
-         
+
             var quickAccessTollBar = new QuickAccessToolBarView();
             quickAccessTollBar.Items.Add(new QuickAccessToolBar());
             quickAccessTollBar.DataContext = this;
@@ -118,14 +109,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands = applicationCommands;
             ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
             //IsModuleEnable =  ModuleInfo.IsEnable;
-          
-              LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
+
+            LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
             LoadProjectFromDBCommand = new NotifyCommand(LoadProjectFomDB, CanLoadProjectFromDb);
             SaveDataToDBCommand = new NotifyCommand(SaveDataToDB, CanSaveDataToDB)
-                .ObservesProperty(()=>AllChangesIsDone);
+                .ObservesProperty(() => AllChangesIsDone);
             AllChangesIsDone = true;
             ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
-          //  UnDoCommand = new NotifyCommand(OnUnDoLast, CanUndoLast);
+            //  UnDoCommand = new NotifyCommand(OnUnDoLast, CanUndoLast);
 
             /*  CreateProjectStructureCommand = new NotifyCommand(CreateProjectStructure).ObservesProperty(() => SelectedProject);
               CreateAOSRCommand = new NotifyCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
@@ -142,7 +133,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private bool CanUndoLast()
         {
-           return _commonPropertiesChangeJornal.Count > 0;
+            return _commonPropertiesChangeJornal.Count > 0;
         }
 
         private void OnUnDoLast()
@@ -156,7 +147,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void SaveAllCommandCanExecuteChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         private bool SaveAllCommandCanExecute(object arg)
@@ -166,7 +157,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public void OnChildObjectChanges(object sender, ObjectStateChangedEventArgs e)
         {
-      //      AllChangesIsDone = AllProjectsContext.PropertiesChangeJornal.Count > 0;
+            //      AllChangesIsDone = AllProjectsContext.PropertiesChangeJornal.Count > 0;
             SaveDataToDBCommand.RaiseCanExecuteChanged();
             UnDoCommand.RaiseCanExecuteChanged();
         }
@@ -178,7 +169,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void SaveDataToDB()
         {
             CoreFunctions.ConfirmActionDialog(
-                "Cохранить в БД изменения", "проектов", "Сохранить", "Отмена","Сохраниение в БД завершено!",
+                "Cохранить в БД изменения", "проектов", "Сохранить", "Отмена", "Сохраниение в БД завершено!",
                  (result) =>
                 {
                     if (result.Result == ButtonResult.Yes)
@@ -193,7 +184,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             }
                         }
 
-                         SaveDataToDBCommand.RaiseCanExecuteChanged();
+                        SaveDataToDBCommand.RaiseCanExecuteChanged();
                         _buildingUnitsRepository.Complete();
                     }
                 }, _dialogService);
@@ -251,7 +242,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void LoadProjectFromExcel()
         {
-            var project = ProjectService.LoadProjectFromExcel();
+            var project = Functions.LoadProjectFromExcel();
             bldProject bld_project = project;
 
 
@@ -286,12 +277,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             AllProjectsContext.JornalingOff();
             AllProjectsContext = new bldProjectsGroup(_buildingUnitsRepository.Projects.GetProjectsAsync());
             AllProjectsContext.JornalingOn();
-          //  _commonPropertiesChangeJornal.RegisterObject(AllProjectsContext);
-          //  AllProjectsContext.ResetObjectsStructure();
-        //    AllProjectsContext.AdjustObjectsStructure(_commonPropertiesChangeJornal);
-           // AllProjectsContext.CurrentContextId = Id;
-           // AllProjectsContext.PropertiesChangeJornal.ContextIdHistory.Add(Id);
-          //  AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
+            //  _commonPropertiesChangeJornal.RegisterObject(AllProjectsContext);
+            //  AllProjectsContext.ResetObjectsStructure();
+            //    AllProjectsContext.AdjustObjectsStructure(_commonPropertiesChangeJornal);
+            // AllProjectsContext.CurrentContextId = Id;
+            // AllProjectsContext.PropertiesChangeJornal.ContextIdHistory.Add(Id);
+            //  AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
 
             EventMessage message = new EventMessage();
             bldProject project = new bldProject();
@@ -342,7 +333,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 //  work_1.NextWorks.Add(work_2);
                 // work_2.PreviousWorks.Add(work_1);
                 var navParam = new NavigationParameters();
-             //   prj.ObjectChangedNotify += OnChildObjectChanges;
+                //   prj.ObjectChangedNotify += OnChildObjectChanges;
                 navParam.Add("bld_project", prj);
                 //prj.SaveAll(Id);
                 _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(ProjectExplorerView).Name, navParam);

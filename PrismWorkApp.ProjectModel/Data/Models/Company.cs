@@ -1,25 +1,23 @@
 ﻿using PrismWorkApp.ProjectModel.Data.Interfaces;
-using PrismWorkApp.Services.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PrismWorkApp.ProjectModel.Data.Models
 {
-    public class Company :oldNode, ICompany, INotifyPropertyChanged
+    public class Company : oldNode, ICompany, INotifyPropertyChanged
     {
-       /* public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }*/
+        /* public event PropertyChangedEventHandler PropertyChanged;
+         public void OnPropertyChanged([CallerMemberName] string prop = "")
+         {
+             if (PropertyChanged != null)
+                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
+         }*/
         public int Id { get; set; }
         private string _name;
-        public string Name { get { return _name; } 
-            set { _name = value;NodeName = _name; OnPropertyChanged("Name"); } }
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; NodeName = _name; OnPropertyChanged("Name"); }
+        }
         private string _fullname;
         public string FullName
         {

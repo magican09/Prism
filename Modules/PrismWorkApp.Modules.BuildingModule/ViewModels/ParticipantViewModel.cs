@@ -1,17 +1,11 @@
 ﻿using Prism.Commands;
-using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.OpenWorkLib.Data;
-using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
-using BindableBase = Prism.Mvvm.BindableBase;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -54,12 +48,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedConstructionCompany; }
             set { SetProperty(ref _selectedConstructionCompany, value); }
         }
-        private string _messageReceived="Бла бал бла...!!!";
+        private string _messageReceived = "Бла бал бла...!!!";
         public string MessageReceived
         {
             get { return _messageReceived; }
-            set { SetProperty(ref _messageReceived, value);  }
-             
+            set { SetProperty(ref _messageReceived, value); }
+
         }
 
         public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
@@ -68,12 +62,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public DelegateCommand AddConstructionCompanyCommand { get; private set; }
         public DelegateCommand EditConstructionCompanyCommand { get; private set; }
         public DelegateCommand RemoveConstructionCompanyCommand { get; private set; }
-        
+
         public DelegateCommand AddEmployerCommand { get; private set; }
         public DelegateCommand EditEmployerCommand { get; private set; }
         public DelegateCommand RemoveEmployerCommand { get; private set; }
 
-        public ParticipantViewModel(IDialogService dialogService,IRegionManager regionManager,IBuildingUnitsRepository buildingUnitsRepository )
+        public ParticipantViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
         {
             DataGridLostFocusCommand = new DelegateCommand<object>(OnDataGridLostSocus);
             SaveCommand = new DelegateCommand(OnSave, CanSave);
@@ -83,15 +77,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             EditConstructionCompanyCommand = new DelegateCommand(OnEditConstructionCompany, () => SelectedConstructionCompany != null);
 
 
-           _dialogService = dialogService;
+            _dialogService = dialogService;
             _regionManager = regionManager;
-          
+
         }
 
         private void OnEditConstructionCompany()
         {
-           // CoreFunctions.EditElementDialog<bldConstructionCompany>(SelectedConstructionCompany, "Участник строительства",
-           //    (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Id);
+            // CoreFunctions.EditElementDialog<bldConstructionCompany>(SelectedConstructionCompany, "Участник строительства",
+            //    (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Id);
         }
 
         private void OnDataGridLostSocus(object obj)
@@ -164,11 +158,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             else
                 return false;
         }
-       public override void OnSave()
+        public override void OnSave()
         {
             this.OnSave<bldParticipant>(SelectedParticipant);
         }
-        public  override void OnClose(object obj)
+        public override void OnClose(object obj)
         {
             this.OnClose<bldParticipant>(obj, SelectedParticipant);
         }
@@ -187,20 +181,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            ConveyanceObject navigate_message  = (ConveyanceObject)navigationContext.Parameters["bld_participant"];
-           if(navigate_message !=null)
+            ConveyanceObject navigate_message = (ConveyanceObject)navigationContext.Parameters["bld_participant"];
+            if (navigate_message != null)
             {
-                ResivedParticipant =(bldParticipant) navigate_message.Object;
+                ResivedParticipant = (bldParticipant)navigate_message.Object;
                 EditMode = navigate_message.EditMode;
                 if (SelectedParticipant != null) SelectedParticipant.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedParticipant = ResivedParticipant;
                 SelectedParticipant.ErrorsChanged += RaiseCanExecuteChanged;
-                
+
             }
 
 
         }
-     
+
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
 

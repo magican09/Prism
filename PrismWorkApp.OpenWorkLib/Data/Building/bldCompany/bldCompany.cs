@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -37,15 +35,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _shortName, value); }
         }
         private string _fullName;
-        public  string FullName
+        public string FullName
         {
-          get {
+            get
+            {
                 SetProperty(ref _fullName, Name + ", ОГРН " + OGRN + ", ИНН " + INN + Address);
                 return _fullName;
-             }
+            }
             set { SetProperty(ref _fullName, value); }
         }
-    private string _ogrn;
+        private string _ogrn;
         public string OGRN
         {
             get { return _ogrn; }
@@ -70,7 +69,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _address, value); }
         }
 
-       
+
         //    public bldConstructionCompany bldConstructionCompany { get; set; }
 
         //public Guid bldResponsibleEmployeeId { get; set; }

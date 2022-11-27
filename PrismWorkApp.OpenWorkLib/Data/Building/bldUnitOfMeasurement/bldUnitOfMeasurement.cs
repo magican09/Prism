@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldUnitOfMeasurement:BindableBase,IbldUnitOfMeasurement, IEntityObject
+    public class bldUnitOfMeasurement : BindableBase, IbldUnitOfMeasurement, IEntityObject
     {
-       
+
         private Guid _storedId;
         public Guid StoredId
         {
@@ -20,7 +18,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _code, value); }
         }//Код
         private DateTime _date;
-        private string _name ="ед.изм.";
+        private string _name = "ед.изм.";
         public string Name
         {
             get { return _name; }

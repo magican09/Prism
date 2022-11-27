@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -14,7 +11,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _nRSId, value); }
         }
         private RoleOfResponsible _roleOfResposible;
-        public virtual  RoleOfResponsible RoleOfResponsible
+        public virtual RoleOfResponsible RoleOfResponsible
         {
             get { return _roleOfResposible; }
             set
@@ -72,15 +69,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
         private bldDocument _docConfirmingTheAthority;
-        public   bldDocument DocConfirmingTheAthority
+        public bldDocument DocConfirmingTheAthority
         {
             get { return _docConfirmingTheAthority; }
             set { SetProperty(ref _docConfirmingTheAthority, value); }
         }
-       
+
         private bldCompany _company;
         [NavigateProperty]
-        public  bldCompany Company
+        public bldCompany Company
         {
             get { return _company; }
             set { SetProperty(ref _company, value); }
@@ -88,7 +85,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NavigateProperty]
         public bldProject bldProject { get; set; }
         [NavigateProperty]
-        public bldParticipant bldParticipant { get; set;}
+        public bldParticipant bldParticipant { get; set; }
 
     }
 }

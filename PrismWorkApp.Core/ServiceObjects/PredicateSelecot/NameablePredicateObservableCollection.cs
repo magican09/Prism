@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 
 namespace PrismWorkApp.Core
 {
-    public class NameablePredicateObservableCollection<TSourse, TOut>:ObservableCollection<NameablePredicate<TSourse, TOut>>
+    public class NameablePredicateObservableCollection<TSourse, TOut> : ObservableCollection<NameablePredicate<TSourse, TOut>>
     {
-        
+
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldLaboratoryReport : bldDocument, IbldLaboratoryReport, IEntityObject
     {
@@ -11,7 +7,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
 
         }
-        public bldLaboratoryReport(string name):base(name)
+        public bldLaboratoryReport(string name) : base(name)
         {
 
         }

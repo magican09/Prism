@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
 {
-    public interface IUnDoRedoCommand:ICommand
+    public interface IUnDoRedoCommand : ICommand
     {
-       
+
         public string Name { get; set; }
-        void Execute(object parameter=null);
+        void Execute(object parameter = null);
         public void UnExecute();
     }
 }

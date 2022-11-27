@@ -1,14 +1,11 @@
 ﻿using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace PrismWorkApp.Core
 {
     public class Node : BindableBase, INode
     {
-    
+
         private INodes _nodes = new Nodes();
         public INodes Nodes
         {
@@ -53,7 +50,7 @@ namespace PrismWorkApp.Core
             get { return _propertyInfo; }
             set { SetProperty(ref _propertyInfo, value); }
         }
-       
+
     }
 
     public enum NodeType

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldParticipantsGroup : NameableObservableCollection<bldParticipant>, IbldParticipantsGroup, IEntityObject
     {
-       
-       public bldParticipantsGroup()
+
+        public bldParticipantsGroup()
         {
             Name = "Участники строительства";
         }
@@ -17,7 +14,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             return (bldParticipantsGroup)MemberwiseClone();
         }
-        public bldParticipantsGroup(List<bldParticipant> participants):base(participants)
+        public bldParticipantsGroup(List<bldParticipant> participants) : base(participants)
         {
 
         }

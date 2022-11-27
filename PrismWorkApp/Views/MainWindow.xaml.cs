@@ -1,5 +1,4 @@
-﻿using PrismWorkApp.Core.Console;
-using System.Windows;
+﻿using System.Windows;
 
 namespace PrismWorkApp.Views
 {

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldConstructionCompanyGroup: NameableObservableCollection<bldConstructionCompany>,IEntityObject
+    public class bldConstructionCompanyGroup : NameableObservableCollection<bldConstructionCompany>, IEntityObject
     {
         public bldConstructionCompanyGroup()
         {

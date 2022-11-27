@@ -1,28 +1,24 @@
-﻿
-using PrismWorkApp.ProjectModel.Data.Interfaces;
-using PrismWorkApp.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace PrismWorkApp.ProjectModel.Data.Models
 {
-    public class ResponsibleEmployee :oldNode, INotifyPropertyChanged
+    public class ResponsibleEmployee : oldNode, INotifyPropertyChanged
     {
-      /*  public event PropertyChangedEventHandler PropertyChanged;
-    public void OnPropertyChanged([CallerMemberName] string prop = "")
-    {
-        if (PropertyChanged != null)
-            PropertyChanged(this, new PropertyChangedEventArgs(prop));
-    }*/
-          public int Id { get; set; }
+        /*  public event PropertyChangedEventHandler PropertyChanged;
+      public void OnPropertyChanged([CallerMemberName] string prop = "")
+      {
+          if (PropertyChanged != null)
+              PropertyChanged(this, new PropertyChangedEventArgs(prop));
+      }*/
+        public int Id { get; set; }
         private string _code;
         public string Code { get { return _code; } set { _code = value; OnPropertyChanged("Code"); } }
         private string _name;
-        public string Name { get { return _name; }
-            set { _name = value ; OnPropertyChanged("Name");  } }
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; OnPropertyChanged("Name"); }
+        }
 
         private string _fullname;
 
@@ -36,10 +32,10 @@ namespace PrismWorkApp.ProjectModel.Data.Models
         private string _nRSId;
         public string NRSId { get { return _nRSId; } set { _nRSId = value; OnPropertyChanged("NRSId"); } }
         private RoleOfResponsible _roleOfResponsible;
-        public RoleOfResponsible RoleOfResponsible 
+        public RoleOfResponsible RoleOfResponsible
         { get { return _roleOfResponsible; } set { _roleOfResponsible = value; OnPropertyChanged("RoleOfResponsible"); } }
         private Document _docConfirmingTheAthority;
-        public Document  DocConfirmingTheAthority
+        public Document DocConfirmingTheAthority
         { get { return _docConfirmingTheAthority; } set { _docConfirmingTheAthority = value; OnPropertyChanged("DocConfirmingTheAthority"); } }
         private Company _company;
         public Company Company { get { return _company; } set { _company = value; OnPropertyChanged("Company"); } }
@@ -47,7 +43,7 @@ namespace PrismWorkApp.ProjectModel.Data.Models
         public EmployeePosition EmployeePosition { get { return _employeePosition; } set { _employeePosition = value; OnPropertyChanged("EmployeePosition"); } }
     }
     public enum RoleOfResponsible
-    { 
+    {
         CUSTOMER, //Заказчик
         GENERAL_CONTRACTOR, //Генеральный подрядчик
         GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER, //Генеральный подрядчик

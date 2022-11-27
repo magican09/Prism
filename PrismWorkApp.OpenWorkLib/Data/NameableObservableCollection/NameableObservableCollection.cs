@@ -1,5 +1,4 @@
-﻿using PrismWorkApp.OpenWorkLib.Core;
-using PrismWorkApp.OpenWorkLib.Data.Service;
+﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections;
@@ -9,9 +8,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -105,7 +102,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             CollectionChanged += OnCollectionChangedMethod;
         }
 
-        
+
 
         public NameableObservableCollection(string name) : this()
         {
@@ -175,7 +172,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _isVisible; }
             set { SetProperty(ref _isVisible, value); }
         }
-         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе с данных объектом по умолчанию
+        public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе с данных объектом по умолчанию
         public bool IsPointerContainer { get; set; }
         public bool CopingEnable { get; set; } = true;
 

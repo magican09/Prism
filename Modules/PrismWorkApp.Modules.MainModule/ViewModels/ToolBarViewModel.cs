@@ -1,8 +1,5 @@
 ﻿using Prism.Mvvm;
 using Prism.Regions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.Modules.MainModule.ViewModels
 {
@@ -15,12 +12,12 @@ namespace PrismWorkApp.Modules.MainModule.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-         
+
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-          
+
         }
     }
 }

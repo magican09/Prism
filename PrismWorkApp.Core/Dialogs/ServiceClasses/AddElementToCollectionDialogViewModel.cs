@@ -1,12 +1,9 @@
 ﻿using Prism.Commands;
-using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using PrismWorkApp.OpenWorkLib.Core;
 
 namespace PrismWorkApp.Core.Dialogs
 {
@@ -219,7 +216,7 @@ namespace PrismWorkApp.Core.Dialogs
                 if (result.Result == ButtonResult.Yes)
                 {
                     CurrentCollection.Add(new_element);
-                 }
+                }
                 if (result.Result == ButtonResult.No)
                 {
                 }
@@ -254,7 +251,7 @@ namespace PrismWorkApp.Core.Dialogs
                 if (result.Result == ButtonResult.Yes)
                 {
                     CurrentCollection.Add(new_element);
-                  }
+                }
                 if (result.Result == ButtonResult.No)
                 {
                 }
@@ -306,7 +303,7 @@ namespace PrismWorkApp.Core.Dialogs
             NewObjectDialogName = parameters.GetValue<string>("new_object_dialog_name");
             PredicateCollection =
                 parameters.GetValue<NameablePredicateObservableCollection<TConteiner, T>>("predicate_collection");
-             
+
 
         }
     }

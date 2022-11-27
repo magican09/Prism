@@ -1,11 +1,9 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Core
 {
-   public static  class ExtentionMethods
+    public static class ExtentionMethods
     {
         public static TSourse GetCopy<TSourse>(this TSourse sourse, Func<TSourse, bool> prediacate)
               where TSourse : IEntityObject, new()

@@ -1,11 +1,9 @@
 ﻿using Prism.Commands;
 using Prism.Events;
-using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Events;
-using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.ProjectModel.Data.Models;
@@ -20,7 +18,7 @@ using System.Runtime.CompilerServices;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class ProjectExplorerViewModel : LocalBindableBase, INotifyPropertyChanged, INavigationAware,IConfirmNavigationRequest
+    public class ProjectExplorerViewModel : LocalBindableBase, INotifyPropertyChanged, INavigationAware, IConfirmNavigationRequest
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -85,12 +83,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
              ThreadOption.PublisherThread, false,
              message => message.Recipient == "ProjectExplorer");
-        
+
         }
 
         private void onTreeViewItemExpanded(object obj)
         {
-            
+
         }
 
         private void OnGetMessage(EventMessage message)
@@ -126,27 +124,27 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             switch (node_value_type?.Name)
             {
                 //case nameof(Node):
-                    //switch (((Node)clicked_node).Value?.GetType().Name)
-                    //{
-                    //    case (nameof(BuildingConstruction)):
-                    //        switch (((Node)clicked_node).Name)
-                    //        {
-                    //            case "АОСР":
+                //switch (((Node)clicked_node).Value?.GetType().Name)
+                //{
+                //    case (nameof(BuildingConstruction)):
+                //        switch (((Node)clicked_node).Name)
+                //        {
+                //            case "АОСР":
 
-                    //                navParam.Add("building_construction", (BuildingConstruction)((Node)clicked_node).Value);
-                    //                _regionManager.RequestNavigate(RegionNames.ContentRegion, "AOSRDocumentsTableView", navParam);
-                    //                break;
-                    //            case "Ведомость работ":
+                //                navParam.Add("building_construction", (BuildingConstruction)((Node)clicked_node).Value);
+                //                _regionManager.RequestNavigate(RegionNames.ContentRegion, "AOSRDocumentsTableView", navParam);
+                //                break;
+                //            case "Ведомость работ":
 
-                    //                navParam.Add("building_construction", (BuildingConstruction)((Node)clicked_node).Value);
-                    //                _regionManager.RequestNavigate(RegionNames.ContentRegion, "WorksTableView", navParam);
-                    //                break;
-                    //            default:
-                    //                break;
-                    //        }
-                    //        break;
-                    //}
-                    //break;
+                //                navParam.Add("building_construction", (BuildingConstruction)((Node)clicked_node).Value);
+                //                _regionManager.RequestNavigate(RegionNames.ContentRegion, "WorksTableView", navParam);
+                //                break;
+                //            default:
+                //                break;
+                //        }
+                //        break;
+                //}
+                //break;
 
                 case (nameof(bldWork)):
                     {
@@ -161,7 +159,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         //navParam.Add("project", ((bldProject)clicked_node));
                         navParam.Add("bld_project", (new ConveyanceObject((bldProject)clicked_node, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                         _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(ProjectView).Name, navParam);
-                      //  _regionManager.RequestNavigate(RegionNames.ContentRegion, "ProjectView",  NavgationCoplete);
+                        //  _regionManager.RequestNavigate(RegionNames.ContentRegion, "ProjectView",  NavgationCoplete);
 
                         break;
                     }
@@ -192,8 +190,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 case (nameof(bldAOSRDocument)):
                     {
                         navParam.Add("bld_aosr_document", new ConveyanceObject((bldAOSRDocument)clicked_node, ConveyanceObjectModes.EditMode.FOR_EDIT));
-                      //  navParam.Add("bld_work", (new ConveyanceObject(((bldAOSRDocument)clicked_node).bldWork, ConveyanceObjectModes.EditMode.FOR_EDIT)));
-                       // navParam.Add("bld_project", (new ConveyanceObject(((bldAOSRDocument)clicked_node).bldWork.bldConstruction.bldObject.bldProject, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                        //  navParam.Add("bld_work", (new ConveyanceObject(((bldAOSRDocument)clicked_node).bldWork, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                        // navParam.Add("bld_project", (new ConveyanceObject(((bldAOSRDocument)clicked_node).bldWork.bldConstruction.bldObject.bldProject, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                         _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AOSRDocumentView).Name, navParam);
                         break;
                     }
@@ -206,7 +204,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void NavgationCoplete(NavigationResult obj)
         {
-      //      throw new NotImplementedException();
+            //      throw new NotImplementedException();
         }
 
         private bool CanSentProject()
@@ -231,12 +229,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             {
                 bld_Projects.Add(bld_project);
             }
-            else if(bld_project != null)
+            else if (bld_project != null)
             {
                 bldProject temp_prj = bld_Projects.Where(pr => pr.Id == bld_project.Id).FirstOrDefault();
                 temp_prj = bld_project;
             }
-      
+
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

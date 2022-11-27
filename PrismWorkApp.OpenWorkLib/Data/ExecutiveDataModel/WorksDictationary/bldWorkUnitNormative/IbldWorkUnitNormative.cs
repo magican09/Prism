@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldWorkUnitNormative:IRegisterable, IMeasurable
+    public interface IbldWorkUnitNormative : IRegisterable, IMeasurable
     {
 
     }

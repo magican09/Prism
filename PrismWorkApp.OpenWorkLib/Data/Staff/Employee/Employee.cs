@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class Employee : Person, IEmployee, IEntityObject
     {
@@ -12,8 +8,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _salary; }
             set { SetProperty(ref _salary, value); }
         }
-        private EmployeePosition  _position;
-        public virtual  EmployeePosition Position
+        private EmployeePosition _position;
+        public virtual EmployeePosition Position
         {
             get { return _position; }
             set { SetProperty(ref _position, value); }

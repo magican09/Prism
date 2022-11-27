@@ -1,9 +1,8 @@
-﻿using System.Collections.Specialized;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace PrismWorkApp.Core
 {
-    public interface INode  
+    public interface INode
     {
         string Name { get; set; }
         INodes Nodes { get; set; }

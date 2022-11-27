@@ -1,14 +1,10 @@
 ﻿using Prism.Commands;
-using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using BindableBase = Prism.Mvvm.BindableBase;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -32,7 +28,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _resivedResposibleEmployee; }
             set { SetProperty(ref _resivedResposibleEmployee, value); }
         }
-     
+
         private bldResponsibleEmployeesGroup _responsibleEmployees;
         public bldResponsibleEmployeesGroup ResponsibleEmployees
         {
@@ -45,7 +41,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _allResponsibleEmployees; }
             set { SetProperty(ref _allResponsibleEmployees, value); }
         }
-       
+
         private string _messageReceived = "Бла бал бла...!!!";
         public string MessageReceived
         {
@@ -57,7 +53,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
         public DelegateCommand SaveCommand { get; private set; }
         public DelegateCommand<object> CloseCommand { get; private set; }
-       
+
         public ResponsibleEmployeeViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
         {
             SaveCommand = new DelegateCommand(OnSave, CanSave);
@@ -70,16 +66,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnDataGridLostSocus(object obj)
         {
 
-         /*   if (obj == Sele)
-            {
-                SelectedConstruction = null;
-                return;
-            }
-            if (obj == SelectedConstruction)
-            {
-                SelectedChildBuildingObject = null;
-                return;
-            }*/
+            /*   if (obj == Sele)
+               {
+                   SelectedConstruction = null;
+                   return;
+               }
+               if (obj == SelectedConstruction)
+               {
+                   SelectedChildBuildingObject = null;
+                   return;
+               }*/
 
         }
 
@@ -91,7 +87,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 return false;
         }
 
-       
+
 
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
@@ -136,7 +132,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (SelectedResposibleEmployee != null) SelectedResposibleEmployee.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedResposibleEmployee = new SimpleEditableResposibleEmployee();
                 SelectedResposibleEmployee.ErrorsChanged += RaiseCanExecuteChanged;
-             //   CoreFunctions.CopyObjectReflectionNewInstances(ResivedResposibleEmployee, SelectedResposibleEmployee);
+                //   CoreFunctions.CopyObjectReflectionNewInstances(ResivedResposibleEmployee, SelectedResposibleEmployee);
 
             }
 

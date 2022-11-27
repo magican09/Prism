@@ -3,13 +3,12 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.Core.Dialogs
 {
-    public class SelectElementFromCollectionDialogVeiwModel<TContainer,T>: BindableBase, IDialogAware
-        where TContainer:ICollection<T>, new()
-        where T:class, new()
+    public class SelectElementFromCollectionDialogVeiwModel<TContainer, T> : BindableBase, IDialogAware
+        where TContainer : ICollection<T>, new()
+        where T : class, new()
     {
         private string _title = "Выбрать";
         public string Title
@@ -61,8 +60,8 @@ namespace PrismWorkApp.Core.Dialogs
         public SelectElementFromCollectionDialogVeiwModel()
         {
             CloseDialogCommand = new DelegateCommand(CloseDialog);
-            ConfirmDialogCommand = new DelegateCommand(ConfirmDialog,CanConfirmDialog).
-                ObservesProperty(()=>SelectedElement);
+            ConfirmDialogCommand = new DelegateCommand(ConfirmDialog, CanConfirmDialog).
+                ObservesProperty(() => SelectedElement);
         }
 
         private bool CanConfirmDialog()
@@ -94,7 +93,7 @@ namespace PrismWorkApp.Core.Dialogs
 
         public void OnDialogClosed()
         {
-           
+
         }
 
         public void OnDialogOpened(IDialogParameters parameters)

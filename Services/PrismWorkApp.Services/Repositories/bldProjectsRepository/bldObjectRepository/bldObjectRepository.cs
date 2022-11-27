@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrismWorkApp.OpenWorkLib.Data;
-using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace PrismWorkApp.Services.Repositories
 {
@@ -20,7 +18,7 @@ namespace PrismWorkApp.Services.Repositories
         {
             this.Dispose();
         }
-       public List<bldObject> GetBldObjects(Guid project_id)
+        public List<bldObject> GetBldObjects(Guid project_id)
         {
             PlutoContext.Objects
                     .Include(ob => ob.BuildingObjects)
@@ -28,7 +26,7 @@ namespace PrismWorkApp.Services.Repositories
                     .ThenInclude(cn => cn.Works)
                     .ToList();
 
-            return PlutoContext.Objects.Where(ob=>ob.bldProject.Id== project_id).ToList();
+            return PlutoContext.Objects.Where(ob => ob.bldProject.Id == project_id).ToList();
         }
         public List<bldObject> GetAllBldObjects()
         {
@@ -42,7 +40,7 @@ namespace PrismWorkApp.Services.Repositories
 
         public List<bldObject> GetldObjectsAsync()
         {
-          //  PlutoContext.Objects.ToList();
+            //  PlutoContext.Objects.ToList();
 
             return PlutoContext.Objects.ToList();
         }

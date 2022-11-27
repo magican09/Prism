@@ -142,10 +142,10 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=FullName}"  
-                                                Header="Фамилия Имя Отчество" Width="Auto" />
-                                <DataGridTextColumn Binding = "{Binding Path=RoleOfResponsible}" 
-                                                Header="Роль отвественного в строительстве" Width="Auto"   />
+                                <DataGridTextColumn Binding = "{Binding Path=Code}"  
+                                                Header="Код" Width="65" />
+                                <DataGridTextColumn Binding = "{Binding Path=Name}" 
+                                                Header="Наименование объекта" Width="*"   />
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
@@ -176,9 +176,11 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=Name}"  
-                                                Header="Наименование конструкции" Width="Auto" />
-                                
+                                <DataGridTextColumn Binding = "{Binding Path=Code}"  
+                                                Header="Код" Width="65" />
+                                <DataGridTextColumn Binding = "{Binding Path=Name}" 
+                                                Header="Наименование конструкции" Width="*"   />
+                                 
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >

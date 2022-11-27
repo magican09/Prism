@@ -1,7 +1,5 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -26,7 +24,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public object ParentObject { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Func<IEntityObject, bool> RestrictionPredicate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public PropertiesChangeJornal PropertiesChangeJornal { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-      
+
         public void ClearStructureLevel()
         {
             throw new NotImplementedException();

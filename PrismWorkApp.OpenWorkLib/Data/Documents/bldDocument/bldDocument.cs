@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldDocument :  BindableBase, IbldDocument,IEntityObject
+    public class bldDocument : BindableBase, IbldDocument, IEntityObject
     {
-        private Guid _id =  Guid.NewGuid();
+        private Guid _id = Guid.NewGuid();
         public Guid Id
         {
             get { return _id; }
-            set { SetProperty(ref _id, value);  }
+            set { SetProperty(ref _id, value); }
         }
         private Guid _storedId;
         public Guid StoredId
@@ -45,14 +43,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private string _shortName;
         public virtual string ShortName
         {
-            get {
-                
+            get
+            {
+
                 return _shortName;
             }
             set { SetProperty(ref _shortName, value); }
         }
         private bldDocumentsGroup _attachedDocuments = new bldDocumentsGroup("Приложения");
-        public   bldDocumentsGroup AttachedDocuments
+        public bldDocumentsGroup AttachedDocuments
         {
             get { return _attachedDocuments; }
             set { SetProperty(ref _attachedDocuments, value); }
@@ -70,20 +69,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _regId; }
             set { SetProperty(ref _regId, value); }
         }
-       /* private object _parent;
-        public object Parent
-        {
-            get { return _parent; }
-            set { SetProperty(ref _parent, value); }
-        }
-        private IbldDocumentsGroup _children;
-        public IbldDocumentsGroup  Children
-        {
-            get { return _children; }
-            set { SetProperty(ref _children, value); }
-        }
-        */
-        public bldDocument(string name): this()
+        /* private object _parent;
+         public object Parent
+         {
+             get { return _parent; }
+             set { SetProperty(ref _parent, value); }
+         }
+         private IbldDocumentsGroup _children;
+         public IbldDocumentsGroup  Children
+         {
+             get { return _children; }
+             set { SetProperty(ref _children, value); }
+         }
+         */
+        public bldDocument(string name) : this()
         {
             Name = name;
         }
@@ -91,5 +90,5 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             AttachedDocuments.Name = "Приложения";
         }
-     }
+    }
 }

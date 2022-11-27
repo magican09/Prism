@@ -7,10 +7,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
@@ -78,7 +76,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             else if (obj is INotifyPropertyChanged)
             {
                 (obj as INotifyPropertyChanged).PropertyChanged += OnPropertyObjectChanged;
-             //   obj.PropertyBeforeChanged += OnPropertyBeforeChanged;
+                //   obj.PropertyBeforeChanged += OnPropertyBeforeChanged;
             }
             if (!RegistedObjects.Contains(obj))
                 RegistedObjects.Add(obj);
@@ -167,9 +165,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             foreach (Guid currentId in ContextIdHistory)
             {
                 //PropertyStateRecord prop_state_record = this.Where(r => r.Name == currentId.ToString()).FirstOrDefault();
-                PropertyStateRecord prop_state_record = this.Where(r => r.ContextId == currentId && 
+                PropertyStateRecord prop_state_record = this.Where(r => r.ContextId == currentId &&
                                                             r.ChildWindowContextId == stateRecord.ContextId &&
-                                                            r.Status== JornalRecordType.COMPLEX_RECORD).FirstOrDefault();
+                                                            r.Status == JornalRecordType.COMPLEX_RECORD).FirstOrDefault();
                 if (prop_state_record == null)
                 //   prop_state_record = new PropertyStateRecord(stateRecord.ParentObject, JornalRecordType.MODIFIED, currentId.ToString(), currentId, null);
                 {
@@ -229,12 +227,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                                                                          .OrderBy(r => r.Index).FirstOrDefault();
             if (first_undo_comlete_state != null) // Если не было выбранной сохраненой записи 
             {
-                this.UnDo(first_undo_comlete_state,false);
+                this.UnDo(first_undo_comlete_state, false);
                 first_undo_comlete_state.State = JornalRecordState.SAVED;
             }
         }
         //cxcxcxcdsdsdsxc
-        public virtual void UnDo(PropertyStateRecord propertyState,bool _undo_left_direction = true)
+        public virtual void UnDo(PropertyStateRecord propertyState, bool _undo_left_direction = true)
         {
             if (propertyState.ParentObject != null)
             {
@@ -264,9 +262,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     }
                 }
             }
-            else if(propertyState.Count>0 && propertyState.Status == JornalRecordType.COMPLEX_RECORD)//Еасли  изменене не одно свойсто 
+            else if (propertyState.Count > 0 && propertyState.Status == JornalRecordType.COMPLEX_RECORD)//Еасли  изменене не одно свойсто 
             {
-                
+
                 List<PropertyStateRecord> records = null;
                 if (_undo_left_direction)
                     records = propertyState.OrderByDescending(r => r.Index).ToList();
@@ -279,7 +277,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 }
             }
 
-            PropertyChanged?.Invoke(this, new  PropertyChangedEventArgs("Undo") );
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Undo"));
         }
         public void UnDoAll(Guid currentContextId)
         {
@@ -294,9 +292,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             if (propertyState.ParentObject is INotifyJornalableCollectionChanged)
             {
-             //   if (propertyState.Status == JornalRecordType.REMOVED)
-                 //   if (((IList)propertyState.ParentObject).Contains(propertyState.Value as IJornalable))
-                    //    ((INotifyJornalableCollectionChanged)propertyState.ParentObject).RemoveItem(propertyState.Value as IJornalable);
+                //   if (propertyState.Status == JornalRecordType.REMOVED)
+                //   if (((IList)propertyState.ParentObject).Contains(propertyState.Value as IJornalable))
+                //    ((INotifyJornalableCollectionChanged)propertyState.ParentObject).RemoveItem(propertyState.Value as IJornalable);
             }
             this.Remove(propertyState);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Save"));
@@ -335,7 +333,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
         public bool IsOnLastRecord(Guid currentContextId) //Если казатель PICKED на последней записи
         {
-             var saved_records = this.Where(r => r.State == JornalRecordState.SAVED).ToList();
+            var saved_records = this.Where(r => r.State == JornalRecordState.SAVED).ToList();
             var undo_comlete_records = this.Where(r => r.State == JornalRecordState.UNDO_COMPLETE).ToList();
             if (saved_records.Count > 0 &&
                undo_comlete_records.Count == 0)
@@ -344,8 +342,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             }
             else
             {
-            //   if(this.Where(r=>r.ContextId==currentContextId).ToList().Count>0)
-              //      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsOnLastRecord"));
+                //   if(this.Where(r=>r.ContextId==currentContextId).ToList().Count>0)
+                //      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsOnLastRecord"));
                 return false;
             }
         }
@@ -357,12 +355,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             if (saved_records.Count == 0 &&
                undo_comlete_records.Count > 0)
             {
-                 return true;
+                return true;
             }
             else
             {
-               // if (this.Where(r => r.ContextId == currentContextId).ToList().Count > 0)
-               //     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsOnFirstRecord"));
+                // if (this.Where(r => r.ContextId == currentContextId).ToList().Count > 0)
+                //     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsOnFirstRecord"));
                 return false;
             }
         }

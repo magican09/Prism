@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldAOSRDocumentsGroup: NameableObservableCollection<bldAOSRDocument>, IbldAOSRDocumentsGroup, IEntityObject
+    public class bldAOSRDocumentsGroup : NameableObservableCollection<bldAOSRDocument>, IbldAOSRDocumentsGroup, IEntityObject
     {
         public bldAOSRDocumentsGroup()
         {

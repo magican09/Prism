@@ -5,15 +5,13 @@ using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
     public class ResponsibleEmployeeDialogViewModel : ResponsibleEmployeeViewModel, IDialogAware
     {
-            public ResponsibleEmployeeDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
-            : base( dialogService,  regionManager,  buildingUnitsRepository)
+        public ResponsibleEmployeeDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
+        : base(dialogService, regionManager, buildingUnitsRepository)
         {
 
         }
@@ -35,12 +33,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         {
             //throw new NotImplementedException();
         }
-       override  public  void OnSave()
+        override public void OnSave()
         {
             if (EditMode == ConveyanceObjectModes.EditMode.FOR_EDIT)
             {
-                CoreFunctions.ConfirmActionOnElementDialog<bldResponsibleEmployee>(SelectedResposibleEmployee, 
-                    "Сохранить", "отвествественного работника", 
+                CoreFunctions.ConfirmActionOnElementDialog<bldResponsibleEmployee>(SelectedResposibleEmployee,
+                    "Сохранить", "отвествественного работника",
                     "Сохранить",
                      "Не сохранять",
                     "Отмена", (result) =>
@@ -80,8 +78,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 if (SelectedResposibleEmployee != null) SelectedResposibleEmployee.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedResposibleEmployee = ResivedResposibleEmployee;
                 SelectedResposibleEmployee.ErrorsChanged += RaiseCanExecuteChanged;
-        
-             
+
+
             }
 
         }

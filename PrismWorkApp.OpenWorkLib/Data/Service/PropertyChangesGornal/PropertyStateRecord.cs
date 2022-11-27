@@ -1,36 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public class PropertyStateRecord :ObservableCollection<PropertyStateRecord>, INotifyPropertyChanged
+    public class PropertyStateRecord : ObservableCollection<PropertyStateRecord>, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        protected virtual bool  SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = "")
+        protected virtual bool SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = "")
         {
             if (object.Equals(val, member)) return false;
-              member = val;
-             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            member = val;
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
         }
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid _сontextId;
-         public Guid ContextId
+        public Guid ContextId
         {
             get
             {
                 if (ContextIdStructure != null)
-                    return ContextIdStructure.ContextId; 
+                    return ContextIdStructure.ContextId;
                 else
                     return _сontextId;
             }
             set
             {
-                    
+
 
                 if (ContextIdStructure != null)
                 {
@@ -41,16 +39,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             }
         }
         public Guid ChildWindowContextId { get; set; }
-        public ContextIdStructure ContextIdStructure{ get; set; }
+        public ContextIdStructure ContextIdStructure { get; set; }
         public string Name { get; set; }
-        public DateTime Date { get ; set ; }
+        public DateTime Date { get; set; }
         private object _value;
         public object Value
         {
             get { return _value; }
             set { SetProperty(ref _value, value); }
         }
-        private int  _index;
+        private int _index;
         public int Index
         {
             get { return _index; }
@@ -63,7 +61,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             set { SetProperty(ref _status, value); }
         }
 
-        private JornalRecordState _state= JornalRecordState.NONE;
+        private JornalRecordState _state = JornalRecordState.NONE;
         public JornalRecordState State
         {
             get { return _state; }
@@ -72,7 +70,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
         public IJornalable ParentObject { get; set; }
         public PropertiesChangeJornal ParentJornal { get; set; }
-        public PropertyStateRecord(object prop, JornalRecordType recordStatus, string name ="" )
+        public PropertyStateRecord(object prop, JornalRecordType recordStatus, string name = "")
         {
             Value = prop;
             Date = DateTime.Now;
@@ -106,8 +104,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             ParentObject = parentObject;
             Index = index;
         }
-        public PropertyStateRecord(PropertyStateRecord stateRecord):
-            this(stateRecord.Value, stateRecord.Status, stateRecord.Name,stateRecord.ContextId, stateRecord.ParentObject)
+        public PropertyStateRecord(PropertyStateRecord stateRecord) :
+            this(stateRecord.Value, stateRecord.Status, stateRecord.Name, stateRecord.ContextId, stateRecord.ParentObject)
         {
             Date = DateTime.Now;
         }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.Modules.MainModule.Core
+﻿namespace PrismWorkApp.Modules.MainModule.Core
 {
-   public  class ModulesContext
+    public class ModulesContext
     {
 
     }

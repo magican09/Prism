@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Input;
 
 namespace ZzaDesktop
@@ -43,7 +41,7 @@ namespace ZzaDesktop
 
         // Beware - should use weak references if command instance lifetime is longer than lifetime of UI objects that get hooked up to command
         // Prism commands solve this in their implementation
-      
+
         void ICommand.Execute(object parameter)
         {
             if (_TargetExecuteMethod != null)
@@ -64,15 +62,15 @@ namespace ZzaDesktop
             _TargetExecuteMethod = executeMethod;
         }
 
-        public RelayCommand(Action<T> executeMethod, Func<T,bool> canExecuteMethod)
+        public RelayCommand(Action<T> executeMethod, Func<T, bool> canExecuteMethod)
         {
             _TargetExecuteMethod = executeMethod;
             _TargetCanExecuteMethod = canExecuteMethod;
         }
 
-        public void RaiseCanExecuteChanged() 
+        public void RaiseCanExecuteChanged()
         {
-             CanExecuteChanged(this, EventArgs.Empty); 
+            CanExecuteChanged(this, EventArgs.Empty);
         }
         #region ICommand Members
 

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class StructureLevel: INotifyPropertyChanged
+    public class StructureLevel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -48,7 +45,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get
             {
-             return  $"{DeptIndex.ToString()}_{Level.ToString()}:{Number.ToString()}";
+                return $"{DeptIndex.ToString()}_{Level.ToString()}:{Number.ToString()}";
             }
             set { _code = value; OnPropertyChanged("Code"); }
         }

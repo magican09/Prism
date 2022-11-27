@@ -1,24 +1,15 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
-using Prism.Regions;
+﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
-using PrismWorkApp.Core.Dialogs;
+using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
-using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows;
-using BindableBase = Prism.Mvvm.BindableBase;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -72,6 +63,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
+
         public NotifyCommand RemoveConstructionCommand { get; private set; }
         public NotifyCommand RemoveWorkCommand { get; private set; }
 
@@ -81,6 +73,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand EditConstructionCommand { get; private set; }
         public NotifyCommand EditWorkCommand { get; private set; }
 
+        public NotifyCommand SaveAOSRsToWordCommand { get; private set; }
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private IApplicationCommands _applicationCommands;
 
@@ -91,24 +84,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CommonChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
 
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
-            base.SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedChildConstruction);
-            base.CloseCommand = new NotifyCommand<object>(OnClose);
-            base.UnDoCommand = new NotifyCommand(() => OnUnDoLeft(Id),
-                                          () => { return !CommonChangeJornal.IsOnFirstRecord(Id); })
-                                                  .ObservesPropertyChangedEvent(CommonChangeJornal);
-            base.ReDoCommand = new NotifyCommand(() => OnUnDoRight(Id),
-                           () => { return !CommonChangeJornal.IsOnLastRecord(Id); })
-                             .ObservesPropertyChangedEvent(CommonChangeJornal);
-
+            SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedConstruction);
+            CloseCommand = new NotifyCommand<object>(OnClose);
+            #region Add Commands
+            AddWorkCommand = new NotifyCommand(OnAddWork);
+            AddConstructionCommand = new NotifyCommand(OnAddConstruction);
+            #endregion
+            #region Remove Commands
             RemoveConstructionCommand = new NotifyCommand(OnRemoveConstruction,
-                                        () => SelectedChildConstruction != null)
-                    .ObservesProperty(() => SelectedChildConstruction);
+                                                () => SelectedChildConstruction != null)
+                            .ObservesProperty(() => SelectedChildConstruction);
             RemoveWorkCommand = new NotifyCommand(OnRemoveWork,
                                         () => SelectedWork != null)
                     .ObservesProperty(() => SelectedWork);
-
-            AddConstructionCommand = new NotifyCommand(OnAddConstruction);
-            AddWorkCommand = new NotifyCommand(OnAddWork);
+            #endregion
+            #region Edit Commands
 
             EditConstructionCommand = new NotifyCommand(OnEditConstruction,
                                         () => SelectedChildConstruction != null)
@@ -116,6 +106,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             EditWorkCommand = new NotifyCommand(OnEditWork,
                                         () => SelectedWork != null)
                     .ObservesProperty(() => SelectedWork);
+            #endregion
+
+
+            SaveAOSRsToWordCommand = new NotifyCommand(OnSaveAOSRsToWord);
+
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
@@ -125,7 +120,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
         }
 
-
+        private void OnSaveAOSRsToWord()
+        {
+            string folder_path = Functions.GetFolderPath();
+            SelectedConstruction.SaveAOSRsToWord(folder_path);
+        }
 
         private void OnDataGridLostSocus(object obj)
         {
@@ -142,49 +141,45 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 return;
             }
         }
-
-        private void OnEditWork()
-        {
-            CoreFunctions.EditElementDialog<bldWork>(SelectedWork, "Работа",
-                  (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(WorkDialogView).Name, "Редактировать", Id);
-
-        }
         private void OnAddWork()
         {
             bldWorksGroup Works =
                 new bldWorksGroup(_buildingUnitsRepository.Works.GetbldWorksAsync());
-            NameablePredicate<bldWorksGroup, bldWork> predicate_1 = new NameablePredicate<bldWorksGroup, bldWork>();
+            NameablePredicate<ObservableCollection<bldWork>, bldWork> predicate_1 = new NameablePredicate<ObservableCollection<bldWork>, bldWork>();
             predicate_1.Name = "Показать только из текущего объекта.";
             predicate_1.Predicate = cl => cl.Where(el => el.bldConstruction.bldObject != null &&
                                                         el.bldConstruction.bldObject.Id == SelectedConstruction.bldObject.Id).ToList();
-            NameablePredicate<bldWorksGroup, bldWork> predicate_2 = new NameablePredicate<bldWorksGroup, bldWork>();
+            NameablePredicate<ObservableCollection<bldWork>, bldWork> predicate_2 = new NameablePredicate<ObservableCollection<bldWork>, bldWork>();
             predicate_2.Name = "Показать все кроме текущего объекта";
             predicate_2.Predicate = cl => cl.Where(el => el.bldConstruction.bldObject != null &&
                                                           el.bldConstruction?.bldObject.Id != SelectedConstruction?.bldObject.Id).ToList();
-            NameablePredicate<bldWorksGroup, bldWork> predicate_3 = new NameablePredicate<bldWorksGroup, bldWork>();
+            NameablePredicate<ObservableCollection<bldWork>, bldWork> predicate_3 = new NameablePredicate<ObservableCollection<bldWork>, bldWork>();
             predicate_3.Name = "Показать все";
             predicate_3.Predicate = cl => cl;
 
-            NameablePredicateObservableCollection<bldWorksGroup, bldWork> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldWorksGroup, bldWork>();
+            NameablePredicateObservableCollection<ObservableCollection<bldWork>, bldWork> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldWork>, bldWork>();
             nameablePredicatesCollection.Add(predicate_1);
             nameablePredicatesCollection.Add(predicate_2);
             nameablePredicatesCollection.Add(predicate_3);
-
-            CoreFunctions.AddElementToCollectionWhithDialog_Test<bldWorksGroup, bldWork>
-                (SelectedConstruction.Works, Works,
+            ObservableCollection<bldWork> objects_for_add_collection = new ObservableCollection<bldWork>();
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<ObservableCollection<bldWork>, bldWork>
+                (objects_for_add_collection, Works,
                  nameablePredicatesCollection,
                 _dialogService,
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)
                      {
+                         foreach (bldWork work in objects_for_add_collection)
+                         {
+                             UnDoReDoSystem.Register(work);
+                             SelectedConstruction.AddWork(work);
+                             UnDoReDoSystem.UnRegister(work);
+                         }
                          SaveCommand.RaiseCanExecuteChanged();
-                         foreach (bldWork work in SelectedConstruction.Works)
-                             work.bldConstruction = SelectedConstruction;
                      }
                      if (result.Result == ButtonResult.No)
                      {
-                         CommonChangeJornal.UnDoAll(Id);
                      }
                  },
                 typeof(AddbldWorkToCollectionDialogView).Name,
@@ -192,57 +187,97 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 "Редактирование списка работ",
                 "Форма для редактирования состава работ текушей коснтрукции.",
                 "Работы текущей конструкции", "Все работы");
-
-
-        }
-        private void OnRemoveWork()
-        {
-
-            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
-                 (SelectedConstruction.Works, SelectedWork, "Работа",
-                 () => { SelectedWork = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, Id);
-        }
-
-
-        private void OnEditConstruction()
-        {
-            CoreFunctions.EditElementDialog<bldConstruction>(SelectedChildConstruction, "Строительная конструкция",
-                  (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", Id);
-
         }
         private void OnAddConstruction()
         {
             bldConstructionsGroup Constructions =
-                new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync());
-            if (SelectedConstruction.Constructions == null)
-                SelectedConstruction.Constructions = new bldConstructionsGroup();
-            CoreFunctions.AddElementToCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
-                (SelectedConstruction.Constructions, Constructions, _dialogService,
+            new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync());
+            NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_1 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
+            predicate_1.Name = "Показать только из текущего проекта.";
+            predicate_1.Predicate = cl => cl.Where(el => el.bldObject?.bldProject.Id == SelectedConstruction?.bldObject?.bldProject?.Id).ToList();
+            NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_2 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
+            predicate_2.Name = "Показать все кроме текущего объекта";
+            predicate_2.Predicate = cl => cl.Where(el => el.bldObject?.Id != SelectedConstruction?.bldObject?.Id).ToList();
+            NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_3 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
+            predicate_3.Name = "Показать  из  все из других проектов";
+            predicate_3.Predicate = cl => cl.Where(el => el.bldObject?.bldProject.Id != SelectedConstruction?.bldObject?.bldProject?.Id).ToList();
+            NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_4 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
+            predicate_4.Name = "Показать все";
+            predicate_4.Predicate = cl => cl;
+
+            NameablePredicateObservableCollection<ObservableCollection<bldConstruction>, bldConstruction> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldConstruction>, bldConstruction>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
+            nameablePredicatesCollection.Add(predicate_3);
+            nameablePredicatesCollection.Add(predicate_4);
+            ObservableCollection<bldConstruction> objects_for_add_collection = new ObservableCollection<bldConstruction>();
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<ObservableCollection<bldConstruction>, bldConstruction>
+                (objects_for_add_collection, Constructions,
+                nameablePredicatesCollection,
+                _dialogService,
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)
                      {
+                         foreach (bldConstruction construction in objects_for_add_collection)
+                         {
+                             UnDoReDoSystem.Register(construction);
+                             SelectedConstruction.AddConstruction(construction);
+                             UnDoReDoSystem.UnRegister(construction);
+                         }
                          SaveCommand.RaiseCanExecuteChanged();
                      }
                      if (result.Result == ButtonResult.No)
                      {
-                         CommonChangeJornal.UnDoAll(Id);
+
                      }
                  },
                 typeof(AddbldConstructionToCollectionDialogView).Name,
                 typeof(ConstructionDialogView).Name, Id,
                 "Редактирование списка конструкций",
-                "Форма для редактирования состава коснструций текушей коснтрукции.",
-                "Конструкции текущей конструкции", "Все конструкции");
+                "Форма для редактирования состава коснструций объекта.",
+                "Конструкции текущего объекта", "Все конструкции");
+        }
+        private void OnEditWork()
+        {
+            UnDoReDoSystem.Register(SelectedWork);
+            CoreFunctions.EditElementDialog<bldWork>(SelectedWork, "Работа",
+                  (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(WorkDialogView).Name, "Редактировать", Guid.Empty);
+            UnDoReDoSystem.UnRegister(SelectedWork);
+        
+        }
+        private void OnEditConstruction()
+        {
+            UnDoReDoSystem.Register(SelectedChildConstruction);
+            CoreFunctions.EditElementDialog<bldConstruction>(SelectedChildConstruction, "Строительная конструкция",
+                (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", Guid.Empty);
+            UnDoReDoSystem.UnRegister(SelectedChildConstruction);
+        }
+        private void OnRemoveWork()
+        {
+
+            
+          
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
+                  (SelectedConstruction.Works, SelectedWork, "Работу",
+                 () =>
+                 {
+                     SelectedConstruction.RemoveWork(SelectedWork);
+                     SelectedWork = null;
+                     SaveCommand.RaiseCanExecuteChanged();
+                 }, _dialogService, Guid.Empty);
         }
         private void OnRemoveConstruction()
         {
-
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
-                 (SelectedChildConstruction.Constructions, SelectedChildConstruction, "Строительная конструкция",
-                 () => { SelectedChildConstruction = null; SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, Id);
+                  (SelectedConstruction.Constructions, SelectedChildConstruction, "Строительную конструкцию",
+                 () =>
+                 {
+                     SelectedConstruction.RemoveConstruction(SelectedChildConstruction);
+                     SelectedChildConstruction = null;
+                     SaveCommand.RaiseCanExecuteChanged();
+                 }, _dialogService, Guid.Empty);
         }
-
         private bool CanSave()
         {
             if (SelectedConstruction != null)
@@ -299,7 +334,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 return true;
         }
 
-      
+
 
 
     }

@@ -1,13 +1,6 @@
-﻿using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
+﻿using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.OpenWorkLib.Services;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -122,8 +115,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
         private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup();
-        // [NotMapped]
-        public bldResponsibleEmployeesGroup? ResponsibleEmployees
+       public bldResponsibleEmployeesGroup? ResponsibleEmployees
         {
             get { return _responsibleEmployees; }
             set { SetProperty(ref _responsibleEmployees, value); }
@@ -138,22 +130,21 @@ namespace PrismWorkApp.OpenWorkLib.Data
             project.ResponsibleEmployees = (bldResponsibleEmployeesGroup)ResponsibleEmployees.Clone();
             return project;
         }
-      
+
         public bldProject()
         {
         }
 
-
         #region EditMethods
-        public void  RemoveBuildindObject(bldObject obj)
+        public void RemoveBuildindObject(bldObject obj)
         {
             RemoveFromCollectionCommand<bldObjectsGroup, bldObject> Command =
                 new RemoveFromCollectionCommand<bldObjectsGroup, bldObject>(BuildingObjects, obj);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-        public  void  RemoveParticipant(bldParticipant participant )
+        public void RemoveParticipant(bldParticipant participant)
         {
-            RemoveFromCollectionCommand<bldParticipantsGroup,bldParticipant> Command =
+            RemoveFromCollectionCommand<bldParticipantsGroup, bldParticipant> Command =
                  new RemoveFromCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, participant);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }

@@ -1,22 +1,20 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldObject : BindableBase ,IbldObject, IEntityObject,IJornalable
+    public class bldObject : BindableBase, IbldObject, IEntityObject, IJornalable
     {
-       
+
         private Guid _storedId;
         public Guid StoredId
         {
             get { return _storedId; }
             set { SetProperty(ref _storedId, value); }
         }
-      
+
         private DateTime _date;
         public DateTime Date
         {
@@ -34,13 +32,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get
             {
-         /*       int short_name_leng = 40;
-                string short_name = "";
-                if (Name?.Length < short_name_leng) 
-                    short_name = $"{Name}";
-                else 
-                    short_name = $"{Name?.Substring(0, short_name_leng)}";
-                SetProperty(ref _shortName, short_name);*/
+                /*       int short_name_leng = 40;
+                       string short_name = "";
+                       if (Name?.Length < short_name_leng) 
+                           short_name = $"{Name}";
+                       else 
+                           short_name = $"{Name?.Substring(0, short_name_leng)}";
+                       SetProperty(ref _shortName, short_name);*/
                 return _shortName;
             }
             set { SetProperty(ref _shortName, value); }
@@ -108,12 +106,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _scopeOfWork; }
             set { SetProperty(ref _scopeOfWork, value); }
         }
-
-       
-
         private bldConstructionsGroup _constructions = new bldConstructionsGroup();
-      
-        public virtual bldConstructionsGroup? Constructions 
+        public virtual bldConstructionsGroup? Constructions
         {
             get { return _constructions; }
             set { SetProperty(ref _constructions, value); }
@@ -124,31 +118,28 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _address; }
             set { SetProperty(ref _address, value); }
         }
-        private bldObjectsGroup _buildingObjects  =  new bldObjectsGroup();
+        private bldObjectsGroup _buildingObjects = new bldObjectsGroup();
         public virtual bldObjectsGroup BuildingObjects
         {
             get { return _buildingObjects; }
             set { SetProperty(ref _buildingObjects, value); }
         }
-        //   [NotMapped]
-        //  public  List<string> List_prop { get; set; } = new List<string>();
-        
-        private bldProject _bldProject ;
+       
+        private bldProject _bldProject;
         [NavigateProperty]
         public virtual bldProject? bldProject
         {
             get { return _bldProject; }
             set { SetProperty(ref _bldProject, value); }
         }
-
-   
+        #region IClonable
         public override bool Equals(object? obj)
         {
-            if(obj is IEntityObject)
+            if (obj is IEntityObject)
             {
-                if (((IEntityObject)obj).Id == this.Id && this.Id!=Guid.Empty) return true;
+                if (((IEntityObject)obj).Id == this.Id && this.Id != Guid.Empty) return true;
                 if (((IEntityObject)obj).StoredId == this.StoredId && this.StoredId != Guid.Empty) return true;
-             }
+            }
             return false;
         }
         public override int GetHashCode()
@@ -163,8 +154,77 @@ namespace PrismWorkApp.OpenWorkLib.Data
             val = (bldObject)MemberwiseClone();
             return val;
         }
-        
+        #endregion
 
+        private bldParticipantsGroup _participants = new bldParticipantsGroup();
+        [NotMapped]
+        public bldParticipantsGroup? Participants
+        {
+            get { return _participants; }
+            set { SetProperty(ref _participants, value); }
+        }
+        private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup();
+        [NotMapped]
+        public bldResponsibleEmployeesGroup? ResponsibleEmployees
+        {
+            get { return _responsibleEmployees; }
+            set { SetProperty(ref _responsibleEmployees, value); }
+        }
+
+        #region EditMethods
        
+        public void RemoveConstruction(bldConstruction constr)
+        {
+            RemoveFromCollectionCommand<bldConstructionsGroup, bldConstruction> Command =
+                new RemoveFromCollectionCommand<bldConstructionsGroup, bldConstruction>(Constructions, constr);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void RemoveBuildindObject(bldObject obj)
+        {
+            RemoveFromCollectionCommand<bldObjectsGroup, bldObject> Command =
+                new RemoveFromCollectionCommand<bldObjectsGroup, bldObject>(BuildingObjects, obj);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void RemoveParticipant(bldParticipant participant)
+        {
+            RemoveFromCollectionCommand<bldParticipantsGroup, bldParticipant> Command =
+                 new RemoveFromCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, participant);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void RemoveResponsibleEmployee(bldResponsibleEmployee empl)
+        {
+            RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+                 new RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddBuildindObject(bldObject obj)
+        {
+            obj.bldProject = bldProject;
+            AddToCollectionCommand<bldObjectsGroup, bldObject> Command =
+                new AddToCollectionCommand<bldObjectsGroup, bldObject>(BuildingObjects, obj);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddConstruction(bldConstruction construction)
+        {
+            construction.bldObject  = this;
+            AddToCollectionCommand<bldConstructionsGroup, bldConstruction> Command =
+                new AddToCollectionCommand<bldConstructionsGroup, bldConstruction>(Constructions, construction);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddParticipant(bldParticipant participant)
+        {
+            AddToCollectionCommand<bldParticipantsGroup, bldParticipant> Command =
+                 new AddToCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, participant);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddResponsibleEmployee(bldResponsibleEmployee empl)
+        {
+            AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+                 new AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+
+        #endregion
+
     }
 }

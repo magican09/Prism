@@ -7,17 +7,15 @@ using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
-    public class ObjectDialogViewModel : ObjectViewModel,IDialogAware
+    public class ObjectDialogViewModel : ObjectViewModel, IDialogAware
     {
 
         public ObjectDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
             IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
-            :base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, propertiesChangeJornal)
+            : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, propertiesChangeJornal)
         {
 
         }
@@ -38,39 +36,39 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 
         public void OnDialogClosed()
         {
-          
+
         }
-         override  public void OnSave()
+        override public void OnSave()
         {
             if (EditMode == ConveyanceObjectModes.EditMode.FOR_EDIT)
             {
-                      CoreFunctions.ConfirmActionOnElementDialog<bldObject>(SelectedBuildingObject, 
-                         "Сохранить", "строительный объект",
-                         "Сохранить",
-                          "Не сохранять",
-                         "Отмена",  (result) =>
-                     {
-                         if (result.Result == ButtonResult.Yes)
-                         {
+                CoreFunctions.ConfirmActionOnElementDialog<bldObject>(SelectedBuildingObject,
+                   "Сохранить", "строительный объект",
+                   "Сохранить",
+                    "Не сохранять",
+                   "Отмена", (result) =>
+              {
+                   if (result.Result == ButtonResult.Yes)
+                   {
                              //CommonChangeJornal.SaveAll(Id);
                              base.OnSave<bldObject>(SelectedBuildingObject);
-                             RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
-                         }
-                         else
-                         {
-                           // CommonChangeJornal.UnDoAll(Id);
-                           RequestClose?.Invoke(new DialogResult(ButtonResult.No));
-                         }
+                       RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
+                   }
+                   else
+                   {
+                             // CommonChangeJornal.UnDoAll(Id);
+                             RequestClose?.Invoke(new DialogResult(ButtonResult.No));
+                   }
 
-                     }, _dialogService);
+               }, _dialogService);
             }
         }
-        override public  void OnClose(object obj)
+        override public void OnClose(object obj)
         {
-        //    if (EditMode) SelectedBuildingObject.UnDoAll(Id);
-          base.OnClose<bldObject>(obj, SelectedBuildingObject);
-          RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
-           
+            //    if (EditMode) SelectedBuildingObject.UnDoAll(Id);
+            base.OnClose<bldObject>(obj, SelectedBuildingObject);
+            RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
+
         }
 
 

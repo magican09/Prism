@@ -1,6 +1,6 @@
 ﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldCompany:IRegisterable
+    public interface IbldCompany : IRegisterable
     {
         string Contacts { get; set; }
         string INN { get; set; }

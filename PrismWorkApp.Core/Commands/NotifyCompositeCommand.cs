@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Text;
 using System.Windows.Input;
 
 namespace PrismWorkApp.Core.Commands
@@ -21,7 +19,7 @@ namespace PrismWorkApp.Core.Commands
         {
             RegisteredCommands.CollectionChanged += OnRegisteredCommandsChanged;
         }
-        public NotifyCompositeCommand(bool monitorCommandActivity):base()
+        public NotifyCompositeCommand(bool monitorCommandActivity) : base()
         {
 
         }
@@ -29,7 +27,7 @@ namespace PrismWorkApp.Core.Commands
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                
+
             }
         }
         #region ICommand members
@@ -52,14 +50,14 @@ namespace PrismWorkApp.Core.Commands
 
             if (_LastCommand != null)
                 _LastCommandCanExecuteVal = _LastCommand.CanExecute(parameter);
-           
+
             if (_TargetCanExecuteMethod != null)
             {
                 _TargetCanExecuteMethod_CanExecuteVal = _TargetCanExecuteMethod();
             }
             if (_TargetCanExecuteMethod == null)
             {
-                _TargetCanExecuteMethod_CanExecuteVal =  true ;
+                _TargetCanExecuteMethod_CanExecuteVal = true;
             }
             can_execute_val = (RegisteredCommands.Count > 0) & _RegisteredCommandsCanExecuteVal &&
                _LastCommandCanExecuteVal &&
@@ -110,7 +108,7 @@ namespace PrismWorkApp.Core.Commands
         {
             _LastCommand = mainCommand;
             _LastCommand.CanExecuteChanged += RaiseChildrenCanExecuteChanged;
-          
+
 
         }
         protected virtual bool ShouldExecute(ICommand command)

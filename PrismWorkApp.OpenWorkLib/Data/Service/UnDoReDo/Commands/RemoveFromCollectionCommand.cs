@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
 {
-    public class RemoveFromCollectionCommand<TColloction, TEntity> : IUnDoRedoCommand 
-        where TColloction:ICollection<TEntity>
+    public class RemoveFromCollectionCommand<TColloction, TEntity> : IUnDoRedoCommand
+        where TColloction : ICollection<TEntity>
     {
         private TColloction _Collection;
         private TEntity _RemovedObject;
@@ -15,18 +14,18 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
         {
             throw new NotImplementedException();
         }
-        public virtual void Execute(object parameter=null)
+        public virtual void Execute(object parameter = null)
         {
-           if(parameter!=null ) 
-                _RemovedObject =(TEntity) parameter;
+            if (parameter != null)
+                _RemovedObject = (TEntity)parameter;
             _Collection.Remove((TEntity)_RemovedObject);
-          
+
         }
-      public virtual void UnExecute()
+        public virtual void UnExecute()
         {
             _Collection.Add(_RemovedObject);
         }
-        public RemoveFromCollectionCommand(TColloction colloction,TEntity removed_object)
+        public RemoveFromCollectionCommand(TColloction colloction, TEntity removed_object)
         {
             _Collection = colloction;
             _RemovedObject = removed_object;

@@ -1,19 +1,13 @@
-﻿
-using PrismWorkApp.OpenWorkLib.Core;
-using PrismWorkApp.OpenWorkLib.Data.Service;
+﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 
 namespace PrismWorkApp.OpenWorkLib.Data
@@ -23,7 +17,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-  //      public event PropertyChangedEventHandler PropertyBeforeChanged = delegate { };
+        //      public event PropertyChangedEventHandler PropertyBeforeChanged = delegate { };
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated = delegate { };
         public void InvokeUnDoReDoCommandCreatedEvent(IUnDoRedoCommand command)
@@ -53,10 +47,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (object.Equals(val, member)) return false;
             if (b_jornal_recording_flag)
             {
-              //  PropertyBeforeChanged(this, new PropertyChangedEventArgs(propertyName));
+                //  PropertyBeforeChanged(this, new PropertyChangedEventArgs(propertyName));
                 PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
             }
-                member = val;
+            member = val;
             //Type tp = Children[Children.Count - 1].GetType();
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
@@ -106,7 +100,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         private bool b_jornal_recording_flag = true;
         private bool visible = true;
-         private Guid _currentContextId;
+        private Guid _currentContextId;
         [NotMapped]
         public Guid CurrentContextId
         {
@@ -129,24 +123,24 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 b_jornal_recording_flag = true;
             }
         }
-         
+
         public void JornalingOff()
         {
             if (b_jornal_recording_flag == true)
-                  b_jornal_recording_flag = false;
-       }
+                b_jornal_recording_flag = false;
+        }
         public void JornalingOn()
         {
             if (b_jornal_recording_flag == false)
-                 b_jornal_recording_flag = true;
-         }
-    
-       #endregion
+                b_jornal_recording_flag = true;
+        }
+
+        #endregion
 
 
         public BindableBase()
         {
-         }
+        }
         private string _code;
         public string Code
         {
@@ -162,9 +156,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе (например копирования рефлексией) с данныv объектом по умолчанию 
         [NotMapped]
         public bool CopingEnable { get; set; } = true;
-        
 
-       
+
+
 
 
 

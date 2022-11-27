@@ -1,6 +1,5 @@
 ﻿using Prism.Mvvm;
 using PrismWorkApp.Core.Commands;
-using System.Collections.ObjectModel;
 
 namespace PrismWorkApp.ViewModels
 {
@@ -21,9 +20,9 @@ namespace PrismWorkApp.ViewModels
             set { SetProperty(ref _title, value); }
         }
 
-        public MainWindowViewModel( )
+        public MainWindowViewModel()
         {
-            
+
         }
     }
 }

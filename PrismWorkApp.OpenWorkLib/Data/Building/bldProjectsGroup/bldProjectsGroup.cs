@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldProjectsGroup:NameableObservableCollection<bldProject>,IbldProjectsGroup, IEntityObject
+    public class bldProjectsGroup : NameableObservableCollection<bldProject>, IbldProjectsGroup, IEntityObject
     {
 
-       
+
         public bldProjectsGroup()
         {
-            Name= "Проекты";
+            Name = "Проекты";
         }
-        public bldProjectsGroup(string name):this()
+        public bldProjectsGroup(string name) : this()
         {
             Name = name;
         }
-        public bldProjectsGroup(List<bldProject> projects):base(projects)
+        public bldProjectsGroup(List<bldProject> projects) : base(projects)
         {
 
         }

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 
 namespace PrismWorkApp.Core.Mvvm
 {
-    public class ModuleInfo: DependencyObject
+    public class ModuleInfo : DependencyObject
     {
 
 

@@ -6,12 +6,10 @@ using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
-    public class WorkDialogViewModel : WorkViewModel,IDialogAware
+    public class WorkDialogViewModel : WorkViewModel, IDialogAware
     {
         private Guid _currentContextId;
 
@@ -22,7 +20,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         }
 
         public WorkDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
-            :base(dialogService, regionManager, buildingUnitsRepository, applicationCommands)
+            : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands)
         {
 
         }
@@ -37,41 +35,41 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         {
             //throw new NotImplementedException();
         }
-         override  public void OnSave()
+        override public void OnSave()
         {
             if (EditMode == ConveyanceObjectModes.EditMode.FOR_EDIT)
             {
 
-                CoreFunctions.ConfirmActionOnElementDialog<bldWork>(SelectedWork, 
+                CoreFunctions.ConfirmActionOnElementDialog<bldWork>(SelectedWork,
                     "Сохранить", "работа",
                     "Сохранить",
                      "Не сохранять",
-                    "Отмена",  (result) =>
-                {
-                    if (result.Result == ButtonResult.Yes)
-                    {
-                        CommonChangeJornal.SaveAll(Id);
-                        RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
-                    }
-                    else
-                    {
-                        CommonChangeJornal.SaveAll(Id);
-                        RequestClose?.Invoke(new DialogResult(ButtonResult.No));
-                    }
-                }, _dialogService);
+                    "Отмена", (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       CommonChangeJornal.SaveAll(Id);
+                       RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
+                   }
+                   else
+                   {
+                       CommonChangeJornal.SaveAll(Id);
+                       RequestClose?.Invoke(new DialogResult(ButtonResult.No));
+                   }
+               }, _dialogService);
 
             }
             else
             {
-               // bldObject new_bldObject = new bldObject();
-              //  CoreFunctions.CopyObjectReflectionNewInstances(SelectedBuildingObject, new_bldObject);
-             
+                // bldObject new_bldObject = new bldObject();
+                //  CoreFunctions.CopyObjectReflectionNewInstances(SelectedBuildingObject, new_bldObject);
+
 
             }
 
 
         }
-        
+
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
@@ -84,8 +82,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 if (SelectedWork != null) SelectedWork.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedWork = ResivedWork;
                 SelectedWork.ErrorsChanged += RaiseCanExecuteChanged;
-            //    CoreFunctions.CopyObjectReflectionNewInstances(ResivedWork, SelectedWork);
-             
+                //    CoreFunctions.CopyObjectReflectionNewInstances(ResivedWork, SelectedWork);
+
             }
 
         }

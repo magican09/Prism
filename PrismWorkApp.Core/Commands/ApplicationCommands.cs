@@ -1,23 +1,9 @@
-﻿using Prism;
-using Prism.Commands;
-using PrismWorkApp.OpenWorkLib.Data;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-using System.Windows.Input;
-
-namespace PrismWorkApp.Core.Commands
+﻿namespace PrismWorkApp.Core.Commands
 {
     public interface IApplicationCommands
     {
         NotifyCompositeCommand SaveAllCommand { get; }
-       NotifyCompositeCommand UnDoCommand { get; }
+        NotifyCompositeCommand UnDoCommand { get; }
         NotifyCompositeCommand ReDoCommand { get; }
     }
     public class ApplicationCommands : IApplicationCommands
@@ -39,7 +25,7 @@ namespace PrismWorkApp.Core.Commands
         }
         // public CompositeCommand LoadProjectFromExcell { get; } = new CompositeCommand();
     }
-    
-   
-   
+
+
+
 }

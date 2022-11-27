@@ -1,17 +1,12 @@
-﻿using PrismWorkApp.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.Services.Repositories
+﻿namespace PrismWorkApp.Services.Repositories
 {
-    public class BuildingUnitsRepository:IBuildingUnitsRepository
+    public class BuildingUnitsRepository : IBuildingUnitsRepository
     {
-        
+
         public bldProjectRepository Projects { get; }
         public bldObjectRepository Objects { get; }
         public bldPacticipantsRepository Pacticipants { get; }
-        public bldResponsibleEmployeesRepository  ResponsibleEmployees { get; }
+        public bldResponsibleEmployeesRepository ResponsibleEmployees { get; }
         public bldConstructionRepository Constructions { get; }
         public bldWorkRepository Works { get; }
 
@@ -29,7 +24,7 @@ namespace PrismWorkApp.Services.Repositories
         }
         public int Complete()
         {
-        //    _context.Attach(obj).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            //    _context.Attach(obj).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             return _context.SaveChanges();
         }
 

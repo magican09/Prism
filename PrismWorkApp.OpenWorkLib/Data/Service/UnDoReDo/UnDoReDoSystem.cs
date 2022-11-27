@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
 {
-    public class UnDoReDoSystem :  IUnDoReDoSystem
+    public class UnDoReDoSystem : IUnDoReDoSystem
     {
         private Stack<IUnDoRedoCommand> _UnDoCommands = new Stack<IUnDoRedoCommand>();
         private Stack<IUnDoRedoCommand> _ReDoCommands = new Stack<IUnDoRedoCommand>();
@@ -78,7 +73,15 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
             obj.PropertyBeforeChanged += OnModelPropertyBeforeChanged;
             obj.UnDoReDoCommandCreated += OnObservedCommandCreated;
         }
-
+        public void UnRegister(IJornalable obj)
+        {
+            if (_RegistedModels.Contains(obj))
+            {
+                obj.PropertyBeforeChanged -= OnModelPropertyBeforeChanged;
+                obj.UnDoReDoCommandCreated -= OnObservedCommandCreated;
+                _RegistedModels.Remove(obj);
+            }
+        }
         private void OnObservedCommandCreated(object sender, UnDoReDoCommandCreateEventsArgs e)
         {
             _UnDoCommands.Push(e.Command);

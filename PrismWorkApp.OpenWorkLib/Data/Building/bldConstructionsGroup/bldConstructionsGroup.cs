@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldConstructionsGroup: NameableObservableCollection<bldConstruction>, IbldConstructionsGroup, IEntityObject
+    public class bldConstructionsGroup : NameableObservableCollection<bldConstruction>, IbldConstructionsGroup, IEntityObject
     {
-        public bldConstructionsGroup(List<bldConstruction> constructions):base(constructions)
+        public bldConstructionsGroup(List<bldConstruction> constructions) : base(constructions)
         {
             Name = "Список конструкции:";
         }

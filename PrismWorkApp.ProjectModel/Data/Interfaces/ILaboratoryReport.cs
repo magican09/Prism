@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.ProjectModel.Data.Interfaces
+﻿namespace PrismWorkApp.ProjectModel.Data.Interfaces
 {
-    public interface  ILaboratoryReport
+    public interface ILaboratoryReport
     {
         int Id { get; set; }
         string Name { get; set; }

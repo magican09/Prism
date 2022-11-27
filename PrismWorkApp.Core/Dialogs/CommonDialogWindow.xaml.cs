@@ -1,17 +1,5 @@
 ﻿using Prism.Services.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PrismWorkApp.Core.Dialogs
 {
@@ -33,8 +21,8 @@ namespace PrismWorkApp.Core.Dialogs
             set { _result = value; }
         }
 
-   
-        
+
+
         /*   
            private object _content;
            public object Content
@@ -43,27 +31,27 @@ namespace PrismWorkApp.Core.Dialogs
                set { _content = value; }
            }
         */
-           private Window _owner;
-           public Window Owner
-           {
-               get { return _owner; }
-               set { _owner = value; }
-           }
-           private object _dataContext;
-           public object DataContext
-           {
-               get { return _dataContext; }
-               set { _dataContext = value; }
-           }
+        private Window _owner;
+        public Window Owner
+        {
+            get { return _owner; }
+            set { _owner = value; }
+        }
+        private object _dataContext;
+        public object DataContext
+        {
+            get { return _dataContext; }
+            set { _dataContext = value; }
+        }
 
-     
-           private Style _style;
 
-           public Style Style
-           {
-               get { return _style; }
-               set { _style = value; }
-           }
+        private Style _style;
+
+        public Style Style
+        {
+            get { return _style; }
+            set { _style = value; }
+        }
 
         /*
 

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class Person : BindableBase, IPerson, IEntityObject
     {
-       
+
         private Guid _storedId;
         public Guid StoredId
         {

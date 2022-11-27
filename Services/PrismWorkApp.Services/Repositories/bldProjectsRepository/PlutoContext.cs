@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
@@ -12,8 +9,8 @@ namespace PrismWorkApp.Services.Repositories
     {
         public PlutoContext() : base()
         {
-       // Database.EnsureDeleted();
-       // Database.EnsureCreated();
+            // Database.EnsureDeleted();
+            // Database.EnsureCreated();
         }
         public virtual DbSet<bldProject> Projects { get; set; }
         //public virtual DbSet<bldProjectsGroup> ObjectsGroups { get; set;}
@@ -26,7 +23,7 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<bldMaterial> Materials { get; set; }
         public virtual DbSet<bldAOSRDocument> AOSRDocuments { get; set; }
         public virtual DbSet<bldLaboratoryReport> LaboratoryReports { get; set; }
-        public virtual DbSet<bldExecutiveScheme>  ExecutiveSchemes { get; set; }
+        public virtual DbSet<bldExecutiveScheme> ExecutiveSchemes { get; set; }
         public virtual DbSet<bldProjectDocument> ProjectDocuments { get; set; }
         public virtual DbSet<bldMaterialCertificate> MaterialCertificates { get; set; }
         public virtual DbSet<bldRegulationtDocument> RegulationtDocuments { get; set; }
@@ -83,7 +80,7 @@ namespace PrismWorkApp.Services.Repositories
                             .Entity<bldWorkbldWork>()
                             .HasKey(el => new {  el.PreviousWorkId, el.NextWorkId });
                         */
-         
+
 
 
 

@@ -1,5 +1,4 @@
-﻿using Prism.Commands;
-using Prism.Regions;
+﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
@@ -7,10 +6,7 @@ using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -35,7 +31,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _commonChangeJornal; }
             set { SetProperty(ref _commonChangeJornal, value); }
         }
-       
+
         private IUnDoReDoSystem _UnDoReDoSystem = new UnDoReDoSystem();
         public IUnDoReDoSystem UnDoReDoSystem
         {
@@ -44,7 +40,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public BaseViewModel()
         {
-            
+            UnDoCommand = new NotifyCommand(() => { UnDoReDoSystem.UnDo(1); },
+                          () => { return UnDoReDoSystem.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDoSystem);
+            ReDoCommand = new NotifyCommand(() => UnDoReDoSystem.ReDo(1),
+               () => { return UnDoReDoSystem.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDoSystem);
 
         }
 
@@ -52,12 +51,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             _commonChangeJornal.UnDoRight(curentContextIds);
         }
-         public virtual void OnUnDoLeft(Guid curentContextIds)
+        public virtual void OnUnDoLeft(Guid curentContextIds)
         {
             _commonChangeJornal.UnDoLeft(curentContextIds);
         }
-     
-        public virtual void OnSave<T>(T selected_obj,string object_name="") where T : IJornalable, INameable, IRegisterable, IBindableBase
+
+        public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
         {
             CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
             {
@@ -67,12 +66,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                 if (result.Result == ButtonResult.No)
                 {
-              //      propertiesChangeJornal.UnDoAll(Id);
+                    //      propertiesChangeJornal.UnDoAll(Id);
                 }
 
             }, _dialogService);
         }
-        public  virtual void OnWindowClose()
+        public virtual void OnWindowClose()
         {
 
         }

@@ -5,6 +5,7 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 
@@ -16,8 +17,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 
         public ConstructionDialogViewModel(IDialogService dialogService, IRegionManager regionManager
             , IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands,
-             IPropertiesChangeJornal propertiesChangeJornal)
-            : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, propertiesChangeJornal)
+             IUnDoReDoSystem unDoReDo)
+            : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, unDoReDo)
         {
 
         }
@@ -53,15 +54,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                     {
                         if (result.Result == ButtonResult.Yes)
                         {
-                            CommonChangeJornal.SaveAll(Id);
-
                             RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
-
                         }
                         else
                         {
-                            CommonChangeJornal.UnDoAll(Id);
-                            RequestClose?.Invoke(new DialogResult(ButtonResult.No));
+                             RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                         }
 
                     }, _dialogService);
@@ -73,7 +70,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         }
         override public void OnClose(object obj)
         {
-            CommonChangeJornal.UnDoAll(Id);
             RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
         }
 

@@ -2,6 +2,7 @@
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.Services.Repositories;
 using System;
@@ -50,14 +51,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-        public DelegateCommand<object> DataGridLostFocusCommand { get; private set; }
-        public DelegateCommand SaveCommand { get; private set; }
-        public DelegateCommand<object> CloseCommand { get; private set; }
+        public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
+        public NotifyCommand SaveCommand { get; private set; }
+        public NotifyCommand<object> CloseCommand { get; private set; }
 
         public ResponsibleEmployeeViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
         {
-            SaveCommand = new DelegateCommand(OnSave, CanSave);
-            CloseCommand = new DelegateCommand<object>(OnClose);
+            SaveCommand = new NotifyCommand(OnSave, CanSave);
+            CloseCommand = new NotifyCommand<object>(OnClose);
 
             _dialogService = dialogService;
 

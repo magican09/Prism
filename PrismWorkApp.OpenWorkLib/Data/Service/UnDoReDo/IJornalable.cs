@@ -15,18 +15,18 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         ///     public JornalRecordType Status { get; set; }
         public Guid CurrentContextId { get; set; }
         public bool IsVisible { get; set; }
-        // public PropertiesChangeJornal PropertiesChangeJornal { get; set; }
+        // public UnDoReDoSystem UnDoReDoSystem { get; set; }
         //  public event PropertyChangedEventHandler PropertyBeforeChanged;
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged;
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
         //   public ObservableCollection<IJornalable> ParentObjects { get; set; }
         //  public ObservableCollection<IJornalable> ChildObjects { get; set; }
 
-        //  public void AdjustObjectsStructure(PropertiesChangeJornal changesJornal, IJornalable sourse = null);
+        //  public void AdjustObjectsStructure(UnDoReDoSystem changesJornal, IJornalable sourse = null);
         //   public void ResetObjectsStructure(IJornalable sourse = null);
         //   public void ClearChangesJornal();
 
-        //  public bool IsPropertiesChangeJornalIsEmpty(Guid currentContextId);
+        //  public bool IsUnDoReDoSystemIsEmpty(Guid currentContextId);
         //  public AdjustStatus AdjustedStatus { get; set; }
 
     }

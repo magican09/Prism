@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using PrismWorkApp.Core.Commands;
 using System;
 using System.Collections.Generic;
 
@@ -55,12 +56,12 @@ namespace PrismWorkApp.Core.Dialogs.ServiceClasses
             set { SetProperty(ref _resivedElement, value); }
         }
         public event Action<IDialogResult> RequestClose;
-        public DelegateCommand CloseDialogCommand { get; private set; }
-        public DelegateCommand ConfirmDialogCommand { get; private set; }
+        public NotifyCommand CloseDialogCommand { get; private set; }
+        public NotifyCommand ConfirmDialogCommand { get; private set; }
         public EditCollectionDialogViewModel()
         {
-            CloseDialogCommand = new DelegateCommand(CloseDialog);
-            ConfirmDialogCommand = new DelegateCommand(ConfirmDialog, CanConfirmDialog).
+            CloseDialogCommand = new NotifyCommand(CloseDialog);
+            ConfirmDialogCommand = new NotifyCommand(ConfirmDialog, CanConfirmDialog).
                 ObservesProperty(() => SelectedElement);
         }
 

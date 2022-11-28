@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using PrismWorkApp.Core.Commands;
 using System;
 
 namespace PrismWorkApp.Core.Dialogs
@@ -24,7 +25,7 @@ namespace PrismWorkApp.Core.Dialogs
 
         public MessageDialogViewModel()
         {
-            CloseDialogCommand = new DelegateCommand(CloseDialog);
+            CloseDialogCommand = new NotifyCommand(CloseDialog);
         }
 
         private void CloseDialog()
@@ -50,7 +51,7 @@ namespace PrismWorkApp.Core.Dialogs
             Message = parameters.GetValue<string>("message");
         }
 
-        public DelegateCommand CloseDialogCommand { get; }
+        public NotifyCommand CloseDialogCommand { get; }
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Services.Dialogs;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
 using System.Collections.Generic;
@@ -113,13 +114,13 @@ namespace PrismWorkApp.Core.Dialogs
         }
 
 
-        public DelegateCommand ConfirmDialogCommand { get; private set; }
-        public DelegateCommand CloseDialogCommand { get; private set; }
-        public DelegateCommand CreateNewElementCommand { get; private set; }
-        public DelegateCommand CreateElementOnPatternInstanceCommand { get; private set; }
-        public DelegateCommand AddToCollectionCommand { get; private set; }
-        public DelegateCommand RemoveFromCollectionCommand { get; private set; }
-        public DelegateCommand SortingCommand { get; private set; }
+        public NotifyCommand ConfirmDialogCommand { get; private set; }
+        public NotifyCommand CloseDialogCommand { get; private set; }
+        public NotifyCommand CreateNewElementCommand { get; private set; }
+        public NotifyCommand CreateElementOnPatternInstanceCommand { get; private set; }
+        public NotifyCommand AddToCollectionCommand { get; private set; }
+        public NotifyCommand RemoveFromCollectionCommand { get; private set; }
+        public NotifyCommand SortingCommand { get; private set; }
 
         public event Action<IDialogResult> RequestClose;
         public event Action<IDialogResult> RequestNewObject;
@@ -129,16 +130,16 @@ namespace PrismWorkApp.Core.Dialogs
         public AddElementToCollectionDialogViewModel(IDialogService dialogService)
         {
 
-            CloseDialogCommand = new DelegateCommand(CloseDialog);
-            ConfirmDialogCommand = new DelegateCommand(ConfirmDialog);
-            CreateNewElementCommand = new DelegateCommand(OnCreateNewElement);
-            CreateElementOnPatternInstanceCommand = new DelegateCommand(OnCreateElementOnPatternInstance, CanCreateElementOnPatternInstance)
+            CloseDialogCommand = new NotifyCommand(CloseDialog);
+            ConfirmDialogCommand = new NotifyCommand(ConfirmDialog);
+            CreateNewElementCommand = new NotifyCommand(OnCreateNewElement);
+            CreateElementOnPatternInstanceCommand = new NotifyCommand(OnCreateElementOnPatternInstance, CanCreateElementOnPatternInstance)
                       .ObservesProperty(() => SelectedElement);
-            AddToCollectionCommand = new DelegateCommand(OnAddToCollection, CanAddToCollection)
+            AddToCollectionCommand = new NotifyCommand(OnAddToCollection, CanAddToCollection)
                       .ObservesProperty(() => SelectedElement);
-            RemoveFromCollectionCommand = new DelegateCommand(OnRemoveFromCollection, CanRemoveFromCollection)
+            RemoveFromCollectionCommand = new NotifyCommand(OnRemoveFromCollection, CanRemoveFromCollection)
                       .ObservesProperty(() => SelectedElement);
-            SortingCommand = new DelegateCommand(OnSortingCommand, CanSorting)
+            SortingCommand = new NotifyCommand(OnSortingCommand, CanSorting)
                 .ObservesProperty(() => SelectedPredicate);
             _dialogService = dialogService;
         }

@@ -44,7 +44,7 @@ namespace PrismWorkApp.Core.Commands
                 _TargetExecuteMetod();
         }
         #endregion
-        #region DelegateCommand members 
+        #region NotifyCommand members 
         /// <summary>
         /// Добавляем метод get свойства типа bool в качестве метода CanExecute
         /// </summary>
@@ -143,7 +143,7 @@ namespace PrismWorkApp.Core.Commands
             return CanExecute(parameter);
         }
     }
-    public class NotifyCommand<T> : DelegateCommandBase, ICommand, IActiveAware
+    public class NotifyCommand<T> : NotifyCommandBase, ICommand, IActiveAware
     {
         public bool IsActive { get; set; }
         public event EventHandler IsActiveChanged;
@@ -183,7 +183,7 @@ namespace PrismWorkApp.Core.Commands
 
 
         #endregion
-        #region DelegateCommand members 
+        #region NotifyCommand members 
         public NotifyCommand<T> ObservesCanExecute(Expression<Func<bool>> canExecuteExpression)
         {
 

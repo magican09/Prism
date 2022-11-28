@@ -170,9 +170,24 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _responsibleEmployees; }
             set { SetProperty(ref _responsibleEmployees, value); }
         }
+        public void SaveAOSRsToWord(string folderPath = null)
+        {
+            foreach (bldConstruction construction in Constructions)
+            {
+                string construction_folder_path = System.IO.Path.Combine(folderPath, construction.ShortName); ;
+                System.IO.Directory.CreateDirectory(construction_folder_path);
+                construction.SaveAOSRsToWord(construction_folder_path);
+            }
+            foreach (bldObject  bld_object in BuildingObjects)
+            {
+                string bld_folder_path = System.IO.Path.Combine(folderPath, bld_object.ShortName); ;
+                System.IO.Directory.CreateDirectory(bld_folder_path);
+                bld_object.SaveAOSRsToWord(bld_folder_path);
+            }
 
+        }
         #region EditMethods
-       
+
         public void RemoveConstruction(bldConstruction constr)
         {
             RemoveFromCollectionCommand<bldConstructionsGroup, bldConstruction> Command =

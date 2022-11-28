@@ -10,6 +10,7 @@ using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.ComponentModel;
@@ -87,16 +88,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _applicationCommands, value); }
         }
 
-        public PropertiesChangeJornal _commonPropertiesChangeJornal { get; set; } = new PropertiesChangeJornal();
-
+       
 
 
         public ConvertersViewModel(IRegionManager regionManager, IModulesContext modulesContext, IEventAggregator eventAggregator,
                                     IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands,
-                                    IPropertiesChangeJornal propertiesChangeJornal)
+                                    IUnDoReDoSystem unDoReDo)
         {
-            _regionManager = regionManager;
 
+         //   UnDoReDo = new UnDoReDoSystem(Id);
+
+            _regionManager = regionManager;
             var quickAccessTollBar = new QuickAccessToolBarView();
             quickAccessTollBar.Items.Add(new QuickAccessToolBar());
             quickAccessTollBar.DataContext = this;
@@ -105,66 +107,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
-            _commonPropertiesChangeJornal = propertiesChangeJornal as PropertiesChangeJornal;
             ApplicationCommands = applicationCommands;
             ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
-            //IsModuleEnable =  ModuleInfo.IsEnable;
-
+ 
             LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
             LoadProjectFromDBCommand = new NotifyCommand(LoadProjectFomDB, CanLoadProjectFromDb);
             SaveDataToDBCommand = new NotifyCommand(SaveDataToDB, CanSaveDataToDB)
                 .ObservesProperty(() => AllChangesIsDone);
             AllChangesIsDone = true;
             ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
-            //  UnDoCommand = new NotifyCommand(OnUnDoLast, CanUndoLast);
-
-            /*  CreateProjectStructureCommand = new NotifyCommand(CreateProjectStructure).ObservesProperty(() => SelectedProject);
-              CreateAOSRCommand = new NotifyCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
-            */
-            //     _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
-            //          ThreadOption.PublisherThread, false,
-            //   message => message.Recipient == "RibbonGroup");
-            //   AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
-
-            //  ApplicationCommands.SaveAllCommand.CanExecuteChanged += SaveAllCommandCanExecuteChanged;
-            //     ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
-            //     ApplicationCommands.SaveAllCommand.SetExecuteMethod(OnSaveAll);
-        }
-
-        private bool CanUndoLast()
-        {
-            return _commonPropertiesChangeJornal.Count > 0;
-        }
-
-        private void OnUnDoLast()
-        {
-        }
-
-        private void OnSaveAll()
-        {
-            SaveDataToDB();
-        }
-
-        private void SaveAllCommandCanExecuteChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private bool SaveAllCommandCanExecute(object arg)
-        {
-            return true;
-        }
-
-        public void OnChildObjectChanges(object sender, ObjectStateChangedEventArgs e)
-        {
-            //      AllChangesIsDone = AllProjectsContext.PropertiesChangeJornal.Count > 0;
-            SaveDataToDBCommand.RaiseCanExecuteChanged();
-            UnDoCommand.RaiseCanExecuteChanged();
-        }
+            }
+     
 
         private bool CanSaveDataToDB()
         {
-            return true;//AllProjectsContext.PropertiesChangeJornal.Count > 0;
+            return true;//AllProjectsContext.UnDoReDoSystem.Count > 0;
         }
         private void SaveDataToDB()
         {
@@ -194,52 +151,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             return true;
         }
-        private void CreateProjectStructure()
-        {
-            string projects_path = Directory.GetCurrentDirectory() + "\\Projects";
-            var _path = System.IO.Directory.CreateDirectory(projects_path);
 
-        }
-        private void OnGetMessage(EventMessage eventMessage)
-        {
-            switch (eventMessage.ParameterName)
-            {
-                case "Command":
-                    {
-                        string[] command_str = eventMessage.Value.ToString().Split(" ");
-                        string command_name = command_str[0];
-                        switch (command_name)
-                        {
-                            case "GetRibbonGroupEntity":
-                                {
-                                    EventMessage requestEventMessage = new EventMessage();
-                                    requestEventMessage.From = CURRENT_MODULE_ID;
-                                    requestEventMessage.To = eventMessage.From;
-                                    requestEventMessage.ParameterName = "RibbonGroup";
-                                    //    requestEventMessage.Value = ;
-                                    //   _eventAggregator.GetEvent<MessageConveyEvent>().Publish(requestEventMessage);
-                                }
-                                break;
-                        }
-
-                    }
-                    break;
-            }
-        }
         private bool CanLoadAllProjects()
         {
             return true;
         }
-        private bool CanCreateAOSR()
-        {
-            return true;// SelectedWork != null && SelectedProject != null;
-        }
-        private void CreateAOSR()
-        {
-            // CreateAOSR(SelectedWork);
-
-        }
-
         private void LoadProjectFromExcel()
         {
             var project = Functions.LoadProjectFromExcel();
@@ -274,16 +190,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void LoadProjectFomDB()
         {
-            AllProjectsContext.JornalingOff();
             AllProjectsContext = new bldProjectsGroup(_buildingUnitsRepository.Projects.GetProjectsAsync());
-            AllProjectsContext.JornalingOn();
-            //  _commonPropertiesChangeJornal.RegisterObject(AllProjectsContext);
-            //  AllProjectsContext.ResetObjectsStructure();
-            //    AllProjectsContext.AdjustObjectsStructure(_commonPropertiesChangeJornal);
-            // AllProjectsContext.CurrentContextId = Id;
-            // AllProjectsContext.PropertiesChangeJornal.ContextIdHistory.Add(Id);
-            //  AllProjectsContext.ObjectChangedNotify += OnChildObjectChanges;
-
             EventMessage message = new EventMessage();
             bldProject project = new bldProject();
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldProjectsGroup, bldProject>(AllProjectsContext,
@@ -325,25 +232,39 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             foreach (bldProject prj in AllProjects)
             {
-                // message.Value = prj;// current_project;
-                // message.Time = DateTime.Now;
-                // _eventAggregator.GetEvent<MessageConveyEvent>().Publish(message);
-                //  bldWork work_1 = prj.BuildingObjects[0].Constructions[0].Works[2];
-                //   bldWork work_2 = prj.BuildingObjects[0].Constructions[0].Works[7];
-                //  work_1.NextWorks.Add(work_2);
-                // work_2.PreviousWorks.Add(work_1);
                 var navParam = new NavigationParameters();
-                //   prj.ObjectChangedNotify += OnChildObjectChanges;
                 navParam.Add("bld_project", prj);
-                //prj.SaveAll(Id);
                 _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(ProjectExplorerView).Name, navParam);
             }
 
         }
-        private void CreateAOSR(bldWork work)
+        private void OnGetMessage(EventMessage eventMessage)
         {
-            //ProjectService.SaveAOSRToWord(SelectedWork);
+            switch (eventMessage.ParameterName)
+            {
+                case "Command":
+                    {
+                        string[] command_str = eventMessage.Value.ToString().Split(" ");
+                        string command_name = command_str[0];
+                        switch (command_name)
+                        {
+                            case "GetRibbonGroupEntity":
+                                {
+                                    EventMessage requestEventMessage = new EventMessage();
+                                    requestEventMessage.From = CURRENT_MODULE_ID;
+                                    requestEventMessage.To = eventMessage.From;
+                                    requestEventMessage.ParameterName = "RibbonGroup";
+                                    //    requestEventMessage.Value = ;
+                                    //   _eventAggregator.GetEvent<MessageConveyEvent>().Publish(requestEventMessage);
+                                }
+                                break;
+                        }
+
+                    }
+                    break;
+            }
         }
+
 
     }
 

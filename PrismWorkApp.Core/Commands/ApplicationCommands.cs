@@ -13,15 +13,15 @@
         {
             get { return _saveAllCommand; }
         }
-        private NotifyCompositeCommand _unDoLeftCommand = new NotifyCompositeCommand();
+        private NotifyCompositeCommand _unDoCommand = new NotifyCompositeCommand();
         public NotifyCompositeCommand UnDoCommand
         {
-            get { return _unDoLeftCommand; }
+            get { return _unDoCommand; }
         }
-        private NotifyCompositeCommand _unDoRightCommand = new NotifyCompositeCommand();
+        private NotifyCompositeCommand _reDoCommand = new NotifyCompositeCommand();
         public NotifyCompositeCommand ReDoCommand
         {
-            get { return _unDoRightCommand; }
+            get { return _reDoCommand; }
         }
         // public CompositeCommand LoadProjectFromExcell { get; } = new CompositeCommand();
     }

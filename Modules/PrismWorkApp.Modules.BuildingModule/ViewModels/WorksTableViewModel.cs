@@ -2,6 +2,7 @@
 using Prism.Events;
 using Prism.Regions;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.ProjectModel.Data.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -35,8 +36,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public Work SelectedWork { get { return _selectedWork; } set { _selectedWork = value; OnPropertyChanged("SelectedWork"); } }
         public WorksTableViewModel(IEventAggregator eventAggregator)
         {
-            LoadAllProjectCommand = new DelegateCommand(LoadAllProjects, CanLoadAllProjects);
-            CreateAOSRCommand = new DelegateCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
+            LoadAllProjectCommand = new NotifyCommand(LoadAllProjects, CanLoadAllProjects);
+            CreateAOSRCommand = new NotifyCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
             _eventAggregator = eventAggregator;
             //     _eventAggregator.GetEvent<ProjectSentEvent>().Subscribe(OnBuildingConstructionRecieved);
         }
@@ -59,8 +60,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             // ProjectService.SaveAOSRToWord(SelectedWork);
 
         }
-        public DelegateCommand LoadAllProjectCommand { get; private set; }
-        public DelegateCommand CreateAOSRCommand { get; private set; }
+        public NotifyCommand LoadAllProjectCommand { get; private set; }
+        public NotifyCommand CreateAOSRCommand { get; private set; }
         private void LoadAllProjects()
         {
 

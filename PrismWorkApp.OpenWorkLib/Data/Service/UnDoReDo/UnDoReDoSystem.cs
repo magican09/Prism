@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -11,7 +12,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
         private ObservableCollection<IJornalable> _RegistedModels = new ObservableCollection<IJornalable>();
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
+        public Guid Id { get; set; }
         public void ReDo(int levels)
         {
             for (int ii = 0; ii < levels; ii++)
@@ -94,10 +95,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
             _UnDoCommands.Push(setCommand);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OnModelPropertyBeforeChanged"));
         }
-        public UnDoReDoSystem()
+         public UnDoReDoSystem()
         {
-
+            Id = Guid.NewGuid();
         }
-
+       
     }
 }

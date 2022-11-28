@@ -5,6 +5,7 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 
@@ -14,8 +15,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
     {
 
         public ObjectDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
-            IApplicationCommands applicationCommands, IPropertiesChangeJornal propertiesChangeJornal)
-            : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, propertiesChangeJornal)
+            IApplicationCommands applicationCommands, IUnDoReDoSystem unDoReDo)
+            : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, unDoReDo)
         {
 
         }
@@ -50,13 +51,13 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
               {
                    if (result.Result == ButtonResult.Yes)
                    {
-                             //CommonChangeJornal.SaveAll(Id);
+                             //UnDoReDo.SaveAll(Id);
                              base.OnSave<bldObject>(SelectedBuildingObject);
                        RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
                    }
                    else
                    {
-                             // CommonChangeJornal.UnDoAll(Id);
+                             // UnDoReDo.UnDoAll(Id);
                              RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                    }
 

@@ -183,8 +183,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 System.IO.Directory.CreateDirectory(folderPath);
             }
             foreach (bldAOSRDocument aOSRDocument in AOSRDocuments)
+            {
+                
                 aOSRDocument.SaveAOSRToWord(folderPath);
-
+            }
         }
 
 

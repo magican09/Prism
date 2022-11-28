@@ -3,6 +3,7 @@ using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
@@ -77,9 +78,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;
             _dialogService = dialogService;
-            SentProjectCommand = new DelegateCommand(SentProject, CanSentProject);
-            TreeViewItemSelectedCommand = new DelegateCommand<object>(OnTreeViewItemSelected);
-            TreeViewItemExpandedCommand = new DelegateCommand<object>(onTreeViewItemExpanded);
+            SentProjectCommand = new NotifyCommand(SentProject, CanSentProject);
+            TreeViewItemSelectedCommand = new NotifyCommand<object>(OnTreeViewItemSelected);
+            TreeViewItemExpandedCommand = new NotifyCommand<object>(onTreeViewItemExpanded);
             _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
              ThreadOption.PublisherThread, false,
              message => message.Recipient == "ProjectExplorer");
@@ -123,29 +124,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             NavigationParameters navParam = new NavigationParameters();
             switch (node_value_type?.Name)
             {
-                //case nameof(Node):
-                //switch (((Node)clicked_node).Value?.GetType().Name)
-                //{
-                //    case (nameof(BuildingConstruction)):
-                //        switch (((Node)clicked_node).Name)
-                //        {
-                //            case "АОСР":
-
-                //                navParam.Add("building_construction", (BuildingConstruction)((Node)clicked_node).Value);
-                //                _regionManager.RequestNavigate(RegionNames.ContentRegion, "AOSRDocumentsTableView", navParam);
-                //                break;
-                //            case "Ведомость работ":
-
-                //                navParam.Add("building_construction", (BuildingConstruction)((Node)clicked_node).Value);
-                //                _regionManager.RequestNavigate(RegionNames.ContentRegion, "WorksTableView", navParam);
-                //                break;
-                //            default:
-                //                break;
-                //        }
-                //        break;
-                //}
-                //break;
-
                 case (nameof(bldWork)):
                     {
                         navParam.Add("bld_work", (new ConveyanceObject((bldWork)clicked_node, ConveyanceObjectModes.EditMode.FOR_EDIT)));
@@ -212,10 +190,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             return SelectedProject != null;
         }
 
-        public DelegateCommand SentProjectCommand { get; private set; }
-        //   public DelegateCommand LoadProjectCommand { get; private set; }
-        public DelegateCommand<object> TreeViewItemSelectedCommand { get; private set; }
-        public DelegateCommand<object> TreeViewItemExpandedCommand { get; private set; }
+        public NotifyCommand SentProjectCommand { get; private set; }
+        //   public NotifyCommand LoadProjectCommand { get; private set; }
+        public NotifyCommand<object> TreeViewItemSelectedCommand { get; private set; }
+        public NotifyCommand<object> TreeViewItemExpandedCommand { get; private set; }
         private void SentProject()
         {
             _eventAggregator.GetEvent<ProjectSentEvent>().Publish(SelectedProject);

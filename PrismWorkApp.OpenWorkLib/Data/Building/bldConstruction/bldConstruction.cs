@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldConstruction : BindableBase, IbldConstruction, IEntityObject,ICloneable
+    public class bldConstruction : BindableBase, IbldConstruction, IEntityObject, ICloneable
     {
         private Guid _storedId;
         public Guid StoredId
@@ -124,7 +124,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public bldConstruction()
         {
- 
+
         }
         public object Clone()
         {
@@ -132,17 +132,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void SaveAOSRsToWord(string folderPath = null)
         {
-            if (Works.Count > 1)
-            {
-                folderPath = System.IO.Path.Combine(folderPath, this.Name);
-                System.IO.Directory.CreateDirectory(folderPath);
-            }
             foreach (bldWork work in Works)
             {
                 work.SaveAOSRsToWord(folderPath);
-
             }
-
+            foreach (bldConstruction construction in Constructions)
+            {
+                string construction_folder_path = System.IO.Path.Combine(folderPath, construction.ShortName); ;
+                System.IO.Directory.CreateDirectory(construction_folder_path);
+                construction.SaveAOSRsToWord(construction_folder_path);
+            }
         }
         #region EditMethods
         public void AddWork(bldWork work)
@@ -178,7 +177,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                  new RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-       public void RemoveConstruction(bldConstruction constr)
+        public void RemoveConstruction(bldConstruction constr)
         {
             RemoveFromCollectionCommand<bldConstructionsGroup, bldConstruction> Command =
                 new RemoveFromCollectionCommand<bldConstructionsGroup, bldConstruction>(Constructions, constr);

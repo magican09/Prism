@@ -109,7 +109,7 @@
                         <ColumnDefinition   x:Name="shortProjectNameRightGridColumn"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" >Полное наименование проекта:</TextBlock>
-                    <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedObject.FullName}"/>
+                    <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedConstruction.FullName}"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
@@ -119,7 +119,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0"  Style="{StaticResource inlineText}" >Короткое наименование</TextBlock>
-                    <TextBox Grid.Column="1" Text="{Binding SelectedObject.ShortName}"/>
+                    <TextBox Grid.Column="1" Text="{Binding SelectedConstruction.ShortName}"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
@@ -127,12 +127,12 @@
                 <DatePicker  IsDropDownOpen="False"
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
-                    SelectedDate="{Binding SelectedObject.StartTime}" />
+                    SelectedDate="{Binding SelectedConstruction.StartTime}" />
                 <TextBlock  Style="{StaticResource inlineText}">Дата окончания строительства:</TextBlock>
                 <DatePicker  IsDropDownOpen="False"
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
-                    SelectedDate="{Binding SelectedObject.EndTime}" />
+                    SelectedDate="{Binding SelectedConstruction.EndTime}" />
             </StackPanel>
             <StackPanel  >
                 <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>

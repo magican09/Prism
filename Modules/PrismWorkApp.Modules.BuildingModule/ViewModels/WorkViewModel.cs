@@ -5,6 +5,7 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
@@ -114,8 +115,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
-        public NotifyCommand SaveCommand { get; private set; }
-        public NotifyCommand<object> CloseCommand { get; private set; }
+        public NotifyCommand UnDoCommand { get; protected set; }
+        public NotifyCommand ReDoCommand { get; protected set; }
+        public NotifyCommand SaveCommand { get; protected set; }
+        public NotifyCommand<object> CloseCommand { get; protected set; }
 
         public NotifyCommand RemovePreviousWorkCommand { get; private set; }
         public NotifyCommand RemoveNextWorkCommand { get; private set; }
@@ -133,10 +136,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public WorkViewModel(IDialogService dialogService,
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
+            UnDoReDo = new UnDoReDoSystem();
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedWork);
             CloseCommand = new NotifyCommand<object>(OnClose);
+            UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
+                                     () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
+               () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+
 
             RemovePreviousWorkCommand = new NotifyCommand(OnRemovePreviousWork,
                                         () => SelectedPreviousWork != null)
@@ -289,7 +298,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private bool CanSave()
         {
             if (SelectedWork != null)
-                return !SelectedWork.HasErrors;// && SelectedWork.PropertiesChangeJornal.Count > 0;
+                return !SelectedWork.HasErrors;// && SelectedWork.UnDoReDoSystem.Count > 0;
             else
                 return false;
         }
@@ -312,11 +321,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             base.OnWindowClose();
         }
 
-        private void Save()
-        {
-            //CoreFunctions.CopyObjectReflectionNewInstances(SelectedConstruction, ResivedConstruction);
-            CommonChangeJornal.SaveAll(Id);
-        }
+        
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
 

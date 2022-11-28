@@ -1,11 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
 {
     public interface IUnDoReDoSystem : INotifyPropertyChanged
     {
         event PropertyChangedEventHandler PropertyChanged;
-
+        public Guid Id { get; set; }
         bool AllUnDoIsDone();
         bool CanReDoExecute();
         bool CanUnDoExecute();
@@ -15,5 +16,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
         void UnDo(int levels);
         void UnDoAll();
         void ClearStacks();
+
+
+
     }
 }

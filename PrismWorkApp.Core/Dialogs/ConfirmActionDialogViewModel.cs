@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using PrismWorkApp.Core.Commands;
 using System;
 
 namespace PrismWorkApp.Core.Dialogs
@@ -40,15 +41,15 @@ namespace PrismWorkApp.Core.Dialogs
             set { SetProperty(ref _cancel, value); }
         }
         public event Action<IDialogResult> RequestClose;
-        public DelegateCommand CloseDialogCommand { get; private set; }
-        public DelegateCommand ConfirmDialogCommand { get; private set; }
-        public DelegateCommand CancelDialogCommand { get; private set; }
+        public NotifyCommand CloseDialogCommand { get; private set; }
+        public NotifyCommand ConfirmDialogCommand { get; private set; }
+        public NotifyCommand CancelDialogCommand { get; private set; }
 
         public ConfirmActionDialogViewModel()
         {
-            CloseDialogCommand = new DelegateCommand(CloseDialog);
-            ConfirmDialogCommand = new DelegateCommand(ConfirmDialog);
-            CancelDialogCommand = new DelegateCommand(CancelDialog);
+            CloseDialogCommand = new NotifyCommand(CloseDialog);
+            ConfirmDialogCommand = new NotifyCommand(ConfirmDialog);
+            CancelDialogCommand = new NotifyCommand(CancelDialog);
 
         }
 

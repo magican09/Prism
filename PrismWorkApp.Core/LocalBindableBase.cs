@@ -47,12 +47,13 @@ namespace PrismWorkApp.Core
             return base.SetProperty(ref member, val, propertyName);
         }
 
-        private object _selectedObject;
+     /*   private object _selectedObject;
         public object SelectedObject
         {
             get { return _selectedObject; }
             set { SetProperty(ref _selectedObject, value); }
         }
+        */
         private bool _editMode;
 
 

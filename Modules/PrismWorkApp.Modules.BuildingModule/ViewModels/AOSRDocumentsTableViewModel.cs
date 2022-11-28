@@ -2,6 +2,7 @@
 using Prism.Events;
 using Prism.Regions;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.ProjectModel.Data.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -46,7 +47,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public AOSRDocumentsTableViewModel()
         {
-            CreateAOSRCommand = new DelegateCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedAOSRDocument);
+            CreateAOSRCommand = new NotifyCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedAOSRDocument);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -66,7 +67,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             return SelectedAOSRDocument != null && SelectedBuildingConstruction != null;
         }
-        public DelegateCommand CreateAOSRCommand { get; private set; }
+        public NotifyCommand CreateAOSRCommand { get; private set; }
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             return true;

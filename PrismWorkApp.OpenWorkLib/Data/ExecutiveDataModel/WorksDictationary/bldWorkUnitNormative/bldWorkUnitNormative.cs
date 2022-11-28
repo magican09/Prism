@@ -23,8 +23,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bool CopingEnable { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public object ParentObject { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Func<IEntityObject, bool> RestrictionPredicate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public PropertiesChangeJornal PropertiesChangeJornal { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
+   
         public void ClearStructureLevel()
         {
             throw new NotImplementedException();

@@ -27,6 +27,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _name, value); }
         }
         private string _shortName;
+
         public string ShortName
         {
             get

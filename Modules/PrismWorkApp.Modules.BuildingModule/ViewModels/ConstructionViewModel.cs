@@ -206,6 +206,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         }
+
         private void OnRemoveWork()
         {
             bldWork rem_work = SelectedWork; 

@@ -183,7 +183,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnAddBuildingObject()
         {
-            bldObjectsGroup All_BuildingObjects = new bldObjectsGroup(_buildingUnitsRepository.Objects.GetldObjectsAsync());//.GetBldObjects(SelectedProject.Id));
+            bldObjectsGroup All_BuildingObjects = new bldObjectsGroup(_buildingUnitsRepository.Objects.GetldObjectsAsync().Where(ob=>ob.Id!=SelectedBuildingObject.Id).ToList());//.GetBldObjects(SelectedProject.Id));
 
             NameablePredicate<ObservableCollection<bldObject>, bldObject> predicate_1 = new NameablePredicate<ObservableCollection<bldObject>, bldObject>();
             NameablePredicate<ObservableCollection<bldObject>, bldObject> predicate_2 = new NameablePredicate<ObservableCollection<bldObject>, bldObject>();
@@ -212,9 +212,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      {
                          foreach (bldObject bld_obj in objects_for_add_collection)
                          {
-                            UnDoReDo.Register(bld_obj);
                              SelectedBuildingObject.AddBuildindObject(bld_obj);
-                            UnDoReDo.UnRegister(bld_obj);
                          }
                          SaveCommand.RaiseCanExecuteChanged();
                      }
@@ -232,17 +230,18 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnAddConstruction()
         {
-            bldConstructionsGroup Constructions =
+            bldConstructionsGroup AllConstructions =
             new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync());
+         //   new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync().Where(cn => !SelectedBuildingObject.Constructions.Contains(cn)).ToList());
             NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_1 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
             predicate_1.Name = "Показать только из текущего проекта.";
-            predicate_1.Predicate = cl => cl.Where(el => el.bldObject?.bldProject.Id == SelectedBuildingObject.bldProject.Id).ToList();
+            predicate_1.Predicate = cl => cl.Where(el => el.bldObject?.bldProject?.Id == SelectedBuildingObject?.bldProject?.Id).ToList();
             NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_2 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
             predicate_2.Name = "Показать все кроме текущего объекта";
-            predicate_2.Predicate = cl => cl.Where(el => el.bldObject?.Id != SelectedBuildingObject.Id).ToList();
+            predicate_2.Predicate = cl => cl.Where(el => el.bldObject?.Id != SelectedBuildingObject?.Id).ToList();
             NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_3 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
             predicate_3.Name = "Показать  из  все из других проектов";
-            predicate_3.Predicate = cl => cl.Where(el => el.bldObject?.bldProject.Id != SelectedBuildingObject.bldProject.Id).ToList();
+            predicate_3.Predicate = cl => cl.Where(el => el.bldObject?.bldProject?.Id != SelectedBuildingObject?.bldProject?.Id).ToList();
             NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_4 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
             predicate_4.Name = "Показать все";
             predicate_4.Predicate = cl => cl;
@@ -254,7 +253,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             nameablePredicatesCollection.Add(predicate_4);
             ObservableCollection<bldConstruction> objects_for_add_collection = new ObservableCollection<bldConstruction>();
             CoreFunctions.AddElementToCollectionWhithDialog_Test<ObservableCollection<bldConstruction>, bldConstruction>
-                (objects_for_add_collection, Constructions,
+                (objects_for_add_collection, AllConstructions,
                 nameablePredicatesCollection,
                 _dialogService,
                  (result) =>
@@ -263,9 +262,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      {
                         foreach (bldConstruction construction in objects_for_add_collection)
                          {
-                            UnDoReDo.Register(construction);
                              SelectedBuildingObject.AddConstruction(construction);
-                            UnDoReDo.UnRegister(construction);
                          }
                          SaveCommand.RaiseCanExecuteChanged();
                      }
@@ -314,10 +311,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          SaveCommand.RaiseCanExecuteChanged();
                          foreach (bldParticipant participant in collection_for_add)
                          {
-                            UnDoReDo.Register(participant);
                              SelectedBuildingObject.AddParticipant(participant);
-                            UnDoReDo.UnRegister(participant);
-
                          }
                      }
                      if (result.Result == ButtonResult.No)
@@ -362,10 +356,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          SaveCommand.RaiseCanExecuteChanged();
                          foreach (bldResponsibleEmployee employee in collection_for_add)
                          {
-                            UnDoReDo.Register(employee);
                              SelectedBuildingObject.AddResponsibleEmployee(employee);
-                            UnDoReDo.UnRegister(employee);
-
                          }
                      }
                  },

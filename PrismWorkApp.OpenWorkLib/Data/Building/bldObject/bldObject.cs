@@ -32,13 +32,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get
             {
-                /*       int short_name_leng = 40;
-                       string short_name = "";
-                       if (Name?.Length < short_name_leng) 
-                           short_name = $"{Name}";
-                       else 
-                           short_name = $"{Name?.Substring(0, short_name_leng)}";
-                       SetProperty(ref _shortName, short_name);*/
                 return _shortName;
             }
             set { SetProperty(ref _shortName, value); }
@@ -124,7 +117,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _buildingObjects; }
             set { SetProperty(ref _buildingObjects, value); }
         }
-       
+
         private bldProject _bldProject;
         [NavigateProperty]
         public virtual bldProject? bldProject
@@ -132,6 +125,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _bldProject; }
             set { SetProperty(ref _bldProject, value); }
         }
+        [NavigateProperty]
+        public Guid? bldObjectId { get; set; }
+        [NavigateProperty]
+        public bldObject? ParentObject { get; set; }
         #region IClonable
         public override bool Equals(object? obj)
         {
@@ -178,7 +175,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 System.IO.Directory.CreateDirectory(construction_folder_path);
                 construction.SaveAOSRsToWord(construction_folder_path);
             }
-            foreach (bldObject  bld_object in BuildingObjects)
+            foreach (bldObject bld_object in BuildingObjects)
             {
                 string bld_folder_path = System.IO.Path.Combine(folderPath, bld_object.ShortName); ;
                 System.IO.Directory.CreateDirectory(bld_folder_path);
@@ -214,16 +211,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void AddBuildindObject(bldObject obj)
         {
-            obj.bldProject = bldProject;
-            AddToCollectionCommand<bldObjectsGroup, bldObject> Command =
-                new AddToCollectionCommand<bldObjectsGroup, bldObject>(BuildingObjects, obj);
+            AddObjectToObjectCommand Command = new AddObjectToObjectCommand(this, obj);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void AddConstruction(bldConstruction construction)
         {
-            construction.bldObject  = this;
-            AddToCollectionCommand<bldConstructionsGroup, bldConstruction> Command =
-                new AddToCollectionCommand<bldConstructionsGroup, bldConstruction>(Constructions, construction);
+            AddConstructionToObjectCommand Command = new AddConstructionToObjectCommand(this, construction);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void AddParticipant(bldParticipant participant)

@@ -65,6 +65,15 @@ namespace PrismWorkApp.Services.Repositories
             .WithMany(nw => nw.PreviousWorks)
             .UsingEntity(j => j.ToTable("PreToNexWorksTable"));
 
+            modelBuilder.Entity<bldConstruction>()
+                .HasOne(cn => cn.ParentConstruction)
+                .WithMany(cn => cn.Constructions)
+                .HasForeignKey(cn => cn.bldConstructionId);
+            modelBuilder.Entity<bldObject>()
+             .HasOne(bo => bo.ParentObject)
+             .WithMany(bo => bo.BuildingObjects)
+             .HasForeignKey(bo => bo.bldObjectId);
+
 
             /*modelBuilder
               .Entity<bldWorkbldWork>()

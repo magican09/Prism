@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class AddWorkCommand : IUnDoRedoCommand
+    public class AddWorkToConstructionCommand : IUnDoRedoCommand
     {
          private bldWork _Added_work;
          private ObservableCollection<bldWork> _RemovedPreviousWorks = new ObservableCollection<bldWork>();
@@ -61,7 +61,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
               _LastConstruction.Works.Add(_Added_work);
             }
         }
-        public AddWorkCommand(bldConstruction construction,bldWork add_work)
+        public AddWorkToConstructionCommand(bldConstruction construction,bldWork add_work)
         {
             _Added_work = add_work;
             _CurrentConstruction = construction;

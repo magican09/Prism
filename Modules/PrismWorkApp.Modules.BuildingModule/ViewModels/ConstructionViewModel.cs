@@ -202,16 +202,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnAddConstruction()
         {
             bldConstructionsGroup Constructions =
-            new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync());
+            new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync().Where(cn=>cn.Id!=SelectedConstruction.Id).ToList());
             NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_1 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
             predicate_1.Name = "Показать только из текущего проекта.";
-            predicate_1.Predicate = cl => cl.Where(el => el.bldObject?.bldProject.Id == SelectedConstruction?.bldObject?.bldProject?.Id).ToList();
+            predicate_1.Predicate = cl => cl.Where(el => el.bldObject?.bldProject?.Id == SelectedConstruction?.bldObject?.bldProject?.Id).ToList();
             NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_2 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
             predicate_2.Name = "Показать все кроме текущего объекта";
             predicate_2.Predicate = cl => cl.Where(el => el.bldObject?.Id != SelectedConstruction?.bldObject?.Id).ToList();
             NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_3 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
             predicate_3.Name = "Показать  из  все из других проектов";
-            predicate_3.Predicate = cl => cl.Where(el => el.bldObject?.bldProject.Id != SelectedConstruction?.bldObject?.bldProject?.Id).ToList();
+            predicate_3.Predicate = cl => cl.Where(el => el.bldObject?.bldProject?.Id != SelectedConstruction?.bldObject?.bldProject?.Id).ToList();
             NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_4 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
             predicate_4.Name = "Показать все";
             predicate_4.Predicate = cl => cl;
@@ -232,10 +232,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      {
                          foreach (bldConstruction construction in objects_for_add_collection)
                          {
-                            UnDoReDo.Register(construction);
-                             SelectedConstruction.AddConstruction(construction);
-                            UnDoReDo.UnRegister(construction);
-                         }
+                              SelectedConstruction.AddConstruction(construction);
+                          }
                          SaveCommand.RaiseCanExecuteChanged();
                      }
                      if (result.Result == ButtonResult.No)

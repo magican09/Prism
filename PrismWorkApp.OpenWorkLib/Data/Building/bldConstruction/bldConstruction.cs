@@ -122,7 +122,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         [NavigateProperty]
         public bldObject? bldObject { get; set; }
-
+        [NavigateProperty]
+         public  Guid? bldConstructionId { get; set; }
+        [NavigateProperty]
+        public bldConstruction? ParentConstruction { get; set; }
+   
         public bldConstruction()
         {
 
@@ -147,22 +151,19 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #region EditMethods
         public void AddWork(bldWork work)
         {
-            /*   AddToCollectionCommand<bldWorksGroup, bldWork> Command =
-                    new AddToCollectionCommand<bldWorksGroup, bldWork>(Works, work);*/
-            AddWorkCommand Command = new AddWorkCommand(this, work);
+               AddWorkToConstructionCommand Command = new AddWorkToConstructionCommand(this, work);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void AddResponsibleEmployee(bldResponsibleEmployee empl)
         {
             AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
                  new AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+          
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void AddConstruction(bldConstruction construction)
         {
-            construction.bldObject = null; ///Спорное решение с установкой в null
-            AddToCollectionCommand<bldConstructionsGroup, bldConstruction> Command =
-                new AddToCollectionCommand<bldConstructionsGroup, bldConstruction>(Constructions, construction);
+            AddConstructionToConstructionCommand Command = new AddConstructionToConstructionCommand(this, construction);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
 

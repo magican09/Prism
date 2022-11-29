@@ -181,7 +181,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnEditNextWork()
         {
             CoreFunctions.EditElementDialog<bldWork>(SelectedNextWork, "Последующая работа",
-                 (result) => { }, _dialogService, typeof(WorkDialogView).Name, "Редактировать", Id);
+                 (result) => { }, _dialogService, typeof(WorkDialogView).Name, "Редактировать", UnDoReDo);
 
         }
         private void OnAddNextWork()
@@ -292,7 +292,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnEditPreviousWork()
         {
             CoreFunctions.EditElementDialog<bldWork>(SelectedPreviousWork, "Перыдыдущая работа",
-                  (result) => { }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", Id);
+                  (result) => { }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", UnDoReDo);
         }
 
         private bool CanSave()

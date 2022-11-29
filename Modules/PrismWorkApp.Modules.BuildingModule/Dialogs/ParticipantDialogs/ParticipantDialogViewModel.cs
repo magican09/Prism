@@ -44,8 +44,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                     {
                         if (result.Result == ButtonResult.Yes)
                         {
-                            //    CoreFunctions.CopyObjectReflectionNewInstances(SelectedParticipant, ResivedParticipant);
-                            RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
+                            DialogParameters param = new DialogParameters();
+                            param.Add("undo_redo", UnDoReDo);
+                            RequestClose?.Invoke(new DialogResult(ButtonResult.Yes, param));
                         }
                         else
                         {
@@ -58,25 +59,20 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             }
             else
             {
-                // bldObject new_bldObject = new bldObject();
-                //  CoreFunctions.CopyObjectReflectionNewInstances(SelectedObject, new_bldObject);
-
-
+            
             }
 
 
         }
         override public void OnClose(object obj)
         {
-            //   if (EditMode) SelectedParticipant.UnDoAll(Id);
-            this.OnClose<bldParticipant>(obj, SelectedParticipant);
+            UnDoReDo.UnDoAll();
             RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
         }
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigate_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
-            CurrentContextId = (Guid)parameters.GetValue<object>("current_context_id");
-            if (navigate_message != null)
+           if (navigate_message != null)
             {
                 ResivedParticipant = (bldParticipant)navigate_message.Object;
                 EditMode = navigate_message.EditMode;
@@ -85,6 +81,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 if (SelectedParticipant != null) SelectedParticipant.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedParticipant = ResivedParticipant;
                 SelectedParticipant.ErrorsChanged += RaiseCanExecuteChanged;
+                UnDoReDo.Register(SelectedParticipant);
             }
         }
     }

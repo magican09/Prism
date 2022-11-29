@@ -54,11 +54,13 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                     {
                         if (result.Result == ButtonResult.Yes)
                         {
-                            RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
+                            DialogParameters param = new DialogParameters();
+                            param.Add("undo_redo",UnDoReDo);
+                            RequestClose?.Invoke(new DialogResult(ButtonResult.Yes,param));
                         }
                         else
                         {
-                             RequestClose?.Invoke(new DialogResult(ButtonResult.No));
+                            RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                         }
 
                     }, _dialogService);
@@ -70,6 +72,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         }
         override public void OnClose(object obj)
         {
+            UnDoReDo.UnDoAll();
             RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
         }
 
@@ -77,6 +80,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
+            CommonUnDoReDo = (UnDoReDoSystem)parameters.GetValue<object>("undo_redo");
             if (navigane_message != null)
             {
                 ResivedConstruction = (bldConstruction)navigane_message.Object;
@@ -86,7 +90,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 if (SelectedConstruction != null) SelectedConstruction.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedConstruction = ResivedConstruction;
                 SelectedConstruction.ErrorsChanged += RaiseCanExecuteChanged;
-
+                UnDoReDo = new UnDoReDoSystem();
+                UnDoReDo.Register(SelectedConstruction);
             }
 
         }

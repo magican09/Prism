@@ -45,7 +45,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 {
                     if (result.Result == ButtonResult.Yes)
                     {
-                          RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
+                        DialogParameters param = new DialogParameters();
+                        param.Add("undo_redo", UnDoReDo);
+                        RequestClose?.Invoke(new DialogResult(ButtonResult.Yes, param));
                     }
                     else
                     {
@@ -57,8 +59,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         }
         override public void OnClose(object obj)
         {
-            //if (EditMode) SelectedResposibleEmployee.UnDoAll(Id);
-            this.OnClose<bldResponsibleEmployee>(obj, SelectedResposibleEmployee);
+            UnDoReDo.UnDoAll();
             RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
         }
 
@@ -76,7 +77,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 if (SelectedResposibleEmployee != null) SelectedResposibleEmployee.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedResposibleEmployee = ResivedResposibleEmployee;
                 SelectedResposibleEmployee.ErrorsChanged += RaiseCanExecuteChanged;
-
+                UnDoReDo.Register(SelectedResposibleEmployee);
 
             }
 

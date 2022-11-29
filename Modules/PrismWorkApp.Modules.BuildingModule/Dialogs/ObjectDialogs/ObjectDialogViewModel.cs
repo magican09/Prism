@@ -51,14 +51,13 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
               {
                    if (result.Result == ButtonResult.Yes)
                    {
-                             //UnDoReDo.SaveAll(Id);
-                             base.OnSave<bldObject>(SelectedBuildingObject);
-                       RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
+                      DialogParameters param = new DialogParameters();
+                      param.Add("undo_redo", UnDoReDo);
+                      RequestClose?.Invoke(new DialogResult(ButtonResult.Yes, param));
                    }
                    else
                    {
-                             // UnDoReDo.UnDoAll(Id);
-                             RequestClose?.Invoke(new DialogResult(ButtonResult.No));
+                        RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                    }
 
                }, _dialogService);
@@ -66,18 +65,15 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         }
         override public void OnClose(object obj)
         {
-            //    if (EditMode) SelectedBuildingObject.UnDoAll(Id);
-            base.OnClose<bldObject>(obj, SelectedBuildingObject);
+            UnDoReDo.UnDoAll();
             RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
 
         }
 
-
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
-            CurrentContextId = (Guid)parameters.GetValue<object>("current_context_id");
-            if (navigane_message != null)
+             if (navigane_message != null)
             {
                 ResivedObject = (bldObject)navigane_message.Object;
                 EditMode = navigane_message.EditMode;
@@ -85,6 +81,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 if (SelectedBuildingObject != null) SelectedBuildingObject.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedBuildingObject = ResivedObject;
                 SelectedBuildingObject.ErrorsChanged += RaiseCanExecuteChanged;
+                UnDoReDo.Register(SelectedBuildingObject);
             }
 
         }

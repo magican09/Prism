@@ -96,8 +96,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                     IUnDoReDoSystem unDoReDo)
         {
 
-         //   UnDoReDo = new UnDoReDoSystem(Id);
-
             _regionManager = regionManager;
             var quickAccessTollBar = new QuickAccessToolBarView();
             quickAccessTollBar.Items.Add(new QuickAccessToolBar());

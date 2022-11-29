@@ -109,8 +109,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public ObjectViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
              IApplicationCommands applicationCommands, IUnDoReDoSystem unDoReDo)
         {
-            //UnDoReDo = unDoReDo as UnDoReDoSystem;
+            UnDoReDoSystem CommonUnDoReDo = unDoReDo as UnDoReDoSystem;
             UnDoReDo = new UnDoReDoSystem();
+         
             SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedBuildingObject);
             CloseCommand = new NotifyCommand<object>(OnClose);
             UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
@@ -214,10 +215,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             UnDoReDo.Register(bld_obj);
                              SelectedBuildingObject.AddBuildindObject(bld_obj);
                             UnDoReDo.UnRegister(bld_obj);
-
                          }
                          SaveCommand.RaiseCanExecuteChanged();
-
                      }
                      if (result.Result == ButtonResult.No)
                      {
@@ -379,34 +378,58 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnEditBuildingObject()
         {
-           UnDoReDo.Register(SelectedBuildingObject);
             CoreFunctions.EditElementDialog<bldObject>(SelectedBuildingObject, "Строительный объект",
-                (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Guid.Empty);
-           UnDoReDo.UnRegister(SelectedBuildingObject);
-        }
+                (result) =>
+                {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                        UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                        SaveCommand.RaiseCanExecuteChanged();
+                    }
+                }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", UnDoReDo);
+         }
         private void OnEditConstruction()
         {
-           UnDoReDo.Register(SelectedConstruction);
-            CoreFunctions.EditElementDialog<bldConstruction>(SelectedConstruction, "Строительная конструкция",
-                (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", Guid.Empty);
-           UnDoReDo.UnRegister(SelectedConstruction);
-        }
+             CoreFunctions.EditElementDialog<bldConstruction>(SelectedConstruction, "Строительная конструкция",
+                (result) => 
+                {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                        UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                        SaveCommand.RaiseCanExecuteChanged();
+                    }
+                }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", UnDoReDo);
+         }
         private void OnEditResponsibleEmployee()
         {
 
-           UnDoReDo.Register(SelectedResponsibleEmployee);
             CoreFunctions.EditElementDialog<bldResponsibleEmployee>(SelectedResponsibleEmployee, "Отвественне лицо",
-                  (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ResponsibleEmployeeDialogView).Name, "Редактировать", Id);
-           UnDoReDo.UnRegister(SelectedResponsibleEmployee);
-
+                  (result) =>
+                  {
+                      if (result.Result == ButtonResult.Yes)
+                      {
+                          UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                          UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                          SaveCommand.RaiseCanExecuteChanged();
+                      }
+                  }, _dialogService, typeof(ResponsibleEmployeeDialogView).Name, "Редактировать", UnDoReDo);
+ 
         }
         private void OnEditParticipant()
         {
-           UnDoReDo.Register(SelectedParticipant);
-            CoreFunctions.EditElementDialog<bldParticipant>(SelectedParticipant, "Учасник строительства",
-                  (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ParticipantDialogView).Name, "Редактировать", Id);
-           UnDoReDo.UnRegister(SelectedResponsibleEmployee);
-           UnDoReDo.UnRegister(SelectedParticipant);
+             CoreFunctions.EditElementDialog<bldParticipant>(SelectedParticipant, "Учасник строительства",
+                  (result) =>
+                  {
+                      if (result.Result == ButtonResult.Yes)
+                      {
+                          UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                          UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                          SaveCommand.RaiseCanExecuteChanged();
+                      }
+                  }, _dialogService, typeof(ParticipantDialogView).Name, "Редактировать", UnDoReDo);
+          
 
         }
 
@@ -476,11 +499,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public virtual void OnSave()
         {
-            this.OnSave<bldObject>(SelectedBuildingObject);
+            base.OnSave<bldObject>(SelectedBuildingObject);
+          
         }
         public virtual void OnClose(object obj)
         {
-            this.OnClose<bldObject>(obj, SelectedBuildingObject);
+            base.OnClose<bldObject>(obj, SelectedBuildingObject);
         }
 
         public override void OnWindowClose()

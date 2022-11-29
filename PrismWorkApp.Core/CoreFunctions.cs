@@ -2,6 +2,7 @@
 using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -233,7 +234,7 @@ namespace PrismWorkApp.Core
                  Action<IDialogResult> elm_save_action, IDialogService dialogService,
                    string dialogViewName,
                    string newObjectDialogName,
-                   Guid current_context_id,
+                   IUnDoReDoSystem undo_redo,
                    string title = "",
                    string message = "")
                where T : INameable, IRegisterable, new()
@@ -244,19 +245,17 @@ namespace PrismWorkApp.Core
             dialog_par.Add("confirm_button_content", "Сохранить");
             dialog_par.Add("refuse_button_content", "Закрыть");
             dialog_par.Add("new_object_dialog_name", newObjectDialogName);
-            dialog_par.Add("current_context_id", current_context_id);
-
+            dialog_par.Add("undo_redo", undo_redo);
             T element_for_edit = element;
-            // CoreFunctions.CopyObjectReflectionNewInstances(element, new_element);
-
             ConveyanceObject send_obj = new ConveyanceObject(element_for_edit, ConveyanceObjectModes.EditMode.FOR_EDIT);
             dialog_par.Add("selected_element_conveyance_object", send_obj);
             dialogService.ShowDialog(dialogViewName, dialog_par, (result) =>
             {
                 if (result.Result == ButtonResult.Yes)
                 {
-                    //  CoreFunctions.CopyObjectReflectionNewInstances(new_element, element);
-                    elm_save_action.Invoke(new DialogResult(ButtonResult.Yes));
+                    DialogParameters param = new DialogParameters();
+                    param.Add("undo_redo", result.Parameters.GetValue<UnDoReDoSystem>("undo_redo"));
+                    elm_save_action.Invoke(new DialogResult(ButtonResult.Yes, param));
                 }
 
 

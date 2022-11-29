@@ -154,27 +154,45 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnEditBuildingObject()
         {
-           UnDoReDo.Register(SelectedBuildingObject);
             CoreFunctions.EditElementDialog<bldObject>(SelectedBuildingObject, "Строительный объект",
-                (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Guid.Empty);
-           UnDoReDo.UnRegister(SelectedBuildingObject);
+                (result) =>
+                {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                        UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                        SaveCommand.RaiseCanExecuteChanged();
+                    }
+                }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", UnDoReDo);
         }
         private void OnEditResponsibleEmployee()
         {
 
-           UnDoReDo.Register(SelectedResponsibleEmployee);
             CoreFunctions.EditElementDialog<bldResponsibleEmployee>(SelectedResponsibleEmployee, "Отвественне лицо",
-                  (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ResponsibleEmployeeDialogView).Name, "Редактировать", Id);
-           UnDoReDo.UnRegister(SelectedResponsibleEmployee);
+                  (result) =>
+                  {
+                      if (result.Result == ButtonResult.Yes)
+                      {
+                          UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                          UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                          SaveCommand.RaiseCanExecuteChanged();
+                      }
+                  }, _dialogService, typeof(ResponsibleEmployeeDialogView).Name, "Редактировать", UnDoReDo);
 
         }
         private void OnEditParticipant()
         {
-           UnDoReDo.Register(SelectedParticipant);
             CoreFunctions.EditElementDialog<bldParticipant>(SelectedParticipant, "Учасник строительства",
-                  (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ParticipantDialogView).Name, "Редактировать", Id);
-           UnDoReDo.UnRegister(SelectedResponsibleEmployee);
-           UnDoReDo.UnRegister(SelectedParticipant);
+                 (result) =>
+                 {
+                     if (result.Result == ButtonResult.Yes)
+                     {
+                         UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                         UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                         SaveCommand.RaiseCanExecuteChanged();
+                     }
+                 }, _dialogService, typeof(ParticipantDialogView).Name, "Редактировать", UnDoReDo);
+
 
         }
         private void OnAddResponsibleEmployees()
@@ -209,9 +227,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          SaveCommand.RaiseCanExecuteChanged();
                          foreach (bldResponsibleEmployee employee in collection_for_add)
                          {
-                            UnDoReDo.Register(employee);
+            //                UnDoReDo.Register(employee);
                              SelectedProject.AddResponsibleEmployee(employee);
-                            UnDoReDo.UnRegister(employee);
+                          //  UnDoReDo.UnRegister(employee);
 
                          }
                      }
@@ -256,9 +274,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          SaveCommand.RaiseCanExecuteChanged();
                          foreach (bldParticipant participant in collection_for_add)
                          {
-                            UnDoReDo.Register(participant);
+                         //   UnDoReDo.Register(participant);
                              SelectedProject.AddParticipant(participant);
-                            UnDoReDo.UnRegister(participant);
+                        //    UnDoReDo.UnRegister(participant);
 
                          }
                      }
@@ -303,9 +321,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      {
                          foreach (bldObject bld_obj in objects_for_add_collection)
                          {
-                            UnDoReDo.Register(bld_obj);
+                   //         UnDoReDo.Register(bld_obj);
                              SelectedProject.AddBuildindObject(bld_obj);
-                            UnDoReDo.UnRegister(bld_obj);
+                  //          UnDoReDo.UnRegister(bld_obj);
                          }
                          SaveCommand.RaiseCanExecuteChanged();
 
@@ -360,7 +378,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }, _dialogService, Id);
 
         }
-
         private void OnDataGridLostSocus(object obj)
         {
 
@@ -440,9 +457,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
         }
-
-
-
     }
 
 }

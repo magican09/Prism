@@ -85,7 +85,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands,
               IUnDoReDoSystem unDoReDo)
         {
-            //UnDoReDo = unDoReDo as UnDoReDoSystem;
+            CommonUnDoReDo = unDoReDo as UnDoReDoSystem;
             UnDoReDo = new UnDoReDoSystem();
 
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
@@ -253,16 +253,30 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
            UnDoReDo.Register(SelectedWork);
             CoreFunctions.EditElementDialog<bldWork>(SelectedWork, "Работа",
-                  (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(WorkDialogView).Name, "Редактировать", Guid.Empty);
+                    (result) =>
+                    {
+                        if (result.Result == ButtonResult.Yes)
+                        {
+                            UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                            UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                            SaveCommand.RaiseCanExecuteChanged();
+                        }
+                    }, _dialogService, typeof(WorkDialogView).Name, "Редактировать", UnDoReDo);
            UnDoReDo.UnRegister(SelectedWork);
         
         }
         private void OnEditConstruction()
         {
-           UnDoReDo.Register(SelectedChildConstruction);
             CoreFunctions.EditElementDialog<bldConstruction>(SelectedChildConstruction, "Строительная конструкция",
-                (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", Guid.Empty);
-           UnDoReDo.UnRegister(SelectedChildConstruction);
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                       UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                       SaveCommand.RaiseCanExecuteChanged();
+                   }
+               }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", UnDoReDo);
         }
         private void OnRemoveWork()
         {

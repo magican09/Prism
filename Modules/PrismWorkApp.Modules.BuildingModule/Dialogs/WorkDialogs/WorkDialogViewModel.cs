@@ -18,7 +18,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             get { return _currentContextId; }
             set { _currentContextId = value; }
         }
-
         public WorkDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
             : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands)
         {
@@ -39,7 +38,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         {
             if (EditMode == ConveyanceObjectModes.EditMode.FOR_EDIT)
             {
-
                 CoreFunctions.ConfirmActionOnElementDialog<bldWork>(SelectedWork,
                     "Сохранить", "работа",
                     "Сохранить",
@@ -48,28 +46,26 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                {
                    if (result.Result == ButtonResult.Yes)
                    {
-                  //     UnDoReDo.SaveAll(Id);
-                       RequestClose?.Invoke(new DialogResult(ButtonResult.Yes));
+                       DialogParameters param = new DialogParameters();
+                       param.Add("undo_redo", UnDoReDo);
+                       RequestClose?.Invoke(new DialogResult(ButtonResult.Yes, param));
                    }
                    else
                    {
-                    //   UnDoReDo.SaveAll(Id);
                        RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                    }
                }, _dialogService);
-
             }
             else
             {
-                // bldObject new_bldObject = new bldObject();
-                //  CoreFunctions.CopyObjectReflectionNewInstances(SelectedBuildingObject, new_bldObject);
-
-
             }
-
+        }
+        override public void OnClose(object obj)
+        {
+            UnDoReDo.UnDoAll();
+            RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
 
         }
-
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
@@ -82,10 +78,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 if (SelectedWork != null) SelectedWork.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedWork = ResivedWork;
                 SelectedWork.ErrorsChanged += RaiseCanExecuteChanged;
-                //    CoreFunctions.CopyObjectReflectionNewInstances(ResivedWork, SelectedWork);
-
+                UnDoReDo.Register(SelectedWork);
             }
-
         }
     }
 }

@@ -22,13 +22,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _keepAlive; }
             set { _keepAlive = value; }
         }
+        protected IUnDoReDoSystem _commonUnDoReDo;
+        public IUnDoReDoSystem CommonUnDoReDo
+        {
+            get { return _commonUnDoReDo; }
+            set { SetProperty(ref _commonUnDoReDo, value); }
+        }
+
         protected IUnDoReDoSystem _unDoReDo;
         public IUnDoReDoSystem UnDoReDo
         {
             get { return _unDoReDo; }
             set { SetProperty(ref _unDoReDo, value); }
         }
-
         public BaseViewModel()
         {
            
@@ -41,6 +47,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             {
                 if (result.Result == ButtonResult.Yes)
                 {
+                    //   CommonUnDoReDo.AddUnDoReDo(UnDoReDo);
                     UnDoReDo.ClearStacks();
                 }
                 if (result.Result == ButtonResult.No)
@@ -56,7 +63,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public virtual void OnClose<T>(object view, T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
         {
-            if (!UnDoReDo.AllUnDoIsDone())//selected_obj!=null&&добавлено 27,10,22
+            if (!UnDoReDo.IsSatcksEmpty())//selected_obj!=null&&добавлено 27,10,22
             {
                 CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
                 {
@@ -64,6 +71,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     {
                         if (result.Result == ButtonResult.Yes)
                         {
+                            //    CommonUnDoReDo.AddUnDoReDo(UnDoReDo);
                             UnDoReDo.ClearStacks();
                             if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
@@ -75,6 +83,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         else if (result.Result == ButtonResult.No)
                         {
                             UnDoReDo.UnDoAll();
+                            UnDoReDo.ClearStacks();
                             if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);

@@ -8,14 +8,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
         event PropertyChangedEventHandler PropertyChanged;
         public Guid Id { get; set; }
         bool AllUnDoIsDone();
+        public bool IsSatcksEmpty();
         bool CanReDoExecute();
         bool CanUnDoExecute();
-        void ReDo(int levels);
+        bool ReDo(int levels);
         void UnRegister(IJornalable obj);
         void Register(IJornalable obj);
-        void UnDo(int levels);
+        bool UnDo(int levels);
         void UnDoAll();
         void ClearStacks();
+        void AddUnDoReDo(IUnDoReDoSystem unDoReDo);
 
 
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -74,18 +75,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _docConfirmingTheAthority; }
             set { SetProperty(ref _docConfirmingTheAthority, value); }
         }
-
-        private bldCompany _company;
-        [NavigateProperty]
-        public bldCompany Company
-        {
-            get { return _company; }
-            set { SetProperty(ref _company, value); }
-        }
         [NavigateProperty]
         public bldProject bldProject { get; set; }
+    //    public bldProjectsGroup bldProjects { get; set; }
         [NavigateProperty]
         public bldParticipant bldParticipant { get; set; }
-
+     //   [NavigateProperty]
+      //  public Guid bldParticipantId { get; set; }
     }
 }

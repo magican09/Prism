@@ -2,14 +2,14 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldMaterialsGroup : NameableObservableCollection<bldMaterial>, IbldMaterialsGroup, INotifyPropertyChanged, IEntityObject
+    public  class bldResourcesGroup : NameableObservableCollection<bldResource>, IbldResourcesGroup, INotifyPropertyChanged, IEntityObject
     {
 
-        public bldMaterialsGroup()
+        public bldResourcesGroup()
         {
-            Name = "Материалы:";
+            Name = "Ресурсы:";
         }
-        public bldMaterialsGroup(string name)
+        public bldResourcesGroup(string name)
         {
             Name = name;
         }
@@ -26,9 +26,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private void CalcTotalCost()
         {
             decimal total_cost = 0;
-            foreach (bldMaterial bldMaterial in this.Items)
+            foreach (bldResource  resource in this.Items)
             {
-                total_cost += bldMaterial.Cost;
+                total_cost += resource.Cost;
             }
             Cost = total_cost;
 

@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Building\bldOperation\" />
     <Folder Include="Data\Contract\" />
     <Folder Include="Data\Building\bldConsolidationOfWorks\" />
     <Folder Include="Data\Building\bldConstructionArea\" />

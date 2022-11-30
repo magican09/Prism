@@ -81,7 +81,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     //Work current_work = project.Works[work_index];
                     bldWork current_work = aOSRDocument.bldWork;
                     bldProject project = current_work.bldConstruction.bldObject.bldProject;
-                    //  AOSRDocument aOSRDocument = current_work.AOSRDocuments
+                    bldParticipantsGroup all_participants = current_work.Participants;
+                 //  AOSRDocument aOSRDocument = current_work.AOSRDocuments
                     //  foreach (AOSRDocument aOSRDocument in current_work.AOSRDocuments)
                     {
                         //  aOSRDocument.AttachDocuments.Clear();
@@ -89,7 +90,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         string s_date = aOSRDocument.Date.ToString("d");
                         world_document.Bookmarks["Date_Sign"].Range.Text =
                                 ((DateTime)aOSRDocument.Date).ToString("d");// Дата акта
-
+                    
                         world_document.Bookmarks["Object_name"].Range.Text = project.FullName;//Наименованиа объекта
 
                         string developer_company_name = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DEVELOPER)?.ConstructionCompanies[0]?.FullName;
@@ -109,6 +110,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         string author_company_SROCompany_name = project.Participants?.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER)?.ConstructionCompanies[0]?.SROIssuingCompany.FullName;
                         string Author_name = $"{author_company_name}, {author_company_contacts}, {author_company_SROCompany_name}."; //Застройщик
                         world_document.Bookmarks["Author_name"].Range.Text = Author_name;//Проективрощики
+
 
                         string cuctomer_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.RoleOfResponsible == RoleOfResponsible.CUSTOMER).Position.Name;
                         string cuctomer_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.RoleOfResponsible == RoleOfResponsible.CUSTOMER).FullName;
@@ -131,18 +133,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         string author_supervision_emp_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.RoleOfResponsible == RoleOfResponsible.AUTHOR_SUPERVISION).Position.Name;
                         string author_supervision_emp_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.RoleOfResponsible == RoleOfResponsible.AUTHOR_SUPERVISION).FullName;
                         string author_supervision_emp_doc_confirm_name = project.ResponsibleEmployees.FirstOrDefault(re => re.RoleOfResponsible == RoleOfResponsible.AUTHOR_SUPERVISION).DocConfirmingTheAthority.Name;
-                        string disigner_company_fullname = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER).ConstructionCompanies[0].FullName;
+                        string disigner_company_fullname = all_participants.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER).FullName;
                         string Author_Signer = $"{author_supervision_emp_position_name} {author_supervision_emp_fullname} {author_supervision_emp_doc_confirm_name} {disigner_company_fullname}."; //Авторский надзор
                         world_document.Bookmarks["Author_Signer"].Range.Text = Author_Signer;//Предстваитель австорского надзора
 
                         string work_performer_emp_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.RoleOfResponsible == RoleOfResponsible.WORK_PERFORMER).Position.Name;
                         string work_performer_emp_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.RoleOfResponsible == RoleOfResponsible.WORK_PERFORMER).FullName;
                         string work_performer_emp_doc_confirm_name = project.ResponsibleEmployees.FirstOrDefault(re => re.RoleOfResponsible == RoleOfResponsible.WORK_PERFORMER).DocConfirmingTheAthority.Name;
-                        string builder_company_fullname = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.BUILDER).ConstructionCompanies[0].FullName; ;
+                        string builder_company_fullname = all_participants.FirstOrDefault(p => p.Role == ParticipantRole.BUILDER)?.FullName; ;
                         string SubC_Signer = $"{work_performer_emp_position_name} {work_performer_emp_fullname} {work_performer_emp_doc_confirm_name} {builder_company_fullname}."; //Подрядчик
                         world_document.Bookmarks["SubC_Signer"].Range.Text = SubC_Signer;//Предстваитель лица  непосредственно выполняющего работы
 
-                        string genera_contr_company_name = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR)?.ConstructionCompanies[0]?.Name;
+                        string genera_contr_company_name = all_participants.FirstOrDefault(p => p.Role == ParticipantRole.GENERAL_CONTRACTOR)?.Name;
                         world_document.Bookmarks["SubC_name1"].Range.Text = genera_contr_company_name; // Иные лизац
 
                         string str = "";
@@ -161,7 +163,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             world_document.Tables[2].Rows[3].Range.Text = str_arr[str_arr.Count - ii];
                             i_table2_row_add_counter++;
                         }
-                        string disigner_company_name = project.Participants.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER).ConstructionCompanies[0]?.Name;
+                        string disigner_company_name = all_participants.FirstOrDefault(p => p.Role == ParticipantRole.DISIGNER)?.Name;
 
                         world_document.Bookmarks["project"].Range.Text = $"{current_work.ProjectDocuments[0]?.Name} {disigner_company_name}";  //Проектная документация
 
@@ -192,7 +194,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             world_document.Words.Last.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
                             world_attached_doc = world_application.Documents.Add(templates_path + "\\Приложения.docx");
                             Microsoft.Office.Interop.Word._Document world_attached_doc_table = world_application.Documents.Add(templates_path + "\\Таблица к Приложениям.docx");
-                            bldDocument attach_doc = new bldDocument();
+                            bldDocumentsRegister attach_doc = new bldDocumentsRegister();
                             attach_doc.Name = "Реестр строительных материалов (конструкций) ";//+aOSRDocument.FullName;
                             attach_doc.Date = aOSRDocument.Date;
                             attach_doc.PagesNumber = Convert.ToInt32(world_attached_doc.ComputeStatistics(Microsoft.Office.Interop.Word.WdStatistic.wdStatisticPages));

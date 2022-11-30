@@ -5,12 +5,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public class bldWork : BindableBase, IbldWork, ICloneable, IEntityObject//, IJornalable
     {
 
-        private Guid _storedId;
-        public Guid StoredId
-        {
-            get { return _storedId; }
-            set { SetProperty(ref _storedId, value); }
-        }
 
         private DateTime _date;
         public DateTime Date
@@ -97,12 +91,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _scopeOfWork, value); }
         }
 
-        private bldMaterialsGroup _materials = new bldMaterialsGroup("Использованные материалы:");
+        private bldMaterialsGroup _materials = new bldMaterialsGroup("МР:");
         public virtual bldMaterialsGroup Materials
         {
             get { return _materials; }
             set { SetProperty(ref _materials, value); }
         }//Используемые материала
+
+       
         private bldWorkArea _workArea;
         public virtual bldWorkArea WorkArea
         {
@@ -160,10 +156,22 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _regulationDocuments, value); }
         }
 
+        private bldParticipantsGroup _participants;
+        public bldParticipantsGroup? Participants
+        {
+            get
+            {
+                if (_participants != null) return _participants;
+                if (this.bldConstruction != null) return this.bldConstruction.Participants;
+                return null;
+            }
+            set { SetProperty(ref _participants, value); }
+        }
+
         [NavigateProperty]
         public bldConstruction bldConstruction { get; set; }
 
-
+    
         public bldWork()
         {
             PreviousWorks.CopingEnable = false; //отключаем при копировании

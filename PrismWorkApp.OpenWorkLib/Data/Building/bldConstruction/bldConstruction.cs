@@ -112,21 +112,40 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _works, value); }
         }
 
-        private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup();
-        [NotMapped]
-        public bldResponsibleEmployeesGroup? ResponsibleEmployees
+        private bldParticipantsGroup _participants;
+        public bldParticipantsGroup? Participants
         {
-            get { return _responsibleEmployees; }
-            set { SetProperty(ref _responsibleEmployees, value); }
+            get
+            {
+                if (_participants != null) return _participants;
+                if (ParentConstruction != null) return ParentConstruction.Participants;
+                if (this.bldObject != null) return this.bldObject.Participants;
+                return null;
+            }
+            set { SetProperty(ref _participants, value); }
         }
 
+        private bldObject _bldObject;
         [NavigateProperty]
-        public bldObject? bldObject { get; set; }
+        public virtual bldObject? bldObject
+        {
+            get
+            {
+                if (_bldObject != null) return _bldObject;
+                if (ParentConstruction != null) return ParentConstruction.bldObject;
+                if (this.bldObject != null) return this.bldObject.ParentObject;
+
+                return null;
+            }
+            set { SetProperty(ref _bldObject, value); }
+        }
+      
         [NavigateProperty]
          public  Guid? bldConstructionId { get; set; }
         [NavigateProperty]
         public bldConstruction? ParentConstruction { get; set; }
-   
+
+      
         public bldConstruction()
         {
 
@@ -154,13 +173,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
                AddWorkToConstructionCommand Command = new AddWorkToConstructionCommand(this, work);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-        public void AddResponsibleEmployee(bldResponsibleEmployee empl)
-        {
-            AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
-                 new AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+        //public void AddResponsibleEmployee(bldResponsibleEmployee empl)
+        //{
+        //    AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+        //         new AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
           
-            InvokeUnDoReDoCommandCreatedEvent(Command);
-        }
+        //    InvokeUnDoReDoCommandCreatedEvent(Command);
+        //}
         public void AddConstruction(bldConstruction construction)
         {
             AddConstructionToConstructionCommand Command = new AddConstructionToConstructionCommand(this, construction);
@@ -173,12 +192,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
                  new RemoveFromCollectionCommand<bldWorksGroup, bldWork>(Works, work);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-        public void RemoveResponsibleEmployee(bldResponsibleEmployee empl)
-        {
-            RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
-                 new RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
-            InvokeUnDoReDoCommandCreatedEvent(Command);
-        }
+        //public void RemoveResponsibleEmployee(bldResponsibleEmployee empl)
+        //{
+        //    RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+        //         new RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+        //    InvokeUnDoReDoCommandCreatedEvent(Command);
+        //}
+
         public void RemoveConstruction(bldConstruction constr)
         {
             RemoveFromCollectionCommand<bldConstructionsGroup, bldConstruction> Command =

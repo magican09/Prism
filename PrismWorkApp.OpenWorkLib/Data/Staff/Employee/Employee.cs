@@ -14,7 +14,13 @@
             get { return _position; }
             set { SetProperty(ref _position, value); }
         }
-
+        private bldCompany _company;
+        [NavigateProperty]
+        public bldCompany Company
+        {
+            get { return _company; }
+            set { SetProperty(ref _company, value); }
+        }
         public object Clone()
         {
             return MemberwiseClone();

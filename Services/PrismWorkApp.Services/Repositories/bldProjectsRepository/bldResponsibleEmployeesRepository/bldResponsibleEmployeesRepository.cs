@@ -22,7 +22,8 @@ namespace PrismWorkApp.Services.Repositories
         public List<bldResponsibleEmployee> GetAllResponsibleEmployees()//(Guid id)
         {
             PlutoContext.ResponsibleEmployees
-                    .Include(re => re.bldParticipant);
+                    //  .Include(re => re.bldParticipant);
+                    .Include(re => re.Company);
 
             return PlutoContext.ResponsibleEmployees.ToList();//out_val;
         }

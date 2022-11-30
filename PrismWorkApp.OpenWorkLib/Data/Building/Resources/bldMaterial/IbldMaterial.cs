@@ -1,6 +1,6 @@
 ﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldMaterial : IRegisterable, IMeasurable
+    public interface IbldMaterial : IbldResource
     {
         public bldDocumentsGroup Documents { get; set; }
 

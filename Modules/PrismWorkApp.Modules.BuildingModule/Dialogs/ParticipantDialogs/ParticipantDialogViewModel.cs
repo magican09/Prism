@@ -3,6 +3,7 @@ using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 
@@ -81,6 +82,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 if (SelectedParticipant != null) SelectedParticipant.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedParticipant = ResivedParticipant;
                 SelectedParticipant.ErrorsChanged += RaiseCanExecuteChanged;
+                UnDoReDo = new UnDoReDoSystem();
                 UnDoReDo.Register(SelectedParticipant);
             }
         }

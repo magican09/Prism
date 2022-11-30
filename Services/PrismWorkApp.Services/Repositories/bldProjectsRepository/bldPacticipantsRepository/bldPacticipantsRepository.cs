@@ -22,7 +22,7 @@ namespace PrismWorkApp.Services.Repositories
         public List<bldParticipant> GetAllParticipants()//(Guid id)
         {
             PlutoContext.Participants
-                    .Include(pr => pr.ConstructionCompanies);
+                    .Include(pr => pr.ResponsibleEmployees);
 
             return PlutoContext.Participants.ToList();//out_val;
         }

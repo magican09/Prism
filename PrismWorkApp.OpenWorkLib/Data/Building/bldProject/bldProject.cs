@@ -114,7 +114,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _participants, value); }
         }
 
-        private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup();
+       private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup();
        public bldResponsibleEmployeesGroup? ResponsibleEmployees
         {
             get { return _responsibleEmployees; }

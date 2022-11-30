@@ -295,18 +295,21 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 case nameof(bldParticipant):
                     {
                         bldParticipant participant = value as bldParticipant;
-                        foreach (bldConstructionCompany company in participant.ConstructionCompanies)
-                        {
-                            collection.Add(company);
-                            var employees = company?.ResponsibleEmployees
-                                .Where(emp => bldProjectFuncions.ResponsibleRoleComparer(participant.Role, emp.RoleOfResponsible)).ToList();
-                            foreach (bldResponsibleEmployee employee in employees)
-                            {
-                                collection.Add(employee);
-                            }
-                        }
-                        // collection.Add(participant.ConstructionCompanies);
-                        break;
+                        //foreach (bldConstructionCompany company in participant.ConstructionCompanies)
+                        //{
+                        //    collection.Add(company);
+                        //    var employees = company?.ResponsibleEmployees
+                        //        .Where(emp => bldProjectFuncions.ResponsibleRoleComparer(participant.Role, emp.RoleOfResponsible)).ToList();
+                        //    foreach (bldResponsibleEmployee employee in employees)
+                        //    {
+                        //        collection.Add(employee);
+                        //    }
+                        //}
+                        foreach (bldResponsibleEmployee employee in participant.ResponsibleEmployees)
+                                {
+                                    collection.Add(employee);
+                                }
+                            break;
                     }
                 case nameof(bldCompany):
                     {

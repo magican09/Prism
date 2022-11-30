@@ -203,12 +203,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_2 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
             NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_3 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
             predicate_1.Name = "Показать только из текущего проекта.";
-            predicate_1.Predicate = cl => cl.Where(el => el.bldProject != null &&
-                                                        el.bldProject.Id == SelectedProject.Id).ToList();
+            //predicate_1.Predicate = cl => cl.Where(el => el.bldProject != null &&
+            //                                            el.bldProject.Id == SelectedProject.Id).ToList();
             predicate_2.Name = "Показать из всех кроме текущего проекта";
-            predicate_2.Predicate = cl => cl.Where(el => el.bldProject != null &&
-                                                        el.bldProject.Id != SelectedProject.Id).ToList();
-            predicate_3.Name = "Показать все";
+            //predicate_2.Predicate = cl => cl.Where(el => el.bldProject != null &&
+            //                                            el.bldProject.Id != SelectedProject.Id).ToList();
+            //predicate_3.Name = "Показать все";
             predicate_3.Predicate = cl => cl;
             NameablePredicateObservableCollection<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
             nameablePredicatesCollection.Add(predicate_1);

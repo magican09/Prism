@@ -1,6 +1,6 @@
 ﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldCertificateDocument : bldDocument, IbldCertificateDocument, IEntityObject
+    public abstract class bldCertificateDocument : bldDocument, IbldCertificateDocument, IEntityObject
     {
 
     }

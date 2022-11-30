@@ -90,5 +90,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             AttachedDocuments.Name = "Приложения";
         }
+
+        private Picture _imageFile;
+        public Picture ImageFile
+        {
+            get { return _imageFile; }
+            set { SetProperty(ref _imageFile, value); }
+        }
     }
 }

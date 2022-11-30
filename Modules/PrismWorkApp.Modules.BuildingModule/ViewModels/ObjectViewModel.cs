@@ -190,10 +190,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             NameablePredicate<ObservableCollection<bldObject>, bldObject> predicate_3 = new NameablePredicate<ObservableCollection<bldObject>, bldObject>();
             predicate_1.Name = "Показать только из текущего проекта.";
             predicate_1.Predicate = cl => cl.Where(el => el.bldProject != null &&
-                                                        el.bldProject.Id == SelectedBuildingObject?.bldProject.Id).ToList();
+                                                        el.bldProject.Id == SelectedBuildingObject?.bldProject?.Id).ToList();
             predicate_2.Name = "Показать из всех кроме текущего проекта";
             predicate_2.Predicate = cl => cl.Where(el => el.bldProject != null &&
-                                                        el.bldProject.Id != SelectedBuildingObject?.bldProject.Id).ToList();
+                                                        el.bldProject.Id != SelectedBuildingObject?.bldProject?.Id).ToList();
             predicate_3.Name = "Показать все";
             predicate_3.Predicate = cl => cl;
 
@@ -326,45 +326,45 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnAddResponsibleEmployees()
         {
-            bldResponsibleEmployeesGroup All_ResponsibleEmployees = new bldResponsibleEmployeesGroup(
-                    _buildingUnitsRepository.ResponsibleEmployees.GetAllResponsibleEmployees());
-            NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_1 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
-            NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_2 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
-            NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_3 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
-            predicate_1.Name = "Показать только из текущего проекта.";
-            predicate_1.Predicate = cl => cl.Where(el => el.bldProject != null &&
-                                                        el.bldProject.Id == SelectedBuildingObject?.bldProject?.Id).ToList();
-            predicate_2.Name = "Показать из всех кроме текущего проекта";
-            predicate_2.Predicate = cl => cl.Where(el => el.bldProject != null &&
-                                                        el.bldProject.Id != SelectedBuildingObject?.bldProject?.Id).ToList();
-            predicate_3.Name = "Показать все";
-            predicate_3.Predicate = cl => cl;
-            NameablePredicateObservableCollection<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
-            nameablePredicatesCollection.Add(predicate_1);
-            nameablePredicatesCollection.Add(predicate_2);
-            nameablePredicatesCollection.Add(predicate_3);
+            //bldResponsibleEmployeesGroup All_ResponsibleEmployees = new bldResponsibleEmployeesGroup(
+            //        _buildingUnitsRepository.ResponsibleEmployees.GetAllResponsibleEmployees());
+            //NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_1 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
+            //NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_2 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
+            //NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_3 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
+            //predicate_1.Name = "Показать только из текущего проекта.";
+            ////predicate_1.Predicate = cl => cl.Where(el => el.bldProject != null &&
+            ////                                            el.bldProject.Id == SelectedBuildingObject?.bldProject?.Id).ToList();
+            //predicate_2.Name = "Показать из всех кроме текущего проекта";
+            ////predicate_2.Predicate = cl => cl.Where(el => el.bldProject != null &&
+            ////                                            el.bldProject.Id != SelectedBuildingObject?.bldProject?.Id).ToList();
+            ////predicate_3.Name = "Показать все";
+            //predicate_3.Predicate = cl => cl;
+            //NameablePredicateObservableCollection<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
+            //nameablePredicatesCollection.Add(predicate_1);
+            //nameablePredicatesCollection.Add(predicate_2);
+            //nameablePredicatesCollection.Add(predicate_3);
 
-            ObservableCollection<bldResponsibleEmployee> collection_for_add = new ObservableCollection<bldResponsibleEmployee>();
-            CoreFunctions.AddElementToCollectionWhithDialog_Test<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>
-                 (collection_for_add, All_ResponsibleEmployees,
-                 nameablePredicatesCollection,
-                 _dialogService,
-                 (result) =>
-                 {
-                     if (result.Result == ButtonResult.Yes)
-                     {
-                         SaveCommand.RaiseCanExecuteChanged();
-                         foreach (bldResponsibleEmployee employee in collection_for_add)
-                         {
-                             SelectedBuildingObject.AddResponsibleEmployee(employee);
-                         }
-                     }
-                 },
-                 typeof(AddbldResponsibleEmployeeToCollectionDialogView).Name,
-                 typeof(ResponsibleEmployeeDialogView).Name, Id,
-                  "Редактирование списка отвественных работников",
-                 "Форма для редактирования отвественных.",
-                 "Ответсвенные текущего проекта", "Все отвественные лица");
+            //ObservableCollection<bldResponsibleEmployee> collection_for_add = new ObservableCollection<bldResponsibleEmployee>();
+            //CoreFunctions.AddElementToCollectionWhithDialog_Test<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>
+            //     (collection_for_add, All_ResponsibleEmployees,
+            //     nameablePredicatesCollection,
+            //     _dialogService,
+            //     (result) =>
+            //     {
+            //         if (result.Result == ButtonResult.Yes)
+            //         {
+            //             SaveCommand.RaiseCanExecuteChanged();
+            //             foreach (bldResponsibleEmployee employee in collection_for_add)
+            //             {
+            //                 SelectedBuildingObject.AddResponsibleEmployee(employee);
+            //             }
+            //         }
+            //     },
+            //     typeof(AddbldResponsibleEmployeeToCollectionDialogView).Name,
+            //     typeof(ResponsibleEmployeeDialogView).Name, Id,
+            //      "Редактирование списка отвественных работников",
+            //     "Форма для редактирования отвественных.",
+            //     "Ответсвенные текущего проекта", "Все отвественные лица");
         }
 
         private void OnEditBuildingObject()
@@ -448,14 +448,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnRemoveResponsibleEmployee()
         {
-            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
-                 (SelectedBuildingObject.ResponsibleEmployees, SelectedResponsibleEmployee, "Ответсвенный представитель",
-                () =>
-                {
-                    SelectedBuildingObject.RemoveResponsibleEmployee(SelectedResponsibleEmployee);
-                    SelectedResponsibleEmployee = null;
-                    SaveCommand.RaiseCanExecuteChanged();
-                }, _dialogService, Id);
+            //CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
+            //     (SelectedBuildingObject.ResponsibleEmployees, SelectedResponsibleEmployee, "Ответсвенный представитель",
+            //    () =>
+            //    {
+            //        SelectedBuildingObject.RemoveResponsibleEmployee(SelectedResponsibleEmployee);
+            //        SelectedResponsibleEmployee = null;
+            //        SaveCommand.RaiseCanExecuteChanged();
+            //    }, _dialogService, Id);
 
         }
         private void OnRemoveParticipant()

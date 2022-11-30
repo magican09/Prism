@@ -193,12 +193,12 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=Name}"  
+                                <DataGridTextColumn Binding = "{Binding Path=RoleName}"  
                                                 Header="Роль организации участника" Width="Auto" />
                                 <DataGridTemplateColumn  Header="Название ораганизации" Width="Auto"   >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <ListView ItemsSource="{Binding ConstructionCompanies}" >
+                                            <ListView ItemsSource="{Binding ResponsibleEmployees}" >
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding Path= Name}"/>

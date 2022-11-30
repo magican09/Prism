@@ -122,7 +122,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NavigateProperty]
         public virtual bldProject? bldProject
         {
-            get { return _bldProject; }
+            get {
+                if (_bldProject != null) return _bldProject;
+                if (ParentObject != null) return ParentObject.bldProject;
+                return null;
+            }
             set { SetProperty(ref _bldProject, value); }
         }
         [NavigateProperty]
@@ -153,20 +157,19 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #endregion
 
-        private bldParticipantsGroup _participants = new bldParticipantsGroup();
-        [NotMapped]
+        private bldParticipantsGroup _participants;
         public bldParticipantsGroup? Participants
         {
-            get { return _participants; }
+            get
+            {
+                if (_participants != null) return _participants;
+              
+                if (this.bldProject != null) return this.bldProject.Participants;
+                return null;
+            }
             set { SetProperty(ref _participants, value); }
         }
-        private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup();
-        [NotMapped]
-        public bldResponsibleEmployeesGroup? ResponsibleEmployees
-        {
-            get { return _responsibleEmployees; }
-            set { SetProperty(ref _responsibleEmployees, value); }
-        }
+
         public void SaveAOSRsToWord(string folderPath = null)
         {
             foreach (bldConstruction construction in Constructions)
@@ -183,8 +186,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
 
         }
-        #region EditMethods
 
+        #region EditMethods
         public void RemoveConstruction(bldConstruction constr)
         {
             RemoveFromCollectionCommand<bldConstructionsGroup, bldConstruction> Command =
@@ -203,12 +206,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
                  new RemoveFromCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, participant);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-        public void RemoveResponsibleEmployee(bldResponsibleEmployee empl)
-        {
-            RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
-                 new RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
-            InvokeUnDoReDoCommandCreatedEvent(Command);
-        }
+        //public void RemoveResponsibleEmployee(bldResponsibleEmployee empl)
+        //{
+        //    RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+        //         new RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+        //    InvokeUnDoReDoCommandCreatedEvent(Command);
+        //}
         public void AddBuildindObject(bldObject obj)
         {
             AddObjectToObjectCommand Command = new AddObjectToObjectCommand(this, obj);
@@ -225,12 +228,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
                  new AddToCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, participant);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-        public void AddResponsibleEmployee(bldResponsibleEmployee empl)
-        {
-            AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
-                 new AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
-            InvokeUnDoReDoCommandCreatedEvent(Command);
-        }
+        //public void AddResponsibleEmployee(bldResponsibleEmployee empl)
+        //{
+        //    AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+        //         new AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+        //    InvokeUnDoReDoCommandCreatedEvent(Command);
+        //}
 
         #endregion
 

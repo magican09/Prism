@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldParticipant : IRegisterable, ICloneable
+    public interface IbldParticipant : IRegisterable, ITemporal,ICloneable
     {
         // bldConstructionCompany Company { get; set; }
      //   public bldConstructionCompanyGroup ConstructionCompanies { get; set; }
@@ -10,5 +10,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         ParticipantRole Role { get; set; }
         public string RoleName { get; set; }
         public string RoleFullName { get; set; }
+      
+
     }
 }

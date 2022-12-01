@@ -14,47 +14,9 @@
 
 
     <Grid   ShowGridLines="False">
-        <Grid.Resources>
 
-            <Style x:Key="inlineText" TargetType="{x:Type TextBlock}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-                <Setter Property="FontWeight" Value="Normal"/>
-                <Setter Property="FontSize" Value="12"/>
-            </Style>
-            <Style x:Key="titleText" TargetType="{x:Type TextBlock}">
-                <Setter Property="DockPanel.Dock" Value="Top"/>
-                <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="Margin" Value="10,5,10,0"/>
-            </Style>
-            <Style TargetType="{x:Type Button}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-                <Setter Property="Width" Value="60"/>
-            </Style>
-            <Style TargetType="{x:Type TextBox}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-                <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                <Setter Property="TextWrapping" Value="Wrap"/>
-            </Style>
-            <Style TargetType="{x:Type DatePicker}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-            </Style>
-            <Style TargetType="{x:Type ListView}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-            </Style>
-            <Style x:Key="inlineListViewStackPanel" TargetType="{x:Type StackPanel}">
-                <Setter Property="Margin" Value="5,10,5,10"/>
-            </Style>
-            <Style x:Key="inlineListView" TargetType="{x:Type ListView}">
-                <Setter Property="Margin" Value="5,10,5,10"/>
-            </Style>
-            <Style x:Key="inlineDataGrid" TargetType="{x:Type DataGrid}">
-                <Setter Property="Margin" Value="5,10,5,10"/>
-            </Style>
-           
-        </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.05*"/>
+            <ColumnDefinition Width="0.03*"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
@@ -80,10 +42,7 @@
         </i:Interaction.Triggers>-->
 
         <StackPanel x:Name="mainStakPanel" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="2" Orientation="Vertical" >
-            <TextBlock
-        Margin="10,5,10,0"
-        HorizontalAlignment="Center"
-        Style="{StaticResource titleText}">Форма для заполнения харахтеристик проекта.</TextBlock>
+            <TextBlock  Margin="10,5,10,0" HorizontalAlignment="Center" Style="{StaticResource titleText}">Форма для заполнения харахтеристик проекта.</TextBlock>
             <StackPanel Orientation="Horizontal"  >
                 <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
@@ -91,17 +50,20 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock  Style="{StaticResource inlineText}">Код:</TextBlock>
-                    <TextBox Grid.Column="1"  Text="{Binding SelectedProject.Code}" Width="40" HorizontalAlignment="Left"/>
+                    <TextBox Grid.Column="1"  Text="{Binding SelectedProject.Code}" Width="100" HorizontalAlignment="Left" Margin="10,5,0,0"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal"  >
                 <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="98.595"/>
+                        <ColumnDefinition Width="4.161"/>
+                        <ColumnDefinition Width="31.511"/>
+                        <ColumnDefinition Width="180.529"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock  Style="{StaticResource inlineText}">Наименование проекта (в проектной документации):</TextBlock>
-                    <TextBox Grid.Column="1"  Text="{Binding SelectedProject.Name}"/>
+                    <TextBlock  Style="{StaticResource inlineText}" Grid.ColumnSpan="4">Наименование проекта (в проектной документации):</TextBlock>
+                    <TextBox Grid.Column="4"  Text="{Binding SelectedProject.Name}" Margin="10,5,10,0"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
@@ -110,18 +72,19 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition   x:Name="shortProjectNameRightGridColumn"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" >Полное наименование проекта:</TextBlock>
+                    <TextBlock Grid.Column="0"  Style="{StaticResource inlineText}" >Полное наименование проекта:</TextBlock>
                     <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedProject.FullName}"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
                 <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="36.764"/>
+                        <ColumnDefinition Width="120.096"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"  Style="{StaticResource inlineText}" >Короткое наименование</TextBlock>
-                    <TextBox Grid.Column="1" Text="{Binding SelectedProject.ShortName}"/>
+                    <TextBlock Grid.Column="0"  Style="{StaticResource inlineText}" Grid.ColumnSpan="2" >Короткое наименование</TextBlock>
+                    <TextBox Grid.Column="2" Text="{Binding SelectedProject.ShortName}" Margin="10,5,10,0"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
@@ -136,14 +99,13 @@
                     HorizontalAlignment="Left" 
                     SelectedDate="{Binding SelectedProject.EndTime}" />
             </StackPanel>
-             <StackPanel  >
-                <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>
+            <StackPanel>
+                <TextBlock Style="{StaticResource  titleText_1}">Объекты:</TextBlock>
                 <StackPanel Orientation="Horizontal" x:Name="bldObjectStackPanel"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.2*" x:Name="DataGridLeftCulumn"/>
                             <ColumnDefinition Width="Auto"/>
-                          
                         </Grid.ColumnDefinitions>
                         <DataGrid x:Name="bldObjectDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedProject.BuildingObjects}"
                                                   SelectedItem="{Binding SelectedBuildingObject}"  
@@ -157,12 +119,12 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn  Header="Код"  
+                                <DataGridTextColumn  Header="Код"  Width="60"
                                                      Binding = "{Binding Path=Code}" />
                                 <DataGridTextColumn  Header="Наименование объекта"  
-                                                     Binding = "{Binding Path=ShortName}" />
+                                                     Binding = "{Binding Path=ShortName}" Width="*" />
                             </DataGrid.Columns>
-                           
+
                         </DataGrid>
 
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
@@ -172,9 +134,11 @@
                         </StackPanel>
                     </Grid>
                 </StackPanel>
+
             </StackPanel>
+
             <StackPanel >
-                <TextBlock Style="{StaticResource inlineText}">Участники строительства:</TextBlock>
+                <TextBlock Style="{StaticResource titleText_1}">Участники строительства:</TextBlock>
                 <StackPanel Orientation="Horizontal"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
@@ -195,13 +159,34 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding = "{Binding Path=RoleName}"  
                                                 Header="Роль организации участника" Width="Auto" />
-                                <DataGridTemplateColumn  Header="Название ораганизации" Width="Auto"   >
+                                <DataGridTextColumn Binding = "{Binding Path=StartTime, StringFormat=dd:mm:yyyy}"  
+                                                Header="Дата окончания" Width="Auto" />
+                                <DataGridTextColumn Binding = "{Binding Path=EndTime, StringFormat=dd:mm:yyyy}"  
+                                                Header="Дата окончания" Width="Auto" />
+                                    <DataGridTemplateColumn  Header="Название ораганизации" Width="Auto"   >
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ListView ItemsSource="{Binding ConstructionCompanies}" >
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Path= Name}" Margin="0 0 0 1"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                            </ListView>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn  Header="Отвественные лица" Width="Auto"   >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <ListView ItemsSource="{Binding ResponsibleEmployees}" >
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBlock Text="{Binding Path= Name}"/>
+                                                        <StackPanel Orientation="Vertical">
+                                                            <TextBlock Text="{Binding Path= Name}" Margin="0 0 0 1"/>
+                                                        </StackPanel>                                                     
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>
                                             </ListView>
@@ -219,7 +204,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel >
-                <TextBlock Style="{StaticResource inlineText}">Отвественные лица:"</TextBlock>
+                <TextBlock Style="{StaticResource titleText_1}">Отвественные лица:</TextBlock>
                 <StackPanel Orientation="Horizontal"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
@@ -258,9 +243,9 @@
                 </StackPanel>
 
             </StackPanel>
-          
+
         </StackPanel>
-        <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
+        <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10" >
             <Button  Content="Сохранить" Command="{Binding SaveCommand}" />
             <Button  Content="Закрыть"  Command="{Binding CloseCommand}"
                                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,

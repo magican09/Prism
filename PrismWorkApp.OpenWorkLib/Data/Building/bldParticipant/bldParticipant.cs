@@ -26,6 +26,24 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _fullName; }
             set { SetProperty(ref _fullName, value); }
         }
+        private DateTime _startTime;
+        public DateTime StartTime
+        {
+            get { return _startTime; }
+            set { SetProperty(ref _startTime, value); }
+        }//Дата начала
+        private DateTime _endTime;
+        public DateTime EndTime
+        {
+            get { return _endTime; }
+            set { SetProperty(ref _endTime, value); }
+        }//Дата окончания
+        private DateTime _netExecutionTime;
+        public DateTime NetExecutionTime
+        {
+            get { return _netExecutionTime; }
+            set { SetProperty(ref _netExecutionTime, value); }
+        }//Чистое время выполнения
         private bldConstructionCompanyGroup _constructionCompanies = new bldConstructionCompanyGroup();
         public bldConstructionCompanyGroup ConstructionCompanies
         {

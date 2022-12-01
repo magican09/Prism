@@ -6,7 +6,7 @@
     <Application.Resources>
 
         <ResourceDictionary Source ="/resourcedictionaries/workresourcedictionary.xaml"/>
-
+       <!-- <ResourceDictionary Source="/resourcedictionaries/defaulttheme.xaml"/>-->
 
     </Application.Resources>
 </prism:PrismApplication>

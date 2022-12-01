@@ -133,8 +133,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 if (_bldObject != null) return _bldObject;
                 if (ParentConstruction != null) return ParentConstruction.bldObject;
-                if (this.bldObject != null) return this.bldObject.ParentObject;
-
                 return null;
             }
             set { SetProperty(ref _bldObject, value); }

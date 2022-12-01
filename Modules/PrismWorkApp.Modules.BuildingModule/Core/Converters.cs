@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -252,7 +253,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         SortDescription sort = new SortDescription("StartTime", ListSortDirection.Ascending);
                         ICollectionView collectionView;
                         collectionView = CollectionViewSource.GetDefaultView((bldWorksGroup)value);
-                        collectionView.SortDescriptions.Add(sort);
+                  //      collectionView.SortDescriptions.Add(sort);
+                   //     Task task  = new Task( ()=> { collectionView.SortDescriptions.Add(sort); });
+                    //    task.Wait();
                         return collectionView;
                         break;
                     }

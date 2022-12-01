@@ -9,7 +9,7 @@ namespace PrismWorkApp.Services.Repositories
     {
         public PlutoContext() : base()
         {
-           // Database.EnsureDeleted();
+         //   Database.EnsureDeleted();
            // Database.EnsureCreated();
         }
         #region Building Construction

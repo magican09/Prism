@@ -10,46 +10,9 @@
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
-    
-    <Grid   ShowGridLines="False">
-        <Grid.Resources>
 
-            <Style x:Key="inlineText" TargetType="{x:Type TextBlock}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-                <Setter Property="FontWeight" Value="Normal"/>
-                <Setter Property="FontSize" Value="12"/>
-            </Style>
-            <Style x:Key="titleText" TargetType="{x:Type TextBlock}">
-                <Setter Property="DockPanel.Dock" Value="Top"/>
-                <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="Margin" Value="10,5,10,0"/>
-            </Style>
-            <Style TargetType="{x:Type Button}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-                <Setter Property="Width" Value="60"/>
-            </Style>
-            <Style TargetType="{x:Type TextBox}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-                <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                <Setter Property="TextWrapping" Value="Wrap"/>
-            </Style>
-            <Style TargetType="{x:Type DatePicker}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-            </Style>
-            <Style TargetType="{x:Type ListView}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-            </Style>
-            <Style x:Key="inlineListViewStackPanel" TargetType="{x:Type StackPanel}">
-                <Setter Property="Margin" Value="5,10,5,10"/>
-            </Style>
-            <Style x:Key="inlineListView" TargetType="{x:Type ListView}">
-                <Setter Property="Margin" Value="5,10,5,10"/>
-            </Style>
-            <Style x:Key="inlineDataGrid" TargetType="{x:Type DataGrid}">
-                <Setter Property="Margin" Value="5,10,5,10"/>
-            </Style>
-        </Grid.Resources>
+    <Grid   ShowGridLines="False">
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.05*"/>
             <ColumnDefinition Width="Auto"/>
@@ -63,7 +26,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="0.1*" />
         </Grid.RowDefinitions>
-     
+
         <StackPanel x:Name="mainStakPanel" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="2" Orientation="Vertical" >
             <TextBlock
         Margin="10,5,10,0"
@@ -76,7 +39,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock  Style="{StaticResource inlineText}">Код:</TextBlock>
-                    <TextBox Grid.Column="1"  Text="{Binding SelectedBuildingObject.Code}" Width="40" HorizontalAlignment="Left"/>
+                    <TextBox Grid.Column="1"  Text="{Binding SelectedBuildingObject.Code}" Width="100" HorizontalAlignment="Left" Margin="10,5,0,0"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal"  >
@@ -123,7 +86,7 @@
                     SelectedDate="{Binding SelectedBuildingObject.EndTime}" />
             </StackPanel>
             <StackPanel  >
-                <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>
+                <TextBlock Style="{StaticResource titleText_1}">Объекты:</TextBlock>
                 <StackPanel Orientation="Horizontal" x:Name="bldObjectStackPanel"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
@@ -157,7 +120,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel >
-                <TextBlock Style="{StaticResource inlineText}">Строительные конструкции:</TextBlock>
+                <TextBlock Style="{StaticResource titleText_1}">Строительные конструкции:</TextBlock>
                 <StackPanel Orientation="Horizontal"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
@@ -180,7 +143,7 @@
                                                 Header="Код" Width="65" />
                                 <DataGridTextColumn Binding = "{Binding Path=Name}" 
                                                 Header="Наименование конструкции" Width="*"   />
-                                 
+
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
@@ -191,10 +154,10 @@
                     </Grid>
                 </StackPanel>
             </StackPanel>
-          
+
 
         </StackPanel>
-        <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" >
+        <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10" >
             <Button  Content="Сохранить ИД в Word" Width="Auto" Command="{Binding SaveAOSRsToWordCommand}" />
             <Button  Content="Сохранить" Width="Auto" Command="{Binding SaveCommand}" />
             <Button  Content="Закрыть"  Width="Auto" Command="{Binding CloseCommand}"

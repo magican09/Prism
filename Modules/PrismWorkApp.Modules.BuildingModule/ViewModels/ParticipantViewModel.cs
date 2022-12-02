@@ -6,6 +6,7 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.Services.Repositories;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
@@ -56,7 +57,18 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _messageReceived, value); }
 
         }
-
+        private ObservableCollection<bldParticipantRole> _allParticipantRoles;
+        public ObservableCollection<bldParticipantRole>   AllParticipantRoles
+        {
+            get { return _allParticipantRoles; }
+            set { SetProperty(ref _allParticipantRoles, value); }
+        }
+        private ObservableCollection<bldConstructionCompany> _allConstructionCompanies;
+        public ObservableCollection<bldConstructionCompany> AllConstructionCompanies
+        {
+            get { return _allConstructionCompanies; }
+            set { SetProperty(ref _allConstructionCompanies, value); }
+        }
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
         public NotifyCommand SaveCommand { get; private set; }
         public NotifyCommand<object> CloseCommand { get; private set; }
@@ -74,13 +86,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SaveCommand = new NotifyCommand(OnSave, CanSave);
             CloseCommand = new NotifyCommand<object>(OnClose);
             SaveCommand = new NotifyCommand(OnSave, CanSave);
-
             EditConstructionCompanyCommand = new NotifyCommand(OnEditConstructionCompany, () => SelectedConstructionCompany != null);
-
-
             _dialogService = dialogService;
             _regionManager = regionManager;
-
+            AllParticipantRoles = new ObservableCollection<bldParticipantRole>(buildingUnitsRepository.ParticipantRolesRepository.GetAllAsync());
+            AllConstructionCompanies = new ObservableCollection<bldConstructionCompany>(buildingUnitsRepository.ConstructionCompanies.GetAll());
+           
         }
 
         private void OnEditConstructionCompany()

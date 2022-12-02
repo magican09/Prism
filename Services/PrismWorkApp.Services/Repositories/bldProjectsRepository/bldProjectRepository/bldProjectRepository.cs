@@ -49,11 +49,11 @@ namespace PrismWorkApp.Services.Repositories
                        .ThenInclude(wr => wr.AOSRDocuments)
                        .ThenInclude(wr => wr.AttachedDocuments)
                     .Include(pr => pr.Participants)
-                        .ThenInclude(cm => cm.ConstructionCompanies)
+                        .ThenInclude(cm => cm.ConstructionCompany)
                       //  .ThenInclude(re => re.ResponsibleEmployees)
                    //     .ThenInclude(re => re.DocConfirmingTheAthority)
                 .Include(pr => pr.Participants)
-                        .ThenInclude(cm => cm.ConstructionCompanies)
+                        .ThenInclude(cm => cm.ConstructionCompany)
                     //    .ThenInclude(re => re.ResponsibleEmployees)
                        // .ThenInclude(re => re.Position)
                  .Include(pr => pr.Participants)
@@ -123,6 +123,8 @@ namespace PrismWorkApp.Services.Repositories
             PlutoContext.ProjectDocuments.ToList();
             PlutoContext.ExecutiveSchemes.ToList();
             PlutoContext.Participants.ToList();
+            PlutoContext.ParticipantRoles.ToList();
+            PlutoContext.ResponsibleEmployeeRoles.ToList();
             PlutoContext.ConstructionCompanies.ToList();
             PlutoContext.AOSRDocuments.ToList();
             PlutoContext.AOSRDocuments.ToList();
@@ -134,8 +136,10 @@ namespace PrismWorkApp.Services.Repositories
             PlutoContext.WorkAreas.ToList();
             PlutoContext.Projects
                 .Include(p => p.Participants)
-                .ThenInclude(pr => pr.ConstructionCompanies)
+                .ThenInclude(pr => pr.ConstructionCompany)
                 .ThenInclude(c => c.SROIssuingCompany).ToList();
+      
+
             return projects;
         }
 

@@ -9,8 +9,8 @@ namespace PrismWorkApp.Services.Repositories
     {
         public PlutoContext() : base()
         {
-         //   Database.EnsureDeleted();
-           // Database.EnsureCreated();
+         //  Database.EnsureDeleted();
+         //  Database.EnsureCreated();
         }
         #region Building Construction
         public virtual DbSet<bldProject> Projects { get; set; }
@@ -40,6 +40,8 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<bldCompany> Companies { get; set; }
         public virtual DbSet<bldConstructionCompany> ConstructionCompanies { get; set; }
         public virtual DbSet<bldParticipant> Participants { get; set; }
+        public virtual DbSet<bldParticipantRole> ParticipantRoles { get; set; }
+        public virtual DbSet<bldResponsibleEmployeeRole> ResponsibleEmployeeRoles { get; set; }
         #endregion
         #region Resources 
         public virtual DbSet<bldMaterial> Materials { get; set; }
@@ -111,9 +113,9 @@ namespace PrismWorkApp.Services.Repositories
                 .HasMany(wr => wr.Participants)
                 .WithMany(pr => pr.Works);
         
-            modelBuilder.Entity<bldParticipant>()
-               .HasMany(p => p.ConstructionCompanies)
-               .WithMany(c => c.Participants);
+            //modelBuilder.Entity<bldParticipant>()
+            //   .HasMany(p => p.ConstructionCompanies)
+            //   .WithMany(c => c.Participants);
 
 
             modelBuilder.Entity<bldConstruction>()

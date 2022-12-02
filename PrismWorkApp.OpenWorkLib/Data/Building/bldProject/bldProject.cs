@@ -124,10 +124,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public object Clone()
         {
             // return CloningService.Clone<bldProject>(this);
-            bldProject project = (bldProject)MemberwiseClone();
-            project.BuildingObjects = (bldObjectsGroup)BuildingObjects.Clone();
-            project.Participants = (bldParticipantsGroup)Participants.Clone();
-            project.ResponsibleEmployees = (bldResponsibleEmployeesGroup)ResponsibleEmployees.Clone();
+             bldProject project = (bldProject)MemberwiseClone();
+            //project.BuildingObjects = (bldObjectsGroup)BuildingObjects.Clone();
+            //project.Participants = (bldParticipantsGroup)Participants.Clone();
+            //project.ResponsibleEmployees = (bldResponsibleEmployeesGroup)ResponsibleEmployees.Clone();
             return project;
         }
 

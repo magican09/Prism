@@ -83,7 +83,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 case nameof(bldParticipant):
                     {
                         bldParticipant participant = (bldParticipant)value;
-                        switch (participant.Role)
+                        switch (participant.Role.RoleCode)
                         {
                             case ParticipantRole.DEVELOPER:
                                 img_suffix = "_DEVELOPER";
@@ -107,7 +107,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 case nameof(bldResponsibleEmployee):
                     {
                         bldResponsibleEmployee employee = (bldResponsibleEmployee)value;
-                        switch (employee.RoleOfResponsible)
+                        switch (employee.Role.RoleCode)
                         {
                             case RoleOfResponsible.CUSTOMER:
                                 img_suffix = "_CUSTOMER";
@@ -130,10 +130,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             case RoleOfResponsible.NONE:
                                 img_suffix = "_NONE";
                                 break;
-
-
                         }
-
                         break;
                     }
             }

@@ -81,7 +81,7 @@
             </StackPanel>
         </HierarchicalDataTemplate>
 
-        <HierarchicalDataTemplate ItemsSource="{Binding    }" DataType="{x:Type  bld:bldParticipantsGroup}">
+        <HierarchicalDataTemplate ItemsSource="{Binding   }" DataType="{x:Type  bld:bldParticipantsGroup}">
             <StackPanel Orientation="Horizontal">
                 <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
                  <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
@@ -93,7 +93,7 @@
             <StackPanel Orientation="Horizontal">
                 <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
                 <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
-                <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding ConstructionCompany.Name}" VerticalAlignment="Center"/>
             </StackPanel>
         </HierarchicalDataTemplate>
     

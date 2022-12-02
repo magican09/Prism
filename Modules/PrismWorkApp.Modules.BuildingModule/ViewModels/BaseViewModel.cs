@@ -14,7 +14,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
     {
         protected IDialogService _dialogService;
         protected IRegionManager _regionManager;
-      
+
 
         private bool _keepAlive = true;
         public bool KeepAlive
@@ -37,10 +37,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public BaseViewModel()
         {
-           
+
 
         }
-    
+
         public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
         {
             CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
@@ -52,7 +52,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                 if (result.Result == ButtonResult.No)
                 {
-                 }
+                }
 
             }, _dialogService);
         }
@@ -63,7 +63,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public virtual void OnClose<T>(object view, T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
         {
-            if (!UnDoReDo.IsSatcksEmpty())//selected_obj!=null&&добавлено 27,10,22
+            if (UnDoReDo != null && !UnDoReDo.IsSatcksEmpty())//selected_obj!=null&&добавлено 27,10,22
             {
                 CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
                 {

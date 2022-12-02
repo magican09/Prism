@@ -157,34 +157,21 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=RoleName}"  
-                                                Header="Роль организации участника" Width="Auto" />
+                                <DataGridTextColumn Binding = "{Binding Path=Role.Name}"  
+                                                Header="Роль компании участника" Width="Auto" />
                                 <DataGridTextColumn Binding = "{Binding Path=StartTime, StringFormat=dd:mm:yyyy}"  
-                                                Header="Дата окончания" Width="Auto" />
+                                                Header="Дата начала" Width="Auto" />
                                 <DataGridTextColumn Binding = "{Binding Path=EndTime, StringFormat=dd:mm:yyyy}"  
                                                 Header="Дата окончания" Width="Auto" />
-                                    <DataGridTemplateColumn  Header="Название ораганизации" Width="Auto"   >
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ListView ItemsSource="{Binding ConstructionCompanies}" >
-                                                <ListView.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding Path= Name}" Margin="0 0 0 1"/>
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </ListView.ItemTemplate>
-                                            </ListView>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn  Header="Отвественные лица" Width="Auto"   >
+                                <DataGridTextColumn Binding = "{Binding ConstructionCompany.Name}"  
+                                                Header="Нименование компании" Width="Auto" />
+                                <DataGridTemplateColumn  Header="Отвественные лица" Width="*"   >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <ListView ItemsSource="{Binding ResponsibleEmployees}" >
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Vertical">
+                                                        <StackPanel Orientation="Horizontal">
                                                             <TextBlock Text="{Binding Path= Name}" Margin="0 0 0 1"/>
                                                         </StackPanel>                                                     
                                                     </DataTemplate>
@@ -228,10 +215,11 @@
                                                 Header="Ф.И.О." Width="Auto" />
                                 <DataGridTextColumn Binding = "{Binding Path=Company.Name}" 
                                                 Header="Название ораганизации" Width="Auto"   />
-                                <DataGridTextColumn Binding = "{Binding Path= RoleName}" 
-                                                Header="Роль" Width="Auto"   />
                                 <DataGridTextColumn Binding = "{Binding Path= DocConfirmingTheAthority.Name}" 
-                                                Header="Основание" Width="Auto"   />
+                                                Header="Основание" Width="*"   />
+                                <DataGridTextColumn Binding = "{Binding Path= Role.FullName}" 
+                                                Header="Роль" Width="Auto"   />
+                               
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >

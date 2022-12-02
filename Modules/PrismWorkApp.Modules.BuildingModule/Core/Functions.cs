@@ -17,7 +17,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
     public static class Functions
     {
         public const int ROW_LENGHT = 92;
-         public static bldProject LoadProjectFromExcel()
+        public static bldProject LoadProjectFromExcel()
         {
             bldConstructionCompanyGroup bld_Companies = new bldConstructionCompanyGroup();
             bldResponsibleEmployeesGroup bld_ResponsibleEmployees = new bldResponsibleEmployeesGroup();
@@ -81,18 +81,28 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     switch (companiesDataWorksheet.Cells[rowIndex, 1].Value?.ToString())
                     {
                         case "Заказчик":
-                            bld_participant.Role = (OpenWorkLib.Data.ParticipantRole)ParticipantRole.DEVELOPER; break;
+                            bld_participant.Role = new bldParticipantRole(ParticipantRole.DEVELOPER);
+                            bld_participant.Role.FullName = "Застройщик(технический заказчик, эксплуатирующая организация или региональный оператор)";
+                            bld_participant.Role.Name = "Заказчик";
+                            break;
                         case "Генподрядчик":
-                            bld_participant.Role = (OpenWorkLib.Data.ParticipantRole)ParticipantRole.GENERAL_CONTRACTOR;
+                            bld_participant.Role = new bldParticipantRole(ParticipantRole.GENERAL_CONTRACTOR);
+                            bld_participant.Role.FullName = "Генеральный подрядчик(лицо, осуществляющее строительство)";
+                            bld_participant.Role.Name = "Генподрядчик";
                             break;
                         case "Авторский надзор":
-                            bld_participant.Role = (OpenWorkLib.Data.ParticipantRole)ParticipantRole.DISIGNER;
+                            bld_participant.Role = new bldParticipantRole(ParticipantRole.DISIGNER);
+                            bld_participant.Role.FullName = "Проектировщик (Лицо, осуществляющее подготовку проектной документации";
+                            bld_participant.Role.Name = "Авторский надзор";
                             break;
                         case "Подрядчик":
-                            bld_participant.Role = (OpenWorkLib.Data.ParticipantRole)ParticipantRole.BUILDER;
+                            bld_participant.Role = new bldParticipantRole(ParticipantRole.BUILDER);
+                            bld_participant.Role.FullName = "Подрядчик(лицо, выполнившеее работы)";
+                            bld_participant.Role.Name = "Подрядчик";
                             break;
                         default:
-                            bld_participant.Role = (OpenWorkLib.Data.ParticipantRole)ParticipantRole.NONE;
+                            bld_participant.Role = new bldParticipantRole(ParticipantRole.NONE);
+                            bld_participant.Role.FullName = "Не определено";
                             break;
                     }
                     bld_company.Name = companiesDataWorksheet.Cells[rowIndex, 2].Value?.ToString();
@@ -112,7 +122,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         bld_Companies.Add(bld_company);
                     else
                         bld_company = bld_Companies.Where(cm => cm.INN == bld_company.INN).FirstOrDefault();
-                    bld_participant.ConstructionCompanies.Add(bld_company);
+                    bld_participant.ConstructionCompany = (bld_company);
                     bld_project.Participants.Add(bld_participant);
                     bld_Participants.Add(bld_participant);
                     rowIndex++;
@@ -126,29 +136,32 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     switch (responsibleEmplDataWorksheet.Cells[rowIndex, 2].Value?.ToString())
                     {
                         case "Застройщик (технический заказчик, эксплуатирующая организация или региональный оператор)":
-                            bld_employee.RoleOfResponsible = (OpenWorkLib.Data.RoleOfResponsible)RoleOfResponsible.CUSTOMER;
-                             bld_project.Participants[(int)ParticipantRole.DEVELOPER].ResponsibleEmployees.Add(bld_employee);
+                            bld_employee.Role = new bldResponsibleEmployeeRole(RoleOfResponsible.CUSTOMER);
+                            bld_employee.Role.FullName = "Застройщик (технический заказчик, эксплуатирующая организация или региональный оператор)";
+                            bld_project.Participants.Where(pr => pr.Role.RoleCode == ParticipantRole.DEVELOPER).FirstOrDefault()?.ResponsibleEmployees.Add(bld_employee);
                             break;
                         case "Лицо, осуществляющее строительство":
-                            bld_employee.RoleOfResponsible = (OpenWorkLib.Data.RoleOfResponsible)RoleOfResponsible.GENERAL_CONTRACTOR;
-                            
-                             bld_project.Participants[(int)ParticipantRole.GENERAL_CONTRACTOR].ResponsibleEmployees.Add(bld_employee);
+                            bld_employee.Role = new bldResponsibleEmployeeRole(RoleOfResponsible.GENERAL_CONTRACTOR);
+                            bld_employee.Role.FullName = "Лицо, осуществляющее строительство";
+                            bld_project.Participants.Where(pr => pr.Role.RoleCode == ParticipantRole.GENERAL_CONTRACTOR).FirstOrDefault()?.ResponsibleEmployees.Add(bld_employee);
                             break;
                         case "Лицо, осуществляющее строительство отвественное за строительный контроль":
-                            bld_employee.RoleOfResponsible = (OpenWorkLib.Data.RoleOfResponsible)RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER;
-                             bld_project.Participants[(int)ParticipantRole.GENERAL_CONTRACTOR].ResponsibleEmployees.Add(bld_employee);
+                            bld_employee.Role = new bldResponsibleEmployeeRole(RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER);
+                            bld_employee.Role.FullName = "Лицо, осуществляющее строительство отвественное за строительный контроль";
+                            bld_project.Participants.Where(pr => pr.Role.RoleCode == ParticipantRole.GENERAL_CONTRACTOR).FirstOrDefault()?.ResponsibleEmployees.Add(bld_employee);
                             break;
-
                         case "Лицо, осуществляющее подготовку проектной документации":
-                            bld_employee.RoleOfResponsible = (OpenWorkLib.Data.RoleOfResponsible)RoleOfResponsible.AUTHOR_SUPERVISION;
-                              bld_project.Participants[(int)ParticipantRole.DISIGNER].ResponsibleEmployees.Add(bld_employee);
+                            bld_employee.Role = new bldResponsibleEmployeeRole(RoleOfResponsible.AUTHOR_SUPERVISION);
+                            bld_employee.Role.FullName = "Лицо, осуществляющее подготовку проектной документации";
+                            bld_project.Participants[(int)ParticipantRole.DISIGNER].ResponsibleEmployees.Add(bld_employee);
                             break;
                         case "Лицо, выполнившее работы, подлежащие освидетельствованию":
-                            bld_employee.RoleOfResponsible = (OpenWorkLib.Data.RoleOfResponsible)RoleOfResponsible.WORK_PERFORMER;
-                             bld_project.Participants[(int)ParticipantRole.BUILDER].ResponsibleEmployees.Add(bld_employee);
+                            bld_employee.Role = new bldResponsibleEmployeeRole(RoleOfResponsible.WORK_PERFORMER);
+                            bld_employee.Role.FullName = "Лицо, выполнившее работы, подлежащие освидетельствованию";
+                            bld_project.Participants.Where(pr => pr.Role.RoleCode == ParticipantRole.BUILDER).FirstOrDefault()?.ResponsibleEmployees.Add(bld_employee);
                             break;
                         default:
-                            bld_employee.RoleOfResponsible = (OpenWorkLib.Data.RoleOfResponsible)RoleOfResponsible.NONE;
+                            bld_employee.Role = new bldResponsibleEmployeeRole(RoleOfResponsible.NONE);
                             break;
 
                     }
@@ -167,9 +180,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         bld_employee.Company = bld_company;
                         //bld_company.ResponsibleEmployees.Add(bld_employee);
 
-                      
+
                     }
-                     bld_ResponsibleEmployees.Add(bld_employee);
+                    bld_ResponsibleEmployees.Add(bld_employee);
                     rowIndex++;
                 }
                 #endregion
@@ -333,7 +346,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     foreach (bldMaterial material in work.Materials)
                         foreach (bldDocument document in material.Documents)
                             work.AOSRDocuments[0]?.AttachedDocuments.Add(document);
-                   
+
                     work.AOSRDocuments[0].StartTime = work.StartTime;
                     work.AOSRDocuments[0].EndTime = work.EndTime;
 

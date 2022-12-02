@@ -9,6 +9,8 @@
         public bldResponsibleEmployeesRepository ResponsibleEmployees { get; }
         public bldConstructionRepository Constructions { get; }
         public bldWorkRepository Works { get; }
+        public bldParticipantRolesRepository ParticipantRolesRepository { get; }
+        public bldConstructionCompaniesRepository ConstructionCompanies { get; }
 
         private readonly PlutoContext _context;
 
@@ -21,6 +23,8 @@
             ResponsibleEmployees = new bldResponsibleEmployeesRepository(_context);
             Constructions = new bldConstructionRepository(_context);
             Works = new bldWorkRepository(_context);
+            ParticipantRolesRepository = new bldParticipantRolesRepository(_context);
+            ConstructionCompanies = new bldConstructionCompaniesRepository(_context);
         }
         public int Complete()
         {

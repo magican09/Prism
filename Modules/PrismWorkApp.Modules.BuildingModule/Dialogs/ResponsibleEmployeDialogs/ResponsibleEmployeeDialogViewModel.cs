@@ -66,7 +66,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
-            CurrentContextId = (Guid)parameters.GetValue<object>("current_context_id");
+           // CurrentContextId = (Guid)parameters.GetValue<object>("current_context_id");
             if (navigane_message != null)
             {
                 ResivedResposibleEmployee = (bldResponsibleEmployee)navigane_message.Object;

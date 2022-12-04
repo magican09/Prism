@@ -1,8 +1,10 @@
 ﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 
@@ -10,10 +12,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
     public class ResponsibleEmployeeDialogViewModel : ResponsibleEmployeeViewModel, IDialogAware
     {
-        public ResponsibleEmployeeDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
-        : base(dialogService, regionManager, buildingUnitsRepository)
+        public ResponsibleEmployeeDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
+              IApplicationCommands applicationCommands,IUnDoReDoSystem unDoReDo)
+        : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, unDoReDo)
         {
-
+            UnDoReDo = new UnDoReDoSystem();
         }
         public event Action<IDialogResult> RequestClose;
 

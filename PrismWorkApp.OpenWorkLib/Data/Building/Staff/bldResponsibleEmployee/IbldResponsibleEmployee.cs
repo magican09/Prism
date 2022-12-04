@@ -1,6 +1,6 @@
 ﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldResponsibleEmployee : IEmployee
+    public interface IbldResponsibleEmployee : ITemporal,IRegisterable
     {
         public bldDocument DocConfirmingTheAthority { get; set; }
         public string NRSId { get; set; }

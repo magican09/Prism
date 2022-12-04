@@ -23,7 +23,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         public ParticipantDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
            : base(dialogService, regionManager, buildingUnitsRepository)
         {
-
+            UnDoReDo = new UnDoReDoSystem();
         }
         public bool CanCloseDialog()
         {
@@ -82,7 +82,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 if (SelectedParticipant != null) SelectedParticipant.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedParticipant = ResivedParticipant;
                 SelectedParticipant.ErrorsChanged += RaiseCanExecuteChanged;
-                UnDoReDo = new UnDoReDoSystem();
                 UnDoReDo.Register(SelectedParticipant);
             }
         }

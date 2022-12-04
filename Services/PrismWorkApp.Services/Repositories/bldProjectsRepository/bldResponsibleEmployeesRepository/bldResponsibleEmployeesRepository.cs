@@ -18,12 +18,12 @@ namespace PrismWorkApp.Services.Repositories
             this.Dispose();
         }
 
-
         public List<bldResponsibleEmployee> GetAllResponsibleEmployees()//(Guid id)
         {
             PlutoContext.ResponsibleEmployees
                     //  .Include(re => re.bldParticipant);
-                    .Include(re => re.Company);
+                    .Include(re => re.Employee)
+                    .ThenInclude(re=>re.Company);
 
             return PlutoContext.ResponsibleEmployees.ToList();//out_val;
         }

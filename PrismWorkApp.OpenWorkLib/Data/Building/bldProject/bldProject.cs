@@ -42,14 +42,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _startTime; }
             set { SetProperty(ref _startTime, value); }
         }//Дата начала
-        private DateTime _endTime;
-        public DateTime EndTime
+        private DateTime? _endTime;
+        public DateTime? EndTime
         {
             get { return _endTime; }
             set { SetProperty(ref _endTime, value); }
         }//Дата окончания
-        private DateTime _netExecutionTime;
-        public DateTime NetExecutionTime
+        private DateTime? _netExecutionTime;
+        public DateTime? NetExecutionTime
         {
             get { return _netExecutionTime; }
             set { SetProperty(ref _netExecutionTime, value); }
@@ -148,12 +148,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
                  new RemoveFromCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, participant);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-        public void RemoveResponsibleEmployee(bldResponsibleEmployee empl)
-        {
-            RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
-                 new RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
-            InvokeUnDoReDoCommandCreatedEvent(Command);
-        }
         public void AddBuildindObject(bldObject obj)
         {
             obj.bldProject = this;
@@ -167,13 +161,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                  new AddToCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, participant);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-        public void AddResponsibleEmployee(bldResponsibleEmployee empl)
-        {
-            AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
-                 new AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
-            InvokeUnDoReDoCommandCreatedEvent(Command);
-        }
-
+        
         #endregion
     }
 }

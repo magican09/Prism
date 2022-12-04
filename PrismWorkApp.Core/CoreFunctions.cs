@@ -335,7 +335,7 @@ namespace PrismWorkApp.Core
                string commonCollectionName = ""
                )
            where TContainer : ICollection<T>/*, INameableOservableCollection<T>*/, new()
-           where T : class, ICloneable
+           where T : class
         {
             TContainer current_collection = new TContainer();
             TContainer common_collection = new TContainer();

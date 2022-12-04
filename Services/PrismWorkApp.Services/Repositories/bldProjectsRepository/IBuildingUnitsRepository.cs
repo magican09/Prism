@@ -13,6 +13,7 @@ namespace PrismWorkApp.Services.Repositories
         public bldConstructionCompaniesRepository ConstructionCompanies { get; }
 
         public bldParticipantRolesRepository ParticipantRolesRepository { get; }
+        public bldResponsibleEmployeeRoleRepository ResponsibleEmployeeRoleRepository { get; }
         public int Complete();
     }
 }

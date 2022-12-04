@@ -8,7 +8,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public DateTime StartTime { get; set; }
 
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
 
         bldWork bldWork { get; set; }
     }

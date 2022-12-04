@@ -4,8 +4,10 @@ using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
+using System.Collections.ObjectModel;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -30,19 +32,26 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _resivedResposibleEmployee, value); }
         }
 
-        private bldResponsibleEmployeesGroup _responsibleEmployees;
-        public bldResponsibleEmployeesGroup ResponsibleEmployees
+      
+   
+        private ObservableCollection<bldResponsibleEmployeeRole> _allResponsibleEmployeesRoles;
+        public ObservableCollection<bldResponsibleEmployeeRole> AllResponsibleEmployeesRoles
         {
-            get { return _responsibleEmployees; }
-            set { SetProperty(ref _responsibleEmployees, value); }
+            get { return _allResponsibleEmployeesRoles; }
+            set { SetProperty(ref _allResponsibleEmployeesRoles, value); }
         }
-        private bldResponsibleEmployeesGroup _allResponsibleEmployees;
-        public bldResponsibleEmployeesGroup AllResponsibleEmployees
+        private ObservableCollection<bldParticipant> _allParticipants;
+        public ObservableCollection<bldParticipant> AllParticipants
         {
-            get { return _allResponsibleEmployees; }
-            set { SetProperty(ref _allResponsibleEmployees, value); }
+            get { return _allParticipants; }
+            set { SetProperty(ref _allParticipants, value); }
         }
-
+        private bldParticipant _selectedParticipant;
+        public bldParticipant SelectedParticipant
+        {
+            get { return _selectedParticipant; }
+            set { SetProperty(ref _selectedParticipant, value); }
+        }
         private string _messageReceived = "Бла бал бла...!!!";
         public string MessageReceived
         {
@@ -52,17 +61,49 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
 
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
-        public NotifyCommand SaveCommand { get; private set; }
-        public NotifyCommand<object> CloseCommand { get; private set; }
 
-        public ResponsibleEmployeeViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
+        public NotifyCommand UnDoCommand { get; protected set; }
+        public NotifyCommand ReDoCommand { get; protected set; }
+        public NotifyCommand SaveCommand { get; protected set; }
+        public NotifyCommand<object> CloseCommand { get; protected set; }
+
+
+        public IBuildingUnitsRepository _buildingUnitsRepository { get; set; }
+        private IApplicationCommands _applicationCommands;
+        public IApplicationCommands ApplicationCommands
         {
-            SaveCommand = new NotifyCommand(OnSave, CanSave);
+            get { return _applicationCommands; }
+            set { SetProperty(ref _applicationCommands, value); }
+        }
+        public ResponsibleEmployeeViewModel(IDialogService dialogService, IRegionManager regionManager,
+            IBuildingUnitsRepository buildingUnitsRepository,IApplicationCommands applicationCommands, 
+            IUnDoReDoSystem unDoReDo)
+        {
+            UnDoReDo = new UnDoReDoSystem();
+
+            SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedResposibleEmployee);
             CloseCommand = new NotifyCommand<object>(OnClose);
+            UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
+                          () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
+               () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+
 
             _dialogService = dialogService;
-
+            _buildingUnitsRepository = buildingUnitsRepository;
+            _regionManager = regionManager;
+            _applicationCommands = applicationCommands;
+            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+              
+            AllResponsibleEmployeesRoles = new ObservableCollection<bldResponsibleEmployeeRole>(
+                _buildingUnitsRepository.ResponsibleEmployeeRoleRepository.GetAllResponsibleEmployeesRoles());
+            AllParticipants = new ObservableCollection<bldParticipant>(
+                    _buildingUnitsRepository.Pacticipants.GetAllParticipants());
         }
+
+
 
         private void OnDataGridLostSocus(object obj)
         {
@@ -79,7 +120,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                }*/
 
         }
-
+     
         private bool CanSave()
         {
             if (SelectedResposibleEmployee != null)
@@ -87,42 +128,24 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             else
                 return false;
         }
-
-
-
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             SaveCommand.RaiseCanExecuteChanged();
         }
-
-        private bool canExecuteMethod()
-        {
-            return false;
-        }
-
-        private void ShowDialog()
-        {
-            var p = new DialogParameters();
-            p.Add("message", "Это тестовое сообщение диалоговому окну!");
-
-            _dialogService.ShowDialog("MessageDialog", p, result =>
-            {
-                if (result.Result == ButtonResult.OK)
-                {
-                    MessageReceived = result.Parameters.GetValue<string>("my_param");
-                }
-            });
-        }
-
         public virtual void OnSave()
         {
-            this.OnSave<bldResponsibleEmployee>(SelectedResposibleEmployee);
+            base.OnSave<bldResponsibleEmployee>(SelectedResposibleEmployee);
         }
         public virtual void OnClose(object obj)
         {
-            this.OnClose<bldResponsibleEmployee>(obj, SelectedResposibleEmployee);
+            base.OnClose<bldResponsibleEmployee>(obj, SelectedResposibleEmployee);
         }
-
+        public override void OnWindowClose()
+        {
+            _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+            _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
+        }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             ConveyanceObject navigate_message = (ConveyanceObject)navigationContext.Parameters["responsible_employee"];
@@ -133,8 +156,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (SelectedResposibleEmployee != null) SelectedResposibleEmployee.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedResposibleEmployee = new SimpleEditableResposibleEmployee();
                 SelectedResposibleEmployee.ErrorsChanged += RaiseCanExecuteChanged;
-                //   CoreFunctions.CopyObjectReflectionNewInstances(ResivedResposibleEmployee, SelectedResposibleEmployee);
-
+                AllParticipants = new ObservableCollection<bldParticipant>(
+                      _buildingUnitsRepository.Pacticipants.GetAllParticipants());
+                UnDoReDo.Register(SelectedResposibleEmployee);
             }
 
 

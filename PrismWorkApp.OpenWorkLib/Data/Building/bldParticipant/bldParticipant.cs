@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
@@ -6,10 +7,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public class bldParticipant : BindableBase, IbldParticipant, IEntityObject
     {
         private string _name;
+        [NotMapped]
         public string Name
         {
-            get { return _name; }
-            set { SetProperty(ref _name, value); }
+            get { return Role.Name; }
+            set { } 
         }
         private DateTime _startTime;
         public DateTime StartTime
@@ -17,14 +19,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _startTime; }
             set { SetProperty(ref _startTime, value); }
         }//Дата начала
-        private DateTime _endTime;
-        public DateTime EndTime
+        private DateTime? _endTime;
+        public DateTime? EndTime
         {
             get { return _endTime; }
             set { SetProperty(ref _endTime, value); }
         }//Дата окончания
-        private DateTime _netExecutionTime;
-        public DateTime NetExecutionTime
+        private DateTime? _netExecutionTime;
+        public DateTime? NetExecutionTime
         {
             get { return _netExecutionTime; }
             set { SetProperty(ref _netExecutionTime, value); }
@@ -66,5 +68,21 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             return MemberwiseClone();
         }
+
+        #region EditMethods
+        public void RemoveResponsibleEmployee(bldResponsibleEmployee empl)
+        {
+            RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+                 new RemoveFromCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddResponsibleEmployee(bldResponsibleEmployee empl)
+        {
+            AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+                 new AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+
+        #endregion
     }
 }

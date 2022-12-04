@@ -167,9 +167,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     }
 
                     bld_employee.NRSId = responsibleEmplDataWorksheet.Cells[rowIndex, 3].Value?.ToString();
-                    bld_employee.Position = new EmployeePosition(responsibleEmplDataWorksheet.Cells[rowIndex, 4].Value?.ToString());
-                    bld_employee.FullName = responsibleEmplDataWorksheet.Cells[rowIndex, 5].Value?.ToString();
-                    bld_employee.Name = responsibleEmplDataWorksheet.Cells[rowIndex, 5].Value?.ToString();
+                    Employee employee = new Employee();
+                    employee.Position = new EmployeePosition(responsibleEmplDataWorksheet.Cells[rowIndex, 4].Value?.ToString());
+                    employee.FullName = responsibleEmplDataWorksheet.Cells[rowIndex, 5].Value?.ToString();
+                    employee.Name = responsibleEmplDataWorksheet.Cells[rowIndex, 5].Value?.ToString();
+                    bld_employee.Employee = employee;
                     bld_employee.DocConfirmingTheAthority = new bldDocument(responsibleEmplDataWorksheet.Cells[rowIndex, 6].Value?.ToString());
 
 
@@ -177,7 +179,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     var bld_company = bld_Companies.SingleOrDefault(c => c.Name == fdf);
                     if (bld_company != null)
                     {
-                        bld_employee.Company = bld_company;
+                        bld_employee.Employee.Company = bld_company;
                         //bld_company.ResponsibleEmployees.Add(bld_employee);
 
 

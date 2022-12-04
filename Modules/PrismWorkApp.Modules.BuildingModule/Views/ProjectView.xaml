@@ -165,7 +165,7 @@
                                                 Header="Дата окончания" Width="Auto" />
                                 <DataGridTextColumn Binding = "{Binding ConstructionCompany.Name}"  
                                                 Header="Нименование компании" Width="Auto" />
-                                <DataGridTemplateColumn  Header="Отвественные лица" Width="*"   >
+                            <!--    <DataGridTemplateColumn  Header="Отвественные лица" Width="*"   >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <ListView ItemsSource="{Binding ResponsibleEmployees}" >
@@ -179,7 +179,7 @@
                                             </ListView>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                                </DataGridTemplateColumn>-->
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
@@ -190,47 +190,7 @@
                     </Grid>
                 </StackPanel>
             </StackPanel>
-            <StackPanel >
-                <TextBlock Style="{StaticResource titleText_1}">Отвественные лица:</TextBlock>
-                <StackPanel Orientation="Horizontal"  >
-                    <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*"/>
-                            <ColumnDefinition Width="0.2*"/>
-                            <ColumnDefinition  Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <DataGrid x:Name="bldResponsibleEmployeeDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedProject.ResponsibleEmployees}"
-                                                   SelectedItem="{Binding SelectedResponsibleEmployee}"
-                                                Style="{StaticResource inlineDataGrid }" 
-                                                 AutoGenerateColumns="False"  IsReadOnly="True" 
-                                               HorizontalContentAlignment="Stretch"  >
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="SelectedCellsChanged">
-                                    <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
-                                           CommandParameter="{Binding   SelectedItem , ElementName=bldResponsibleEmployeeDataGrid}" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=FullName}"  
-                                                Header="Ф.И.О." Width="Auto" />
-                                <DataGridTextColumn Binding = "{Binding Path=Company.Name}" 
-                                                Header="Название ораганизации" Width="Auto"   />
-                                <DataGridTextColumn Binding = "{Binding Path= DocConfirmingTheAthority.Name}" 
-                                                Header="Основание" Width="*"   />
-                                <DataGridTextColumn Binding = "{Binding Path= Role.FullName}" 
-                                                Header="Роль" Width="Auto"   />
-                               
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
-                            <Button Command="{Binding AddResponsibleEmployeesCommand}" >Добавить</Button>
-                            <Button Command="{Binding RemoveResponsibleEmployeeCommand}" >Удалить</Button>
-                            <Button Command="{Binding EditResponsibleEmployeeCommand}">Изменить</Button>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
-
-            </StackPanel>
+        
 
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10" >

@@ -64,16 +64,26 @@
             <TextBlock
         Margin="10,5,10,0"
         HorizontalAlignment="Center"
-        Style="{StaticResource titleText}">Форма для заполнения данных участника проекта.</TextBlock>
+        Style="{StaticResource titleText}">Форма для заполнения данных отвественного работника.</TextBlock>
             <StackPanel Orientation="Horizontal" >
                 <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="149*" />
+                        <ColumnDefinition Width="387*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock  Style="{StaticResource inlineText}">Наименование:</TextBlock>
-                    <TextBox Grid.Column="1" HorizontalContentAlignment="Stretch"   TextWrapping="Wrap" 
-                              Text="{Binding SelectedResposibleEmployee.FullName}"/>
+                    <TextBlock  Style="{StaticResource inlineText}" Margin="10,5,10,0">Роль отвественного работника</TextBlock>
+                    <ComboBox Grid.Column="1" x:Name="res_empl_RoleSelectComboBox" ItemsSource="{Binding AllResponsibleEmployeesRoles}"    
+                               SelectedItem="{Binding SelectedResposibleEmployee.Role}" Grid.ColumnSpan="2">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding FullName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
                 </Grid>
             </StackPanel>
 
@@ -82,11 +92,22 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition   x:Name="shortProjectNameRightGridColumn" Width="85*"/>
-                        <ColumnDefinition Width="513*"/>
+                        <ColumnDefinition Width="74*"/>
+                        <ColumnDefinition Width="49*"/>
+                        <ColumnDefinition Width="390*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" >Полное наименование:</TextBlock>
-                    <TextBox Grid.Column="1" IsReadOnly="True" HorizontalContentAlignment="Stretch" TextWrapping="Wrap"
-                                Text="{Binding SelectedResposibleEmployee.Name}" Grid.ColumnSpan="2"/>
+                    <ComboBox x:Name="partic_comp_RoleSelectComboBox" ItemsSource="{Binding AllParticipants}"    
+                               SelectedItem="{Binding SelectedResposibleEmployee.bldPaticipant}" Grid.ColumnSpan="3" Margin="129,0,0,0">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
                 </Grid>
             </StackPanel>
 
@@ -104,7 +125,7 @@
                                AutoGenerateColumns="False"  IsReadOnly="True" 
                                    HorizontalContentAlignment="Stretch" >
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=FullName}"  
+                                <DataGridTextColumn Binding = "{Binding Path=Employee.FullName}"  
                                                 Header="Фамилия Имя Отчество" Width="Auto" />
                                 <DataGridTextColumn Binding = "{Binding Path=RoleOfResponsible}" 
                                                 Header="Роль отвественного в строительстве" Width="Auto"   />

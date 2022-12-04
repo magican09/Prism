@@ -35,8 +35,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _startTime; }
             set { SetProperty(ref _startTime, value); }
         }//Дата начала
-        private DateTime _endTime;
-        public DateTime EndTime
+        private DateTime? _endTime;
+        public DateTime? EndTime
         {
             get { return _endTime; }
             set { SetProperty(ref _endTime, value); }
@@ -112,33 +112,33 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         world_document.Bookmarks["Author_name"].Range.Text = Author_name;//Проективрощики
 
 
-                        string cuctomer_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.CUSTOMER).Position.Name;
-                        string cuctomer_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.CUSTOMER).FullName;
+                        string cuctomer_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.CUSTOMER).Employee.Position.Name;
+                        string cuctomer_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.CUSTOMER).Employee.FullName;
                         string cuctomer_emp_doc_confirm_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.CUSTOMER).DocConfirmingTheAthority.Name;
                         string Client_Signer = $"{cuctomer_position_name} {cuctomer_fullname} {cuctomer_emp_doc_confirm_name} {developer_company_name}."; //Застройщик
                         world_document.Bookmarks["Client_Signer"].Range.Text = Client_Signer;//Предстваитель затройщика
 
-                        string genera_contr_emp_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR)?.Position?.Name;
-                        string genera_contr_emp_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR)?.FullName;
+                        string genera_contr_emp_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR)?.Employee?.Position?.Name;
+                        string genera_contr_emp_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR)?.Employee?.FullName;
                         string genera_contr_emp_doc_confirm_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR)?.DocConfirmingTheAthority?.Name;
                         string GCC1_Signer = $"{genera_contr_emp_position_name} {genera_contr_emp_fullname} {genera_contr_emp_doc_confirm_name}."; //Генподрядчик
                         world_document.Bookmarks["GCC1_Signer"].Range.Text = GCC1_Signer;//Предстваитель лица осуществлящего строительва ( ген подрядчк)
 
-                        string genera_contr_quality_emp_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER).Position.Name;
-                        string genera_contr_quality_emp_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER).FullName;
+                        string genera_contr_quality_emp_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER).Employee?.Position.Name;
+                        string genera_contr_quality_emp_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER).Employee?.FullName;
                         string genera_contr_quality_emp_doc_confirm_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER).DocConfirmingTheAthority.Name;
                         string GCC2_Signer = $"{genera_contr_quality_emp_position_name} {genera_contr_quality_emp_fullname} {genera_contr_quality_emp_doc_confirm_name}."; //Генподрядчик технадзор
                         world_document.Bookmarks["GCC2_Signer"].Range.Text = GCC2_Signer;//Предстваитель лица осуществлящего строительва ( ген подрядчк) по строй котролю
 
-                        string author_supervision_emp_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.AUTHOR_SUPERVISION).Position.Name;
-                        string author_supervision_emp_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.AUTHOR_SUPERVISION).FullName;
+                        string author_supervision_emp_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.AUTHOR_SUPERVISION).Employee.Position.Name;
+                        string author_supervision_emp_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.AUTHOR_SUPERVISION).Employee?.FullName;
                         string author_supervision_emp_doc_confirm_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.AUTHOR_SUPERVISION).DocConfirmingTheAthority.Name;
                         string disigner_company_fullname = all_participants.FirstOrDefault(p => p.Role.RoleCode == ParticipantRole.DISIGNER).ConstructionCompany.FullName;
                         string Author_Signer = $"{author_supervision_emp_position_name} {author_supervision_emp_fullname} {author_supervision_emp_doc_confirm_name} {disigner_company_fullname}."; //Авторский надзор
                         world_document.Bookmarks["Author_Signer"].Range.Text = Author_Signer;//Предстваитель австорского надзора
 
-                        string work_performer_emp_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.WORK_PERFORMER).Position.Name;
-                        string work_performer_emp_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.WORK_PERFORMER).FullName;
+                        string work_performer_emp_position_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.WORK_PERFORMER).Employee?.Position.Name;
+                        string work_performer_emp_fullname = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.WORK_PERFORMER).Employee?.FullName;
                         string work_performer_emp_doc_confirm_name = project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.WORK_PERFORMER).DocConfirmingTheAthority.Name;
                         string builder_company_fullname = all_participants.FirstOrDefault(p => p.Role.RoleCode == ParticipantRole.BUILDER)?.ConstructionCompany.FullName; ;
                         string SubC_Signer = $"{work_performer_emp_position_name} {work_performer_emp_fullname} {work_performer_emp_doc_confirm_name} {builder_company_fullname}."; //Подрядчик
@@ -258,15 +258,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
                                 + " к АОСР №" + aOSRDocument.RegId
                                 + " от " + ((DateTime)(aOSRDocument.Date)).ToString("d");
                             world_attached_doc.Bookmarks["Client_Signer2"].Range.Text =
-                                 project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.CUSTOMER).FullName;
+                                 project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.CUSTOMER).Employee?.FullName;
                             world_attached_doc.Bookmarks["GCC1_Signer2"].Range.Text =
-                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR).FullName;
+                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR).Employee?.FullName;
                             world_attached_doc.Bookmarks["GCC2_Signer2"].Range.Text =
-                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER).FullName;
+                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER).Employee?.FullName;
                             world_attached_doc.Bookmarks["Author_Signer2"].Range.Text =
-                               project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.AUTHOR_SUPERVISION).FullName;
+                               project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.AUTHOR_SUPERVISION).Employee?.FullName;
                             world_attached_doc.Bookmarks["SubC_Signer2"].Range.Text =
-                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.WORK_PERFORMER).FullName;
+                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.WORK_PERFORMER).Employee?.FullName;
 
 
                             attached_table.Select();
@@ -372,15 +372,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
                                 + " к АОСР №" + aOSRDocument.RegId
                                 + " от " + ((DateTime)(aOSRDocument.Date)).ToString("d");
                             world_attached_doc.Bookmarks["Client_Signer2"].Range.Text =
-                                 project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.CUSTOMER).FullName;
+                                 project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.CUSTOMER).Employee?.FullName;
                             world_attached_doc.Bookmarks["GCC1_Signer2"].Range.Text =
-                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR).FullName;
+                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR).Employee?.FullName;
                             world_attached_doc.Bookmarks["GCC2_Signer2"].Range.Text =
-                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER).FullName;
+                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER).Employee?.FullName;
                             world_attached_doc.Bookmarks["Author_Signer2"].Range.Text =
-                               project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.AUTHOR_SUPERVISION).FullName;
+                               project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.AUTHOR_SUPERVISION).Employee?.FullName;
                             world_attached_doc.Bookmarks["SubC_Signer2"].Range.Text =
-                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.WORK_PERFORMER).FullName;
+                                project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.WORK_PERFORMER).Employee?.FullName;
 
                             attached_table.Select();
                             world_application.Selection.Copy();
@@ -426,20 +426,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         foreach (bldWork work in current_work.NextWorks)
                             world_document.Bookmarks["Next_Work"].Range.Text += work.Name + ". ";
                         world_document.Bookmarks["Client_Signer2"].Range.Text =
-                            project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.CUSTOMER).FullName;
+                            project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.CUSTOMER).Employee?.FullName;
                         world_document.Bookmarks["GCC1_Signer2"].Range.Text =
-                            project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR).FullName;
+                            project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR).Employee?.FullName;
                         world_document.Bookmarks["GCC2_Signer2"].Range.Text =
-                            project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER).FullName;
+                            project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER).Employee?.FullName;
                         world_document.Bookmarks["Author_Signer2"].Range.Text =
-                           project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.AUTHOR_SUPERVISION).FullName;
+                           project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.AUTHOR_SUPERVISION).Employee?.FullName;
                         world_document.Bookmarks["SubC_Signer2"].Range.Text =
-                         project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.WORK_PERFORMER).FullName;
+                         project.ResponsibleEmployees.FirstOrDefault(re => re.Role.RoleCode == RoleOfResponsible.WORK_PERFORMER).Employee?.FullName;
 
                         //world_document.Bookmarks["Date_Begin"].Range.Text = current_work.StartTime.ToString("d");
                         // world_document.Bookmarks["Date_End"].Range.Text = current_work.EndTime.ToString("d
                         world_document.Bookmarks["Date_Begin"].Range.Text = current_work.AOSRDocuments[0].StartTime.ToString("d");
-                        world_document.Bookmarks["Date_End"].Range.Text = current_work.AOSRDocuments[0].EndTime.ToString("d");
+                        world_document.Bookmarks["Date_End"].Range.Text = current_work.AOSRDocuments[0].EndTime?.ToString("d");
 
                     }
                 }

@@ -12,41 +12,6 @@
              d:DesignHeight="450" d:DesignWidth="800" >
 
     <Grid    ShowGridLines="False">
-        <Grid.Resources>
-            <Style x:Key="inlineText" TargetType="{x:Type TextBlock}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-                <Setter Property="FontWeight" Value="Normal"/>
-                <Setter Property="FontSize" Value="12"/>
-            </Style>
-            <Style x:Key="titleText" TargetType="{x:Type TextBlock}">
-                <Setter Property="DockPanel.Dock" Value="Top"/>
-                <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="Margin" Value="10,5,10,0"/>
-            </Style>
-            <Style TargetType="{x:Type Button}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-                <Setter Property="Width" Value="60"/>
-            </Style>
-            <Style TargetType="{x:Type TextBox}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-            </Style>
-            <Style TargetType="{x:Type DatePicker}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-            </Style>
-            <Style TargetType="{x:Type ListView}">
-                <Setter Property="Margin" Value="10,5,10,0"/>
-            </Style>
-            <Style x:Key="inlineListViewStackPanel" TargetType="{x:Type StackPanel}">
-                <Setter Property="Margin" Value="5,10,5,10"/>
-            </Style>
-            <Style x:Key="inlineListView" TargetType="{x:Type ListView}">
-                <Setter Property="Margin" Value="5,10,5,10"/>
-            </Style>
-            <Style x:Key="inlineDataGrid" TargetType="{x:Type DataGrid}">
-                <Setter Property="Margin" Value="5,10,5,10"/>
-            </Style>
-        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.05*"/>
             <ColumnDefinition Width="Auto"/>
@@ -66,6 +31,27 @@
         Margin="10,5,10,0"
         HorizontalAlignment="Center"
         Style="{StaticResource titleText}">Участник проекта.</TextBlock>
+
+            <StackPanel Orientation="Horizontal" >
+                <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock >Копмания</TextBlock>
+                    <ComboBox Grid.Column="1" x:Name="companiesRoleSelectComboBox" ItemsSource="{Binding AllConstructionCompanies}"    
+                               SelectedItem="{Binding  SelectedParticipant.ConstructionCompany}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                </Grid>
+            </StackPanel>
             <StackPanel Orientation="Horizontal" >
                 <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
@@ -85,42 +71,32 @@
                     </ComboBox>
                 </Grid>
             </StackPanel>
-
             <StackPanel Orientation="Horizontal" >
-                <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock >Полное наименование:</TextBlock>
-                    <ComboBox Grid.Column="1" x:Name="companiesRoleSelectComboBox" ItemsSource="{Binding AllConstructionCompanies}"    
-                               SelectedItem="{Binding  SelectedParticipant.ConstructionCompany}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Name}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-
-                </Grid>
+                <TextBlock  Style="{StaticResource inlineText}">Дата начала участия:</TextBlock>
+                <DatePicker  IsDropDownOpen="False"
+                    SelectedDateFormat="Short" 
+                    HorizontalAlignment="Left" 
+                    SelectedDate="{Binding  SelectedParticipant.StartTime ,Mode=TwoWay}" />
+                <TextBlock  Style="{StaticResource inlineText}">Дата окончания участия:</TextBlock>
+                <DatePicker  IsDropDownOpen="False"
+                    SelectedDateFormat="Short" 
+                    HorizontalAlignment="Left" 
+                    SelectedDate="{Binding SelectedParticipant.EndTime}" />
             </StackPanel>
-
-          
             <StackPanel >
                 <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>
                 <StackPanel Orientation="Horizontal" x:Name="bldOResponcsibleEmploeeStackPanel"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*" x:Name="____________DataGridLeftCulumn"/>
-                            <ColumnDefinition  Width="Auto"/>
+                            <ColumnDefinition  Width="79.434"/>
+                            <ColumnDefinition Width="20.566"/>
                         </Grid.ColumnDefinitions>
                         <DataGrid x:Name="bldResponsibleEmployeeDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedParticipant.ResponsibleEmployees}"
                                                    SelectedItem="{Binding SelectedResponsibleEmployee}"
                                                 Style="{StaticResource inlineDataGrid }" 
                                                  AutoGenerateColumns="False"  IsReadOnly="True" 
-                                               HorizontalContentAlignment="Stretch"  >
+                                               HorizontalContentAlignment="Stretch" Margin="5,10,5,10"  >
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="SelectedCellsChanged">
                                     <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
@@ -128,20 +104,26 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding = "{Binding Path=FullName}"  
+                                <DataGridTextColumn Binding = "{Binding Path=StartTime, StringFormat=dd:mm:yyyy}"  
+                                                Header="Дата начала" Width="Auto" />
+                                <DataGridTextColumn Binding = "{Binding Path=EndTime, StringFormat=dd:mm:yyyy}"  
+                                                Header="Дата окончания" Width="Auto" />
+                                <DataGridTextColumn Binding = "{Binding Path=Employee.FullName}"  
                                                 Header="Ф.И.О." Width="Auto" />
                                 <DataGridTextColumn Binding = "{Binding Path=Company.Name}" 
                                                 Header="Название ораганизации" Width="Auto"   />
-                                <DataGridTextColumn Binding = "{Binding Path= RoleName}" 
-                                                Header="Роль" Width="Auto"   />
                                 <DataGridTextColumn Binding = "{Binding Path= DocConfirmingTheAthority.Name}" 
                                                 Header="Основание" Width="*"   />
+                                <DataGridTextColumn Binding = "{Binding Path= Role.FullName}" 
+                                                Header="Роль" Width="*"   />
+
                             </DataGrid.Columns>
                         </DataGrid>
-                        <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
-                            <Button  Command="{ Binding AddBuildingObjectsCommand}">Добавить</Button>
-                            <Button Command="{Binding RemoveBuildingObjectCommand}" >Удалить</Button>
-                            <Button Command="{Binding EditBuildingObjectCommand}" >Изменить</Button>
+
+                        <StackPanel Width="100" HorizontalAlignment="Left" Grid.ColumnSpan="3" Margin="627,0,0,0" >
+                            <Button Command="{Binding AddResponsibleEmployeesCommand}" >Добавить</Button>
+                            <Button Command="{Binding RemoveResponsibleEmployeeCommand}" >Удалить</Button>
+                            <Button Command="{Binding EditResponsibleEmployeeCommand}">Изменить</Button>
                         </StackPanel>
                     </Grid>
                 </StackPanel>

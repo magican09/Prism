@@ -3,11 +3,14 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
+using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -70,23 +73,38 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _allConstructionCompanies, value); }
         }
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
+        public NotifyCommand UnDoCommand { get; protected set; }
+        public NotifyCommand ReDoCommand { get; protected set; }
         public NotifyCommand SaveCommand { get; private set; }
         public NotifyCommand<object> CloseCommand { get; private set; }
         public NotifyCommand AddConstructionCompanyCommand { get; private set; }
         public NotifyCommand EditConstructionCompanyCommand { get; private set; }
         public NotifyCommand RemoveConstructionCompanyCommand { get; private set; }
-
-        public NotifyCommand AddEmployerCommand { get; private set; }
-        public NotifyCommand EditEmployerCommand { get; private set; }
-        public NotifyCommand RemoveEmployerCommand { get; private set; }
+        public NotifyCommand EditResponsibleEmployeeCommand { get; private set; }
+        public NotifyCommand RemoveResponsibleEmployeeCommand { get; private set; }
+        public NotifyCommand AddResponsibleEmployeesCommand { get; private set; }
+        public IBuildingUnitsRepository _buildingUnitsRepository { get; set; }
 
         public ParticipantViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
         {
-            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
-            SaveCommand = new NotifyCommand(OnSave, CanSave);
+             UnDoReDo = new UnDoReDoSystem();
+
+            SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedParticipant);
             CloseCommand = new NotifyCommand<object>(OnClose);
-            SaveCommand = new NotifyCommand(OnSave, CanSave);
-            EditConstructionCompanyCommand = new NotifyCommand(OnEditConstructionCompany, () => SelectedConstructionCompany != null);
+            UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
+                          () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
+               () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            AddResponsibleEmployeesCommand = new NotifyCommand(OnAddResponsibleEmployees);
+            RemoveResponsibleEmployeeCommand = new NotifyCommand(OnRemoveResponsibleEmployee,
+                                                 () => SelectedResponsibleEmployee != null)
+                             .ObservesProperty(() => SelectedResponsibleEmployee);
+            EditResponsibleEmployeeCommand = new NotifyCommand(OnEditResponsibleEmployee,
+                                                 () => SelectedResponsibleEmployee != null)
+                             .ObservesProperty(() => SelectedResponsibleEmployee);
+
+             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+            _buildingUnitsRepository = buildingUnitsRepository;
             _dialogService = dialogService;
             _regionManager = regionManager;
             AllParticipantRoles = new ObservableCollection<bldParticipantRole>(buildingUnitsRepository.ParticipantRolesRepository.GetAllAsync());
@@ -94,18 +112,86 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
            
         }
 
-        private void OnEditConstructionCompany()
+      
+        private void OnAddResponsibleEmployees()
         {
-            // CoreFunctions.EditElementDialog<bldConstructionCompany>(SelectedConstructionCompany, "Участник строительства",
-            //    (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Id);
+            bldResponsibleEmployeesGroup All_ResponsibleEmployees = new bldResponsibleEmployeesGroup(
+                    _buildingUnitsRepository.ResponsibleEmployees.GetAllResponsibleEmployees()
+                    .Where(re=>re.Employee?.Company.Id==SelectedParticipant.ConstructionCompany.Id &&
+                     !SelectedParticipant.ResponsibleEmployees.Contains(re) ).ToList());
+            NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_1 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
+            NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_2 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
+            NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_3 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
+            predicate_1.Name = "Показать только из текущего проекта.";
+            predicate_1.Predicate = cl => cl.Where(el => el?.bldParticipant?.bldProject != null &&
+                                                       el?.bldParticipant?.bldProject.Id == SelectedParticipant?.bldProject?.Id).ToList();
+            predicate_2.Name = "Показать из всех кроме текущего проекта";
+            predicate_2.Predicate = cl => cl.Where(el => el?.bldParticipant?.bldProject != null &&
+                                                       el?.bldParticipant?.bldProject.Id != SelectedParticipant?.bldProject?.Id).ToList();
+            predicate_3.Name = "Показать все";
+            predicate_3.Predicate = cl => cl;
+            NameablePredicateObservableCollection<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
+            nameablePredicatesCollection.Add(predicate_3);
+
+            ObservableCollection<bldResponsibleEmployee> collection_for_add = new ObservableCollection<bldResponsibleEmployee>();
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>
+                 (collection_for_add, All_ResponsibleEmployees,
+                 nameablePredicatesCollection,
+                 _dialogService,
+                 (result) =>
+                 {
+                     if (result.Result == ButtonResult.Yes)
+                     {
+                         SaveCommand.RaiseCanExecuteChanged();
+                         foreach (bldResponsibleEmployee employee in collection_for_add)
+                         {
+                                SelectedParticipant.AddResponsibleEmployee(employee);
+           
+                         }
+                     }
+                 },
+                 typeof(AddbldResponsibleEmployeeToCollectionDialogView).Name,
+                 typeof(ResponsibleEmployeeDialogView).Name, Id,
+                  "Редактирование списка отвественных работников",
+                 "Форма для редактирования отвественных.",
+                 "Ответсвенные текущего проекта", "Все отвественные лица");
+        }
+        private void OnRemoveResponsibleEmployee()
+        {
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
+                 (SelectedParticipant.ResponsibleEmployees, SelectedResponsibleEmployee, "Ответсвенный представитель",
+                () =>
+                {
+                    SelectedParticipant.RemoveResponsibleEmployee(SelectedResponsibleEmployee);
+                    SelectedResponsibleEmployee = null;
+                    SaveCommand.RaiseCanExecuteChanged();
+                }, _dialogService, Id);
+
         }
 
+        private void OnEditResponsibleEmployee()
+        {
+
+            CoreFunctions.EditElementDialog<bldResponsibleEmployee>(SelectedResponsibleEmployee, "Отвественне лицо",
+                  (result) =>
+                  {
+                      if (result.Result == ButtonResult.Yes)
+                      {
+                          UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                          UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                          SaveCommand.RaiseCanExecuteChanged();
+                      }
+                  }, _dialogService, typeof(ResponsibleEmployeeDialogView).Name, "Редактировать", UnDoReDo);
+
+        }
         private void OnDataGridLostSocus(object obj)
         {
 
             if (obj == SelectedResponsibleEmployee)
             {
-                SelectedResponsibleEmployee = null;
+            //    SelectedResponsibleEmployee = null;
                 return;
             }
             if (obj == SelectedConstructionCompany)
@@ -115,49 +201,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             }
 
         }
-        /*
-                private void OnEditBuildingObject()
-                {
-                    CoreFunctions.EditElementDialog<bldObject>(SelectedBuildingObject, "Строительный объект",
-                     (result) => { SaveCommand.RaiseCanExecuteChanged(); }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", Id);
-                }
-                private void OnAddBuildingObject()
-                {
-                    BuildingObjects = new bldObjectsGroup(_buildingUnitsRepository.Objects.GetldObjectsAsync());//.GetBldObjects(SelectedProject.Id));
-                    if (SelectedBuildingObject.BuildingObjects == null) SelectedBuildingObject.BuildingObjects = new bldObjectsGroup();
-                    CoreFunctions.AddElementToCollectionWhithDialog<bldObjectsGroup, bldObject>
-                          (SelectedBuildingObject.BuildingObjects, BuildingObjects, _dialogService,
-                            (result) =>
-                            {
-
-                                if (result.Result == ButtonResult.Yes)
-                                {
-                                    SaveCommand.RaiseCanExecuteChanged();
-                                }
-                                if (result.Result == ButtonResult.No)
-                                {
-                                    SelectedBuildingObject.BuildingObjects.UnDoAll(Id);
-                                }
-                            },
-                           typeof(AddbldObjectToCollectionDialogView).Name,
-                            typeof(ObjectDialogView).Name, Id,
-                           "Редактирование списка объектов",
-                           "Форма для редактирования состава объектов проекта.",
-                          "Объекты текущего проекта", "Все объекты");
-
-                }
-                private void OnRemoveBuildingObject()
-                {
-
-                    CoreFunctions.RemoveElementFromCollectionWhithDialog<bldObjectsGroup, bldObject>
-                       (SelectedBuildingObject.BuildingObjects, SelectedChildBuildingObject, "Строительный объект"
-                       , () =>
-                       {
-                           SelectedChildBuildingObject = null;
-                           SaveCommand.RaiseCanExecuteChanged();
-                       }, _dialogService);
-                }
-                */
+       
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             SaveCommand.RaiseCanExecuteChanged();
@@ -172,11 +216,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public override void OnSave()
         {
-            this.OnSave<bldParticipant>(SelectedParticipant);
+            base.OnSave<bldParticipant>(SelectedParticipant);
         }
         public override void OnClose(object obj)
         {
-            this.OnClose<bldParticipant>(obj, SelectedParticipant);
+            base.OnClose<bldParticipant>(obj, SelectedParticipant);
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -190,7 +234,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             ConveyanceObject navigate_message = (ConveyanceObject)navigationContext.Parameters["bld_participant"];
@@ -201,6 +244,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (SelectedParticipant != null) SelectedParticipant.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedParticipant = ResivedParticipant;
                 SelectedParticipant.ErrorsChanged += RaiseCanExecuteChanged;
+                UnDoReDo.Register(SelectedParticipant);
 
             }
 

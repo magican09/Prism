@@ -197,6 +197,32 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
         }
 
+        #region EditMethods
+        public void RemovePreviousWork(bldWork work)
+        {
+            RemovePreviousWorkCommand Command = new RemovePreviousWorkCommand(this, work);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void RemoveNextWork(bldWork work)
+        {
+            RemoveNextWorkCommand Command = new RemoveNextWorkCommand(this, work);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddPreviousWork(bldWork work)
+        {
+           AddPreviousWorkCommand Command =
+                new AddPreviousWorkCommand(this,work);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddNextWork(bldWork work)
+        {
+            AddNextWorkCommand Command =
+                new AddNextWorkCommand(this, work);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+
+        #endregion
+
 
     }
 }

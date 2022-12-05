@@ -69,7 +69,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
         }
         #endregion
-        private Guid _id;
+        private Guid _id = Guid.NewGuid();
         public Guid Id
         {
             get { return _id; }
@@ -148,7 +148,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 IsVisible = (status != JornalRecordType.REMOVED) ? true : false;
             }
         }
-        public ObservableCollection<IJornalable> ParentObjects { get; set; }
+        //    public ObservableCollection<IJornalable> ParentObjects { get; set; }
+        public  object ParentObject { get; set; }
         public ObservableCollection<IJornalable> ChildObjects { get; set; }
         public AdjustStatus AdjustedStatus { get; set; } = AdjustStatus.UNADJUSTED;
         public void JornalingOff()
@@ -164,8 +165,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #endregion
 
-        // private void OnCollectionChanged(object sender,CollectionChangeEventArgs e)
-        // { }
         public Func<TEntity, bool> SortPridicate;
         public string SortedPropertyName;
         private void OnCollectionChangedMethod(object sender, NotifyCollectionChangedEventArgs e)
@@ -173,21 +172,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
             IsVisible = Count > 0;
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-            /*   // var inserted_elements = e.NewItems.OrderBy
-                foreach (TEntity _element in e.NewItems)
-                {
-                   var _element_prop_val = GetPropertyValue(SortedPropertyName,_element);
-                    for (int ii = this.Count - e.NewItems.Count; ii > 0; ii--)
-                    {
-                       var ii_element_prop_val = GetPropertyValue(SortedPropertyName,Items[ii]);
-                        if ()
-                    }
-                }
-                */
+          
             }
-
-            //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CollectionChanged"));
-        }
+         }
         private object GetPropertyValue(string propName,object obj)
         {
             var obj_prop_val = obj.GetType().GetProperty(SortedPropertyName)?.GetValue(obj);

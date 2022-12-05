@@ -11,7 +11,7 @@
              d:DesignHeight="650" d:DesignWidth="800" >
     <Grid   ShowGridLines="False">
         <Grid.Resources>
-       
+
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.05*"/>
@@ -51,14 +51,13 @@
                     <TextBox Grid.Column="1"  Text="{Binding SelectedWork.Name}"/>
                 </Grid>
             </StackPanel>
-
             <StackPanel Orientation="Horizontal" >
                 <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition   x:Name="shortProjectNameRightGridColumn"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" >Полное наименование работы</TextBlock>
+                    <TextBlock Style="{StaticResource inlineText}" Grid.Column="0" >Полное наименование работы</TextBlock>
                     <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedWork.FullName}"/>
                 </Grid>
             </StackPanel>
@@ -66,11 +65,13 @@
                 <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="34*" />
-                        <ColumnDefinition Width="61*"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0"  Style="{StaticResource inlineText}" Margin="10,5,10,0" >Короткое наименование работы</TextBlock>
-                    <TextBox Grid.Column="1" Text="{Binding SelectedWork.ShortName}" Grid.ColumnSpan="2"/>
+                    <TextBox Grid.Column="1" Text="{Binding SelectedWork.ShortName}" Grid.ColumnSpan="4" Margin="10,5,10,0"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
@@ -112,7 +113,6 @@
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
                             <Button  Command="{ Binding AddPreviousWorkCommand}">Добавить</Button>
                             <Button Command="{Binding RemovePreviousWorkCommand}" >Удалить</Button>
-                            <Button Command="{Binding EditPreviousWorkCommand}" >Изменить</Button>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -146,7 +146,6 @@
                         <StackPanel Grid.Column="2" Width="100" HorizontalAlignment="Center" >
                             <Button  Command="{Binding AddNextWorkCommand}" >Добавить</Button>
                             <Button Command="{Binding RemoveNextWorkCommand}" >Удалить</Button>
-                            <Button Command="{Binding EditNextWorkCommand}" >Изменить</Button>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -208,14 +207,14 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding = "{Binding Path=Name}"  
                                                 Header="Наименование категории документов" Width="Auto" />
-                         </DataGrid.Columns>
+                            </DataGrid.Columns>
                             <DataGrid.RowDetailsTemplate>
                                 <DataTemplate>
                                     <ListBox ItemsSource="{Binding SelectedDocumentsList}">
                                         <ListBoxItem>
                                             <StackPanel Orientation="Horizontal">
-                                              <TextBlock Text="{Binding Name}"/>
-                                               <TextBlock Text="{Binding Count}"/>
+                                                <TextBlock Text="{Binding Name}"/>
+                                                <TextBlock Text="{Binding Count}"/>
                                             </StackPanel>
                                         </ListBoxItem>
                                     </ListBox>

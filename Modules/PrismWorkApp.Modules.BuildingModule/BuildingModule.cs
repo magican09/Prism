@@ -127,6 +127,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterForNavigation<ResponsibleEmployeeView>();
             containerRegistry.RegisterForNavigation<ConstructionView>();
             containerRegistry.RegisterForNavigation<AOSRDocumentView>();
+            containerRegistry.RegisterForNavigation<WorksGroupView>();
 
             containerRegistry.RegisterDialog<AddbldObjectToCollectionDialogView, AddbldObjectToCollectionViewModel>();
             containerRegistry.RegisterDialog<ObjectDialogView, ObjectDialogViewModel>();

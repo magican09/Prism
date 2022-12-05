@@ -146,7 +146,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
       
         public bldConstruction()
         {
-
+            Works.ParentObject = this;
         }
         public object Clone()
         {

@@ -83,6 +83,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
 
+        public void CleareResponsibleEmployees()
+        {
+            ClearCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
+                new ClearCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
         #endregion
     }
 }

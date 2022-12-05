@@ -33,6 +33,7 @@ namespace PrismWorkApp.Core
             }
             return null;
         }
+      
 
         public static void RemoveElementFromCollectionWhithDialog<TContainer, T>
                (TContainer collection, T element, string element_type_name,
@@ -68,6 +69,8 @@ namespace PrismWorkApp.Core
            });
 
         }
+
+
         public static void RemoveElementWhithDialog<TContainer, T>
              (T element, string element_type_name,
           Action elm_erase_action, IDialogService dialogService)

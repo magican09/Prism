@@ -38,9 +38,16 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock >Копмания</TextBlock>
-                    <ComboBox Grid.Column="1" x:Name="companiesRoleSelectComboBox" ItemsSource="{Binding AllConstructionCompanies}"    
+                    <TextBlock Style="{StaticResource inlineText}" >Копмания</TextBlock>
+                    <ComboBox x:Name="companiesRoleSelectComboBox" Grid.Column="1"  ItemsSource="{Binding AllConstructionCompanies}"    
                                SelectedItem="{Binding  SelectedParticipant.ConstructionCompany}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <prism:InvokeCommandAction Command="{Binding CompanyChangedCommand}"
+                                                           CommandParameter="{Binding SelectedItem, ElementName=companiesRoleSelectComboBox}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -49,7 +56,6 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
@@ -84,13 +90,12 @@
                     SelectedDate="{Binding SelectedParticipant.EndTime}" />
             </StackPanel>
             <StackPanel >
-                <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>
+                <TextBlock Style="{StaticResource  titleText_1}">Отвественые работники</TextBlock>
                 <StackPanel Orientation="Horizontal" x:Name="bldOResponcsibleEmploeeStackPanel"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*" x:Name="____________DataGridLeftCulumn"/>
-                            <ColumnDefinition  Width="79.434"/>
-                            <ColumnDefinition Width="20.566"/>
+                            <ColumnDefinition Width="0.8*" x:Name="DataGridLeftCulumn"/>
+                            <ColumnDefinition  Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <DataGrid x:Name="bldResponsibleEmployeeDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedParticipant.ResponsibleEmployees}"
                                                    SelectedItem="{Binding SelectedResponsibleEmployee}"
@@ -104,23 +109,23 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
+                                <DataGridTextColumn Binding = "{Binding Path= Role.FullName}" 
+                                                Header="Роль" Width="*"   />
+                                <DataGridTextColumn Binding = "{Binding Path=Employee.FullName}"  
+                                                Header="Ф.И.О." Width="Auto" />
                                 <DataGridTextColumn Binding = "{Binding Path=StartTime, StringFormat=dd:mm:yyyy}"  
                                                 Header="Дата начала" Width="Auto" />
                                 <DataGridTextColumn Binding = "{Binding Path=EndTime, StringFormat=dd:mm:yyyy}"  
                                                 Header="Дата окончания" Width="Auto" />
-                                <DataGridTextColumn Binding = "{Binding Path=Employee.FullName}"  
-                                                Header="Ф.И.О." Width="Auto" />
-                                <DataGridTextColumn Binding = "{Binding Path=Company.Name}" 
-                                                Header="Название ораганизации" Width="Auto"   />
-                                <DataGridTextColumn Binding = "{Binding Path= DocConfirmingTheAthority.Name}" 
+                               
+                                 <DataGridTextColumn Binding = "{Binding Path= DocConfirmingTheAthority.Name}" 
                                                 Header="Основание" Width="*"   />
-                                <DataGridTextColumn Binding = "{Binding Path= Role.FullName}" 
-                                                Header="Роль" Width="*"   />
+                                
 
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <StackPanel Width="100" HorizontalAlignment="Left" Grid.ColumnSpan="3" Margin="627,0,0,0" >
+                        <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
                             <Button Command="{Binding AddResponsibleEmployeesCommand}" >Добавить</Button>
                             <Button Command="{Binding RemoveResponsibleEmployeeCommand}" >Удалить</Button>
                             <Button Command="{Binding EditResponsibleEmployeeCommand}">Изменить</Button>

@@ -150,7 +150,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void AddBuildindObject(bldObject obj)
         {
-            obj.bldProject = this;
+         //   obj.bldProject = this;
             AddToCollectionCommand<bldObjectsGroup, bldObject> Command =
                 new AddToCollectionCommand<bldObjectsGroup, bldObject>(BuildingObjects, obj);
             InvokeUnDoReDoCommandCreatedEvent(Command);

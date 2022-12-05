@@ -125,6 +125,7 @@ namespace PrismWorkApp.Services.Repositories
             PlutoContext.Participants.ToList();
             PlutoContext.ParticipantRoles.ToList();
             PlutoContext.ResponsibleEmployeeRoles.ToList();
+            PlutoContext.Employees.ToList();
             PlutoContext.ConstructionCompanies.ToList();
             PlutoContext.AOSRDocuments.ToList();
             PlutoContext.AOSRDocuments.ToList();

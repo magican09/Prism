@@ -1,6 +1,7 @@
 ﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
@@ -20,8 +21,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             set { _currentContextId = value; }
         }
 
-        public ParticipantDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
-           : base(dialogService, regionManager, buildingUnitsRepository)
+        public ParticipantDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
+              IApplicationCommands applicationCommands, IUnDoReDoSystem unDoReDo)
+           : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, unDoReDo)
         {
             UnDoReDo = new UnDoReDoSystem();
         }

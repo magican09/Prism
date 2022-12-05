@@ -9,6 +9,7 @@ using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
@@ -126,11 +127,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand AddPreviousWorkCommand { get; private set; }
         public NotifyCommand AddNextWorkCommand { get; private set; }
 
-        public NotifyCommand EditPreviousWorkCommand { get; private set; }
-        public NotifyCommand EditNextWorkCommand { get; private set; }
+        //public NotifyCommand EditPreviousWorkCommand { get; private set; }
+        //public NotifyCommand EditNextWorkCommand { get; private set; }
         public NotifyCommand SaveAOSRsToWordCommand { get; private set; }
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private IApplicationCommands _applicationCommands;
+        public IApplicationCommands ApplicationCommands
+        {
+            get { return _applicationCommands; }
+            set { SetProperty(ref _applicationCommands, value); }
+        }
 
 
         public WorkViewModel(IDialogService dialogService,
@@ -138,6 +144,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             UnDoReDo = new UnDoReDoSystem();
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+         
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedWork);
             CloseCommand = new NotifyCommand<object>(OnClose);
@@ -157,12 +164,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             AddPreviousWorkCommand = new NotifyCommand(OnAddPreviousWork);
             AddNextWorkCommand = new NotifyCommand(OnAddNextWork);
 
-            EditPreviousWorkCommand = new NotifyCommand(OnEditPreviousWork,
-                                        () => SelectedPreviousWork != null)
-                    .ObservesProperty(() => SelectedPreviousWork);
-            EditNextWorkCommand = new NotifyCommand(OnEditNextWork,
-                                        () => SelectedNextWork != null)
-                    .ObservesProperty(() => SelectedNextWork);
+            //EditPreviousWorkCommand = new NotifyCommand(OnEditPreviousWork,
+            //                            () => SelectedPreviousWork != null)
+            //        .ObservesProperty(() => SelectedPreviousWork);
+            //EditNextWorkCommand = new NotifyCommand(OnEditNextWork,
+            //                            () => SelectedNextWork != null)
+            //        .ObservesProperty(() => SelectedNextWork);
             SaveAOSRsToWordCommand = new NotifyCommand(OnSaveAOSRsToWord);
 
             _dialogService = dialogService;
@@ -170,6 +177,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _regionManager = regionManager;
             _applicationCommands = applicationCommands;
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+
         }
 
         private void OnSaveAOSRsToWord()
@@ -184,89 +194,97 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                  (result) => { }, _dialogService, typeof(WorkDialogView).Name, "Редактировать", UnDoReDo);
 
         }
-        private void OnAddNextWork()
+         private void OnAddNextWork()
         {
-            bldWorksGroup AllWorks = new bldWorksGroup(SelectedWork.bldConstruction.Works.Where(wr => wr.Id != SelectedWork.Id).ToList());
-            //new bldWorksGroup(_buildingUnitsRepository.Works.GetAllBldWorks());
-            CoreFunctions.AddElementToCollectionWhithDialog<bldWorksGroup, bldWork>
-                 (SelectedWork.NextWorks, AllWorks, _dialogService,
-                 (result) =>
-                 {
-                     if (result.Result == ButtonResult.Yes)
-                     {
-                         bldWorksGroup new_nextWork_collection = (bldWorksGroup)
-                                result.Parameters.GetValue<object>("current_collection");
+            bldWorksGroup All_Works = new bldWorksGroup(_buildingUnitsRepository.Works.GetbldWorksAsync().Where(wr => wr.Id != SelectedWork.Id &&
+                                             !SelectedWork.PreviousWorks.Contains(wr) && !SelectedWork.NextWorks.Contains(wr)).ToList());
 
-                         bldWorksGroup add_works = new bldWorksGroup();
+            ObservableCollection<bldWork> works_for_add_collection = new ObservableCollection<bldWork>();
+            NameablePredicate<ObservableCollection<bldWork>, bldWork> predicate_1 = new NameablePredicate<ObservableCollection<bldWork>, bldWork>();
+            predicate_1.Name = "Показать только из текущей конструсции.";
+            predicate_1.Predicate = cl => cl.Where(el => el?.bldConstruction != null &&
+                                                        el?.bldConstruction.Id == SelectedWork?.bldConstruction?.Id).ToList();
+            NameablePredicate<ObservableCollection<bldWork>, bldWork> predicate_2 = new NameablePredicate<ObservableCollection<bldWork>, bldWork>();
+            predicate_2.Name = "Показать на одну ступень выше, но без работ текущей кострукции";
+            predicate_2.Predicate = cl => cl.Where(el => el?.bldConstruction?.Id != SelectedWork?.bldConstruction?.Id &&
+                                                        (el.bldConstruction?.ParentConstruction?.Id == SelectedWork.bldConstruction?.ParentConstruction?.Id ||
+                                                          el.bldConstruction?.bldObject?.Id == SelectedWork.bldConstruction?.bldObject?.Id)).ToList();
+            NameablePredicateObservableCollection<ObservableCollection<bldWork>, bldWork> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldWork>, bldWork>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
 
-                         foreach (bldWork work in new_nextWork_collection)//Добавляем выбранные работы в писок
-                         {
-                             if (SelectedWork.NextWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault() == null)//Если работы в списке нет...
-                             {
-                                 bldWork new_work = AllWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault();
-                                 add_works.Add(new_work);
-                                 SelectedWork.NextWorks.Add(new_work);
-                             }
-                         }
-                         //CoreFunctions.CopyObjectReflectionNewInstances(new_nextWork_collection, SelectedWork.NextWorks);
-                         foreach (bldWork work in add_works)
-                             work?.PreviousWorks.Add(SelectedWork);
-                     }
-                 },
-                 typeof(AddbldWorkToCollectionDialogView).Name,
-                 typeof(WorkDialogView).Name, Id,
-                  "Редактирование списка последующих работ",
-                 "Форма для редактирования спика последующих работ.",
-                 "Список всех работ текущей коснрукции", "Последущие работы");
-        }
-        private void OnRemoveNextWork()
-        {
-            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
-                (SelectedWork.NextWorks, SelectedNextWork, "Последующая работа",
-                () => SelectedNextWork = null, _dialogService, Id);
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<ObservableCollection<bldWork>, bldWork>
+               (works_for_add_collection, All_Works,
+                nameablePredicatesCollection,
+               _dialogService,
+                (result) =>
+                {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        foreach (bldWork bld_work in works_for_add_collection)
+                        {
+                            SelectedWork.AddNextWork(bld_work);
+                        }
+                        SaveCommand.RaiseCanExecuteChanged();
+                    }
+                    if (result.Result == ButtonResult.No)
+                    {
+                    }
+                },
+               typeof(AddbldWorkToCollectionDialogView).Name,
+               typeof(WorkDialogView).Name, Id,
+                "Редактирование списка последующих работ",
+                "Форма для редактирования.",
+                "Список работ", "Все работы");
+            //  
         }
 
         private void OnAddPreviousWork()
         {
-            bldWorksGroup AllWorks = new bldWorksGroup(SelectedWork.bldConstruction.Works.Where(wr => wr.Id != SelectedWork.Id).ToList());
-            // new bldWorksGroup(_buildingUnitsRepository.Works.GetAllBldWorks());
-            CoreFunctions.AddElementToCollectionWhithDialog<bldWorksGroup, bldWork>
-                (SelectedWork.PreviousWorks, AllWorks, _dialogService,
-                 (result) =>
-                 {
-                     if (result.Result == ButtonResult.Yes)
+            bldWorksGroup All_Works = new bldWorksGroup(_buildingUnitsRepository.Works.GetbldWorksAsync().Where(wr => wr.Id != SelectedWork.Id&&
+                                            !SelectedWork.PreviousWorks.Contains(wr) && !SelectedWork.NextWorks.Contains(wr)).ToList());
 
-                     {
-                         bldWorksGroup new_previousWork_collection = (bldWorksGroup)
-                           result.Parameters.GetValue<object>("current_collection");
+            ObservableCollection<bldWork> works_for_add_collection = new ObservableCollection<bldWork>();
+            NameablePredicate<ObservableCollection<bldWork>, bldWork> predicate_1 = new NameablePredicate<ObservableCollection<bldWork>, bldWork>();
+            predicate_1.Name = "Показать только из текущей конструсции.";
+            predicate_1.Predicate = cl => cl.Where(el => el?.bldConstruction != null &&
+                                                        el?.bldConstruction.Id == SelectedWork?.bldConstruction?.Id).ToList();
+            NameablePredicate<ObservableCollection<bldWork>, bldWork> predicate_2 = new NameablePredicate<ObservableCollection<bldWork>, bldWork>();
+            predicate_2.Name = "Показать на одну ступень выше, но без работ текущей кострукции";
+            predicate_2.Predicate = cl => cl.Where(el => el?.bldConstruction?.Id != SelectedWork?.bldConstruction?.Id &&
+                                                        (el.bldConstruction?.ParentConstruction?.Id == SelectedWork.bldConstruction?.ParentConstruction?.Id ||
+                                                          el.bldConstruction?.bldObject?.Id == SelectedWork.bldConstruction?.bldObject?.Id)).ToList();
+            NameablePredicateObservableCollection<ObservableCollection<bldWork>, bldWork> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldWork>, bldWork>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
 
-                         bldWorksGroup add_works = new bldWorksGroup();
-
-                         foreach (bldWork work in new_previousWork_collection)
-                         {
-                             if (SelectedWork.PreviousWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault() == null)
-                             {
-                                 bldWork new_work = AllWorks.Where(wr => CoreFunctions.GetParsingId(wr) == CoreFunctions.GetParsingId(work)).FirstOrDefault();
-                                 add_works.Add(new_work);
-                                 SelectedWork.PreviousWorks.Add(new_work);
-                                 //     SelectedWork.PreviousWorks.Name = "1111111";
-                             }
-                         }
-                         // RiseEvent  SelectedWork.PreviousWorks.CollectionChanged(N);
-                         foreach (bldWork work in add_works)
-                         {
-                             work?.NextWorks.Add(SelectedWork);
-                             //   work.NextWorks.Name = "222222";
-                         }
-                     }
-
-                 },
-                typeof(AddbldWorkToCollectionDialogView).Name,
-                typeof(WorkDialogView).Name, Id,
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<ObservableCollection<bldWork>, bldWork>
+               (works_for_add_collection, All_Works,
+                nameablePredicatesCollection,
+               _dialogService,
+                (result) =>
+                {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        foreach (bldWork bld_work in works_for_add_collection)
+                        {
+                            SelectedWork.AddPreviousWork(bld_work);
+                        }
+                        SaveCommand.RaiseCanExecuteChanged();
+                    }
+                    if (result.Result == ButtonResult.No)
+                    {
+                    }
+                },
+               typeof(AddbldWorkToCollectionDialogView).Name,
+               typeof(WorkDialogView).Name, Id,
                 "Редактирование списка предыдущих работ",
                 "Форма для редактирования.",
                 "Список работ", "Все работы");
+            //  
         }
+
+       
         private void OnDataGridLostSocus(object obj)
         {
 
@@ -285,10 +303,27 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnRemovePreviousWork()
         {
 
+            ObservableCollection<bldWork> works_for_remove_collection = new ObservableCollection<bldWork>();
+
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
                  (SelectedWork.PreviousWorks, SelectedPreviousWork, "Предыдущая работа",
-                 () => SelectedPreviousWork = null, _dialogService, Id);
+                 () => {
+                     SelectedWork.RemovePreviousWork(SelectedPreviousWork);
+                     SelectedPreviousWork = null;
+                 }, _dialogService, Id); ;
         }
+        private void OnRemoveNextWork()
+        {
+
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
+                 (SelectedWork.NextWorks, SelectedNextWork, "Последующая работа",
+                () => {
+                    SelectedWork.RemoveNextWork(SelectedNextWork);
+                    SelectedNextWork = null;
+                }, _dialogService, Id);
+        }
+
+        
         private void OnEditPreviousWork()
         {
             CoreFunctions.EditElementDialog<bldWork>(SelectedPreviousWork, "Перыдыдущая работа",
@@ -318,10 +353,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public override void OnWindowClose()
         {
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
-            base.OnWindowClose();
+            _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
         }
 
-        
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
 
@@ -337,15 +372,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (SelectedWork != null) SelectedWork.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedWork = ResivedWork;
                 SelectedWork.ErrorsChanged += RaiseCanExecuteChanged;
-                SelectedConstruction = ResivedConstruction;
-                SelectedObject = new bldObject();
-                //   CoreFunctions.CopyObjectReflectionNewInstances(ResivedConstruction, SelectedConstruction);
-                //  SelectedWork = SelectedConstruction.Works.Where(wr => wr.Id == ResivedWork.Id).FirstOrDefault();
+        
                 AllDocuments.Clear();
                 if (SelectedWork.AOSRDocuments.Count > 0) AllDocuments.Add(SelectedWork.AOSRDocuments.Id, SelectedWork.AOSRDocuments);
                 if (SelectedWork.LaboratoryReports.Count > 0) AllDocuments.Add(SelectedWork.LaboratoryReports.Id, SelectedWork.LaboratoryReports);
                 if (SelectedWork.ExecutiveSchemes.Count > 0) AllDocuments.Add(SelectedWork.ExecutiveSchemes.Id, SelectedWork.ExecutiveSchemes);
                 Title = ResivedWork.ShortName;
+                UnDoReDo.Register(SelectedWork);
+
             }
         }
 

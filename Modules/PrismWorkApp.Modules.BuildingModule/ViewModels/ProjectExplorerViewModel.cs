@@ -173,7 +173,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AOSRDocumentView).Name, navParam);
                         break;
                     }
-
+                case (nameof(bldWorksGroup)):
+                    {
+                        navParam.Add("bld_works_group", new ConveyanceObject((bldWorksGroup)clicked_node, ConveyanceObjectModes.EditMode.FOR_EDIT));
+                        _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(WorksGroupView).Name, navParam);
+                        break;
+                    }
                 default:
                     break;
             }

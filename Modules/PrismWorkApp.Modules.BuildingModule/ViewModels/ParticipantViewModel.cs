@@ -83,9 +83,18 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand EditResponsibleEmployeeCommand { get; private set; }
         public NotifyCommand RemoveResponsibleEmployeeCommand { get; private set; }
         public NotifyCommand AddResponsibleEmployeesCommand { get; private set; }
-        public IBuildingUnitsRepository _buildingUnitsRepository { get; set; }
+        public NotifyCommand<bldCompany> CompanyChangedCommand { get; private set; }
 
-        public ParticipantViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository)
+        public IBuildingUnitsRepository _buildingUnitsRepository { get; set; }
+        private IApplicationCommands _applicationCommands;
+        public IApplicationCommands ApplicationCommands
+        {
+            get { return _applicationCommands; }
+            set { SetProperty(ref _applicationCommands, value); }
+        }
+
+        public ParticipantViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
+            IApplicationCommands applicationCommands, IUnDoReDoSystem unDoReDo)
         {
              UnDoReDo = new UnDoReDoSystem();
 
@@ -102,17 +111,27 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             EditResponsibleEmployeeCommand = new NotifyCommand(OnEditResponsibleEmployee,
                                                  () => SelectedResponsibleEmployee != null)
                              .ObservesProperty(() => SelectedResponsibleEmployee);
+            CompanyChangedCommand = new NotifyCommand<bldCompany>(OnCompanyChanged);
 
              DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
             _buildingUnitsRepository = buildingUnitsRepository;
+            _applicationCommands = applicationCommands;
             _dialogService = dialogService;
             _regionManager = regionManager;
             AllParticipantRoles = new ObservableCollection<bldParticipantRole>(buildingUnitsRepository.ParticipantRolesRepository.GetAllAsync());
             AllConstructionCompanies = new ObservableCollection<bldConstructionCompany>(buildingUnitsRepository.ConstructionCompanies.GetAll());
-           
+            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+
         }
 
-      
+        private void OnCompanyChanged(bldCompany company)
+        {
+           if(SelectedParticipant.ResponsibleEmployees.Count>0)
+                SelectedParticipant.CleareResponsibleEmployees();
+        }
+
         private void OnAddResponsibleEmployees()
         {
             bldResponsibleEmployeesGroup All_ResponsibleEmployees = new bldResponsibleEmployeesGroup(
@@ -222,7 +241,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             base.OnClose<bldParticipant>(obj, SelectedParticipant);
         }
-
+        public override void OnWindowClose()
+        {
+            _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+            _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
+        }
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_participant"];

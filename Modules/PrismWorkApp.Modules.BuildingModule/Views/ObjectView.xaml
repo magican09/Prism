@@ -12,7 +12,6 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid   ShowGridLines="False">
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.05*"/>
             <ColumnDefinition Width="Auto"/>
@@ -52,7 +51,6 @@
                     <TextBox Grid.Column="1"  Text="{Binding SelectedBuildingObject.Name}"/>
                 </Grid>
             </StackPanel>
-
             <StackPanel Orientation="Horizontal" >
                 <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
@@ -111,8 +109,8 @@
                                                 Header="Наименование объекта" Width="*"   />
                             </DataGrid.Columns>
                         </DataGrid>
-                        <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
-                            <Button  Command="{ Binding AddBuildingObjectsCommand}">Добавить</Button>
+                        <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" Margin="2 2 2 2" >
+                            <Button   Command="{ Binding AddBuildingObjectsCommand}">Добавить</Button>
                             <Button Command="{Binding RemoveBuildingObjectCommand}" >Удалить</Button>
                             <Button Command="{Binding EditBuildingObjectCommand}" >Изменить</Button>
                         </StackPanel>

@@ -201,7 +201,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             ObservableCollection<bldWork> works_for_add_collection = new ObservableCollection<bldWork>();
             NameablePredicate<ObservableCollection<bldWork>, bldWork> predicate_1 = new NameablePredicate<ObservableCollection<bldWork>, bldWork>();
-            predicate_1.Name = "Показать только из текущей конструсции.";
+            predicate_1.Name = "Показать только из текущей конструкции.";
             predicate_1.Predicate = cl => cl.Where(el => el?.bldConstruction != null &&
                                                         el?.bldConstruction.Id == SelectedWork?.bldConstruction?.Id).ToList();
             NameablePredicate<ObservableCollection<bldWork>, bldWork> predicate_2 = new NameablePredicate<ObservableCollection<bldWork>, bldWork>();
@@ -307,9 +307,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
                  (SelectedWork.PreviousWorks, SelectedPreviousWork, "Предыдущая работа",
-                 () => {
-                     SelectedWork.RemovePreviousWork(SelectedPreviousWork);
-                     SelectedPreviousWork = null;
+                 (result) =>
+                 {
+                     if (result.Result == ButtonResult.Yes)
+                     {
+                         SelectedWork.RemovePreviousWork(SelectedPreviousWork);
+                         SelectedPreviousWork = null;
+                     }
                  }, _dialogService, Id); ;
         }
         private void OnRemoveNextWork()
@@ -317,9 +321,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
                  (SelectedWork.NextWorks, SelectedNextWork, "Последующая работа",
-                () => {
-                    SelectedWork.RemoveNextWork(SelectedNextWork);
-                    SelectedNextWork = null;
+                (result) =>
+                {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        SelectedWork.RemoveNextWork(SelectedNextWork);
+                        SelectedNextWork = null;
+                    }
                 }, _dialogService, Id);
         }
 

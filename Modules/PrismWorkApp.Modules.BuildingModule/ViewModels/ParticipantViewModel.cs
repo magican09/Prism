@@ -181,11 +181,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
                  (SelectedParticipant.ResponsibleEmployees, SelectedResponsibleEmployee, "Ответсвенный представитель",
-                () =>
-                {
-                    SelectedParticipant.RemoveResponsibleEmployee(SelectedResponsibleEmployee);
-                    SelectedResponsibleEmployee = null;
-                    SaveCommand.RaiseCanExecuteChanged();
+                 (result) =>
+                 {
+                     if (result.Result == ButtonResult.Yes)
+                     {
+                         SelectedParticipant.RemoveResponsibleEmployee(SelectedResponsibleEmployee);
+                         SelectedResponsibleEmployee = null;
+                         SaveCommand.RaiseCanExecuteChanged();
+                     }
                 }, _dialogService, Id);
 
         }

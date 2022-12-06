@@ -283,22 +283,28 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
           
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
                   (SelectedConstruction.Works, SelectedWork, "Работу",
-                 () =>
+                 (result) =>
                  {
-                     SelectedConstruction.RemoveWork(SelectedWork);
-                     SelectedWork = null;
-                     SaveCommand.RaiseCanExecuteChanged();
+                     if (result.Result == ButtonResult.Yes)
+                     {
+                         SelectedConstruction.RemoveWork(SelectedWork);
+                         SelectedWork = null;
+                         SaveCommand.RaiseCanExecuteChanged();
+                     }
                  }, _dialogService, Guid.Empty);
         }
         private void OnRemoveConstruction()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
                   (SelectedConstruction.Constructions, SelectedChildConstruction, "Строительную конструкцию",
-                 () =>
-                 {
-                     SelectedConstruction.RemoveConstruction(SelectedChildConstruction);
-                     SelectedChildConstruction = null;
-                     SaveCommand.RaiseCanExecuteChanged();
+                  (result) =>
+                  {
+                      if (result.Result == ButtonResult.Yes)
+                      {
+                          SelectedConstruction.RemoveConstruction(SelectedChildConstruction);
+                          SelectedChildConstruction = null;
+                          SaveCommand.RaiseCanExecuteChanged();
+                      }
                  }, _dialogService, Guid.Empty);
         }
         private bool CanSave()

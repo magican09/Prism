@@ -15,10 +15,12 @@
             <Setter Property="Width"  Value="20"/>
             <Setter Property="Height" Value="20"/>
         </Style>
+        <loc_core:BindingProxy x:Key="Proxy" Data="{Binding}" />
+        <loc_core:NextPreviousWorkMultiConverter x:Key="NextPreviousWorkMultiConverter"/>
     </UserControl.Resources>
-    
+
     <Grid>
-         <Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.05*"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
@@ -40,7 +42,7 @@
                             <ColumnDefinition Width="0.8*" x:Name="DataGridLeftCulumn"/>
                             <ColumnDefinition  Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                      
+
                         <DataGrid x:Name="bldWorks" Grid.Column="0" ItemsSource="{Binding SelectedWorksGroup}"
                                                   SelectedItem="{Binding SelectedWork}"  
                                                   Style="{StaticResource inlineDataGrid }" 
@@ -52,15 +54,6 @@
                                            CommandParameter="{Binding   SelectedItem , ElementName=bldPreviousWorksDataGrid}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                            <DataGrid.ContextMenu>
-                                <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                                    <MenuItem Header="Добавить последующую работу" Command="{Binding AddElementCommand}"
-                                              CommandParameter="{RelativeSource Mode=FindAncestor,AncestorType={x:Type FrameworkElement}}"/>
-                                    
-                                </ContextMenu>
-                            </DataGrid.ContextMenu>
-                            
-                            
                             <DataGrid.Columns>
                                 <DataGridTextColumn  Header="Код"   Width="Auto"
                                                      Binding = "{Binding Path=Code}" />
@@ -85,17 +78,32 @@
                                             <ListView ItemsSource="{Binding NextWorks}">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Vertical">
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding Path=Name}"/>
-                                                                <Button Style="{StaticResource removeAddButoomStyle}" Content="-" Command="{Binding AddNextWorkCommand}"/>
-                                                            </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" >
+                                                            <TextBlock Text="{Binding Path=Name}"/>
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>
+                                                <ListView.ContextMenu>
+                                                    <ContextMenu  ItemsSource="{Binding Source={StaticResource Proxy},Path=Data.NextWorksContextMenuCommands}">
+                                                        <ContextMenu.ItemTemplate>
+                                                            <DataTemplate DataType="{x:Type MenuItem}">
+                                                                <MenuItem Header="{Binding Name}" Command="{Binding}">
+                                                                    <MenuItem.CommandParameter>
+                                                                        <MultiBinding Converter="{StaticResource NextPreviousWorkMultiConverter}">
+                                                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ContextMenu}}" Path="PlacementTarget.SelectedItem"/>
+                                                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" Path="DataContext"/>
+                                                                        </MultiBinding>
+                                                                    </MenuItem.CommandParameter>
+                                                                </MenuItem> 
+                                                                          
+                                                            </DataTemplate>
+                                                        </ContextMenu.ItemTemplate>
+                                                    </ContextMenu>
+                                                </ListView.ContextMenu>
                                             </ListView>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
+
                                 </DataGridTemplateColumn>
                                 <DataGridTextColumn  Header="Проект"   Width="Auto"
                                                      Binding = "{Binding Path=ProjectDocuments.Name}" />
@@ -114,7 +122,7 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                            
+
                                 <DataGridTemplateColumn Header="Лаборатория">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -145,12 +153,12 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                              
-                              
+
+
 
                             </DataGrid.Columns>
                         </DataGrid>
-                     </Grid>
+                    </Grid>
                 </StackPanel>
             </StackPanel>
 

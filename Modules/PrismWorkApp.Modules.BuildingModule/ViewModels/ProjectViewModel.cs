@@ -278,11 +278,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldObjectsGroup, bldObject>
                   (SelectedProject.BuildingObjects, SelectedBuildingObject, "Строительный объект",
-                 () =>
-                 {
-                     SelectedProject.RemoveBuildindObject(SelectedBuildingObject);
-                     SelectedBuildingObject = null;
-                     SaveCommand.RaiseCanExecuteChanged();
+                  (result) =>
+                  {
+                      if (result.Result == ButtonResult.Yes)
+                      {
+                          SelectedProject.RemoveBuildindObject(SelectedBuildingObject);
+                          SelectedBuildingObject = null;
+                          SaveCommand.RaiseCanExecuteChanged();
+                      }
                  }, _dialogService, Id);
 
 
@@ -291,11 +294,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
                  (SelectedProject.Participants, SelectedParticipant, "Учасник строительства",
-                () =>
-                {
-                    SelectedProject.RemoveParticipant(SelectedParticipant);
-                    SelectedParticipant = null;
-                    SaveCommand.RaiseCanExecuteChanged();
+                 (result) =>
+                 {
+                     if (result.Result == ButtonResult.Yes)
+                     {
+                         SelectedProject.RemoveParticipant(SelectedParticipant);
+                         SelectedParticipant = null;
+                         SaveCommand.RaiseCanExecuteChanged();
+                     }
                 }, _dialogService, Id);
 
         }

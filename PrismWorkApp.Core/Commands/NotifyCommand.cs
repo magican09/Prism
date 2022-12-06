@@ -9,8 +9,9 @@ using System.Windows.Input;
 
 namespace PrismWorkApp.Core.Commands
 {
-    public class NotifyCommand : NotifyCommandBase, ICommand, IActiveAware
+    public class NotifyCommand : NotifyCommandBase, ICommand, IActiveAware, INotifyCommand
     {
+        public string Name { get; set; }
         public bool IsActive { get; set; }
         public event EventHandler IsActiveChanged;
         public event EventHandler CanExecuteChanged = delegate { };
@@ -143,8 +144,9 @@ namespace PrismWorkApp.Core.Commands
             return CanExecute(parameter);
         }
     }
-    public class NotifyCommand<T> : NotifyCommandBase, ICommand, IActiveAware
+    public class NotifyCommand<T> : NotifyCommandBase, ICommand, IActiveAware, INotifyCommand
     {
+        public string Name { get; set; }
         public bool IsActive { get; set; }
         public event EventHandler IsActiveChanged;
         public event EventHandler CanExecuteChanged = delegate { };

@@ -7,6 +7,8 @@ namespace PrismWorkApp.Core.Commands
 {
     public class NotifyCompositeCommand : ICommand
     {
+        public string Name { get; set; }
+       
         public event EventHandler CanExecuteChanged;
         protected Action _TargetExecuteMetod;
         protected Func<bool> _TargetCanExecuteMethod;

@@ -428,22 +428,28 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldObjectsGroup, bldObject>
                   (SelectedBuildingObject.BuildingObjects, SelectedChildBuildingObject, "Строительный объект",
-                 () =>
-                 {
-                     SelectedBuildingObject.RemoveBuildindObject(SelectedChildBuildingObject);
-                     SelectedChildBuildingObject = null;
-                     SaveCommand.RaiseCanExecuteChanged();
+                  (result) =>
+                  {
+                      if (result.Result == ButtonResult.Yes)
+                      {
+                          SelectedBuildingObject.RemoveBuildindObject(SelectedChildBuildingObject);
+                          SelectedChildBuildingObject = null;
+                          SaveCommand.RaiseCanExecuteChanged();
+                      }
                  }, _dialogService, Id);
        }
         private void OnRemoveConstruction()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
                   (SelectedBuildingObject.Constructions, SelectedConstruction, "Строительную конструкцию",
-                 () =>
-                 {
-                     SelectedBuildingObject.RemoveConstruction(SelectedConstruction);
-                     SelectedConstruction = null;
-                     SaveCommand.RaiseCanExecuteChanged();
+                  (result) =>
+                  {
+                      if (result.Result == ButtonResult.Yes)
+                      {
+                          SelectedBuildingObject.RemoveConstruction(SelectedConstruction);
+                          SelectedConstruction = null;
+                          SaveCommand.RaiseCanExecuteChanged();
+                      }
                  }, _dialogService, Id);
         }
         private void OnRemoveResponsibleEmployee()
@@ -462,11 +468,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
                  (SelectedBuildingObject.Participants, SelectedParticipant, "Учасник строительства",
-                () =>
-                {
-                    SelectedBuildingObject.RemoveParticipant(SelectedParticipant);
-                    SelectedParticipant = null;
-                    SaveCommand.RaiseCanExecuteChanged();
+                 (result) =>
+                 {
+                     if (result.Result == ButtonResult.Yes)
+                     {
+                         SelectedBuildingObject.RemoveParticipant(SelectedParticipant);
+                         SelectedParticipant = null;
+                         SaveCommand.RaiseCanExecuteChanged();
+                     }
                 }, _dialogService, Id);
 
         }

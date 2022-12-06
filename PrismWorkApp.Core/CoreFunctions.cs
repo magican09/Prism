@@ -37,7 +37,7 @@ namespace PrismWorkApp.Core
 
         public static void RemoveElementFromCollectionWhithDialog<TContainer, T>
                (TContainer collection, T element, string element_type_name,
-            Action elm_erase_action, IDialogService dialogService, Guid current_context_id)
+            Action<IDialogResult> elm_erase_action, IDialogService dialogService, Guid current_context_id)
            where TContainer : ICollection<T>, INameableOservableCollection<T>
            where T : class, INameable, IRegisterable
         {
@@ -53,18 +53,16 @@ namespace PrismWorkApp.Core
            {
                if (result.Result == ButtonResult.Yes)
                {
-                   // collection.Remove(element);
-                   //  (collection as INotifyJornalableCollectionChanged).Remove(element, current_context_id);
                    var res_massage = result.Parameters.GetValue<string>("confirm_dialog_param");
                    var p = new DialogParameters();
                    p.Add("message", $"{element_type_name.ToUpper()} " +
                        $"\"{element.Name}\" удален!");
+                   elm_erase_action.Invoke(new DialogResult(ButtonResult.Yes));
                    dialogService.Show(typeof(MessageDialog).Name, p, (r) => { });
-                   elm_erase_action.Invoke();
-               }
+                 }
                if (result.Result == ButtonResult.No)
                {
-                   elm_erase_action.Invoke();
+                   elm_erase_action.Invoke(new DialogResult(ButtonResult.No));
                }
            });
 
@@ -324,6 +322,42 @@ namespace PrismWorkApp.Core
 
             dialogService.ShowDialog(dialogViewName, dialog_par, action);
         }
+        public static void AddElementsToCollectionWhithDialogList<TContainer, T>
+       (TContainer currentCollection,
+       TContainer commonCollection_all,
+        NameablePredicateObservableCollection<TContainer, T> predicate_collection,// commonCollection_restricted,
+        IDialogService dialogService, Action<IDialogResult> action,
+           string dialogViewName,
+           string newObjectDialogName,
+           IUnDoReDoSystem undo_redo,
+           string title = "",
+           string message = "",
+           string currentCollectionName = "",
+           string commonCollectionName = ""
+           )
+       where TContainer : ICollection<T>, new()
+       where T : class
+        {
+            TContainer current_collection = new TContainer();
+            TContainer common_collection = new TContainer();
+            current_collection = currentCollection;
+            common_collection = commonCollection_all;
+            var dialog_par = new DialogParameters();
+            dialog_par.Add("title", title);
+            dialog_par.Add("message", message);
+            dialog_par.Add("current_collection_name", currentCollectionName);
+            dialog_par.Add("common_collection_name", commonCollectionName);
+            dialog_par.Add("common_collection", common_collection);
+            dialog_par.Add("current_collection", current_collection);
+            dialog_par.Add("confirm_button_content", "Сохранить");
+            dialog_par.Add("refuse_button_content", "Закрыть");
+            dialog_par.Add("new_object_dialog_name", newObjectDialogName);
+            dialog_par.Add("undo_redo",  undo_redo);
+            dialog_par.Add("predicate_collection", predicate_collection);
+
+            dialogService.ShowDialog(dialogViewName, dialog_par, action);
+        }
+     
         public static void AddElementToCollectionWhithDialog_Test<TContainer, T>
            (TContainer currentCollection,
            TContainer commonCollection_all,

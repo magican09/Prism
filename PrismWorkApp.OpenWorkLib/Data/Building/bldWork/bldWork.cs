@@ -260,26 +260,27 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void AddLaboratoryReport(bldLaboratoryReport document)
         {
-            AddToCollectionCommand<ICollection<bldLaboratoryReport>, bldLaboratoryReport> Command =
-                new AddToCollectionCommand<ICollection<bldLaboratoryReport>, bldLaboratoryReport>(this.LaboratoryReports, document);
+           AddLaboratoryReportCommand Command =
+                new AddLaboratoryReportCommand(this, document);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void RemoveLaboratoryReport(bldLaboratoryReport document)
         {
-            RemoveFromCollectionCommand<ICollection<bldLaboratoryReport>, bldLaboratoryReport> Command =
-               new RemoveFromCollectionCommand<ICollection<bldLaboratoryReport>, bldLaboratoryReport>(this.LaboratoryReports, document);
+            RemoveLaboratoryReportCommand Command =
+               new RemoveLaboratoryReportCommand(this, document);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void AddExecutiveScheme(bldExecutiveScheme scheme)
         {
-            AddToCollectionCommand<ICollection<bldExecutiveScheme>, bldExecutiveScheme> Command =
-                new AddToCollectionCommand<ICollection<bldExecutiveScheme>, bldExecutiveScheme>(this.ExecutiveSchemes, scheme);
+
+            AddExecutiveSchemeCommand Command =
+                new AddExecutiveSchemeCommand(this, scheme);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void RemoveExecutiveScheme(bldExecutiveScheme scheme)
         {
-            RemoveFromCollectionCommand<ICollection<bldExecutiveScheme>, bldExecutiveScheme> Command =
-               new RemoveFromCollectionCommand<ICollection<bldExecutiveScheme>, bldExecutiveScheme>(this.ExecutiveSchemes, scheme);
+            RemoveExecutiveSchemeCommand Command =
+                new RemoveExecutiveSchemeCommand(this, scheme);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         #endregion

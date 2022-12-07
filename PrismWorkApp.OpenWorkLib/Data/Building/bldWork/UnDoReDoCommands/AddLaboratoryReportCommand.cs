@@ -10,7 +10,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private bldWork _CurrentWork;
         private bldLaboratoryReport _AddedReport;
 
-        public string Name { get; set; } = "Добавлен материал к работе";
+        public string Name { get; set; } = "Добавлен докумет к работе";
 
         public event EventHandler CanExecuteChanged;
 
@@ -21,23 +21,23 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public void Execute(object parameter = null)
         {
-            _CurrentWork.Materials.Add(_AddedMaterial);
-            foreach(bldDocument document in _AddedMaterial.Documents)
-                _CurrentWork.AOSRDocument.AttachedDocuments.Add(document);
+            _CurrentWork.LaboratoryReports.Add(_AddedReport);
+            _CurrentWork.AOSRDocument.AttachedDocuments.Add(_AddedReport);
         }
 
         public void UnExecute()
         {
-            _CurrentWork.Materials.Remove(_AddedMaterial);
-            foreach(bldDocument document in _AddedMaterial.Documents)
-                _CurrentWork.AOSRDocument.AttachedDocuments.Remove(document);
+            _CurrentWork.LaboratoryReports.Remove(_AddedReport);
+            _CurrentWork.AOSRDocument.AttachedDocuments.Remove(_AddedReport);
         }
         public AddLaboratoryReportCommand(bldWork work, bldLaboratoryReport report)
         {
             _CurrentWork = work;
             _AddedReport = report;
 
-            _CurrentWork
+            _CurrentWork.LaboratoryReports.Add(_AddedReport);
+            _CurrentWork.AOSRDocument.AttachedDocuments.Add(_AddedReport);
+
 
         }
     }

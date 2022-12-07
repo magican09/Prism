@@ -316,10 +316,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                                               + " " + bld_work?.WorkArea.Levels;
                             bld_executiveScheme.FullName = bld_executiveScheme.Name + " №" + bld_executiveScheme.RegId.ToString();
                         }
-                        if (ExecutiveSchemes.Where(esh => esh.FullName == bld_executiveScheme.FullName).FirstOrDefault() != null)
-                            bld_executiveScheme = ExecutiveSchemes.Where(esh => esh.FullName == bld_executiveScheme.FullName).FirstOrDefault();
-                        else
-                            ExecutiveSchemes.Add(bld_executiveScheme);
+                        //if (ExecutiveSchemes.Where(esh => esh.FullName == bld_executiveScheme.FullName).FirstOrDefault() != null)
+                        //    bld_executiveScheme = ExecutiveSchemes.Where(esh => esh.FullName == bld_executiveScheme.FullName).FirstOrDefault();
+                        //else
+                        //    ExecutiveSchemes.Add(bld_executiveScheme);
 
                         bld_work.ExecutiveSchemes.Add(bld_executiveScheme); //Временно. Исполнительные схемы -  просто список в имя одной схмемы
                     }

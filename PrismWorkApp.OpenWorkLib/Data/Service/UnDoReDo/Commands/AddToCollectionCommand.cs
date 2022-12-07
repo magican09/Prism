@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
+namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public class AddToCollectionCommand<TColloction, TEntity> : IUnDoRedoCommand
        where TColloction : ICollection<TEntity>

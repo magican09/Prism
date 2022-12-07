@@ -5,6 +5,7 @@ using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
@@ -180,7 +181,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnRemoveResponsibleEmployee()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
-                 (SelectedParticipant.ResponsibleEmployees, SelectedResponsibleEmployee, "Ответсвенный представитель",
+                 (SelectedResponsibleEmployee, "Ответсвенный представитель",
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)

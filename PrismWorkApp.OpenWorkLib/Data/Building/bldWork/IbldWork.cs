@@ -10,6 +10,7 @@
         public bldWorksGroup NextWorks { get; set; }
         public bldLaboratoryReportsGroup LaboratoryReports { get; set; }
         public bldExecutiveSchemesGroup ExecutiveSchemes { get; set; }
-        public bldAOSRDocumentsGroup AOSRDocuments { get; set; }
+        // public bldAOSRDocumentsGroup AOSRDocuments { get; set; }
+        public bldAOSRDocument AOSRDocument { get; set; }
     }
 }

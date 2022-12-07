@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
+namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public class UnDoReDoSystem : IUnDoReDoSystem,IUnDoRedoCommand
     {

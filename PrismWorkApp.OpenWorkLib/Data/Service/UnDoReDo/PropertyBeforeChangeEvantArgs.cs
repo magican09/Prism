@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
+namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public delegate void PropertyBeforeChangeEventHandler(object sender, PropertyBeforeChangeEvantArgs e);
     public class PropertyBeforeChangeEvantArgs : EventArgs

@@ -2,6 +2,7 @@
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections.Generic;
@@ -68,6 +69,12 @@ namespace PrismWorkApp.Core.Dialogs
             get { return _sortedCommonCollection; }
             set { SetProperty(ref _sortedCommonCollection, value); }
         }
+        private TConteiner _filteredCommonCollection = new TConteiner();
+        public TConteiner FilteredCommonCollection
+        {
+            get { return _filteredCommonCollection; }
+            set { SetProperty(ref _filteredCommonCollection, value); }
+        }
         private TConteiner _currentCollection;
         public TConteiner CurrentCollection
         {
@@ -122,10 +129,17 @@ namespace PrismWorkApp.Core.Dialogs
         public NotifyCommand CloseDialogCommand { get; private set; }
         public NotifyCommand CreateNewElementCommand { get; private set; }
         public NotifyCommand CreateElementOnPatternInstanceCommand { get; private set; }
-        public NotifyCommand AddToCollectionCommand { get; private set; }
+        //public NotifyCommand AddToCollectionCommand { get; private set; }
         public NotifyCommand RemoveFromCollectionCommand { get; private set; }
         public NotifyCommand SortingCommand { get; private set; }
-        public NotifyCommand<object> FindElementsCommand { get; private set; }
+        public NotifyCommand<object> FilteredElementCommand { get; private set; }
+        private bool _filterEnable;
+
+        public bool FilterEnable
+        {
+            get { return _filterEnable; }
+            set { SetProperty(ref _filterEnable, value); }
+        }
 
         public event Action<IDialogResult> RequestClose;
         public event Action<IDialogResult> RequestNewObject;
@@ -140,24 +154,31 @@ namespace PrismWorkApp.Core.Dialogs
             CreateNewElementCommand = new NotifyCommand(OnCreateNewElement);
             CreateElementOnPatternInstanceCommand = new NotifyCommand(OnCreateElementOnPatternInstance, CanCreateElementOnPatternInstance)
                       .ObservesProperty(() => SelectedElement);
-            AddToCollectionCommand = new NotifyCommand(OnAddToCollection, CanAddToCollection)
-                      .ObservesProperty(() => SelectedElement);
-            RemoveFromCollectionCommand = new NotifyCommand(OnRemoveFromCollection, CanRemoveFromCollection)
-                      .ObservesProperty(() => SelectedElement);
+            //AddToCollectionCommand = new NotifyCommand(OnAddToCollection, CanAddToCollection)
+            //          .ObservesProperty(() => SelectedElement);
+
             SortingCommand = new NotifyCommand(OnSortingCommand, CanSorting)
                 .ObservesProperty(() => SelectedPredicate);
-            FindElementsCommand = new NotifyCommand<object>(OnFindElement);
+            FilteredElementCommand = new NotifyCommand<object>(OnFilteredElement);
+         
             _dialogService = dialogService;
         }
 
-        private void OnFindElement(object obj)
+        private void OnFilteredElement(object obj)
         {
-            ComboBox comboBox = obj as ComboBox;
-            string combo_box_text = comboBox.Text;
-            ObservableCollection<T> finded_elements =
-                new ObservableCollection<T>(CommonCollection.Where(el=>el.Name.Contains(combo_box_text)).ToList());
+            //ComboBox comboBox = obj as ComboBox;
+            //string combo_box_text = comboBox.Text;
+            //comboBox.IsDropDownOpen = true;
 
-            comboBox.ItemsSource = finded_elements;
+            //ObservableCollection<T> finded_elements =
+            //    new ObservableCollection<T>(CommonCollection.Where(el=>el.Name.Contains(combo_box_text)).ToList());
+            //comboBox.ItemsSource = finded_elements;
+            if (!FilterEnable) return;
+            TextBox textBox = obj as TextBox;
+            string text_box_text = textBox.Text;
+            FilteredCommonCollection.Clear();
+            foreach (T elemtnt in SortedCommonCollection.Where(el => el.Name.Contains(text_box_text)))
+                FilteredCommonCollection.Add(elemtnt);
         }
 
         private bool CanSorting()
@@ -168,8 +189,12 @@ namespace PrismWorkApp.Core.Dialogs
         private void OnSortingCommand()
         {
             SortedCommonCollection.Clear();
+            FilteredCommonCollection.Clear();
             foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
+            {
                 SortedCommonCollection.Add(element);
+                FilteredCommonCollection.Add(element);
+            }
 
         }
 
@@ -177,28 +202,8 @@ namespace PrismWorkApp.Core.Dialogs
         {
             return CurrentCollection.Contains(SelectedElement);
         }
+              
 
-        private void OnRemoveFromCollection()
-        {
-            //  CoreFunctions.SetAllIdToZero(SelectedElement);
-            CommonCollection.Add(SelectedElement);
-            CurrentCollection.Remove(SelectedElement);
-            ///  SelectedElement = null;
-        }
-
-        private bool CanAddToCollection()
-        {
-            return CommonCollection.Contains(SelectedElement);
-        }
-
-        private void OnAddToCollection()
-        {
-            Guid selected_item_id = ((IEntityObject)SelectedElement).Id;
-            CurrentCollection.Add(SelectedElement);
-            CommonCollection.Remove(SelectedElement);
-            var selected_element = CurrentCollection.Where(el => el.Id == selected_item_id).FirstOrDefault();
-            //    CoreFunctions.SetAllIdToZero(selected_element);
-        }
 
         private bool CanCreateElementOnPatternInstance()
         {
@@ -282,8 +287,8 @@ namespace PrismWorkApp.Core.Dialogs
             foreach (DataGridCellInfo cell_info in (IList<DataGridCellInfo>)elements)
             {
                  T element =  cell_info.Item as T;
-                CurrentCollection.Add(element);
-                CommonCollection.Remove(element);
+               if(!CurrentCollection.Contains(element)) CurrentCollection.Add(element);
+                if (!CommonCollection.Contains(element)) CommonCollection.Remove(element);
             }
             var result = ButtonResult.Yes;
             var param = new DialogParameters();
@@ -332,6 +337,7 @@ namespace PrismWorkApp.Core.Dialogs
            
             foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
                 SortedCommonCollection.Add(element);
+            FilterEnable = false;
         }
     }
 }

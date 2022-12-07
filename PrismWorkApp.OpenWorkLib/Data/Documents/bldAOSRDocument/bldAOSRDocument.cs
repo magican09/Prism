@@ -49,6 +49,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
 
         }
+        public Guid bldWorkId { get; set; }
         private bldWork _work;
         [NavigateProperty]
         public virtual bldWork bldWork
@@ -438,8 +439,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
                         //world_document.Bookmarks["Date_Begin"].Range.Text = current_work.StartTime.ToString("d");
                         // world_document.Bookmarks["Date_End"].Range.Text = current_work.EndTime.ToString("d
-                        world_document.Bookmarks["Date_Begin"].Range.Text = current_work.AOSRDocuments[0].StartTime.ToString("d");
-                        world_document.Bookmarks["Date_End"].Range.Text = current_work.AOSRDocuments[0].EndTime?.ToString("d");
+                        world_document.Bookmarks["Date_Begin"].Range.Text = current_work.AOSRDocument.StartTime.ToString("d");
+                        world_document.Bookmarks["Date_End"].Range.Text = current_work.AOSRDocument.EndTime?.ToString("d");
 
                     }
                 }

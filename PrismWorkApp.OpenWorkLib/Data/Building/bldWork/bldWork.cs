@@ -1,5 +1,7 @@
 ﻿using System;
-
+using System.Collections;
+using System.Collections.Generic;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldWork : BindableBase, IbldWork, ICloneable, IEntityObject//, IJornalable
@@ -91,7 +93,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _scopeOfWork, value); }
         }
 
-        private bldMaterialsGroup _materials = new bldMaterialsGroup("МР:");
+        private bldMaterialsGroup _materials = new bldMaterialsGroup("Использованные материалы (МР)");
         public virtual bldMaterialsGroup Materials
         {
             get { return _materials; }
@@ -129,19 +131,23 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _laboratoryReports; }
             set { SetProperty(ref _laboratoryReports, value); }
         }
-
         private bldExecutiveSchemesGroup _executiveSchemes = new bldExecutiveSchemesGroup("Исполнительные схемы");
         public bldExecutiveSchemesGroup ExecutiveSchemes
         {
             get { return _executiveSchemes; }
             set { SetProperty(ref _executiveSchemes, value); }
         }
-
-        private bldAOSRDocumentsGroup _aOSRDocuments = new bldAOSRDocumentsGroup("Акты АОСР");
-        public bldAOSRDocumentsGroup AOSRDocuments
+        //private bldAOSRDocumentsGroup _aOSRDocuments = new bldAOSRDocumentsGroup("Акты АОСР");
+        //public bldAOSRDocumentsGroup AOSRDocuments
+        //{
+        //    get { return _aOSRDocuments; }
+        //    set { SetProperty(ref _aOSRDocuments, value); }
+        //}
+        private bldAOSRDocument _aOSRDocument;
+        public bldAOSRDocument AOSRDocument
         {
-            get { return _aOSRDocuments; }
-            set { SetProperty(ref _aOSRDocuments, value); }
+            get { return _aOSRDocument; }
+            set { SetProperty(ref _aOSRDocument, value); }
         }
         private bldProjectDocumentsGroup _projectDocuments = new bldProjectDocumentsGroup("Рабочая документация");
         public bldProjectDocumentsGroup ProjectDocuments
@@ -156,6 +162,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _regulationDocuments, value); }
         }
 
+        private bldWorkExecutiveDocumentation _executiveDocumentation;
+        public bldWorkExecutiveDocumentation? ExecutiveDocumentation
+        {
+            get
+            {
+                return _executiveDocumentation;
+            }
+            set { SetProperty(ref _executiveDocumentation, value); }
+        }
         private bldParticipantsGroup _participants;
         public bldParticipantsGroup? Participants
         {
@@ -176,7 +191,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             PreviousWorks.CopingEnable = false; //отключаем при копировании
             NextWorks.CopingEnable = false; //отключаем при копировании 
-            RestrictionPredicate = x => x.CopingEnable;// Определяет условтия я своего копировани в время глубокого копирования рефлексией 
+    //        RestrictionPredicate = x => x.CopingEnable;// Определяет условтия я своего копировани в время глубокого копирования рефлексией 
         }
 
         public object Clone()
@@ -185,16 +200,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void SaveAOSRsToWord(string folderPath)
         {
-            if (AOSRDocuments.Count > 1)
-            {
-                folderPath = System.IO.Path.Combine(folderPath, this.Name);
-                System.IO.Directory.CreateDirectory(folderPath);
-            }
-            foreach (bldAOSRDocument aOSRDocument in AOSRDocuments)
-            {
-                
-                aOSRDocument.SaveAOSRToWord(folderPath);
-            }
+            //if (AOSRDocuments.Count > 1)
+            //{
+            //    folderPath = System.IO.Path.Combine(folderPath, this.Name);
+            //    System.IO.Directory.CreateDirectory(folderPath);
+            //}
+            //foreach (bldAOSRDocument aOSRDocument in AOSRDocuments)
+            //{
+
+            //    aOSRDocument.SaveAOSRToWord(folderPath);
+            //}
+            if (AOSRDocument != null) AOSRDocument.SaveAOSRToWord(folderPath);
         }
 
         #region EditMethods
@@ -220,7 +236,52 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 new AddNextWorkCommand(this, work);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-
+        public void AddMaterial(bldMaterial material)
+        {
+            AddMaterialCommand Command = new AddMaterialCommand(this, material);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void RemoveMaterial(bldMaterial material)
+        {
+            RemoveMaterialCommand Command = new RemoveMaterialCommand(this, material);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddProjectDocument(bldProjectDocument document)
+        {
+            AddToCollectionCommand<ICollection<bldProjectDocument>, bldProjectDocument> Command =
+                new AddToCollectionCommand<ICollection<bldProjectDocument>, bldProjectDocument>(this.ProjectDocuments, document);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void RemoveProjectDocument(bldProjectDocument document)
+        {
+             RemoveFromCollectionCommand<ICollection<bldProjectDocument>, bldProjectDocument> Command =
+                new RemoveFromCollectionCommand<ICollection<bldProjectDocument>, bldProjectDocument>(this.ProjectDocuments, document);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddLaboratoryReport(bldLaboratoryReport document)
+        {
+            AddToCollectionCommand<ICollection<bldLaboratoryReport>, bldLaboratoryReport> Command =
+                new AddToCollectionCommand<ICollection<bldLaboratoryReport>, bldLaboratoryReport>(this.LaboratoryReports, document);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void RemoveLaboratoryReport(bldLaboratoryReport document)
+        {
+            RemoveFromCollectionCommand<ICollection<bldLaboratoryReport>, bldLaboratoryReport> Command =
+               new RemoveFromCollectionCommand<ICollection<bldLaboratoryReport>, bldLaboratoryReport>(this.LaboratoryReports, document);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddExecutiveScheme(bldExecutiveScheme scheme)
+        {
+            AddToCollectionCommand<ICollection<bldExecutiveScheme>, bldExecutiveScheme> Command =
+                new AddToCollectionCommand<ICollection<bldExecutiveScheme>, bldExecutiveScheme>(this.ExecutiveSchemes, scheme);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void RemoveExecutiveScheme(bldExecutiveScheme scheme)
+        {
+            RemoveFromCollectionCommand<ICollection<bldExecutiveScheme>, bldExecutiveScheme> Command =
+               new RemoveFromCollectionCommand<ICollection<bldExecutiveScheme>, bldExecutiveScheme>(this.ExecutiveSchemes, scheme);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
         #endregion
 
 

@@ -14,6 +14,11 @@ namespace PrismWorkApp.Services.Repositories
 
         public bldParticipantRolesRepository ParticipantRolesRepository { get; }
         public bldResponsibleEmployeeRoleRepository ResponsibleEmployeeRoleRepository { get; }
+        public bldUnitOfMeasurementRepository  UnitOfMeasurementRepository { get; }
+        public bldMaterialsRepository Materials { get; }
+        public bldProjectDocumentsRepository ProjectDocuments { get; }
+        public bldLaboratoryReportsRepository  LaboratoryReports { get; }
+        public  bldExecutiveSchemesRepository  ExecutiveSchemes { get; }
         public int Complete();
     }
 }

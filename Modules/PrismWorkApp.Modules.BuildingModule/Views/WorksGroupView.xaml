@@ -15,8 +15,13 @@
             <Setter Property="Width"  Value="20"/>
             <Setter Property="Height" Value="20"/>
         </Style>
+        <Style x:Key="codeTextBoxStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0 0 5 0"/>
+        </Style>
+        
         <loc_core:BindingProxy x:Key="Proxy" Data="{Binding}" />
         <loc_core:NextPreviousWorkMultiConverter x:Key="NextPreviousWorkMultiConverter"/>
+        <loc_core:ObjectsPairMultiConverter x:Key="ObjectsPairMultiConverter"/>
     </UserControl.Resources>
 
     <Grid>
@@ -69,9 +74,27 @@
                                                      Binding = "{Binding Path=WorkArea.Axes}" />
                                 <DataGridTextColumn  Header="Объем"   Width="Auto"
                                                      Binding = "{Binding Path=Quantity}" />
-                                <DataGridTextColumn  Header="Ед.изм."   Width="Auto"
-                                                     Binding = "{Binding Path=UnitOfMeasurement.Name}" />
-
+              
+                                <DataGridTemplateColumn Header="Ед.изм">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                                <TextBlock Text="{Binding Path=UnitOfMeasurement.Name, Mode=OneWay}">
+                                                <TextBlock.ContextMenu>
+                                                    <ContextMenu ItemsSource="{Binding Source={StaticResource Proxy},Path=Data.UnitsOfMeasurementContextMenuCommands}">
+                                                        <ContextMenu.ItemTemplate>
+                                                            <DataTemplate DataType="{x:Type MenuItem}">
+                                                                <MenuItem Header="{Binding Name}" Command="{Binding}"
+                                                                      CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridRow}}, Path=DataContext}" >
+                                                                </MenuItem>
+                                                            </DataTemplate>
+                                                        </ContextMenu.ItemTemplate>
+                                                    </ContextMenu>
+                                                </TextBlock.ContextMenu>
+                                            </TextBlock>
+                                       </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    
+                                </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Header="Последующие работы">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -79,6 +102,7 @@
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal" >
+                                                            <TextBlock Style="{StaticResource codeTextBoxStyle }" Text="{Binding Path=Code}" />
                                                             <TextBlock Text="{Binding Path=Name}"/>
                                                         </StackPanel>
                                                     </DataTemplate>
@@ -95,7 +119,6 @@
                                                                         </MultiBinding>
                                                                     </MenuItem.CommandParameter>
                                                                 </MenuItem> 
-                                                                          
                                                             </DataTemplate>
                                                         </ContextMenu.ItemTemplate>
                                                     </ContextMenu>
@@ -105,50 +128,134 @@
                                     </DataGridTemplateColumn.CellTemplate>
 
                                 </DataGridTemplateColumn>
-                                <DataGridTextColumn  Header="Проект"   Width="Auto"
-                                                     Binding = "{Binding Path=ProjectDocuments.Name}" />
+                           
+                                <DataGridTemplateColumn Header="Проект">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ListView ItemsSource="{Binding ProjectDocuments}">
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal" >
+                                                            <TextBlock Style="{StaticResource codeTextBoxStyle }" Text="{Binding Path=Code}" />
+                                                            <TextBlock Text="{Binding Path=Name}"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                                <ListView.ContextMenu>
+                                                    <ContextMenu  ItemsSource="{Binding Source={StaticResource Proxy},Path=Data.ProjectDocumentationContextMenuCommands}">
+                                                        <ContextMenu.ItemTemplate>
+                                                            <DataTemplate DataType="{x:Type MenuItem}">
+                                                                <MenuItem Header="{Binding Name}" Command="{Binding}">
+                                                                    <MenuItem.CommandParameter>
+                                                                        <MultiBinding Converter="{StaticResource NextPreviousWorkMultiConverter}">
+                                                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ContextMenu}}" Path="PlacementTarget.SelectedItem"/>
+                                                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" Path="DataContext"/>
+                                                                        </MultiBinding>
+                                                                    </MenuItem.CommandParameter>
+                                                                </MenuItem>
+                                                            </DataTemplate>
+                                                        </ContextMenu.ItemTemplate>
+                                                    </ContextMenu>
+                                                </ListView.ContextMenu>
+                                            </ListView>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                
                                 <DataGridTemplateColumn Header="Материалы">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <ListView ItemsSource="{Binding Materials}">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Vertical">
+                                                        <StackPanel Orientation="Horizontal" >
+                                                            <TextBlock Style="{StaticResource codeTextBoxStyle }" Text="{Binding Path=Code}" />
                                                             <TextBlock Text="{Binding Path=Name}"/>
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>
+                                                <ListView.ContextMenu>
+                                                    <ContextMenu  ItemsSource="{Binding Source={StaticResource Proxy},Path=Data.MaterialsContextMenuCommands}">
+                                                        <ContextMenu.ItemTemplate>
+                                                            <DataTemplate DataType="{x:Type MenuItem}">
+                                                                <MenuItem Header="{Binding Name}" Command="{Binding}">
+                                                                    <MenuItem.CommandParameter>
+                                                                        <MultiBinding Converter="{StaticResource NextPreviousWorkMultiConverter}">
+                                                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ContextMenu}}" Path="PlacementTarget.SelectedItem"/>
+                                                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" Path="DataContext"/>
+                                                                        </MultiBinding>
+                                                                    </MenuItem.CommandParameter>
+                                                                </MenuItem>
+                                                            </DataTemplate>
+                                                        </ContextMenu.ItemTemplate>
+                                                    </ContextMenu>
+                                                </ListView.ContextMenu>
                                             </ListView>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-
+                                
                                 <DataGridTemplateColumn Header="Лаборатория">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <ListView ItemsSource="{Binding LaboratoryReports}">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Vertical">
+                                                        <StackPanel Orientation="Horizontal" >
+                                                            <TextBlock Style="{StaticResource codeTextBoxStyle }" Text="{Binding Path=Code}" />
                                                             <TextBlock Text="{Binding Path=Name}"/>
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>
+                                                <ListView.ContextMenu>
+                                                    <ContextMenu  ItemsSource="{Binding Source={StaticResource Proxy},Path=Data.LaboratoryReportsContextMenuCommands}">
+                                                        <ContextMenu.ItemTemplate>
+                                                            <DataTemplate DataType="{x:Type MenuItem}">
+                                                                <MenuItem Header="{Binding Name}" Command="{Binding}">
+                                                                    <MenuItem.CommandParameter>
+                                                                        <MultiBinding Converter="{StaticResource NextPreviousWorkMultiConverter}">
+                                                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ContextMenu}}" Path="PlacementTarget.SelectedItem"/>
+                                                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" Path="DataContext"/>
+                                                                        </MultiBinding>
+                                                                    </MenuItem.CommandParameter>
+                                                                </MenuItem>
+                                                            </DataTemplate>
+                                                        </ContextMenu.ItemTemplate>
+                                                    </ContextMenu>
+                                                </ListView.ContextMenu>
                                             </ListView>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+                                
                                 <DataGridTemplateColumn Header="Испольнительная схема">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <ListView ItemsSource="{Binding ExecutiveSchemes}">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Vertical">
+                                                        <StackPanel Orientation="Horizontal" >
+                                                            <TextBlock Style="{StaticResource codeTextBoxStyle }" Text="{Binding Path=Code}" />
                                                             <TextBlock Text="{Binding Path=Name}"/>
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>
+                                                <ListView.ContextMenu>
+                                                    <ContextMenu  ItemsSource="{Binding Source={StaticResource Proxy},Path=Data.ExecutiveSchemesContextMenuCommands}">
+                                                        <ContextMenu.ItemTemplate>
+                                                            <DataTemplate DataType="{x:Type MenuItem}">
+                                                                <MenuItem Header="{Binding Name}" Command="{Binding}">
+                                                                    <MenuItem.CommandParameter>
+                                                                        <MultiBinding Converter="{StaticResource NextPreviousWorkMultiConverter}">
+                                                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ContextMenu}}" Path="PlacementTarget.SelectedItem"/>
+                                                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" Path="DataContext"/>
+                                                                        </MultiBinding>
+                                                                    </MenuItem.CommandParameter>
+                                                                </MenuItem>
+                                                            </DataTemplate>
+                                                        </ContextMenu.ItemTemplate>
+                                                    </ContextMenu>
+                                                </ListView.ContextMenu>
                                             </ListView>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>

@@ -46,7 +46,7 @@ namespace PrismWorkApp.Services.Repositories
                        .ThenInclude(cn => cn.Works)
                        .ThenInclude(wr => wr.PreviousWorks)
                        .ThenInclude(wr => wr.NextWorks)
-                       .ThenInclude(wr => wr.AOSRDocuments)
+                       .ThenInclude(wr => wr.AOSRDocument)
                        .ThenInclude(wr => wr.AttachedDocuments)
                     .Include(pr => pr.Participants)
                         .ThenInclude(cm => cm.ConstructionCompany)
@@ -118,7 +118,8 @@ namespace PrismWorkApp.Services.Repositories
             PlutoContext.Constructions.ToList();
             PlutoContext.Works
                .Include(el => el.NextWorks)
-               .Include(el => el.PreviousWorks).ToList();
+               .Include(el => el.PreviousWorks)
+               .Include(el=>el.ProjectDocuments).ToList();
             PlutoContext.Materials.ToList();
             PlutoContext.ProjectDocuments.ToList();
             PlutoContext.ExecutiveSchemes.ToList();
@@ -128,13 +129,13 @@ namespace PrismWorkApp.Services.Repositories
             PlutoContext.Employees.ToList();
             PlutoContext.ConstructionCompanies.ToList();
             PlutoContext.AOSRDocuments.ToList();
-            PlutoContext.AOSRDocuments.ToList();
             PlutoContext.EmployeePositions.ToList();
             PlutoContext.LaboratoryReports.ToList();
             PlutoContext.MaterialCertificates.ToList();
             PlutoContext.RegulationtDocuments.ToList();
             PlutoContext.ResponsibleEmployees.Include(em => em.DocConfirmingTheAthority).ToList();
             PlutoContext.WorkAreas.ToList();
+            PlutoContext.UnitOfMeasurements.ToList();
             PlutoContext.Projects
                 .Include(p => p.Participants)
                 .ThenInclude(pr => pr.ConstructionCompany)

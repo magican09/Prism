@@ -5,6 +5,7 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
@@ -306,7 +307,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ObservableCollection<bldWork> works_for_remove_collection = new ObservableCollection<bldWork>();
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
-                 (SelectedWork.PreviousWorks, SelectedPreviousWork, "Предыдущая работа",
+                 ( SelectedPreviousWork, "Предыдущая работа",
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)
@@ -320,7 +321,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
-                 (SelectedWork.NextWorks, SelectedNextWork, "Последующая работа",
+                 (SelectedNextWork, "Последующая работа",
                 (result) =>
                 {
                     if (result.Result == ButtonResult.Yes)
@@ -382,7 +383,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedWork.ErrorsChanged += RaiseCanExecuteChanged;
         
                 AllDocuments.Clear();
-                if (SelectedWork.AOSRDocuments.Count > 0) AllDocuments.Add(SelectedWork.AOSRDocuments.Id, SelectedWork.AOSRDocuments);
+                if (SelectedWork.AOSRDocument!=null) AllDocuments.Add(SelectedWork.AOSRDocument.Id, SelectedWork.AOSRDocument);
                 if (SelectedWork.LaboratoryReports.Count > 0) AllDocuments.Add(SelectedWork.LaboratoryReports.Id, SelectedWork.LaboratoryReports);
                 if (SelectedWork.ExecutiveSchemes.Count > 0) AllDocuments.Add(SelectedWork.ExecutiveSchemes.Id, SelectedWork.ExecutiveSchemes);
                 Title = ResivedWork.ShortName;

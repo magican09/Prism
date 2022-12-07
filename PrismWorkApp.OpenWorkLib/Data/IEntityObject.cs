@@ -9,6 +9,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public Guid Id { get; set; }
         public Guid StoredId { get; set; }
         public Func<IEntityObject, bool> RestrictionPredicate { get; set; }
-        public bool CopingEnable { get; set; }
+     //   public bool CopingEnable { get; set; }
     }
 }

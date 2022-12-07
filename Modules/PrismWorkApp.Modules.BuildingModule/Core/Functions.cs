@@ -24,6 +24,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             bldMaterialsGroup BldMaterials = new bldMaterialsGroup();
             bldLaboratoryReportsGroup bld_LaboratoryReports = new bldLaboratoryReportsGroup();
             bldParticipantsGroup bld_Participants = new bldParticipantsGroup();
+            bldProjectDocumentsGroup bldProjectDocuments = new bldProjectDocumentsGroup();
+            bldRegulationtDocumentsGroup  RegulationtDocuments = new bldRegulationtDocumentsGroup();
+            bldExecutiveSchemesGroup ExecutiveSchemes = new  bldExecutiveSchemesGroup();
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "EXCEL Files (*.xlsx)|*.xlsx|EXCEL Files 2003 (*.xls)|*.xls|All files (*.*)|*.*";
@@ -263,6 +266,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         bld_work.UnitOfMeasurement = new bldUnitOfMeasurement(AOSRDataWorksheet.Cells[rowIndex, 15].Value?.ToString());
                     bldProjectDocument project_documentacion = new bldProjectDocument();
                     project_documentacion.Name = AOSRDataWorksheet.Cells[rowIndex, 17].Value?.ToString();
+                    if (bldProjectDocuments.Where(pd => pd.Name == project_documentacion.Name).FirstOrDefault() != null)
+                        project_documentacion = bldProjectDocuments.Where(pd => pd.Name == project_documentacion.Name).FirstOrDefault();
+                    else
+                        bldProjectDocuments.Add(project_documentacion);
+                     
                     bld_work.ProjectDocuments.Add(project_documentacion);
 
                     string text = AOSRDataWorksheet.Cells[rowIndex, 18].Value?.ToString();
@@ -308,13 +316,22 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                                               + " " + bld_work?.WorkArea.Levels;
                             bld_executiveScheme.FullName = bld_executiveScheme.Name + " №" + bld_executiveScheme.RegId.ToString();
                         }
+                        if (ExecutiveSchemes.Where(esh => esh.FullName == bld_executiveScheme.FullName).FirstOrDefault() != null)
+                            bld_executiveScheme = ExecutiveSchemes.Where(esh => esh.FullName == bld_executiveScheme.FullName).FirstOrDefault();
+                        else
+                            ExecutiveSchemes.Add(bld_executiveScheme);
 
                         bld_work.ExecutiveSchemes.Add(bld_executiveScheme); //Временно. Исполнительные схемы -  просто список в имя одной схмемы
                     }
                     bldRegulationtDocument reg_docs = new bldRegulationtDocument();
                     reg_docs.Name = AOSRDataWorksheet.Cells[rowIndex, 23].Value?.ToString();
+                    if (RegulationtDocuments.Where(rd => rd.Name == reg_docs.Name).FirstOrDefault() != null)
+                        reg_docs = RegulationtDocuments.Where(rd => rd.Name == reg_docs.Name).FirstOrDefault();
+                    else
+                        RegulationtDocuments.Add(reg_docs);
+
                     bld_work.RegulationDocuments.Add(reg_docs);
-                    bld_work.AOSRDocuments.Add(bld_AOSR);
+                    bld_work.AOSRDocument = bld_AOSR;
                     bld_AOSR.bldWork = bld_work;
 
                     bld_work.StartTime = Convert.ToDateTime(AOSRDataWorksheet.Cells[rowIndex, 26].Value?.ToString());
@@ -341,16 +358,16 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     }
 
                     foreach (bldDocument document in work.ExecutiveSchemes)
-                        work.AOSRDocuments[0]?.AttachedDocuments.Add(document);
+                        work.AOSRDocument?.AttachedDocuments.Add(document);
                     foreach (bldDocument document in work.LaboratoryReports)
-                        work.AOSRDocuments[0]?.AttachedDocuments.Add(document);
+                        work.AOSRDocument?.AttachedDocuments.Add(document);
 
                     foreach (bldMaterial material in work.Materials)
                         foreach (bldDocument document in material.Documents)
-                            work.AOSRDocuments[0]?.AttachedDocuments.Add(document);
+                            work.AOSRDocument?.AttachedDocuments.Add(document);
 
-                    work.AOSRDocuments[0].StartTime = work.StartTime;
-                    work.AOSRDocuments[0].EndTime = work.EndTime;
+                    work.AOSRDocument.StartTime = work.StartTime;
+                    work.AOSRDocument.EndTime = work.EndTime;
 
                 }
             }

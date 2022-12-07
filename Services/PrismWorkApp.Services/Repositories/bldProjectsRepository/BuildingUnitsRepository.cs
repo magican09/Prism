@@ -12,7 +12,11 @@
         public bldParticipantRolesRepository ParticipantRolesRepository { get; }
         public bldResponsibleEmployeeRoleRepository ResponsibleEmployeeRoleRepository { get; }
         public bldConstructionCompaniesRepository ConstructionCompanies { get; }
-
+        public bldUnitOfMeasurementRepository UnitOfMeasurementRepository { get; }
+        public bldProjectDocumentsRepository ProjectDocuments { get; }
+        public bldMaterialsRepository Materials { get; }
+        public bldLaboratoryReportsRepository LaboratoryReports { get; }
+        public bldExecutiveSchemesRepository ExecutiveSchemes { get; }
         private readonly PlutoContext _context;
 
         public BuildingUnitsRepository(PlutoContext context)
@@ -27,6 +31,11 @@
             ParticipantRolesRepository = new bldParticipantRolesRepository(_context);
             ConstructionCompanies = new bldConstructionCompaniesRepository(_context);
             ResponsibleEmployeeRoleRepository = new bldResponsibleEmployeeRoleRepository(_context);
+            UnitOfMeasurementRepository = new bldUnitOfMeasurementRepository(_context);
+            Materials = new bldMaterialsRepository(_context);
+            ProjectDocuments = new bldProjectDocumentsRepository(_context);
+            LaboratoryReports = new bldLaboratoryReportsRepository(_context);
+            ExecutiveSchemes = new bldExecutiveSchemesRepository(_context);
         }
         public int Complete()
         {

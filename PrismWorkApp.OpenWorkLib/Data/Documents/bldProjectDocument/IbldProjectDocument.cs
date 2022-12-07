@@ -1,6 +1,6 @@
 ﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldProjectDocument
+    public interface IbldProjectDocument:IbldDocument
     {
 
     }

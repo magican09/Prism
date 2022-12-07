@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
+namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public class UnDoReDoCommand<TEntity> : IUnDoRedoCommand
     {

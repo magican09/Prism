@@ -274,21 +274,22 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         if (work.Materials != null) collection.Add(work.Materials);
                         NameableObservabelObjectsCollection docs_treeViewItem = new NameableObservabelObjectsCollection();
                         docs_treeViewItem.Name = "Документация";
-                        if (work.AOSRDocuments != null) docs_treeViewItem.Add(work.AOSRDocuments);
+                      //  if (work.AOSRDocuments != null) docs_treeViewItem.Add(work.AOSRDocuments);
+                        if (work.AOSRDocument != null) docs_treeViewItem.Add(work.AOSRDocument);
                         if (work.LaboratoryReports != null) docs_treeViewItem.Add(work.LaboratoryReports);
                         if (work.ExecutiveSchemes != null) docs_treeViewItem.Add(work.ExecutiveSchemes);
+                        if (work.Materials != null) docs_treeViewItem.Add(work.Materials);
+                        //if (work.Materials != null)
+                        //{
 
-                        if (work.Materials != null)
-                        {
+                        //    NameableObservabelObjectsCollection materials_docs = new NameableObservabelObjectsCollection();
+                        //    materials_docs.Name = "Документы на материалы";
+                        //    foreach (bldMaterial material in work.Materials)
+                        //        foreach (bldDocument document in material.Documents)
+                        //            materials_docs.Add(document);
+                        //    docs_treeViewItem.Add(materials_docs);
 
-                            NameableObservabelObjectsCollection materials_docs = new NameableObservabelObjectsCollection();
-                            materials_docs.Name = "Документы на материалы";
-                            foreach (bldMaterial material in work.Materials)
-                                foreach (bldDocument document in material.Documents)
-                                    materials_docs.Add(document);
-                            docs_treeViewItem.Add(materials_docs);
-
-                        }
+                        //}
                         collection.Add(docs_treeViewItem);
                         break;
                     }
@@ -492,6 +493,20 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             Tuple<object, object> tuple = new Tuple<object, object>(values[0],values[1]);
+            return tuple;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class ObjectsPairMultiConverter : IMultiValueConverter
+    {
+
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            Tuple<object, object> tuple = new Tuple<object, object>(values[0], values[1]);
             return tuple;
         }
 

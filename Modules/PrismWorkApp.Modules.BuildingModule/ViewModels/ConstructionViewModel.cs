@@ -278,11 +278,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnRemoveWork()
         {
-
-            
-          
+      
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
-                  (SelectedConstruction.Works, SelectedWork, "Работу",
+                  ( SelectedWork, "Работу",
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)
@@ -296,7 +294,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnRemoveConstruction()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
-                  (SelectedConstruction.Constructions, SelectedChildConstruction, "Строительную конструкцию",
+                  ( SelectedChildConstruction, "Строительную конструкцию",
                   (result) =>
                   {
                       if (result.Result == ButtonResult.Yes)

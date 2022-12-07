@@ -36,7 +36,7 @@ namespace PrismWorkApp.Core
       
 
         public static void RemoveElementFromCollectionWhithDialog<TContainer, T>
-               (TContainer collection, T element, string element_type_name,
+               (T element, string element_type_name,
             Action<IDialogResult> elm_erase_action, IDialogService dialogService, Guid current_context_id)
            where TContainer : ICollection<T>, INameableOservableCollection<T>
            where T : class, INameable, IRegisterable
@@ -325,11 +325,9 @@ namespace PrismWorkApp.Core
         public static void AddElementsToCollectionWhithDialogList<TContainer, T>
        (TContainer currentCollection,
        TContainer commonCollection_all,
-        NameablePredicateObservableCollection<TContainer, T> predicate_collection,// commonCollection_restricted,
+        NameablePredicateObservableCollection<TContainer, T> predicate_collection,
         IDialogService dialogService, Action<IDialogResult> action,
-           string dialogViewName,
-           string newObjectDialogName,
-           IUnDoReDoSystem undo_redo,
+           string dialogViewName,          
            string title = "",
            string message = "",
            string currentCollectionName = "",
@@ -351,8 +349,6 @@ namespace PrismWorkApp.Core
             dialog_par.Add("current_collection", current_collection);
             dialog_par.Add("confirm_button_content", "Сохранить");
             dialog_par.Add("refuse_button_content", "Закрыть");
-            dialog_par.Add("new_object_dialog_name", newObjectDialogName);
-            dialog_par.Add("undo_redo",  undo_redo);
             dialog_par.Add("predicate_collection", predicate_collection);
 
             dialogService.ShowDialog(dialogViewName, dialog_par, action);

@@ -4,6 +4,7 @@ using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
@@ -53,10 +54,29 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> RemovePreviousWorkCommand { get; private set; }
         public NotifyCommand<object> RemoveNextWorkCommand { get; private set; }
 
-        public NotifyCommand AddPreviousWorkCommand { get; private set; }
-        public NotifyCommand<object> AddNextWorkCommand { get; private set; }
         public ObservableCollection<INotifyCommand> NextWorksContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
+        public NotifyCommand<object> AddNextWorkCommand { get; private set; }
+          
+        public ObservableCollection<INotifyCommand> UnitsOfMeasurementContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
+        public NotifyCommand<object> SelectUnitOfMeasurementCommand { get; private set; }
+        public NotifyCommand<object> RemoveUnitOfMeasurementCommand { get; private set; }
+
+        public ObservableCollection<INotifyCommand> MaterialsContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
+        public NotifyCommand<object> AddMaterialsCommand { get; private set; }
+        public NotifyCommand<object> RemoveMaterialCommand { get; private set; }
+
+        public ObservableCollection<INotifyCommand> ProjectDocumentationContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
+        public NotifyCommand<object> AddProjectsDocumentCommand { get; private set; }
+        public NotifyCommand<object> RemoveProjectDocumentCommand { get; private set; }
       
+        public ObservableCollection<INotifyCommand>LaboratoryReportsContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
+        public NotifyCommand<object> AddLaboratoryReportsCommand { get; private set; }
+        public NotifyCommand<object> RemoveLaboratoryReportCommand { get; private set; }
+
+        public ObservableCollection<INotifyCommand> ExecutiveSchemesContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
+        public NotifyCommand<object> AddExecutiveSchemesCommand { get; private set; }
+        public NotifyCommand<object> RemoveExecutiveSchemeCommand { get; private set; }
+
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private IApplicationCommands _applicationCommands;
         public IApplicationCommands ApplicationCommands
@@ -80,11 +100,45 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             RemoveNextWorkCommand = new NotifyCommand<object>(OnRemoveNextWork);
             RemoveNextWorkCommand.Name = "Удалить";
-        
             AddNextWorkCommand = new NotifyCommand<object>(OnAddNextWork);
             AddNextWorkCommand.Name = "Добавить";
             NextWorksContextMenuCommands.Add(RemoveNextWorkCommand);
             NextWorksContextMenuCommands.Add(AddNextWorkCommand);
+
+            SelectUnitOfMeasurementCommand = new NotifyCommand<object>(OnSelectUnitOfMeasurement);
+            SelectUnitOfMeasurementCommand.Name = "Установить";
+            RemoveUnitOfMeasurementCommand = new NotifyCommand<object>(OnUnitOfMeasurement);
+            RemoveUnitOfMeasurementCommand.Name = "Удалить";
+            UnitsOfMeasurementContextMenuCommands.Add(SelectUnitOfMeasurementCommand);
+            UnitsOfMeasurementContextMenuCommands.Add(RemoveUnitOfMeasurementCommand);
+            AddMaterialsCommand = new NotifyCommand<object>(OnAddMaterials);
+            AddMaterialsCommand.Name = "Добавить материалы";
+            RemoveMaterialCommand = new NotifyCommand<object>(OnRemoveMaterial);
+            RemoveMaterialCommand.Name = "Удалить материал";
+            MaterialsContextMenuCommands.Add(AddMaterialsCommand);
+            MaterialsContextMenuCommands.Add(RemoveMaterialCommand);
+
+            AddProjectsDocumentCommand = new NotifyCommand<object>(OnAddProjectsDocuments);
+            AddProjectsDocumentCommand.Name = "Добавить документацию";
+            RemoveProjectDocumentCommand= new NotifyCommand<object>(OnRemoveProjectDocument);
+            RemoveProjectDocumentCommand.Name = "Удалить документацию";
+            ProjectDocumentationContextMenuCommands.Add(AddProjectsDocumentCommand);
+            ProjectDocumentationContextMenuCommands.Add(RemoveProjectDocumentCommand);
+
+            AddLaboratoryReportsCommand = new NotifyCommand<object>(OnAddLaboratoryReports);
+            AddLaboratoryReportsCommand.Name = "Добавить доеументацию";
+            RemoveLaboratoryReportCommand = new NotifyCommand<object>(OnRemoveLaboratoryReport);
+            RemoveLaboratoryReportCommand.Name = "Удалить документацию";
+            LaboratoryReportsContextMenuCommands.Add(AddLaboratoryReportsCommand);
+            LaboratoryReportsContextMenuCommands.Add(RemoveLaboratoryReportCommand);
+
+            AddExecutiveSchemesCommand = new NotifyCommand<object>(OnAddExecutiveSchemes);
+            AddExecutiveSchemesCommand.Name = "Добавить исполнительные схемы";
+            RemoveExecutiveSchemeCommand = new NotifyCommand<object>(OnRemoveExecutiveScheme);
+            RemoveExecutiveSchemeCommand.Name = "Удалить исполнительную схему";
+            ExecutiveSchemesContextMenuCommands.Add(AddExecutiveSchemesCommand);
+            ExecutiveSchemesContextMenuCommands.Add(RemoveExecutiveSchemeCommand);
+
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
@@ -94,9 +148,284 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
         }
 
+        private void OnRemoveExecutiveScheme(object obj)
+        {
+            bldExecutiveScheme scheme_document = ((Tuple<object, object>)obj).Item1 as bldExecutiveScheme;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+            if (scheme_document == null || selected_work == null) return;
+
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldExecutiveSchemesGroup, bldExecutiveScheme>
+                 (scheme_document, "Документ",
+                result => {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        UnDoReDo.Register(selected_work);
+                        selected_work.RemoveExecutiveScheme(scheme_document);
+                    }
+                }, _dialogService, Id);
+        }
+
+        private void OnAddExecutiveSchemes(object obj)
+        {
+            if (obj == null) return;
+            // bldExecutiveScheme removed_document = ((Tuple<object, object>)obj).Item1 as bldExecutiveScheme;
+            bldWork scheme_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+            ObservableCollection<bldExecutiveScheme> All_ExecutiveSchemes = new ObservableCollection<bldExecutiveScheme>(
+                 _buildingUnitsRepository.ExecutiveSchemes.GetAllAsync().Where(ech => !scheme_work.ExecutiveSchemes.Contains(ech)).ToList());
+
+            NameablePredicate<ObservableCollection<bldExecutiveScheme>, bldExecutiveScheme> predicate_1 = new NameablePredicate<ObservableCollection<bldExecutiveScheme>, bldExecutiveScheme>();
+            predicate_1.Name = "Показать все схемы";
+            predicate_1.Predicate = cl => cl;
+            NameablePredicateObservableCollection<ObservableCollection<bldExecutiveScheme>, bldExecutiveScheme> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldExecutiveScheme>, bldExecutiveScheme>();
+            nameablePredicatesCollection.Add(predicate_1);
+            ObservableCollection<bldExecutiveScheme> schemes_for_add_collection = new ObservableCollection<bldExecutiveScheme>();
+
+            CoreFunctions.AddElementsToCollectionWhithDialogList<ObservableCollection<bldExecutiveScheme>, bldExecutiveScheme>
+                (schemes_for_add_collection, All_ExecutiveSchemes,
+               nameablePredicatesCollection,
+              _dialogService,
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
+                       localUnDoReDo.Register(scheme_work);
+                       foreach (bldExecutiveScheme scheme in schemes_for_add_collection)
+                           scheme_work.AddExecutiveScheme(scheme);
+                       SaveCommand.RaiseCanExecuteChanged();
+                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                   }
+                   if (result.Result == ButtonResult.No)
+                   {
+                   }
+               },
+              typeof(AddExecutiveSchemeToCollectionFromListDialogView).Name,
+               "Добавить испольнительную схему",
+               "Форма испольнительных схем.",
+               "Список исполнительных схем", ""); ;
+        }
+
+        private void OnRemoveLaboratoryReport(object obj)
+        {
+            bldLaboratoryReport reportd_document = ((Tuple<object, object>)obj).Item1 as bldLaboratoryReport;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+            if (reportd_document == null || selected_work == null) return;
+
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldLaboratoryReportsGroup, bldLaboratoryReport>
+                 (reportd_document, "Документ",
+                result => {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        UnDoReDo.Register(selected_work);
+                        selected_work.RemoveLaboratoryReport(reportd_document);
+                    }
+                }, _dialogService, Id);
+        }
+
+        private void OnAddLaboratoryReports(object obj)
+        {
+            if (obj == null) return;
+            // bldLaboratoryReport removed_document = ((Tuple<object, object>)obj).Item1 as bldLaboratoryReport;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+            ObservableCollection<bldLaboratoryReport> All_LaboratoryRecords = new ObservableCollection<bldLaboratoryReport>(
+                 _buildingUnitsRepository.LaboratoryReports.GetAllAsync().Where(lr => !selected_work.LaboratoryReports.Contains(lr)).ToList());
+
+            NameablePredicate<ObservableCollection<bldLaboratoryReport>, bldLaboratoryReport> predicate_1 = new NameablePredicate<ObservableCollection<bldLaboratoryReport>, bldLaboratoryReport>();
+            predicate_1.Name = "Показать все документы";
+            predicate_1.Predicate = cl => cl;
+            NameablePredicateObservableCollection<ObservableCollection<bldLaboratoryReport>, bldLaboratoryReport> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldLaboratoryReport>, bldLaboratoryReport>();
+            nameablePredicatesCollection.Add(predicate_1);
+            ObservableCollection<bldLaboratoryReport> reports_for_add_collection = new ObservableCollection<bldLaboratoryReport>();
+
+            CoreFunctions.AddElementsToCollectionWhithDialogList<ObservableCollection<bldLaboratoryReport>, bldLaboratoryReport>
+                (reports_for_add_collection, All_LaboratoryRecords,
+               nameablePredicatesCollection,
+              _dialogService,
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
+                       localUnDoReDo.Register(selected_work);
+                       foreach (bldLaboratoryReport report in reports_for_add_collection)
+                           selected_work.AddLaboratoryReport(report);
+                       SaveCommand.RaiseCanExecuteChanged();
+                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                   }
+                   if (result.Result == ButtonResult.No)
+                   {
+                   }
+               },
+              typeof(AddLaboratoryReportToCollectionFromListDialogView).Name,
+               "Добавить документацию",
+               "Форма добавления документации.",
+               "Список документов", "");;
+        }
+
+        private void OnRemoveProjectDocument(object obj)
+        {
+            bldProjectDocument removed_document = ((Tuple<object, object>)obj).Item1 as bldProjectDocument;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+            if (removed_document == null || selected_work == null) return;
+          
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldProjectDocumentsGroup, bldProjectDocument>
+                 (removed_document, "Документ",
+                result => {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        UnDoReDo.Register(selected_work);
+                        selected_work.RemoveProjectDocument(removed_document);
+                    }
+                }, _dialogService, Id);
+        }
+
+        private void OnAddProjectsDocuments(object obj)
+        {
+            if (obj == null) return;
+           // bldProjectDocument removed_document = ((Tuple<object, object>)obj).Item1 as bldProjectDocument;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+           ObservableCollection<bldProjectDocument> All_ProjectDocuments = new ObservableCollection<bldProjectDocument>(
+                _buildingUnitsRepository.ProjectDocuments.GetAllAsync().Where(pd => !selected_work.ProjectDocuments.Contains(pd)).ToList());
+
+            NameablePredicate<ObservableCollection<bldProjectDocument>, bldProjectDocument> predicate_1 = new NameablePredicate<ObservableCollection<bldProjectDocument>, bldProjectDocument>();
+            predicate_1.Name = "Показать все документы";
+            predicate_1.Predicate = cl => cl;
+            NameablePredicateObservableCollection<ObservableCollection<bldProjectDocument>, bldProjectDocument> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldProjectDocument>, bldProjectDocument>();
+            nameablePredicatesCollection.Add(predicate_1);
+            ObservableCollection<bldProjectDocument> documents_for_add_collection = new ObservableCollection<bldProjectDocument>();
+
+            CoreFunctions.AddElementsToCollectionWhithDialogList<ObservableCollection<bldProjectDocument>, bldProjectDocument>
+                (documents_for_add_collection, All_ProjectDocuments,
+               nameablePredicatesCollection,
+              _dialogService,
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
+                       localUnDoReDo.Register(selected_work);
+                       foreach (bldProjectDocument document in documents_for_add_collection)
+                           selected_work.AddProjectDocument(document);
+                       SaveCommand.RaiseCanExecuteChanged();
+                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                   }
+                   if (result.Result == ButtonResult.No)
+                   {
+                   }
+               },
+              typeof(AddProjectDocumentToCollectionFromListDialogView).Name,
+               "Добавить документацию",
+               "Форма добавления документации.",
+               "Список документов", "");
+        }
+
+        private void OnRemoveMaterial(object obj)
+        {
+            bldMaterial removed_material = ((Tuple<object, object>)obj).Item1 as bldMaterial;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+            if (removed_material == null || selected_work == null) return;
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldMaterialsGroup, bldMaterial>
+                 ( removed_material, "Материал",
+                result => {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        UnDoReDo.Register(selected_work);
+                        selected_work.RemoveMaterial(removed_material);
+                    }
+                }, _dialogService, Id);
+        }
+
+        private void OnAddMaterials(object obj)
+        {
+            if (obj == null) return;
+          //  bldMaterial removed_material = ((Tuple<object, object>)obj).Item1 as bldMaterial;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+
+
+            ObservableCollection<bldMaterial> All_Materials = new ObservableCollection<bldMaterial>(
+                _buildingUnitsRepository.Materials.GetAllAsync().Where(mt=>!selected_work.Materials.Contains(mt)).ToList() );
+
+             NameablePredicate<ObservableCollection<bldMaterial>, bldMaterial> predicate_1 = new NameablePredicate<ObservableCollection<bldMaterial>, bldMaterial>();
+            predicate_1.Name = "Показать все материалы";
+            predicate_1.Predicate = cl => cl;
+            NameablePredicateObservableCollection<ObservableCollection<bldMaterial>, bldMaterial> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldMaterial>, bldMaterial>();
+            nameablePredicatesCollection.Add(predicate_1);
+            ObservableCollection<bldMaterial> materials_for_add_collection = new ObservableCollection<bldMaterial>();
+         
+            CoreFunctions.AddElementsToCollectionWhithDialogList<ObservableCollection<bldMaterial>, bldMaterial>
+                (materials_for_add_collection, All_Materials,
+               nameablePredicatesCollection,
+              _dialogService,
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
+                       localUnDoReDo.Register(selected_work);
+                       foreach (bldMaterial bld_material in materials_for_add_collection)
+                           selected_work.AddMaterial(bld_material);
+                       SaveCommand.RaiseCanExecuteChanged();
+                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                   }
+                   if (result.Result == ButtonResult.No)
+                   {
+                   }
+               },
+              typeof(AddMaterialToCollectionFromListDialogView).Name,
+               "Добавить материалы",
+               "Форма добавления материалов.",
+               "Список материалов", "");
+        }
+
+        private void OnUnitOfMeasurement(object obj)
+        {
+            bldWork selected_work = obj as bldWork;
+            UnDoReDo.Register(selected_work);
+            selected_work.UnitOfMeasurement = null;
+
+        }
+
+        private void OnSelectUnitOfMeasurement(object obj)
+        {
+            bldWork selected_work = obj as bldWork;
+            ObservableCollection<bldUnitOfMeasurement> All_UnitOfMeasurements =
+                 new ObservableCollection<bldUnitOfMeasurement>(_buildingUnitsRepository.UnitOfMeasurementRepository.GetAllUnits());
+            NameablePredicate<ObservableCollection<bldUnitOfMeasurement>, bldUnitOfMeasurement> predicate_1 = new NameablePredicate<ObservableCollection<bldUnitOfMeasurement>, bldUnitOfMeasurement>();
+            predicate_1.Name = "Все единицы измеререния";
+            predicate_1.Predicate = (col) => col;
+            NameablePredicateObservableCollection<ObservableCollection<bldUnitOfMeasurement>, bldUnitOfMeasurement> predicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldUnitOfMeasurement>, bldUnitOfMeasurement>();
+            predicatesCollection.Add(predicate_1);
+            ObservableCollection<bldUnitOfMeasurement> units_for_add_collection= new ObservableCollection<bldUnitOfMeasurement>();
+            CoreFunctions.AddElementsToCollectionWhithDialogList<ObservableCollection<bldUnitOfMeasurement>, bldUnitOfMeasurement>
+             (units_for_add_collection, All_UnitOfMeasurements,
+              predicatesCollection,
+             _dialogService,
+              (result) =>
+              {
+                  if (result.Result == ButtonResult.Yes)
+                  {
+                      foreach (bldUnitOfMeasurement unit_of_measurement in units_for_add_collection)
+                      {
+                          UnDoReDo.Register(selected_work);
+                          selected_work.UnitOfMeasurement = unit_of_measurement;
+                          break;
+                      }
+                      SaveCommand.RaiseCanExecuteChanged();
+                  }
+                  if (result.Result == ButtonResult.No)
+                  {
+                  }
+              },
+             typeof(AddUnitOfMeasurementToCollectionFromListDialogView).Name,
+              "Выбрать единицу измерения",
+              "Форма для выбора единицы измерения.",
+              "Список един измерения", "");
+        }
+
         private void OnAddNextWork(object works)
         {
-            bldWork removed_work = ((Tuple<object, object>)works).Item1 as bldWork;
+            if (works == null) return;
+            //     bldWork removed_work = ((Tuple<object, object>)works).Item1 as bldWork; //Не используется 
             bldWork selected_work = ((Tuple<object, object>)works).Item2 as bldWork;
 
 
@@ -127,10 +456,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                        UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
                         localUnDoReDo.Register(selected_work);
                        foreach (bldWork bld_work in works_for_add_collection)
-                       {
-
                            selected_work.AddNextWork(bld_work);
-                       }
                        SaveCommand.RaiseCanExecuteChanged();
                        UnDoReDo.AddUnDoReDo(localUnDoReDo);
                    }
@@ -139,7 +465,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                    }
                },
               typeof(AddWorksToCollectionFromListDialogView).Name,
-              typeof(AddbldWorkToCollectionDialogView).Name, UnDoReDo,
                "Добавить работы как послудующие",
                "Форма добавления послудующих работ.",
                "Список работ", "");
@@ -151,7 +476,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldWork selected_work = ((Tuple<object, object>)works).Item2 as bldWork;
             if (removed_work == null || selected_work == null) return;
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
-                 (selected_work.NextWorks, removed_work, "Последующая работа",
+                 (removed_work, "Последующая работа",
                 result => {
                     if (result.Result == ButtonResult.Yes)
                     {
@@ -160,8 +485,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     }
                 }, _dialogService, Id);
         }
-       
-
+    
         private void OnDataGridLostSocus(object obj)
         {
 
@@ -190,11 +514,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public virtual void OnSave()
         {
-            base.OnSave<bldWork>(SelectedWork);
+            base.OnSave<bldConstruction>(SelectedConstruction);
         }
         public virtual void OnClose(object obj)
         {
-            base.OnClose<bldWork>(obj, SelectedWork);
+            base.OnClose<bldConstruction>(obj, SelectedConstruction);
         }
         public override void OnWindowClose()
         {
@@ -214,6 +538,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedConstruction = (bldConstruction) SelectedWorksGroup.ParentObject;
                 SelectedConstruction.ErrorsChanged += RaiseCanExecuteChanged;
                 UnDoReDo.Register(SelectedConstruction);
+                foreach (bldWork work in SelectedConstruction.Works)
+                    UnDoReDo.Register(work);
+            //    SelectedConstruction.Works[0].UnitOfMeasurement = new bldUnitOfMeasurement("кг");
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)

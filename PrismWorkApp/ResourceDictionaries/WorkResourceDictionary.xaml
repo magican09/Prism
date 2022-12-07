@@ -46,6 +46,8 @@
     <Style x:Key="inlineDataGrid" TargetType="{x:Type DataGrid}">
         <Setter Property="Margin" Value="5,10,5,10"/>
     </Style>
-    
+    <Style TargetType="{x:Type CheckBox }">
+        <Setter Property="Margin" Value="2 6 2 2"/>
+    </Style>
 
 </ResourceDictionary>

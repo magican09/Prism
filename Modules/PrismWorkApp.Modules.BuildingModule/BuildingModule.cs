@@ -138,6 +138,11 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<AddbldWorkToCollectionDialogView, AddbldWorkToCollectionViewModel>();
             containerRegistry.RegisterDialog<AddWorksToCollectionFromListDialogView, AddWorksToCollectionFromListDialogViewModel>();
             containerRegistry.RegisterDialog<WorkDialogView, WorkDialogViewModel>();
+            containerRegistry.RegisterDialog<AddUnitOfMeasurementToCollectionFromListDialogView, AddUnitOfMeasurementToCollectionFromListDialogViewModel>();
+            containerRegistry.RegisterDialog<AddMaterialToCollectionFromListDialogView, AddMaterialToCollectionFromListDialogViewModel>();
+            containerRegistry.RegisterDialog<AddProjectDocumentToCollectionFromListDialogView, AddProjectDocumentToCollectionFromListDialogViewModel>();
+            containerRegistry.RegisterDialog<AddLaboratoryReportToCollectionFromListDialogView, AddLaboratoryReportToCollectionFromListDialogViewModel>();
+            containerRegistry.RegisterDialog<AddExecutiveSchemeToCollectionFromListDialogView, AddExecutiveSchemeToCollectionFromListDialogViewModel>();
 
             containerRegistry.RegisterDialog<AddbldParticipantToCollectionDialogView, AddbldParticipantToCollectionViewModel>();
             containerRegistry.RegisterDialog<ParticipantDialogView, ParticipantDialogViewModel>();
@@ -146,6 +151,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<ResponsibleEmployeeDialogView, ResponsibleEmployeeDialogViewModel>();
 
             containerRegistry.RegisterDialog<SelectProjectFromCollectionDialogView, SelectProjectFromCollectionDialogViewModel>();
+
 
             //   containerRegistry.RegisterDialog<ConfirmCreateDialogViewModel, ConfirmCreateDialogViewModel>();
 

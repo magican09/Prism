@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
+namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
 
     public class ClearCollectionCommand<TCollection,TEntity> : IUnDoRedoCommand

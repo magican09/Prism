@@ -56,7 +56,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _attachedDocuments; }
             set { SetProperty(ref _attachedDocuments, value); }
         }
-
         private int _pagesNumber;
         public int PagesNumber
         {

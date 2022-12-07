@@ -138,7 +138,7 @@
                 <TextBlock Text="{Binding ShortName}" VerticalAlignment="Center"/>
             </StackPanel>
         </HierarchicalDataTemplate>
-
+        
         <HierarchicalDataTemplate ItemsSource="{Binding  }" DataType="{x:Type bld:bldAOSRDocumentsGroup}">
             <StackPanel Orientation="Horizontal">
                 <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
@@ -147,6 +147,7 @@
             </StackPanel>
         </HierarchicalDataTemplate>
 
+        
         <HierarchicalDataTemplate ItemsSource="{Binding    }" DataType="{x:Type bld:bldMaterialsGroup}">
             <StackPanel Orientation="Horizontal">
                 <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />

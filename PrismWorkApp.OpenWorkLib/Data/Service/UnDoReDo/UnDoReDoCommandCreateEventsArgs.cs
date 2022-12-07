@@ -1,4 +1,4 @@
-﻿namespace PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo
+﻿namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public delegate void UnDoReDoCommandCreateEventHandler(object sender, UnDoReDoCommandCreateEventsArgs e);
 

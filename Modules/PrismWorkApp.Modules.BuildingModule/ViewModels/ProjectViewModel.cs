@@ -277,7 +277,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldObjectsGroup, bldObject>
-                  (SelectedProject.BuildingObjects, SelectedBuildingObject, "Строительный объект",
+                  (SelectedBuildingObject, "Строительный объект",
                   (result) =>
                   {
                       if (result.Result == ButtonResult.Yes)
@@ -293,7 +293,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
           private void OnRemoveParticipant()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
-                 (SelectedProject.Participants, SelectedParticipant, "Учасник строительства",
+                 (SelectedParticipant, "Учасник строительства",
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)

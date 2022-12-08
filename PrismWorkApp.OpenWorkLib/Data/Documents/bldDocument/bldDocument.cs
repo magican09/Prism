@@ -4,24 +4,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldDocument : BindableBase, IbldDocument, IEntityObject
     {
-        private Guid _id = Guid.NewGuid();
-        public Guid Id
-        {
-            get { return _id; }
-            set { SetProperty(ref _id, value); }
-        }
-        private Guid _storedId;
-        public Guid StoredId
-        {
-            get { return _storedId; }
-            set { SetProperty(ref _storedId, value); }
-        }
-        private string _code;
-        public string Code
-        {
-            get { return _code; }
-            set { SetProperty(ref _code, value); }
-        }//Код
+       
         private DateTime _date;
         public DateTime Date
         {

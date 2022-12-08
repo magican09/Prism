@@ -116,7 +116,8 @@ namespace PrismWorkApp.Services.Repositories
 
             modelBuilder.Entity<bldWork>()
                 .HasOne(wr => wr.AOSRDocument)
-                .WithOne(d => d.bldWork);
+                .WithOne(d => d.bldWork)
+                .HasForeignKey<bldAOSRDocument>(d => d.bldWorkId);
 
             //modelBuilder.Entity<bldParticipant>()
             //   .HasMany(p => p.ConstructionCompanies)
@@ -178,7 +179,21 @@ namespace PrismWorkApp.Services.Repositories
                   .Select(p => p.Entity);
 
             var now = DateTime.UtcNow;
-            return base.SaveChanges();
+            int save_result = 0; ;
+            try
+            {
+                save_result = base.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new NotImplementedException();
+                foreach (var entry in ex.Entries)
+                {
+
+                }
+               
+            }
+            return save_result;
             /*foreach (var added in addedAuditedEntities)
             {
 

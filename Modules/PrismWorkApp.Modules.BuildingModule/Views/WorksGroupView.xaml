@@ -48,17 +48,36 @@
                             <ColumnDefinition  Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <DataGrid x:Name="bldWorks" Grid.Column="0" ItemsSource="{Binding SelectedWorksGroup}"
+                        <DataGrid x:Name="bldWorks" Grid.Column="0" ItemsSource="{Binding SelectedWorksGroup}"   
                                                   SelectedItem="{Binding SelectedWork}"  
-                                                  Style="{StaticResource inlineDataGrid }" 
-                               AutoGenerateColumns="False"  IsReadOnly="False" 
-                                   HorizontalContentAlignment="Stretch"    >
+                                                  Style="{StaticResource inlineDataGrid }"  
+                               AutoGenerateColumns="False"  IsReadOnly="False"  
+                                   HorizontalContentAlignment="Stretch"  CanUserAddRows="False"  CanUserDeleteRows="False"   >
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="SelectedCellsChanged">
                                     <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
                                            CommandParameter="{Binding   SelectedItem , ElementName=bldPreviousWorksDataGrid}" />
                                 </i:EventTrigger>
+                            <i:EventTrigger EventName="SelectedCellsChanged">
+                                    <prism:InvokeCommandAction Command="{Binding DataGridSelectionChangedCommand}"
+                                                               CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid},Path=SelectedItems}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" />
+                                </i:EventTrigger>
                             </i:Interaction.Triggers>
+                            
+                            <DataGrid.ContextMenu>
+                                <ContextMenu ItemsSource="{Binding Source={StaticResource Proxy},Path=Data.WorksContextMenuCommands}">
+                                    <ContextMenu.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type MenuItem}">
+                                            <MenuItem Header="{Binding Name}" Command="{Binding}"
+                                                                      CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGrid}}, Path=SelectedItems}" >
+                                            </MenuItem>
+                                        </DataTemplate>
+                                    </ContextMenu.ItemTemplate>
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
                             <DataGrid.Columns>
                                 <DataGridTextColumn  Header="Код"   Width="Auto"
                                                      Binding = "{Binding Path=Code}" />

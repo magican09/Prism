@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using System.Reflection;
 namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldWork : BindableBase, IbldWork, ICloneable, IEntityObject//, IJornalable
@@ -25,7 +27,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get
             {
-               return _shortName;
+                return _shortName;
             }
             set { SetProperty(ref _shortName, value); }
         }
@@ -100,7 +102,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _materials, value); }
         }//Используемые материала
 
-       
+
         private bldWorkArea _workArea;
         public virtual bldWorkArea WorkArea
         {
@@ -186,17 +188,39 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NavigateProperty]
         public bldConstruction bldConstruction { get; set; }
 
-    
+
         public bldWork()
         {
             PreviousWorks.CopingEnable = false; //отключаем при копировании
             NextWorks.CopingEnable = false; //отключаем при копировании 
-    //        RestrictionPredicate = x => x.CopingEnable;// Определяет условтия я своего копировани в время глубокого копирования рефлексией 
+            AOSRDocument = new bldAOSRDocument();
+            WorkArea = new bldWorkArea();
+            //        RestrictionPredicate = x => x.CopingEnable;// Определяет условтия я своего копировани в время глубокого копирования рефлексией 
         }
 
         public object Clone()
         {
-            return MemberwiseClone();
+            bldWork new_work = (bldWork)this.MemberwiseClone();
+            new_work.Id = Guid.Empty;
+            var prop_infoes = new_work.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            foreach (PropertyInfo prop_info in prop_infoes)
+            {
+                if (!prop_info.PropertyType.FullName.Contains("System"))
+                {
+                    var prop_val = prop_info.GetValue(new_work);
+
+                    if (prop_val != null)
+                    {
+                        prop_val = null;
+                        prop_val = Activator.CreateInstance(prop_info.PropertyType);
+                        prop_info.SetValue(new_work, prop_val);
+                    }
+
+                }
+            }
+
+
+            return new_work;
         }
         public void SaveAOSRsToWord(string folderPath)
         {
@@ -226,8 +250,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void AddPreviousWork(bldWork work)
         {
-           AddPreviousWorkCommand Command =
-                new AddPreviousWorkCommand(this,work);
+            AddPreviousWorkCommand Command =
+                 new AddPreviousWorkCommand(this, work);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void AddNextWork(bldWork work)
@@ -254,14 +278,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void RemoveProjectDocument(bldProjectDocument document)
         {
-             RemoveFromCollectionCommand<ICollection<bldProjectDocument>, bldProjectDocument> Command =
-                new RemoveFromCollectionCommand<ICollection<bldProjectDocument>, bldProjectDocument>(this.ProjectDocuments, document);
+            RemoveFromCollectionCommand<ICollection<bldProjectDocument>, bldProjectDocument> Command =
+               new RemoveFromCollectionCommand<ICollection<bldProjectDocument>, bldProjectDocument>(this.ProjectDocuments, document);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void AddLaboratoryReport(bldLaboratoryReport document)
         {
-           AddLaboratoryReportCommand Command =
-                new AddLaboratoryReportCommand(this, document);
+            AddLaboratoryReportCommand Command =
+                 new AddLaboratoryReportCommand(this, document);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void RemoveLaboratoryReport(bldLaboratoryReport document)

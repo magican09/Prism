@@ -49,6 +49,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
 
         }
+
+        [NavigateProperty]
         public Guid bldWorkId { get; set; }
         private bldWork _work;
         [NavigateProperty]

@@ -35,12 +35,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 _Added_work.NextWorks.Remove(work);
                 work.PreviousWorks.Remove(_Added_work);
             }
-            _Added_work.bldConstruction = _LastConstruction;
-            _CurrentConstruction.Works.Add(_Added_work);
-            if (_LastConstruction != null)
+             if (_LastConstruction != null)
             {
                 _LastConstruction.Works.Remove(_Added_work);
             }
+            _CurrentConstruction.Works.Add(_Added_work);
+            _Added_work.bldConstruction = _CurrentConstruction;
+
         }
 
         public void UnExecute()
@@ -55,17 +56,19 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 _Added_work.NextWorks.Add(work);
                 work.PreviousWorks.Add(_Added_work);
             }
-            _Added_work.bldConstruction = _CurrentConstruction;
-            _CurrentConstruction.Works.Remove(_Added_work);
             if (_LastConstruction != null)
             {
               _LastConstruction.Works.Add(_Added_work);
             }
+            _CurrentConstruction.Works.Remove(_Added_work);
+            _Added_work.bldConstruction = _LastConstruction;
+
         }
         public AddWorkToConstructionCommand(bldConstruction construction,bldWork add_work)
         {
             _Added_work = add_work;
             _CurrentConstruction = construction;
+             
             List<bldWork> previousWorks = new List<bldWork>(_Added_work.PreviousWorks);
             List<bldWork> nextWorks = new List<bldWork>(_Added_work.NextWorks);
 
@@ -88,6 +91,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 work.PreviousWorks.Remove(_Added_work);
             }
             _CurrentConstruction.Works.Add(_Added_work);
+            _Added_work.bldConstruction = _CurrentConstruction;
+
         }
     }
 }

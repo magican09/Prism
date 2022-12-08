@@ -49,5 +49,10 @@
     <Style TargetType="{x:Type CheckBox }">
         <Setter Property="Margin" Value="2 6 2 2"/>
     </Style>
-
+    <Style TargetType="RibbonButton">
+        <Setter   Property="Margin" Value="1"/>
+        <Setter Property="BorderBrush" Value="Green"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
 </ResourceDictionary>

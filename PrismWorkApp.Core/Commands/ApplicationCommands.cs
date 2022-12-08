@@ -5,6 +5,8 @@
         NotifyCompositeCommand SaveAllCommand { get; }
         NotifyCompositeCommand UnDoCommand { get; }
         NotifyCompositeCommand ReDoCommand { get; }
+        NotifyCompositeCommand CreateNewWorkCommand { get; }
+        NotifyCompositeCommand DeleteWorksCommand { get; }
     }
     public class ApplicationCommands : IApplicationCommands
     {
@@ -22,6 +24,16 @@
         public NotifyCompositeCommand ReDoCommand
         {
             get { return _reDoCommand; }
+        }
+        private NotifyCompositeCommand _createNewWorkCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand CreateNewWorkCommand
+        {
+            get { return _createNewWorkCommand; }
+        }
+        private NotifyCompositeCommand _deleteWorksCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand DeleteWorksCommand
+        {
+            get { return _deleteWorksCommand; }
         }
         // public CompositeCommand LoadProjectFromExcell { get; } = new CompositeCommand();
     }

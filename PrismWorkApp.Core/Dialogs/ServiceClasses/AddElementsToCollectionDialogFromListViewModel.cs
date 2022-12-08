@@ -336,7 +336,7 @@ namespace PrismWorkApp.Core.Dialogs
             SelectedPredicate = PredicateCollection[0];
            
             foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
-                SortedCommonCollection.Add(element);
+                FilteredCommonCollection.Add(element);
             FilterEnable = false;
         }
     }

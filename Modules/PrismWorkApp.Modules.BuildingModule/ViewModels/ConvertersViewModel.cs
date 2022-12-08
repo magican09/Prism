@@ -97,10 +97,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
             _regionManager = regionManager;
-            var quickAccessTollBar = new QuickAccessToolBarView();
-            quickAccessTollBar.Items.Add(new QuickAccessToolBar());
-            quickAccessTollBar.DataContext = this;
-            _regionManager.Regions[RegionNames.RibbonQuickAccessToolBarRegion].Add(quickAccessTollBar);//Доабвяем кнопку сохраниять все на панель панель быстрого вызова
+          //  var quickAccessTollBar = new QuickAccessToolBarView();
+            //quickAccessTollBar.Items.Add(new QuickAccessToolBar());
+            //quickAccessTollBar.DataContext = this;
+            //_regionManager.Regions[RegionNames.RibbonQuickAccessToolBarRegion].Add(quickAccessTollBar);//Добавяем кнопку сохраниять все на панель панель быстрого вызова
+
             ModulesContext = modulesContext;
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
@@ -163,7 +164,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _buildingUnitsRepository.Projects.Add(bld_project);
             _buildingUnitsRepository.Complete();
 
-            var pr_var = _buildingUnitsRepository.Projects.GetAll().FirstOrDefault();
+       //     var pr_var = _buildingUnitsRepository.Projects.GetAll().FirstOrDefault();
             var pr_var_og = _buildingUnitsRepository.Projects.GetProjectWithAll();
             bld_project = pr_var_og;
             EventMessage message = new EventMessage();

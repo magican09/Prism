@@ -3,10 +3,13 @@ using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Console;
 using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
+using PrismWorkApp.Modules.BuildingModule.ViewModels.RibbonViewModels;
 using PrismWorkApp.Modules.BuildingModule.Views;
+using PrismWorkApp.Modules.BuildingModule.Views.RibbonViews;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
@@ -26,23 +29,41 @@ namespace PrismWorkApp.Modules.BuildingModule
             get { return moduleName; }
             set { moduleName = value; }
         }
-        public BuildingModule(IRegionManager regionManager, IEventAggregator eventAggregator)
+        private IApplicationCommands _applicationCommands;
+       
+        public BuildingModule(IRegionManager regionManager, IEventAggregator eventAggregator, IApplicationCommands applicationCommands)
         {
 
             ModuleId = 2;
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
+            _applicationCommands = applicationCommands;
         }
+    
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
             //    _regionManager.RequestNavigate(RegionNames.ContentRegion, "ProjectExplorerView");
             //  _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, "ConvertersView");
             _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new ProjectExplorerView());
-            var ribbinTab = new RibbonTabView();
+            var ribbinTab = new ProjectManagerRibbonTabView();
             var ribbonGroup = new ConvertersView();
-            ribbinTab.Items.Add(ribbonGroup);//Созадем группу панели инструметов с конвекторами
-            _regionManager.Regions[RegionNames.RibbonRegion].Add(ribbinTab);
+                ribbinTab.Items.Add(ribbonGroup);//Созадем группу панели инструметов с конвекторами
+             _regionManager.Regions[RegionNames.RibbonRegion].Add(ribbinTab);
+      
+            var toolBarRibbonTab = new ToolBarRibbonTab();
+            var toolBarRibbonTabDataContext = new ToolBarRibbonTabViewModel(_applicationCommands);
+            toolBarRibbonTab.DataContext = toolBarRibbonTabDataContext;
+            var toolBarRibbonGroup = new ToolBarRibbonGroupView();
+            toolBarRibbonTab.Items.Add(toolBarRibbonGroup);//Созадем группу панели инструметов с конвекторами
+               _regionManager.Regions[RegionNames.RibbonRegion].Add(toolBarRibbonTab);
+         
+            var quickAccessTollBar = new QuickAccessToolBarView();
+            quickAccessTollBar.Items.Add(new QuickAccessToolBar());
+            quickAccessTollBar.DataContext = toolBarRibbonTabDataContext;
+            _regionManager.Regions[RegionNames.RibbonQuickAccessToolBarRegion].Add(quickAccessTollBar);//Добавяем кнопку сохраниять все на панель панель быстрого вызова
+
+            // _regionManager.Regions[RegionNames.RibbonRegion].Add(ribbinTab);
 
 
             _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetModuleMessage, //Подписывается на соощения которые адресованы этому модулю

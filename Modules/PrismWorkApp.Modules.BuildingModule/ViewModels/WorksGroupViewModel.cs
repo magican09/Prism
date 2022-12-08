@@ -39,6 +39,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _selectedWorksGroup, value); }
         }
 
+        private ObservableCollection<bldWork>  _selectedWorks = new ObservableCollection<bldWork>();
+        public ObservableCollection<bldWork> SelectedWorks
+        {
+            get { return _selectedWorks; }
+            set { SetProperty(ref _selectedWorks, value); }
+        }
         private bldConstruction _selectedConstruction;
         public bldConstruction SelectedConstruction
         {
@@ -77,6 +83,18 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> AddExecutiveSchemesCommand { get; private set; }
         public NotifyCommand<object> RemoveExecutiveSchemeCommand { get; private set; }
 
+        public ObservableCollection<INotifyCommand> WorksContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
+        public NotifyCommand<object> AddCreatedFromTemplateWorkCommand { get; private set; }
+        public NotifyCommand<object> MoveWorksToAnotherConatructionCommand { get; private set; }
+        public NotifyCommand DeleteWorkCommand { get; private set; }
+
+        public NotifyCommand<object> DataGridSelectionChangedCommand { get; private set; }
+      
+
+        public NotifyCommand AddNewWorkCommand { get; private set; }
+        public NotifyCommand RemoveWorkCommand { get; private set; }
+
+
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private IApplicationCommands _applicationCommands;
         public IApplicationCommands ApplicationCommands
@@ -84,6 +102,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
+
         public WorksGroupViewModel(IDialogService dialogService,
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
@@ -97,13 +116,18 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                      () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            #region Commands Init
+            _applicationCommands = applicationCommands;
+            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
 
             RemoveNextWorkCommand = new NotifyCommand<object>(OnRemoveNextWork);
             RemoveNextWorkCommand.Name = "Удалить";
             AddNextWorkCommand = new NotifyCommand<object>(OnAddNextWork);
             AddNextWorkCommand.Name = "Добавить";
-            NextWorksContextMenuCommands.Add(RemoveNextWorkCommand);
             NextWorksContextMenuCommands.Add(AddNextWorkCommand);
+            NextWorksContextMenuCommands.Add(RemoveNextWorkCommand);
 
             SelectUnitOfMeasurementCommand = new NotifyCommand<object>(OnSelectUnitOfMeasurement);
             SelectUnitOfMeasurementCommand.Name = "Установить";
@@ -139,13 +163,75 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ExecutiveSchemesContextMenuCommands.Add(AddExecutiveSchemesCommand);
             ExecutiveSchemesContextMenuCommands.Add(RemoveExecutiveSchemeCommand);
 
+            DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
+            
+                AddNewWorkCommand = new NotifyCommand(OnAddNewWork);
+            AddNewWorkCommand.Name = "Создать новую работу";
+            DeleteWorkCommand = new NotifyCommand(OnDeleteWork,()=> { return SelectedWorks.Count>0;}).ObservesPropertyChangedEvent(SelectedWorks);
+            DeleteWorkCommand.Name = "Удалить";
+            _applicationCommands.CreateNewWorkCommand.RegisterCommand(AddNewWorkCommand);
+            _applicationCommands.DeleteWorksCommand.RegisterCommand(DeleteWorkCommand);
+
+            AddCreatedFromTemplateWorkCommand = new NotifyCommand<object>(OnAddCreatedFromTemplateWork);
+            AddCreatedFromTemplateWorkCommand.Name = "Создать на основании";
+            MoveWorksToAnotherConatructionCommand = new NotifyCommand<object>(OnMoveWorksToAnotherConatruction);
+            MoveWorksToAnotherConatructionCommand.Name = "Переместить в..";
+            WorksContextMenuCommands.Add(AddCreatedFromTemplateWorkCommand);
+            WorksContextMenuCommands.Add(MoveWorksToAnotherConatructionCommand);
+            WorksContextMenuCommands.Add(DeleteWorkCommand);
+
+            #endregion
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
-            _applicationCommands = applicationCommands;
-            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
-            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
-            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+            
+            #region Ribbon Init
+
+            #endregion
+        }
+
+        private void OnDataGridLostFocus(object obj)
+        {
+            SelectedWorks.Clear();
+        }
+
+        private void OnDataGridSelectionChanged(object works)
+        {
+            SelectedWorks.Clear();
+            foreach (bldWork work in (IList)works)
+               SelectedWorks.Add(work);
+        }
+
+        private void OnDeleteWork()
+        {
+            ObservableCollection<bldWork> works_for_delete = new ObservableCollection<bldWork>(SelectedWorks);
+            UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
+            localUnDoReDo.Register(SelectedConstruction);
+            foreach (bldWork work in works_for_delete)
+                SelectedConstruction.RemoveWork(work);
+            UnDoReDo.AddUnDoReDo(localUnDoReDo);
+
+        }
+
+        private void OnMoveWorksToAnotherConatruction(object obj)
+        {
+            
+        }
+
+        private void OnAddCreatedFromTemplateWork(object work)
+        {
+            bldWork selected_work = ((IList)work)[0] as bldWork;
+            bldWork new_work = selected_work.Clone() as bldWork;
+            UnDoReDo.Register(new_work);
+            SelectedConstruction.AddWork(new_work);
+        }
+
+        private void OnAddNewWork()
+        {
+            bldWork new_work = new bldWork();
+            UnDoReDo.Register(new_work);
+            SelectedConstruction.AddWork(new_work);
         }
 
         private void OnRemoveExecutiveScheme(object obj)
@@ -525,6 +611,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
             _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
+            _applicationCommands.CreateNewWorkCommand.UnregisterCommand(AddNewWorkCommand);
+            _applicationCommands.DeleteWorksCommand.UnregisterCommand(AddNewWorkCommand);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {

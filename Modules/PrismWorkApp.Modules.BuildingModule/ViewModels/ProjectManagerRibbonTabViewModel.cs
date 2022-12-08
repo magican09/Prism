@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class RibbonTabViewModel : LocalBindableBase, INotifyPropertyChanged
+    public class ProjectManagerRibbonTabViewModel : LocalBindableBase, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private const int CURRENT_MODULE_ID = 2;
@@ -37,7 +37,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _moduleInfoData; }
             set { SetProperty(ref _moduleInfoData, value); }
         }
-        public RibbonTabViewModel(IModulesContext modulesContext, IEventAggregator eventAggregator)
+        public ProjectManagerRibbonTabViewModel(IModulesContext modulesContext, IEventAggregator eventAggregator)
         {
             ModulesContext = modulesContext;
             _eventAggregator = eventAggregator;

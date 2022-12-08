@@ -5,11 +5,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Views
     /// <summary>
     /// Interaction logic for ConvertersView.xaml
     /// </summary>
-    public partial class RibbonTabView : RibbonTab
+    public partial class ProjectManagerRibbonTabView :RibbonTab
     {
-        public RibbonTabView()
+        public ProjectManagerRibbonTabView()
         {
-            InitializeComponent();
+           InitializeComponent();
         }
     }
 }

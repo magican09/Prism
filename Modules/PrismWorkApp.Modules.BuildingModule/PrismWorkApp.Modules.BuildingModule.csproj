@@ -36,6 +36,8 @@
         <None Remove="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
         <None Remove="Resourses\Images\close-icon.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\add.png" />
+        <None Remove="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
+        <None Remove="Resourses\Images\Ribbon\32x32\wand.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
@@ -89,6 +91,8 @@
     <Resource Include="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
     <Resource Include="Resourses\Images\close-icon.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\add.png" />
+    <Resource Include="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
+    <Resource Include="Resourses\Images\Ribbon\32x32\wand.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />

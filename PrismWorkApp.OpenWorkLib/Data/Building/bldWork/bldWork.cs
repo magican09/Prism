@@ -188,14 +188,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NavigateProperty]
         public bldConstruction bldConstruction { get; set; }
 
-
         public bldWork()
         {
             PreviousWorks.CopingEnable = false; //отключаем при копировании
             NextWorks.CopingEnable = false; //отключаем при копировании 
             AOSRDocument = new bldAOSRDocument();
             WorkArea = new bldWorkArea();
-            //        RestrictionPredicate = x => x.CopingEnable;// Определяет условтия я своего копировани в время глубокого копирования рефлексией 
+           //        RestrictionPredicate = x => x.CopingEnable;// Определяет условтия я своего копировани в время глубокого копирования рефлексией 
         }
 
         public object Clone()
@@ -215,11 +214,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         prop_val = Activator.CreateInstance(prop_info.PropertyType);
                         prop_info.SetValue(new_work, prop_val);
                     }
-
                 }
             }
-
-
             return new_work;
         }
         public void SaveAOSRsToWord(string folderPath)

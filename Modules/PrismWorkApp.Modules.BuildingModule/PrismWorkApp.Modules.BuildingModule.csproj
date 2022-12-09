@@ -36,12 +36,15 @@
         <None Remove="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
         <None Remove="Resourses\Images\close-icon.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\add.png" />
+        <None Remove="Resourses\Images\Ribbon\32x32\arrow_down.png" />
+        <None Remove="Resourses\Images\Ribbon\32x32\arrow_up.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\wand.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
+        <None Remove="Resourses\Images\Ribbon\PNG\48x48\32.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
@@ -59,6 +62,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\PrismWorkApp.Core\PrismWorkApp.Core.csproj" />
     <ProjectReference Include="..\..\PrismWorkApp.OpenWorkLib\PrismWorkApp.OpenWorkLib.csproj" />
+    <ProjectReference Include="..\..\PrismWorkApp.ResourceLibrary\PrismWorkApp.ResourceLibrary.csproj" />
     <ProjectReference Include="..\..\Services\PrismWorkApp.Services.Interfaces\PrismWorkApp.Services.Interfaces.csproj" />
     <ProjectReference Include="..\..\Services\PrismWorkApp.Services\PrismWorkApp.Services.csproj" />
   </ItemGroup>
@@ -91,12 +95,15 @@
     <Resource Include="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
     <Resource Include="Resourses\Images\close-icon.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\add.png" />
+    <Resource Include="Resourses\Images\Ribbon\32x32\arrow_down.png" />
+    <Resource Include="Resourses\Images\Ribbon\32x32\arrow_up.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\wand.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
+    <Resource Include="Resourses\Images\Ribbon\PNG\48x48\32.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />

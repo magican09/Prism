@@ -54,7 +54,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             var toolBarRibbonTab = new ToolBarRibbonTab();
             var toolBarRibbonTabDataContext = new ToolBarRibbonTabViewModel(_applicationCommands);
             toolBarRibbonTab.DataContext = toolBarRibbonTabDataContext;
-            var toolBarRibbonGroup = new ToolBarRibbonGroupView();
+            var toolBarRibbonGroup = new WorksGroupToolBarRibbonGroupView();
             toolBarRibbonTab.Items.Add(toolBarRibbonGroup);//Созадем группу панели инструметов с конвекторами
                _regionManager.Regions[RegionNames.RibbonRegion].Add(toolBarRibbonTab);
          
@@ -154,6 +154,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<ObjectDialogView, ObjectDialogViewModel>();
 
             containerRegistry.RegisterDialog<AddbldConstructionToCollectionDialogView, AddbldConstructionToCollectionViewModel>();
+            containerRegistry.RegisterDialog<AddbldConstructionToCollectionFromListDialogView, AddbldConstructioneToCollectionFromListDialogViewModel>();
+            
             containerRegistry.RegisterDialog<ConstructionDialogView, ConstructionDialogViewModel>();
 
             containerRegistry.RegisterDialog<AddbldWorkToCollectionDialogView, AddbldWorkToCollectionViewModel>();

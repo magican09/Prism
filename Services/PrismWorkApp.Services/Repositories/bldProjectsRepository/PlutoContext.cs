@@ -101,7 +101,11 @@ namespace PrismWorkApp.Services.Repositories
             .HasMany(w => w.NextWorks)
             .WithMany(nw => nw.PreviousWorks)
             .UsingEntity(j => j.ToTable("PreToNexWorksTable"));
-         
+
+            modelBuilder.Entity<bldProject>()
+                  .HasMany(ob => ob.Participants)
+                  .WithOne(pr => pr.bldProject);
+
             modelBuilder.Entity<bldObject>()
                   .HasMany(ob => ob.Participants)
                   .WithMany(pr => pr.BuildingObjects);

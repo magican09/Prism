@@ -1,0 +1,25 @@
+﻿<RibbonGroup x:Class="PrismWorkApp.Modules.BuildingModule.Views.RibbonViews.WorksGroupToolBarRibbonGroupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views.RibbonViews"
+             mc:Ignorable="d" 
+              Header="Производство">
+    <StackPanel Orientation="Horizontal">
+        <RibbonButton Label="Создать"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/wand.png"
+                      Command="{Binding ApplicationCommands.CreateCommand}"/>
+        <RibbonButton Label="Создать на основе"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/wand.png"
+                      Command="{Binding ApplicationCommands.CreateFromTemplateCommand}"/>
+        <RibbonButton Label="Удалить"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/tag_blue_delete.png"
+                      Command="{Binding ApplicationCommands.DeleteCommand}"/>
+        <RibbonButton Label="Выгрузить ИД"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/48x48/32.png" 
+                      Command="{Binding ApplicationCommands.SaveExecutionDocumentationCommand}"/>
+        <RibbonButton Label="Добавить"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/arrow_down.png" 
+                      Command="{Binding ApplicationCommands.AddCommand}"/>
+        <RibbonButton Label="Переместить"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/arrow_up.png" 
+                      Command="{Binding ApplicationCommands.MoveCommand}"/>
+   
+        
+    </StackPanel>
+</RibbonGroup>

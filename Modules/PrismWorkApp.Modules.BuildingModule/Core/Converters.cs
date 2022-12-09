@@ -10,9 +10,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace PrismWorkApp.Modules.BuildingModule.Core
 {
+    abstract class ConverterBase : MarkupExtension, IValueConverter
+    {
+        public abstract object Convert(object value, Type targetType, object parameter, CultureInfo culture);
+        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
+        public override object ProvideValue(IServiceProvider serviceProvider) => this;
+    }
 
     //[ValueConversion(typeof(object), typeof(object))]
     public class ObjectsToTreeViewNodeModelConvecter : IValueConverter
@@ -168,9 +175,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             throw new NotImplementedException();
         }
     }
-    public class GetCollectionFrombldProjectModelConvecter : IValueConverter
+
+    public class GetCollectionFrombldProjectModelConvecter :   IValueConverter
+
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public  object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Type val_type = value.GetType();
             ObservableCollection<object> collection = new ObservableCollection<object>();
@@ -417,16 +426,18 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             return collection;
         }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
         private bool FilterWorks(object obj)
         {
             if (obj is bldWork work) return true;
             return true;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+     
     }
     public class GetKeyValueFromChildrenKeyValuesConvecter : IValueConverter
     {
@@ -447,6 +458,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             throw new NotImplementedException();
         }
     }
+
     public class testConvecter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

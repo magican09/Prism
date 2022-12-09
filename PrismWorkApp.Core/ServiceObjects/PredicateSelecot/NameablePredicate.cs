@@ -7,5 +7,6 @@ namespace PrismWorkApp.Core
     {
         public string Name { get; set; }
         public Func<TSourse, ICollection<T>> Predicate { get; set; }
+       
     }
 }

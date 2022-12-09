@@ -28,13 +28,13 @@ namespace PrismWorkApp.Services.Repositories
 
             return PlutoContext.Constructions.Where(ob => ob.Id == constr_id).ToList();
         }
-        public List<bldConstruction> GetAllBldConstructions()
+        public List<bldConstruction> GetAllAsync()
         {
-            PlutoContext.Constructions
-                    .Include(ob => ob.Constructions)
-                    .ThenInclude(cn => cn.Works)
-                    .ThenInclude(cn => cn.PreviousWorks)
-                    .ToList();
+            //PlutoContext.Constructions
+            //        .Include(ob => ob.Constructions)
+            //        .ThenInclude(cn => cn.Works)
+            //        .ThenInclude(cn => cn.PreviousWorks)
+            //        .ToList();
 
             return PlutoContext.Constructions.ToList();
         }

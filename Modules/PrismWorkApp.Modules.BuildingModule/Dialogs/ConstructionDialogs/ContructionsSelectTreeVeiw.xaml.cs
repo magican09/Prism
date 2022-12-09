@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -12,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PrismWorkApp.Modules.BuildingModule.Views.RibbonViews
+namespace PrismWorkApp.Modules.BuildingModule.Dialogs.ConstructionDialogs
 {
     /// <summary>
-    /// Interaction logic for ToolBarRibbonGroupView.xaml
+    /// Interaction logic for ContructionsSelectTreeVeiw.xaml
     /// </summary>
-    public partial class ToolBarRibbonGroupView : RibbonGroup
+    public partial class ContructionsSelectTreeVeiw : UserControl
     {
-        public ToolBarRibbonGroupView()
+        public ContructionsSelectTreeVeiw()
         {
             InitializeComponent();
         }

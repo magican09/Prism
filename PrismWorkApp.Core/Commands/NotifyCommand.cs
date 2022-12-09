@@ -144,6 +144,7 @@ namespace PrismWorkApp.Core.Commands
             return CanExecute(parameter);
         }
     }
+
     public class NotifyCommand<T> : NotifyCommandBase, ICommand, IActiveAware, INotifyCommand
     {
         public string Name { get; set; }
@@ -239,7 +240,17 @@ namespace PrismWorkApp.Core.Commands
             if (ObservesPropertiesNames.Contains(e.PropertyName))
                 RaiseCanExecuteChanged();
         }
+        public NotifyCommand<T> ObservesPropertyChangedEvent(INotifyPropertyChanged obj)
+        {
+            obj.PropertyChanged += RaiseCanExecuteChanged;//Подписываемся на событие PropertyChanged
+            return this;
+        }
         #endregion
+        private void RaiseCanExecuteChanged(object sender, EventArgs e)
+        {
+            RaiseCanExecuteChanged();
+            //   CanExecuteChanged(this, EventArgs.Empty);
+        }
         public void RaiseCanExecuteChanged()
         {
             CanExecuteChanged(this, EventArgs.Empty);

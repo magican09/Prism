@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:PrismWorkApp.ResourceLibrary"
+                    xmlns:syst="clr-namespace:System.Windows.Resources;assembly=PresentationFramework" >
+
+    <ImageBrush
+      x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:CustomResources}, ResourceId=SadTileBrush}"
+        
+      TileMode="Tile"
+      ViewportUnits="Absolute" Viewport="0 0 32 32"
+      ImageSource="ResourceLibrary;component/sadface.jpg" Opacity="0.3">
+    </ImageBrush>
+    <Style 
+    x:Key="{ComponentResourceKey 
+        TypeInTargetAssembly={x:Type local:CustomResources},
+        ResourceId=ColorSliderStyle}"
+    TargetType="{x:Type Slider}">
+
+        <Setter Property="Minimum" Value="0"/>
+        <Setter Property="Maximum" Value="255"/>
+        <Setter Property="SmallChange" Value="1"/>
+        <Setter Property="LargeChange" Value="51"/>
+        <Setter Property="IsMoveToPointEnabled" Value="true"/>
+        <Setter Property="Orientation" Value="Horizontal"/>
+    </Style>
+    
+</ResourceDictionary>

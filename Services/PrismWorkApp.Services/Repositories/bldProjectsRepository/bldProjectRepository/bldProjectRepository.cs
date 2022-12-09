@@ -114,6 +114,7 @@ namespace PrismWorkApp.Services.Repositories
         public List<bldProject> GetProjectsAsync()//(Guid id)
         {
             List<bldProject> projects = PlutoContext.Projects.ToList();
+            PlutoContext.Projects.Include(pr => pr.Participants).ToList();
             PlutoContext.Objects.ToList();
             PlutoContext.Constructions.ToList();
             PlutoContext.Works

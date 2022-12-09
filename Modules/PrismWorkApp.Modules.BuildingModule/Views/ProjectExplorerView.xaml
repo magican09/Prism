@@ -8,21 +8,41 @@
              xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
              xmlns:core="clr-namespace:PrismWorkApp.Core;assembly=PrismWorkApp.Core"
              xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
+             xmlns:res="clr-namespace:PrismWorkApp.ResourceLibrary;assembly=PrismWorkApp.ResourceLibrary"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:prism="http://prismlibrary.com/"
-             prism:ViewModelLocator.AutoWireViewModel="True" >
-
+       
+             
+            prism:ViewModelLocator.AutoWireViewModel="True" >
 
     <UserControl.Resources>
-        <loc_core:ProjectExplorerNodeViewConverter x:Key="ProjectNodeViewConverter"/>
+        
+         <loc_core:ProjectExplorerNodeViewConverter x:Key="ProjectNodeViewConverter"/>
         <loc_core:ObjectsToTreeViewNodeModelConvecter x:Key="objToNodesConvecter"/>
         <loc_core:GetImageFrombldProjectObjectConvecter x:Key="imgFrombldProjectObject"/>
         <loc_core:SetTreeViewVisibilityFrombldObjectState x:Key="treeViewVisibilityFromObject"/>
         <loc_core:testConvecter  x:Key="testConvecter"/>
         <loc_core:GetKeyValueFromChildrenKeyValuesConvecter  x:Key="getKeyValue"/>
         <loc_core:TreeViewDataTemplateSelector x:Key="treeViewDataTemplateSelector"/>
-        <loc_core:GetCollectionFrombldProjectModelConvecter x:Key="getCollectionFromObjectConvecter"/>
-
+        <loc_core:GetCollectionFrombldProjectModelConvecter x:Key="getCollectionFromObjectConvecter"  />
+        <!--<ResourceDictionary>
+            <loc_core:ProjectExplorerNodeViewConverter x:Key="ProjectNodeViewConverter"/>
+            <loc_core:ObjectsToTreeViewNodeModelConvecter x:Key="objToNodesConvecter"/>
+            <loc_core:GetImageFrombldProjectObjectConvecter x:Key="imgFrombldProjectObject"/>
+            <loc_core:SetTreeViewVisibilityFrombldObjectState x:Key="treeViewVisibilityFromObject"/>
+            <loc_core:testConvecter  x:Key="testConvecter"/>
+            <loc_core:GetKeyValueFromChildrenKeyValuesConvecter  x:Key="getKeyValue"/>
+            <loc_core:TreeViewDataTemplateSelector x:Key="treeViewDataTemplateSelector"/>
+            <loc_core:GetCollectionFrombldProjectModelConvecter x:Key="getCollectionFromObjectConvecter"  />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="c:\users\admin\source\repos\prism\modules\prismworkapp.modules.buildingmodule\resourcedictionaries\buildingdefaulttheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        
+        <ResourceDictionary  Source="c:\users\admin\source\repos\prism\modules\prismworkapp.modules.buildingmodule\resourcedictionaries\buildingdefaulttheme.xaml"
+                             x:Key="AllResus"/>-->
+     
+<!--#region   DataTemplates -->
         <HierarchicalDataTemplate ItemsSource="{Binding  Converter={StaticResource getCollectionFromObjectConvecter}}" DataType="{x:Type bld:bldProject}">
             <StackPanel Orientation="Horizontal">
                 <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
@@ -38,7 +58,6 @@
                 <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
                 <TextBlock  Text="{Binding Name}" VerticalAlignment="Center"/>
               </StackPanel>
-
         </HierarchicalDataTemplate>
 
         <HierarchicalDataTemplate ItemsSource="{Binding    Converter={StaticResource getCollectionFromObjectConvecter}}" DataType="{x:Type bld:bldObject}">
@@ -225,17 +244,17 @@
             </StackPanel>
         </HierarchicalDataTemplate>
       </UserControl.Resources>
-    
-    
+<!--#endregion-->
+
     <Grid>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="0.5*"/>
         </Grid.RowDefinitions>
+        <StackPanel  Grid.Row="0" >
+        <TreeView  x:Name="treeViewProjectSolution"    Margin="3"   ItemsSource="{Binding bld_Projects}">
 
-        <TreeView  x:Name="treeViewProjectSolution"    Grid.Row="0"  Margin="3"   ItemsSource="{Binding bld_Projects}"
-                  >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <prism:InvokeCommandAction Command="{Binding TreeViewItemSelectedCommand}" CommandParameter="{Binding SelectedItem, ElementName=treeViewProjectSolution}"/>
@@ -246,6 +265,12 @@
             </i:Interaction.Triggers>
 
             <TreeView.Resources>
+                   <!--<ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="{StaticResource ResourceKey=}"/>
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>-->
+
                 <!--    <Style TargetType="TreeViewItem">
                     <Setter Property="HeaderTemplate" >
                         <Setter.Value>
@@ -258,10 +283,10 @@
                         </Setter.Value>
                     </Setter>
                 </Style>-->
-                
+
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Style.Triggers>
-                    <!--    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self},Path=DataContext.Count}" Value="0">
+                        <!--    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self},Path=DataContext.Count}" Value="0">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Setter Property = "Foreground" Value = "Red" />
                         </DataTrigger>
@@ -277,11 +302,15 @@
                         </Trigger>
                     </Style.Triggers>
 
-                   
-
                 </Style>
 
             </TreeView.Resources>
         </TreeView>
+            <Button Background="{DynamicResource {x:Static  res:SadTileBrush},}"
+        Padding="5" Margin="5"
+        FontWeight="Bold" FontSize="14">
+                A Resource From ResourceLibrary
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -166,7 +166,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<AddProjectDocumentToCollectionFromListDialogView, AddProjectDocumentToCollectionFromListDialogViewModel>();
             containerRegistry.RegisterDialog<AddLaboratoryReportToCollectionFromListDialogView, AddLaboratoryReportToCollectionFromListDialogViewModel>();
             containerRegistry.RegisterDialog<AddExecutiveSchemeToCollectionFromListDialogView, AddExecutiveSchemeToCollectionFromListDialogViewModel>();
-
+            containerRegistry.RegisterDialog<SelectConstructionFromTreeViewDialog, SelectConstructionFromTreeViewDialogViewModel>();
+            
             containerRegistry.RegisterDialog<AddbldParticipantToCollectionDialogView, AddbldParticipantToCollectionViewModel>();
             containerRegistry.RegisterDialog<ParticipantDialogView, ParticipantDialogViewModel>();
 

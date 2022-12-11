@@ -4,16 +4,41 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Dialogs"
+               xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="850">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary  Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/ProjectTreeViewDefaultTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.7"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.7*"/>
+            <ColumnDefinition Width="0.3*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="0.2"/>
+            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="0.8*"/>
+            <RowDefinition Height="0.1*"/>
         </Grid.RowDefinitions>
+
+        <TreeView Height="200" Width="400" Grid.Row="1" Grid.Column="0" x:Name="selectionTreeView" ItemsSource="{Binding CommonCollection}">
+            <TreeView.Resources>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self},Path=DataContext.Id}" Value="CurrentElement.Id" >
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Resources>
+        </TreeView>
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+            <Button Command="{Binding ConfirmCommand}">Выбрать</Button>
+            <Button Command="{Binding  CloseCommand}">Отмена</Button>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -138,13 +138,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { SetProperty(ref _bldObject, value); }
         }
-      
         [NavigateProperty]
          public  Guid? bldConstructionId { get; set; }
         [NavigateProperty]
         public bldConstruction? ParentConstruction { get; set; }
+        private bldProject? _bldProject;
+        public bldProject? bldProject
+        {
+            get { if (_bldProject != null) return _bldProject;
+                if (bldObject != null) return bldObject.bldProject;
+                if (ParentConstruction != null) return ParentConstruction.bldProject;
+                return null; }
+            set { SetProperty(ref _bldProject, value); }
+        }
 
-      
         public bldConstruction()
         {
             Works.ParentObject = this;

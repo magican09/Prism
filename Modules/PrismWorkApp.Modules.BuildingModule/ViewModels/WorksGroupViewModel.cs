@@ -313,8 +313,24 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoReDo.Register(SelectedConstruction);
 
         }
-
         private void OnMoveWorksToAnotherConatruction()
+        {
+            DialogParameters param = new DialogParameters();
+            param.Add("common_collection", new ObservableCollection<IEntityObject>(SelectedConstruction.bldProject.BuildingObjects));
+            param.Add("current_element",SelectedConstruction);
+            param.Add("element_type", typeof(bldConstruction));
+
+            _dialogService.ShowDialog(typeof(SelectConstructionFromTreeViewDialog).Name, param,
+                (result) =>
+                {
+                    if(result.Result == ButtonResult.Yes)
+                    {
+                        bldConstruction construction_for_work_adding =result.Parameters.GetValue<bldConstruction>("selected_element");
+
+                    }
+                });
+        }
+        private void OnMoveWorksToAnotherConatruction12112()
         {
             // if ((selected_entities as IList) is IList<bldWork> selected_works)
             {

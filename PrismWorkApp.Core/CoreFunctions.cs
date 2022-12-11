@@ -287,7 +287,7 @@ namespace PrismWorkApp.Core
                 string commonCollectionName = ""
                 )
             where TContainer : ICollection<T>, INameableOservableCollection<T>, new()
-            where T : class
+            where T : INameable
         {
             TContainer current_collection = new TContainer();
             TContainer common_collection = new TContainer();
@@ -391,7 +391,7 @@ namespace PrismWorkApp.Core
         }
         public static TContainer GetCollectionElementsList<TContainer, T>(TContainer input_collection)
             where TContainer : ICollection<T>, new()
-            where T : class
+            where T : INameable
         {
             TContainer output_collection = new TContainer();
             foreach (T elm in input_collection) //Создаем временную коллекцию для хранения списка элементов общей коллекции 

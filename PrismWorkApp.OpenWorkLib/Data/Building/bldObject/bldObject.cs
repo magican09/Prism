@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldObject : BindableBase, IbldObject, IEntityObject, IJornalable
+    public class bldObject : BindableBase, IbldObject, IEntityObject, IJornalable,INameable
     {
 
         private Guid _storedId;

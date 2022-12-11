@@ -6,8 +6,9 @@
              xmlns:local="clr-namespace:PrismWorkApp.Core.Dialogs"
              xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="850" SizeToContent="WidthAndHeight">
-   <prism:Dialog.WindowStyle>
+             d:DesignHeight="450" d:DesignWidth="850" SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterScreen"  >
+    <prism:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterScreen" />
             <Setter Property="ResizeMode" Value="NoResize"/>

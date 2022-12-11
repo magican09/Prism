@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "PrismWorkApp": {
+      "commandName": "Project",
+      "commandLineArgs": "Starr_command_arg dsd",
+      "remoteDebugEnabled": false
+    }
+  }
+}

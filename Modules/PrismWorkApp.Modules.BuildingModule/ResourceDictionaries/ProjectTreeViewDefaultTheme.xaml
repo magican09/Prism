@@ -4,22 +4,40 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views"
              xmlns:models="clr-namespace:PrismWorkApp.ProjectModel.Data.Models;assembly=PrismWorkApp.ProjectModel"
-             xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
+             xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core;assembly=PrismWorkApp.Modules.BuildingModule"
              xmlns:core="clr-namespace:PrismWorkApp.Core;assembly=PrismWorkApp.Core"
              xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:theme ="clr-nam"
-             xmlns:prism="http://prismlibrary.com/">
+             xmlns:prism="http://prismlibrary.com/" >
 
 
-    <!--loc_core:ProjectExplorerNodeViewConverter x:Key="ProjectNodeViewConverter"/>
+    <loc_core:ProjectExplorerNodeViewConverter x:Key="ProjectNodeViewConverter"/>
     <loc_core:ObjectsToTreeViewNodeModelConvecter x:Key="objToNodesConvecter"/>
     <loc_core:GetImageFrombldProjectObjectConvecter x:Key="imgFrombldProjectObject"/>
     <loc_core:SetTreeViewVisibilityFrombldObjectState x:Key="treeViewVisibilityFromObject"/>
     <loc_core:testConvecter  x:Key="testConvecter"/>
     <loc_core:GetKeyValueFromChildrenKeyValuesConvecter  x:Key="getKeyValue"/>
     <loc_core:TreeViewDataTemplateSelector x:Key="treeViewDataTemplateSelector"/>
-    <loc_core:GetCollectionFrombldProjectModelConvecter x:Key="getCollectionFromObjectConvecter"  />-->
+    <loc_core:GetCollectionFrombldProjectModelConvecter  x:Key="getCollectionFromObjectConvecter"  />
+    
+    <Style TargetType="{x:Type TreeViewItem}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self},Path=DataContext.Count}" Value="0">
+                <Setter Property="Visibility" Value="Collapsed"/>
+                <Setter Property = "Foreground" Value = "Red" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=IsVisible,Converter={StaticResource treeViewVisibilityFromObject}}"  Value="Collapsed">
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=IsVisible,Converter={StaticResource treeViewVisibilityFromObject}}"  Value="Visible">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+            <Trigger Property = "IsMouseOver" Value = "True">
+                <Setter Property = "Foreground" Value = "Green" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
     <HierarchicalDataTemplate ItemsSource="{Binding  Converter={StaticResource getCollectionFromObjectConvecter}}" DataType="{x:Type bld:bldProject}">
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />

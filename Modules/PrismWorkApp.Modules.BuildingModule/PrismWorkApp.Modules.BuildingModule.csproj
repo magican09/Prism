@@ -50,6 +50,9 @@
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
       </ItemGroup>
+      <ItemGroup>
+        <Page Remove="ResourceDictionaries\ProjectTreeViewDefaultTheme.xaml" />
+      </ItemGroup>
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="5.8.7" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
@@ -67,6 +70,7 @@
     <ProjectReference Include="..\..\Services\PrismWorkApp.Services\PrismWorkApp.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="ResourceDictionaries\ProjectTreeViewDefaultTheme.xaml" />
     <Resource Include="Resourses\Images\bldProjectImages\bldAOSRDocument.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

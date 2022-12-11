@@ -66,5 +66,21 @@ namespace PrismWorkApp
 
         }
 
+        private void PrismApplication_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("Обнаружено не обработанное исключение: " + e.Exception.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Error);
+            e.Handled = true;
+        }
+
+        private void PrismApplication_Startup(object sender, StartupEventArgs e)
+        {
+            //Window splash_window = new SplashWindow();
+            //splash_window.Title = "Заставка";
+            //splash_window.Show();
+            //System.Threading.Thread.Sleep(1000);
+            //splash_window.Hide();
+           
+
+        }
     }
 }

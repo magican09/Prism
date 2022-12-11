@@ -253,9 +253,9 @@
                                             <ListView ItemsSource="{Binding ExecutiveSchemes}">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal" >
+                                                        <StackPanel Orientation="Horizontal">
                                                             <TextBlock Style="{StaticResource codeTextBoxStyle }" Text="{Binding Path=Code}" />
-                                                            <TextBlock Text="{Binding Path=Name}"/>
+                                                            <TextBlock Text="{Binding Path=Name}" />
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>

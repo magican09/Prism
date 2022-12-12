@@ -108,7 +108,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _address, value); }
         }
         private bldParticipantsGroup _participants = new bldParticipantsGroup();
-
         public bldParticipantsGroup? Participants
         {
             get { return _participants; }
@@ -121,6 +120,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _responsibleEmployees; }
             set { SetProperty(ref _responsibleEmployees, value); }
         }
+
+        private bldDocumentsGroup _documentation = new bldDocumentsGroup();
+        public bldDocumentsGroup  Documentation
+        {
+            get { return _documentation; }
+            set { SetProperty(ref _documentation, value); }
+        }
+
 
         public object Clone()
         {

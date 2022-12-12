@@ -409,8 +409,23 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 case nameof(bldDocument):
                     {
                         bldDocument document = value as bldDocument;
-                        if (document?.AttachedDocuments != null) collection.Add(document.AttachedDocuments);
+                        if (document?.AttachedDocuments != null)
+                            if (document?.AttachedDocuments != null)
+                            {
+                                foreach (bldDocument document1 in document.AttachedDocuments)
+                                    collection.Add(document1);
+                            }
+                        break;
+                    }
 
+                case nameof(bldProjectDocument):
+                    {
+                        bldDocument document = value as bldDocument;
+                        if (document?.AttachedDocuments != null)
+                         {
+                            foreach(bldDocument document1 in document.AttachedDocuments)
+                             collection.Add(document1);
+                         }
                         break;
                     }
                 case nameof(NameableObservabelObjectsCollection):
@@ -418,7 +433,21 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         return value;
                         break;
                     }
-
+                case nameof(NameablePredicate):
+                    {
+                        NameablePredicate predicate = value as NameablePredicate;
+                        if (predicate.ResultCollection!=null)
+                        {
+                            foreach (var elm in predicate.ResultCollection)
+                                collection.Add(elm);
+                        }
+                        break;
+                    }
+                case nameof(NameablePredicateObservableCollection):
+                    {
+                        return value;
+                        break;
+                    }
 
 
             }

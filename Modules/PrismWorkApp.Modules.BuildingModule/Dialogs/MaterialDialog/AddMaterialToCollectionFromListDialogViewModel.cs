@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
     public class AddMaterialToCollectionFromListDialogViewModel :
-        AddElementsToCollectionDialogFromListViewModel<ObservableCollection<bldMaterial>, bldMaterial>
+        AddElementsToCollectionDialogFromListViewModel<bldMaterialsGroup, bldMaterial>
     {
         public AddMaterialToCollectionFromListDialogViewModel(IDialogService dialogService)
             : base(dialogService)

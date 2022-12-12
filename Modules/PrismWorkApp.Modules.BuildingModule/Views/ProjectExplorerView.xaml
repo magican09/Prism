@@ -21,20 +21,18 @@
                             Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/ProjectTreeViewDefaultTheme.xaml"/>
                      </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
- 
-    
     </UserControl.Resources>
 
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.5*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="0.75*"/>
+            <!--<RowDefinition Height="Auto"/>-->
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <GridSplitter Grid.Row="1" ShowsPreview="False" Width="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-        <StackPanel  Grid.Row="0">
-            <TreeView  x:Name="treeViewProjectSolution"    Margin="3"   ItemsSource="{Binding bld_Projects}">
+        <!--<GridSplitter Grid.Row="1" ShowsPreview="False" Width="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>-->
+  
+            <TreeView  Grid.Row="0" x:Name="treeViewProjectSolution"    Margin="3"   ItemsSource="{Binding bld_Projects}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick">
                         <prism:InvokeCommandAction Command="{Binding TreeViewItemSelectedCommand}" CommandParameter="{Binding SelectedItem, ElementName=treeViewProjectSolution}"/>
@@ -44,6 +42,5 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </TreeView>
-        </StackPanel>
-    </Grid>
+     </Grid>
 </UserControl>

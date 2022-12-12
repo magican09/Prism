@@ -176,7 +176,7 @@ namespace PrismWorkApp.Modules.BuildingModule
 
             containerRegistry.RegisterDialog<SelectProjectFromCollectionDialogView, SelectProjectFromCollectionDialogViewModel>();
 
-
+            containerRegistry.RegisterDialog<SelectDocumentFromTreeViewDialog, SelectDocumentFromTreeViewDialogViewModel>();
             //   containerRegistry.RegisterDialog<ConfirmCreateDialogViewModel, ConfirmCreateDialogViewModel>();
 
             // containerRegistry.RegisterForNavigation<ProjectExplorerView>();

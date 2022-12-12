@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
     public class AddLaboratoryReportToCollectionFromListDialogViewModel :
-        AddElementsToCollectionDialogFromListViewModel<ObservableCollection<bldLaboratoryReport>, bldLaboratoryReport>
+        AddElementsToCollectionDialogFromListViewModel<bldLaboratoryReportsGroup, bldLaboratoryReport>
     {
         public AddLaboratoryReportToCollectionFromListDialogViewModel(IDialogService dialogService)
             : base(dialogService)

@@ -14,12 +14,12 @@
         <RibbonButton Label="Удалить"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/tag_blue_delete.png"
                       Command="{Binding ApplicationCommands.DeleteCommand}"/>
         <RibbonButton Label="Выгрузить ИД"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/48x48/32.png" 
-                      Command="{Binding ApplicationCommands.SaveExecutionDocumentationCommand}"/>
+                      Command="{Binding ApplicationCommands.SaveWorksExecutiveDocumentationCommand}"/>
         <RibbonButton Label="Добавить"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/arrow_down.png" 
                       Command="{Binding ApplicationCommands.AddCommand}"/>
         <RibbonButton Label="Переместить"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/arrow_up.png" 
                       Command="{Binding ApplicationCommands.MoveCommand}"/>
-   
-        
+       
+
     </StackPanel>
 </RibbonGroup>

@@ -26,9 +26,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             _Collection.Remove(_AddObject);
         }
 
-        public AddToCollectionCommand(TColloction colloction, TEntity added_object)
+        public AddToCollectionCommand(TColloction collection, TEntity added_object)
         {
-            _Collection = colloction;
+            _Collection = collection;
             _AddObject = added_object;
             _Collection.Add(_AddObject);
         }

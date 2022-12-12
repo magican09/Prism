@@ -10,7 +10,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="450"   d:DesignWidth="550" >
     <UserControl.Resources>
-        <loc_core:FindComboBoxMultiConverter x:Key="FindComboBoxMultiConverter"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                  <ResourceDictionary  Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/ProjectTreeViewDefaultTheme.xaml"/>        
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <prism:Dialog.WindowStyle>
@@ -29,15 +33,16 @@
             <RowDefinition Height="0.15*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*" Name="columndefinitionColumn1"/>
+            <ColumnDefinition Width="0.2*"/>
             <ColumnDefinition Width="0.2*"/>
             <ColumnDefinition Width="0.4*"/>
-            <ColumnDefinition Width="0.4*"/>
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="0" Margin="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" 
+        <Label Grid.Row="1" Margin="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" 
                Content="{Binding Message}" />
-   
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="2" >
-            <Label Grid.Row="1"  Margin="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" 
+        <Label Grid.Row="0" Grid.Column="0">Выбреите ветку </Label>
+        <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" Grid.RowSpan="2" >
+            <Label  Margin="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" 
                Content="{Binding CommonCollectionName}" />
             <StackPanel Orientation="Horizontal" Margin="3">
                 <TextBox Name="filterTextBox" Width="250" IsEnabled="{Binding ElementName=filterEnableCheckBox, Path=IsChecked}" >
@@ -74,43 +79,25 @@
                 </DataGrid>
             </ScrollViewer>
         </StackPanel>
-        <!--<StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-            <Button  Content="Создать" Width="105" Height="20"  HorizontalAlignment="Right" Margin="10"
-                Command="{Binding CreateNewElementCommand}"/>
-            <Button  Content="Создать на основе" Width="105" Height="20"  HorizontalAlignment="Right" Margin="10" VerticalAlignment="Center"
-                Command="{Binding CreateElementOnPatternInstanceCommand}"/>
-        </StackPanel>-->
-        <!--<StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Center">
-            <Button Grid.Row="1" Grid.Column="0" Content="&gt;&gt;Добавить&gt;&gt; "  Height="25"  HorizontalAlignment="Stretch" Margin="2"
-                Command="{Binding AddToCollectionCommand}"/>
-            <Button Grid.Row="1" Grid.Column="0" Content="&lt;&lt;Удалить&lt;&lt;"  Height="25"  HorizontalAlignment="Stretch" Margin="2"
-                Command="{Binding RemoveFromCollectionCommand}"/>
-        </StackPanel>-->
-
-        <!--<DataGrid Grid.Row="2" Grid.Column="2" Margin="2" ItemsSource="{Binding CurrentCollection}"
-                  SelectedItem="{Binding SelectedElement,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                   AutoGenerateColumns="False"  IsReadOnly="True">
-            <DataGrid.Resources>
-                <Style TargetType="{x:Type DataGridRow}">
+        <TreeView  Grid.Row="1"  Grid.Column="0" Margin="2"  Grid.RowSpan="3" x:Name="selectionTreeView" ItemsSource="{Binding TreeViewCollection}"  >
+            <!--<TreeView.Resources>
+                <Style TargetType="TreeViewItem">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=IsVisible,Converter={StaticResource bool2VisibilityConverter}}"  Value="Collapsed">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
+                       
                     </Style.Triggers>
                 </Style>
-            </DataGrid.Resources>
-
-
-            <DataGrid.Columns>
-                <DataGridTextColumn  Header="Наименование"  
-                                                     Binding = "{Binding Path=ShortName}" />
-            </DataGrid.Columns>
-
-        </DataGrid>-->
-        <StackPanel Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Grid.Row="3" Grid.Column="0" Content="{Binding Refuse}" Width="75" Height="25"  HorizontalAlignment="Right" Margin="10"
+            </TreeView.Resources>-->
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectedItemChanged">
+                    <prism:InvokeCommandAction Command="{Binding TreeViewSelectionChangeCommand}" CommandParameter="{Binding SelectedValue,ElementName=selectionTreeView}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TreeView>
+        
+        <StackPanel Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Content="{Binding Refuse}" 
                 Command="{Binding ConfirmDialogCommand}" CommandParameter="{Binding ElementName=worksDataGreed,Path=SelectedCells}" />
-            <Button Grid.Row="3" Grid.Column="2" Content="{Binding Confirm}" Width="75" Height="25"  HorizontalAlignment="Right" Margin="10"
+            <Button  Content="{Binding Confirm}"
                 Command="{Binding CloseDialogCommand}"/>
         </StackPanel>
 

@@ -118,17 +118,15 @@ namespace PrismWorkApp.Services.Repositories
                 .HasMany(wr => wr.Participants)
                 .WithMany(pr => pr.Works);
 
-            modelBuilder.Entity<bldWork>()
-                .HasOne(wr => wr.AOSRDocument)
-                .WithOne(d => d.bldWork)
-                .HasForeignKey<bldAOSRDocument>(d => d.bldWorkId);
+            //modelBuilder.Entity<bldWork>()
+            //    .HasOne(wr => wr.AOSRDocument)
+            //    .WithOne(d => d.bldWork)
+            //    .HasForeignKey<bldAOSRDocument>(d => d.bldWorkId);
 
-            //modelBuilder.Entity<bldParticipant>()
-            //   .HasMany(p => p.ConstructionCompanies)
-            //   .WithMany(c => c.Participants);
             modelBuilder.Entity<bldWork>()
-                .HasMany(w => w.ProjectDocuments)
-                .WithMany(d => d.bldWorks);
+         .HasOne(wr => wr.AOSRDocument)
+         .WithOne(d => d.bldWork)
+         .HasForeignKey<bldAOSRDocument>(d => d.bldWorkId);
 
 
             modelBuilder.Entity<bldConstruction>()

@@ -1,6 +1,5 @@
 ﻿using Prism.Commands;
 using Prism.Services.Dialogs;
-using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
@@ -12,11 +11,11 @@ using System.Linq;
 using System.Windows.Controls;
 //using System.Windows.Forms;
 
-namespace PrismWorkApp.Modules.BuildingModule.Dialogs
+namespace PrismWorkApp.Core.Dialogs
 {
     public abstract class AddElementsToCollectionDialogFromListViewModel<TConteiner, T> : LocalBindableBase, IDialogAware
         where TConteiner : ICollection<T>/*, INameable, INameableOservableCollection<T>*/, new()
-        where T : class, IRegisterable, IEntityObject, new()
+        where T :class, IEntityObject
     {
         private string _title = "Диалоговое окно сообщения";
         public string Title
@@ -114,18 +113,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         public NameablePredicateObservableCollection<TConteiner, T> PredicateCollection
         {
             get { return _predicateCollection; }
-            set { SetProperty(ref _predicateCollection, value);  }
+            set { _predicateCollection = value; }
         }
-
-        private ObservableCollection<object>  _treeViewCollection = new ObservableCollection<object>();
-
-        public ObservableCollection<object> TreeViewCollection
-        {
-            get { return _treeViewCollection; }
-            set { SetProperty(ref _treeViewCollection, value); }
-        }
-
-
         private NameablePredicate<TConteiner, T> _selectedPredicate;
 
 
@@ -144,9 +133,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         public NotifyCommand RemoveFromCollectionCommand { get; private set; }
         public NotifyCommand SortingCommand { get; private set; }
         public NotifyCommand<object> FilteredElementCommand { get; private set; }
-        public NotifyCommand<object> TreeViewSelectionChangeCommand { get; private set; }
 
-        
+        public NotifyCommand<object> TreeViewSelectionChangeCommand { get; private set; }
         private bool _filterEnable;
 
         public bool FilterEnable
@@ -168,27 +156,21 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             CreateNewElementCommand = new NotifyCommand(OnCreateNewElement);
             CreateElementOnPatternInstanceCommand = new NotifyCommand(OnCreateElementOnPatternInstance, CanCreateElementOnPatternInstance)
                       .ObservesProperty(() => SelectedElement);
-            TreeViewSelectionChangeCommand = new NotifyCommand<object>(OnTreeViewSelectionChange);
 
-                 SortingCommand = new NotifyCommand(OnSortingCommand, CanSorting)
+            TreeViewSelectionChangeCommand = new NotifyCommand<object>(OnTreeViewSelectionChange);
+            //AddToCollectionCommand = new NotifyCommand(OnAddToCollection, CanAddToCollection)
+            //          .ObservesProperty(() => SelectedElement);
+
+            SortingCommand = new NotifyCommand(OnSortingCommand, CanSorting)
                 .ObservesProperty(() => SelectedPredicate);
             FilteredElementCommand = new NotifyCommand<object>(OnFilteredElement);
          
             _dialogService = dialogService;
         }
 
-        private void OnTreeViewSelectionChange(object selected_collection)
+        private void OnTreeViewSelectionChange(object obj)
         {
-            if (selected_collection != null && selected_collection.GetType() == CommonCollection.GetType())
-            {
-                FilteredCommonCollection.Clear();
-                SortedCommonCollection.Clear();
-                foreach (T element in selected_collection as ICollection<T>)
-                {
-                    SortedCommonCollection.Add(element);
-                    FilteredCommonCollection.Add(element);
-                }
-            }
+           
         }
 
         private void OnFilteredElement(object obj)
@@ -239,72 +221,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 
         private void OnCreateElementOnPatternInstance()
         {
-            var dialog_par = new DialogParameters();
-            dialog_par.Add("title", Title);
-            dialog_par.Add("message", Message);
-            TConteiner current_collection = new TConteiner();
-            TConteiner common_collection = new TConteiner();
-            current_collection = CurrentCollection;
-            common_collection = CoreFunctions.GetCollectionElementsList<TConteiner, T>(CommonCollection);
-            dialog_par.Add("current_collection", current_collection);
-            dialog_par.Add("common_collection", common_collection);
-            dialog_par.Add("current_context_id", CurrentContextId);
-            T new_element = new T();
-            CoreFunctions.CopyObjectNewInstances<IEntityObject>(SelectedElement, new_element, new_element.RestrictionPredicate);
-            CoreFunctions.SetAllIdToZero(new_element, false);
-            CoreFunctions.SetAllIdToZero(new_element, true);
-            new_element.Id = Guid.Empty;
-            new_element.StoredId = Guid.NewGuid();
-            new_element.CurrentContextId = Id;
-            ConveyanceObject conveyanceObject =
-            new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
-            dialog_par.Add("selected_element_conveyance_object", conveyanceObject);
-            _dialogService.ShowDialog(NewObjectDialogName, dialog_par, (result) =>
-            {
-                if (result.Result == ButtonResult.Yes)
-                {
-                    CurrentCollection.Add(new_element);
-                }
-                if (result.Result == ButtonResult.No)
-                {
-                }
-            }
-            );
+          
         }
 
         private void OnCreateNewElement()
         {
-            var dialog_par = new DialogParameters();
-            dialog_par.Add("title", Title);
-            dialog_par.Add("message", Message);
-            TConteiner current_collection = new TConteiner();
-            TConteiner common_collection = new TConteiner();
-            current_collection = CurrentCollection;
-
-            common_collection = CoreFunctions.GetCollectionElementsList<TConteiner, T>(CommonCollection);
-
-            dialog_par.Add("current_collection", current_collection);
-            dialog_par.Add("common_collection", common_collection);
-            T new_element = new T(); //Создаем новый элемент
-            new_element.Id = Guid.Empty;
-            new_element.StoredId = Guid.NewGuid();
-            new_element.CurrentContextId = Id;
-            ConveyanceObject conveyanceObject =
-                new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
-            dialog_par.Add("selected_element_conveyance_object", conveyanceObject);
-            dialog_par.Add("current_context_id", Id);
-
-            _dialogService.ShowDialog(NewObjectDialogName, dialog_par, (result) =>
-            {
-                if (result.Result == ButtonResult.Yes)
-                {
-                    CurrentCollection.Add(new_element);
-                }
-                if (result.Result == ButtonResult.No)
-                {
-                }
-            }
-            );
+           
         }
 
         private void ConfirmDialog(object elements)
@@ -361,18 +283,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             parameters.GetValue<NameablePredicateObservableCollection<TConteiner, T>>("predicate_collection");
 
             SelectedPredicate = PredicateCollection[0];
-            foreach (var  predicate in PredicateCollection)
-            {
-                var tree_view_root_item = Activator.CreateInstance(CommonCollection.GetType());
-
-                foreach (T element in predicate.Predicate.Invoke(CommonCollection))
-                    ((IList<T>)tree_view_root_item).Add(element);
-                ((INameable)tree_view_root_item).Name = predicate.Name;
-                    TreeViewCollection.Add(tree_view_root_item);
-            }
-           
+            SelectedPredicate.Resolve(CommonCollection as ICollection<IEntityObject>);
             foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
                 FilteredCommonCollection.Add(element);
+        
+            
             FilterEnable = false;
         }
     }

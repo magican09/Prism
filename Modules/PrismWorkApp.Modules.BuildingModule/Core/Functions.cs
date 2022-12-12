@@ -371,7 +371,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
 
                 }
             }
-
+            bldProjectDocument ProjectDocumentation = new bldProjectDocument();
+            ProjectDocumentation.Name = "Поектная документация";
+            ProjectDocumentation.AttachedDocuments.Add(bldProjectDocuments[0]);
+            bld_project.Documentation.Add(ProjectDocumentation);
             return bld_project;
         }
         public static string GetFolderPath()

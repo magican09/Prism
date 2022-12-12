@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldWork : BindableBase, IbldWork, ICloneable, IEntityObject//, IJornalable
@@ -217,6 +219,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
             }
             return new_work;
+        }
+        private bldDocumentsGroup _documentation;
+        [NotMapped]
+        public bldDocumentsGroup Documentation
+        {
+            get
+            {
+                if (_documentation != null) return _documentation;
+                if (bldConstruction != null) return bldConstruction.Documentation;
+                return null;
+            }
+            set { SetProperty(ref _documentation, value); }
         }
         public void SaveAOSRsToWord(string folderPath)
         {

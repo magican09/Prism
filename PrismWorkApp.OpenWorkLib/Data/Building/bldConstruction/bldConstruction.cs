@@ -1,6 +1,7 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -145,13 +146,25 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private bldProject? _bldProject;
         public bldProject? bldProject
         {
-            get { if (_bldProject != null) return _bldProject;
+            get { 
+                if (_bldProject != null) return _bldProject;
                 if (bldObject != null) return bldObject.bldProject;
                 if (ParentConstruction != null) return ParentConstruction.bldProject;
                 return null; }
             set { SetProperty(ref _bldProject, value); }
         }
-
+        private bldDocumentsGroup _documentation;
+        public bldDocumentsGroup Documentation
+        {
+            get
+            {
+                   if (_documentation != null) return _documentation;
+                    if (bldObject != null) return bldObject.Documentation;
+                    if (ParentConstruction != null) return ParentConstruction.Documentation;
+                    return null;
+             }
+            set { SetProperty(ref _documentation, value); }
+        }
         public bldConstruction()
         {
             Works.ParentObject = this;
@@ -179,13 +192,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
                AddWorkToConstructionCommand Command = new AddWorkToConstructionCommand(this, work);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-        //public void AddResponsibleEmployee(bldResponsibleEmployee empl)
-        //{
-        //    AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee> Command =
-        //         new AddToCollectionCommand<bldResponsibleEmployeesGroup, bldResponsibleEmployee>(ResponsibleEmployees, empl);
-          
-        //    InvokeUnDoReDoCommandCreatedEvent(Command);
-        //}
+        public void AddWorkGroup(ObservableCollection<bldWork> work)
+        {
+            AddWorkGroupToConstructionCommand Command = new AddWorkGroupToConstructionCommand(this, work);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+
         public void AddConstruction(bldConstruction construction)
         {
             AddConstructionToConstructionCommand Command = new AddConstructionToConstructionCommand(this, construction);

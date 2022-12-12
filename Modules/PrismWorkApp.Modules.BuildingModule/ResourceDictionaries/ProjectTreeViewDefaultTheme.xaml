@@ -9,7 +9,8 @@
              xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:theme ="clr-nam"
-             xmlns:prism="http://prismlibrary.com/" >
+             xmlns:prism="http://prismlibrary.com/"
+                   >
 
 
     <loc_core:ProjectExplorerNodeViewConverter x:Key="ProjectNodeViewConverter"/>
@@ -20,6 +21,7 @@
     <loc_core:GetKeyValueFromChildrenKeyValuesConvecter  x:Key="getKeyValue"/>
     <loc_core:TreeViewDataTemplateSelector x:Key="treeViewDataTemplateSelector"/>
     <loc_core:GetCollectionFrombldProjectModelConvecter  x:Key="getCollectionFromObjectConvecter"  />
+    <loc_core:FindComboBoxMultiConverter x:Key="FindComboBoxMultiConverter"/>
     
     <Style TargetType="{x:Type TreeViewItem}">
         <Style.Triggers>
@@ -42,10 +44,10 @@
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
             <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
-            <TextBlock Text="{Binding ShortName}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
-
+<!--#region  Project treeview teplayes-->
     <HierarchicalDataTemplate ItemsSource="{Binding }" DataType="{x:Type bld:bldObjectsGroup}">
 
         <StackPanel Orientation="Horizontal">
@@ -59,7 +61,7 @@
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
             <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
-            <TextBlock Text="{Binding ShortName}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
 
@@ -75,7 +77,7 @@
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
             <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
-            <TextBlock Text="{Binding ShortName}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
 
@@ -91,7 +93,7 @@
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
             <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
-            <TextBlock Text="{Binding ShortName}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
 
@@ -149,7 +151,7 @@
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
             <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
-            <TextBlock Text="{Binding ShortName}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
 
@@ -215,13 +217,8 @@
         </StackPanel>
     </HierarchicalDataTemplate>
 
-    <HierarchicalDataTemplate ItemsSource="{Binding  }" DataType="{x:Type bld:bldDocumentsGroup}">
-        <StackPanel Orientation="Horizontal">
-            <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
-            <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
-            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-        </StackPanel>
-    </HierarchicalDataTemplate>
+ 
+    <!--#endregion-->
     <HierarchicalDataTemplate ItemsSource="{Binding   Converter={StaticResource getCollectionFromObjectConvecter} }" DataType="{x:Type bld:bldDocument}">
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
@@ -229,13 +226,33 @@
             <TextBlock  Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
-
-    <HierarchicalDataTemplate ItemsSource="{Binding   }" DataType="{x:Type bld:NameableObservabelObjectsCollection }">
+    <HierarchicalDataTemplate ItemsSource="{Binding  }" DataType="{x:Type bld:bldDocumentsGroup}">
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
-            <TextBlock Text="{Binding Code}" VerticalAlignment="Center"/>
             <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
             <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
+    <HierarchicalDataTemplate ItemsSource="{Binding   Converter={StaticResource getCollectionFromObjectConvecter}}" DataType="{x:Type bld:bldProjectDocument}">
+        <StackPanel Orientation="Horizontal">
+            <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
+            <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
+            <TextBlock  Text="{Binding Name}" VerticalAlignment="Center"/>
+        </StackPanel>
+    </HierarchicalDataTemplate>
+    <HierarchicalDataTemplate ItemsSource="{Binding  }" DataType="{x:Type bld:bldProjectDocumentsGroup}">
+        <StackPanel Orientation="Horizontal">
+            <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
+            <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
+            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+        </StackPanel>
+    </HierarchicalDataTemplate>
+    <HierarchicalDataTemplate ItemsSource="{Binding  }" DataType="{x:Type bld:NameableObservabelObjectsCollection}">
+        <StackPanel Orientation="Horizontal">
+            <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
+            <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
+            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+        </StackPanel>
+    </HierarchicalDataTemplate>
+
 </ResourceDictionary>

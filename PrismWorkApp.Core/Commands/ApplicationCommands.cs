@@ -8,9 +8,9 @@
         NotifyCompositeCommand CreateCommand { get; }
         NotifyCompositeCommand CreateFromTemplateCommand { get; }
         NotifyCompositeCommand DeleteCommand { get; }
-        NotifyCompositeCommand SaveExecutionDocumentationCommand { get; }
         NotifyCompositeCommand MoveCommand { get; }
         NotifyCompositeCommand AddCommand { get; }
+        NotifyCompositeCommand SaveExecutiveDocumentsCommand { get; }
 
     }
     public class ApplicationCommands : IApplicationCommands
@@ -60,8 +60,11 @@
         {
             get { return _addCommand; }
         }
-      
-        
+        private NotifyCompositeCommand _saveExecutiveDocumentsCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand SaveExecutiveDocumentsCommand
+        {
+            get { return _saveExecutiveDocumentsCommand; }
+        }
     }
 
 

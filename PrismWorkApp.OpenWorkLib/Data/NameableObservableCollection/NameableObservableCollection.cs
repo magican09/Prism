@@ -12,8 +12,8 @@ using System.Runtime.CompilerServices;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    //public class NameableObservableCollection<TEntity>:ObservableCollection<TEntity>,IList<TEntity> where TEntity: class,IEntityObject
-    public partial class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>,ICollection<TEntity>, IEntityObject, IJornalable, INameableOservableCollection<TEntity> where TEntity : IEntityObject, INameable,  IJornalable 
+ 
+    public  class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>,ICollection<TEntity>, IEntityObject, IJornalable, INameableOservableCollection<TEntity> where TEntity : IEntityObject
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
@@ -111,6 +111,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             CollectionChanged += OnCollectionChangedMethod;
         }
         public NameableObservableCollection(List<TEntity> list) : base(list)
+        {
+            Id = Guid.NewGuid();
+            CollectionChanged += OnCollectionChangedMethod;
+        }
+        public NameableObservableCollection(IList<TEntity> list) : base(list)
         {
             Id = Guid.NewGuid();
             CollectionChanged += OnCollectionChangedMethod;

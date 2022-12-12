@@ -28,18 +28,6 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="0.1*" />
         </Grid.RowDefinitions>
-        <!-- <i:Interaction.Triggers>
-            <i:EventTrigger EventName="GotFocus">
-                <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
-                                           CommandParameter="{Binding   SelectedItem , ElementName=bldObjectDataGrid}" />
-            </i:EventTrigger>
-         <i:EventTrigger EventName="GotFocus">
-                <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" CommandParameter="{Binding SelectedItem, ElementName=bldParticipantDataGrid}"/>
-            </i:EventTrigger>
-            <i:EventTrigger EventName="GotFocus">
-                <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" CommandParameter="{Binding SelectedItem, ElementName=bldResponsibleEmployeeDataGrid}"/>
-            </i:EventTrigger>
-        </i:Interaction.Triggers>-->
 
         <StackPanel x:Name="mainStakPanel" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="2" Orientation="Vertical" >
             <TextBlock  Margin="10,5,10,0" HorizontalAlignment="Center" Style="{StaticResource titleText}">Форма для заполнения харахтеристик проекта.</TextBlock>

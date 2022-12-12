@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
     public class AddExecutiveSchemeToCollectionFromListDialogViewModel :
-        AddElementsToCollectionDialogFromListViewModel<ObservableCollection<bldExecutiveScheme>, bldExecutiveScheme>
+        AddElementsToCollectionDialogFromListViewModel<bldExecutiveSchemesGroup, bldExecutiveScheme>
     {
         public AddExecutiveSchemeToCollectionFromListDialogViewModel(IDialogService dialogService)
             : base(dialogService)

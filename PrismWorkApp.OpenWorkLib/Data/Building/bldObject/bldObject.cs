@@ -156,14 +156,25 @@ namespace PrismWorkApp.OpenWorkLib.Data
             return val;
         }
         #endregion
+     
+        private bldDocumentsGroup _documentation;
+        public bldDocumentsGroup Documentation
+        {
+            get {
+                if (_documentation != null) return _documentation;
+                if (this.bldProject != null) return this.bldProject.Documentation;
 
+                return null;
+            }
+            set { SetProperty(ref _documentation, value); }
+        }
+     
         private bldParticipantsGroup _participants;
-        public bldParticipantsGroup? Participants
+        public bldParticipantsGroup Participants
         {
             get
             {
                 if (_participants != null) return _participants;
-              
                 if (this.bldProject != null) return this.bldProject.Participants;
                 return null;
             }

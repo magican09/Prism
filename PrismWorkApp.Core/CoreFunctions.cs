@@ -38,8 +38,8 @@ namespace PrismWorkApp.Core
         public static void RemoveElementFromCollectionWhithDialog<TContainer, T>
                (T element, string element_type_name,
             Action<IDialogResult> elm_erase_action, IDialogService dialogService, Guid current_context_id)
-           where TContainer : ICollection<T>, INameableOservableCollection<T>
-           where T : class, INameable, IRegisterable
+           where TContainer : ICollection<T>
+           where T :  INameable, IRegisterable
         {
             var dialog_par = new DialogParameters();
             dialog_par.Add("massege",
@@ -334,7 +334,7 @@ namespace PrismWorkApp.Core
            string commonCollectionName = ""
            )
        where TContainer : ICollection<T>, new()
-       where T : class
+       where T : class,IEntityObject
         {
             TContainer current_collection = new TContainer();
             TContainer common_collection = new TContainer();
@@ -368,7 +368,7 @@ namespace PrismWorkApp.Core
                string commonCollectionName = ""
                )
            where TContainer : ICollection<T>/*, INameableOservableCollection<T>*/, new()
-           where T : class
+           where T : class,IEntityObject
         {
             TContainer current_collection = new TContainer();
             TContainer common_collection = new TContainer();

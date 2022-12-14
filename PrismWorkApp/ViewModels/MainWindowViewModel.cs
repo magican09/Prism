@@ -7,12 +7,12 @@ namespace PrismWorkApp.ViewModels
     {
 
 
-        IApplicationCommands _applicationCommands;
-        public IApplicationCommands ApplicationCommands
-        {
-            get { return _applicationCommands; }
-            set { SetProperty(ref _applicationCommands, value); }
-        }
+        //IApplicationCommands _applicationCommands;
+        //public IApplicationCommands ApplicationCommands
+        //{
+        //    get { return _applicationCommands; }
+        //    set { SetProperty(ref _applicationCommands, value); }
+        //}
         private string _title = "Executive Documentation";
         public string Title
         {

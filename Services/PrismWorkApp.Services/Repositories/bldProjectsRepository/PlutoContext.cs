@@ -138,13 +138,6 @@ namespace PrismWorkApp.Services.Repositories
              .HasOne(bo => bo.ParentObject)
              .WithMany(bo => bo.BuildingObjects)
              .HasForeignKey(bo => bo.bldObjectId);
-
-            //modelBuilder.Entity<bldResponsibleEmployee>()
-            //    .HasOne(pr => pr.bldParticipant)
-            //    .WithMany(re => re.ResponsibleEmployees); 
-
-               //  .HasForeignKey(bo => bo.bldParticipantId);
-            
             modelBuilder.Entity<Employee>().ToTable("Employees");
             modelBuilder.Entity<bldResponsibleEmployee>().ToTable("ResponsibleEmployees");
            
@@ -191,7 +184,7 @@ namespace PrismWorkApp.Services.Repositories
                 throw new NotImplementedException();
                 foreach (var entry in ex.Entries)
                 {
-
+  
                 }
                
             }

@@ -85,6 +85,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands,
               IUnDoReDoSystem unDoReDo)
         {
+            _applicationCommands = applicationCommands;
             CommonUnDoReDo = unDoReDo as UnDoReDoSystem;
             UnDoReDo = new UnDoReDoSystem();
 
@@ -99,6 +100,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             #region Add Commands
             AddWorkCommand = new NotifyCommand(OnAddWork);
+            _applicationCommands.AddWorkCommand.RegisterCommand(AddWorkCommand);
             AddConstructionCommand = new NotifyCommand(OnAddConstruction);
             #endregion
             #region Remove Commands
@@ -108,10 +110,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveWorkCommand = new NotifyCommand(OnRemoveWork,
                                         () => SelectedWork != null)
                     .ObservesProperty(() => SelectedWork);
+            _applicationCommands.DeleteWorkCommand.RegisterCommand(RemoveWorkCommand);
             #endregion
             #region Edit Commands
 
-            EditConstructionCommand = new NotifyCommand(OnEditConstruction,
+           EditConstructionCommand = new NotifyCommand(OnEditConstruction,
                                         () => SelectedChildConstruction != null)
                     .ObservesProperty(() => SelectedChildConstruction);
             EditWorkCommand = new NotifyCommand(OnEditWork,
@@ -121,11 +124,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
             SaveAOSRsToWordCommand = new NotifyCommand(OnSaveAOSRsToWord);
+            _applicationCommands.SaveExecutiveDocumentsCommand.RegisterCommand(SaveAOSRsToWordCommand);
 
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
-            _applicationCommands = applicationCommands;
+           
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
@@ -183,9 +187,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      {
                          foreach (bldWork work in objects_for_add_collection)
                          {
-                        //   UnDoReDo.Register(work);
                              SelectedConstruction.AddWork(work);
-                        //   UnDoReDo.UnRegister(work);
                          }
                          SaveCommand.RaiseCanExecuteChanged();
                      }
@@ -330,6 +332,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
             _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
+            _applicationCommands.AddWorkCommand.UnregisterCommand(AddWorkCommand);
+            _applicationCommands.DeleteWorkCommand.UnregisterCommand(RemoveWorkCommand);
+            _applicationCommands.SaveExecutiveDocumentsCommand.UnregisterCommand(SaveAOSRsToWordCommand);
+
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
@@ -348,8 +354,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (SelectedConstruction != null) SelectedConstruction.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedConstruction = ResivedConstruction;
                 SelectedConstruction.ErrorsChanged += RaiseCanExecuteChanged;
-                Title = ResivedConstruction.Name;
-               UnDoReDo.Register(SelectedConstruction);
+                Title = $"{SelectedConstruction.Code} {SelectedConstruction.ShortName}";
+                UnDoReDo.Register(SelectedConstruction);
             }
         }
 

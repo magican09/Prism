@@ -8,6 +8,6 @@ namespace PrismWorkApp.Services.Repositories
     public interface IbldProjectRepository : IRepository<bldProject>
     {
         bldProject GetProjectWithObjects(Guid id);
-        List<bldProject> GetProjectsAsync();
+        List<bldProject> GetAllAsync();
     }
 }

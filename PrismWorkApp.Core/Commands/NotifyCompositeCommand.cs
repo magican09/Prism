@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Prism;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Input;
@@ -8,21 +9,23 @@ namespace PrismWorkApp.Core.Commands
     public class NotifyCompositeCommand : ICommand
     {
         public string Name { get; set; }
-       
+
         public event EventHandler CanExecuteChanged;
         protected Action _TargetExecuteMetod;
         protected Func<bool> _TargetCanExecuteMethod;
         private bool _monitorCommandActivity;
 
-        private ObservableCollection<ICommand> _registeredCommands = new ObservableCollection<ICommand>();
+        //    private ObservableCollection<ICommand> _registeredCommands = new ObservableCollection<ICommand>();
         public ObservableCollection<ICommand> RegisteredCommands { get; set; } = new ObservableCollection<ICommand>();
         private ICommand _LastCommand { get; set; }
         public NotifyCompositeCommand()
         {
             RegisteredCommands.CollectionChanged += OnRegisteredCommandsChanged;
         }
-        public NotifyCompositeCommand(bool monitorCommandActivity) : base()
+        public NotifyCompositeCommand(bool monitorCommandActivity)
         {
+            _monitorCommandActivity = monitorCommandActivity;
+            RegisteredCommands.CollectionChanged += OnRegisteredCommandsChanged;
 
         }
         private void OnRegisteredCommandsChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -42,13 +45,23 @@ namespace PrismWorkApp.Core.Commands
             bool _RegisteredCommandsCanExecuteVal = true;
             bool _TargetCanExecuteMethod_CanExecuteVal = true;
 
-
             foreach (ICommand command in RegisteredCommands)
-                if (command.CanExecute(parameter) == false)
+            {
+                if (command is INotifyCommand notify_command && _monitorCommandActivity )
                 {
-                    _RegisteredCommandsCanExecuteVal = false;
-                    break;
+                    if (notify_command.IsActive)
+                    {
+                        _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
+                        if (_RegisteredCommandsCanExecuteVal == false) break;
+                    }
                 }
+                else
+                {
+                    _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
+                    if (_RegisteredCommandsCanExecuteVal == false) break;
+                }
+              
+            }
 
             if (_LastCommand != null)
                 _LastCommandCanExecuteVal = _LastCommand.CanExecute(parameter);
@@ -65,15 +78,21 @@ namespace PrismWorkApp.Core.Commands
                _LastCommandCanExecuteVal &&
                _TargetCanExecuteMethod_CanExecuteVal;
 
-
             return can_execute_val;
         }
 
         void ICommand.Execute(object parameter)
         {
             foreach (ICommand command in RegisteredCommands)
-                command.Execute(parameter);
-
+            {
+                if (command is INotifyCommand notify_command && _monitorCommandActivity)
+                {
+                    if (_monitorCommandActivity && notify_command.IsActive)
+                        notify_command.Execute(parameter);
+                }
+                else
+                    command.Execute(parameter);
+            }
             if (_TargetExecuteMetod != null)
                 _TargetExecuteMetod();
             if (_LastCommand != null)
@@ -86,6 +105,14 @@ namespace PrismWorkApp.Core.Commands
         {
             RegisteredCommands.Add(command);
             command.CanExecuteChanged += RaiseChildrenCanExecuteChanged;
+            if (command is IActiveAware active_aware_command)
+            {
+                active_aware_command.IsActiveChanged += OnIsActivateChaged;
+            }
+            RaiseCanExecuteChanged();
+        }
+        private void OnIsActivateChaged(object sender, EventArgs e)
+        {
             RaiseCanExecuteChanged();
         }
         private void RaiseChildrenCanExecuteChanged(object sender, EventArgs e)
@@ -96,6 +123,8 @@ namespace PrismWorkApp.Core.Commands
         {
             RegisteredCommands.Remove(command);
             command.CanExecuteChanged -= RaiseChildrenCanExecuteChanged;
+            if (command is IActiveAware active_aware_command)
+                active_aware_command.IsActiveChanged -= OnIsActivateChaged;
             RaiseCanExecuteChanged();
         }
         public void SetExecuteMethod(Action execute_method)
@@ -121,5 +150,7 @@ namespace PrismWorkApp.Core.Commands
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
+
+
     }
 }

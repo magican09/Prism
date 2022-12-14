@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldWorkArea : BindableBase, IbldWorkArea
+    public class bldWorkArea : BindableBase, IbldWorkArea,IEntityObject
     {
         private string _levels;
         public string Levels

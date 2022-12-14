@@ -17,6 +17,7 @@
         <Setter Property="Margin" Value="10,5,10,0"/>
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="FontSize" Value="12"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
     </Style>
     <Style x:Key="titleLabel_1" TargetType="{x:Type Label}">
         <Setter Property="DockPanel.Dock" Value="Top"/>
@@ -43,7 +44,8 @@
         <Setter Property="Padding" Value="4 2"/>
     </Style>
     <Style TargetType="{x:Type TextBox}">
-        <Setter Property="Margin" Value="10,5,10,0"/>
+        <!--<Setter Property="Margin" Value="10,3,10,0"/>-->
+        <Setter Property="Height" Value="20"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
@@ -71,6 +73,7 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
+
     
     <!--#region DataTree Styles -->
       <!--#endregion-->

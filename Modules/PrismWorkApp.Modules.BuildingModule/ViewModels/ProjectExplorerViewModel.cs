@@ -175,8 +175,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     }
                 case (nameof(bldWorksGroup)):
                     {
-                        navParam.Add("bld_works_group", new ConveyanceObject((bldWorksGroup)clicked_node, ConveyanceObjectModes.EditMode.FOR_EDIT));
-                        _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(WorksGroupView).Name, navParam);
+                        if (((bldWorksGroup)clicked_node).ParentObject != null)
+                        {
+                            navParam.Add("bld_construction", new ConveyanceObject(((bldWorksGroup)clicked_node).ParentObject, ConveyanceObjectModes.EditMode.FOR_EDIT));
+                            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(WorksGroupView).Name, navParam);
+                        }
                         break;
                     }
                 default:

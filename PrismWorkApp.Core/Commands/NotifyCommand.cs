@@ -13,19 +13,44 @@ namespace PrismWorkApp.Core.Commands
     {
         public string Name { get; set; }
         public bool IsActive { get; set; }
-        public event EventHandler IsActiveChanged;
+        public event EventHandler IsActiveChanged = delegate { };
         public event EventHandler CanExecuteChanged = delegate { };
         protected Action _TargetExecuteMetod;
         protected Func<bool> _TargetCanExecuteMethod;
+        //public NotifyCommand(Action executeMethod)
+        //{
+        //    _TargetExecuteMetod = executeMethod;
+        //}
         public NotifyCommand(Action executeMethod)
         {
-            _TargetExecuteMetod = executeMethod;
+            RegisterActiveAwareEventHandler(executeMethod);
+             _TargetExecuteMetod = executeMethod;
+        }
+
+        private void RegisterActiveAwareEventHandler(Action executeMethod)
+        {
+            var command_parent_object = executeMethod.Target;
+            if (command_parent_object is IActiveAware active_aware_object)
+            {
+                active_aware_object.IsActiveChanged += OnIsActivateChaged;
+            }
         }
         public NotifyCommand(Action executeMethod, Func<bool> canExecuteMehtod)
         {
+            RegisterActiveAwareEventHandler(executeMethod);
             _TargetExecuteMetod = executeMethod;
             _TargetCanExecuteMethod = canExecuteMehtod;
         }
+        private void OnIsActivateChaged(object sender, EventArgs e)
+        {
+            if (sender is IActiveAware active_aware_object)
+            {
+                IsActive = active_aware_object.IsActive;
+                IsActiveChanged.Invoke(this, new EventArgs());
+            }
+        }
+
+      
         #region ICommand members
         bool ICommand.CanExecute(object parameter)
         {
@@ -143,25 +168,46 @@ namespace PrismWorkApp.Core.Commands
         {
             return CanExecute(parameter);
         }
+
+       
     }
 
     public class NotifyCommand<T> : NotifyCommandBase, ICommand, IActiveAware, INotifyCommand
     {
         public string Name { get; set; }
         public bool IsActive { get; set; }
-        public event EventHandler IsActiveChanged;
+        public event EventHandler IsActiveChanged = delegate { };
         public event EventHandler CanExecuteChanged = delegate { };
         protected Action<T> _TargetExecuteMetod;
         protected Func<T, bool> _TargetCanExecuteMethod;
         public NotifyCommand(Action<T> executeMethod)
         {
+            RegisterActiveAwareEventHandler(executeMethod);
             _TargetExecuteMetod = executeMethod;
         }
         public NotifyCommand(Action<T> executeMethod, Func<T, bool> canExecuteMehtod)
         {
+            RegisterActiveAwareEventHandler(executeMethod);
             _TargetExecuteMetod = executeMethod;
             _TargetCanExecuteMethod = canExecuteMehtod;
         }
+        private void RegisterActiveAwareEventHandler(Action<T> executeMethod)
+        {
+            var command_parent_object = executeMethod.Target;
+            if (command_parent_object is IActiveAware active_aware_object)
+            {
+                active_aware_object.IsActiveChanged += OnIsActivateChaged;
+            }
+        }
+        private void OnIsActivateChaged(object sender, EventArgs e)
+        {
+            if (sender is IActiveAware active_aware_object)
+            {
+                IsActive = active_aware_object.IsActive;
+                IsActiveChanged?.Invoke(this, new EventArgs());
+            }
+        }
+
         #region ICommand members
 
         bool ICommand.CanExecute(object parameter)

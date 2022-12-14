@@ -26,13 +26,13 @@
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.75*"/>
+            <RowDefinition Height="0.9*"/>
             <!--<RowDefinition Height="Auto"/>-->
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <!--<GridSplitter Grid.Row="1" ShowsPreview="False" Width="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>-->
   
-            <TreeView  Grid.Row="0" x:Name="treeViewProjectSolution"    Margin="3"   ItemsSource="{Binding bld_Projects}">
+            <TreeView  Grid.Row="0" x:Name="treeViewProjectSolution"    Margin="3"   ItemsSource="{Binding bld_Projects}" VerticalAlignment="Stretch">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick">
                         <prism:InvokeCommandAction Command="{Binding TreeViewItemSelectedCommand}" CommandParameter="{Binding SelectedItem, ElementName=treeViewProjectSolution}"/>

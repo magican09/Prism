@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
     public class AddbldConstructionToCollectionViewModel :
-        AddElementToCollectionDialogViewModel<ObservableCollection<bldConstruction>, bldConstruction>
+        AddElementToCollectionDialogViewModel<bldConstructionsGroup, bldConstruction>
     {
         public AddbldConstructionToCollectionViewModel(IDialogService dialogService)
             : base(dialogService)

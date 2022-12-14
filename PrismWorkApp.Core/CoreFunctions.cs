@@ -306,7 +306,6 @@ namespace PrismWorkApp.Core
                 if (obj != null)
                     common_collection.Remove(obj);
             }
-
             var dialog_par = new DialogParameters();
             dialog_par.Add("title", title);
             dialog_par.Add("message", message);
@@ -314,12 +313,10 @@ namespace PrismWorkApp.Core
             dialog_par.Add("common_collection_name", commonCollectionName);
             dialog_par.Add("common_collection", common_collection);
             dialog_par.Add("current_collection", current_collection);
-            dialog_par.Add("confirm_button_content", "Сохранить");
+            dialog_par.Add("confirm_button_content", "Добавить");
             dialog_par.Add("refuse_button_content", "Закрыть");
             dialog_par.Add("new_object_dialog_name", newObjectDialogName);
             dialog_par.Add("current_context_id", current_context_id);
-
-
             dialogService.ShowDialog(dialogViewName, dialog_par, action);
         }
         public static void AddElementsToCollectionWhithDialogList<TContainer, T>

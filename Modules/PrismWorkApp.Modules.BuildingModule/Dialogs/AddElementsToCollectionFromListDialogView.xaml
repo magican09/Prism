@@ -8,11 +8,12 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
              mc:Ignorable="d" 
-             d:DesignHeight="450"   d:DesignWidth="550" >
+             d:DesignHeight="450"   d:DesignWidth="750" >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                  <ResourceDictionary  Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/ProjectTreeViewDefaultTheme.xaml"/>        
+                  <ResourceDictionary  Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/ProjectTreeViewDefaultTheme.xaml"/>
+                <!--<ResourceDictionary  Source="pack://application:,,,/PrismWorkApp;component/ResourceDictionaries/WorkResourceDictionary.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -38,8 +39,8 @@
             <ColumnDefinition Width="0.2*"/>
             <ColumnDefinition Width="0.4*"/>
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="1" Margin="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" 
-               Content="{Binding Message}" />
+        <!--<Label Grid.Row="1" Margin="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" 
+               Content="{Binding Message}" />-->
         <Label Grid.Row="0" Grid.Column="0">Выбреите ветку </Label>
         <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" Grid.RowSpan="2" >
             <Label  Margin="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" 
@@ -57,13 +58,13 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="3">
-                <TextBlock Style="{StaticResource inlineText}" Text="Искать в:"/>
+             
                 <ComboBox ItemsSource="{Binding PredicateCollection}" SelectedItem="{Binding SelectedPredicate}" 
                           DisplayMemberPath="Name"
                           SelectedValuePath="Name"  Width="300">
 
                 </ComboBox>
-                <Button Content="Показать все"  HorizontalAlignment="Right" Command="{Binding SortingCommand}" 
+                <Button Content="Показать из.."  HorizontalAlignment="Right" Command="{Binding SortingCommand}" 
                         CommandParameter="{Binding ElementName=FindStringTextBox,Path=Text}"/>
             </StackPanel>
             <ScrollViewer Width="Auto">

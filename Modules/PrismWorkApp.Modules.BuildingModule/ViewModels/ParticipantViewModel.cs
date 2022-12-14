@@ -275,6 +275,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 UnDoReDo.Register(SelectedParticipant);
 
             }
+            Title = $"{SelectedParticipant.Code} {SelectedParticipant.Name}";
 
 
         }

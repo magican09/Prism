@@ -194,8 +194,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             PreviousWorks.CopingEnable = false; //отключаем при копировании
             NextWorks.CopingEnable = false; //отключаем при копировании 
-            AOSRDocument = new bldAOSRDocument();
-            WorkArea = new bldWorkArea();
+            //AOSRDocument = new bldAOSRDocument();
+            //WorkArea = new bldWorkArea();
            //        RestrictionPredicate = x => x.CopingEnable;// Определяет условтия я своего копировани в время глубокого копирования рефлексией 
         }
 

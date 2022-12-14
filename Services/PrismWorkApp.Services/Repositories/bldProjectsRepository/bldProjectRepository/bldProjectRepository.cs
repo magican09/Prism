@@ -111,16 +111,25 @@ namespace PrismWorkApp.Services.Repositories
 
             return all_pojects;
         }
-        public List<bldProject> GetProjectsAsync()//(Guid id)
+      
+        public List<bldProject> GetAllAsync()//(Guid id)
         {
             List<bldProject> projects = PlutoContext.Projects.ToList();
-            PlutoContext.Projects.Include(pr => pr.Participants).ToList();
+            PlutoContext.Projects.Include(pr => pr.Participants)
+                .ThenInclude(pr=>pr.BuildingObjects)
+                .ThenInclude(b=>b.Constructions)
+                .ThenInclude(c=>c.Works)
+                .ThenInclude(w=>w.WorkArea)
+                .Include(w=>w.UnitOfMeasurement).ToList();
+
             PlutoContext.Objects.ToList();
             PlutoContext.Constructions.ToList();
             PlutoContext.Works
                .Include(el => el.NextWorks)
                .Include(el => el.PreviousWorks)
-               .Include(el=>el.ProjectDocuments).ToList();
+               .Include(el=>el.ProjectDocuments)
+               .Include(el => el.UnitOfMeasurement)
+               .Include(el=>el.WorkArea).ToList();
             PlutoContext.Materials.ToList();
             PlutoContext.ProjectDocuments.ToList();
             PlutoContext.ExecutiveSchemes.ToList();

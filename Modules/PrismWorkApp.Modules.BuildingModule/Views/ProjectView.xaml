@@ -34,44 +34,29 @@
             <StackPanel Orientation="Horizontal"  >
                 <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="244*" />
-                        <ColumnDefinition Width="51*"/>
-                        <ColumnDefinition Width="412*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
-                    <Label  Style="{StaticResource inlineLabel}">Код:</Label>
-                    <TextBox Grid.Column="1"  Text="{Binding SelectedProject.Code}" Width="100" HorizontalAlignment="Left" Margin="10,5,0,0"/>
+                    <Label  Style="{StaticResource inlineLabel}" Target="{Binding ElementName=codeTextBox}">_Код:</Label>
+                    <TextBox x:Name="codeTextBox" Grid.Column="1"  Text="{Binding SelectedProject.Code}" Width="100" HorizontalAlignment="Left" Margin="10,5,0,0"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal"  >
                 <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="98.595"/>
-                        <ColumnDefinition Width="4.161"/>
-                        <ColumnDefinition Width="31.511"/>
-                        <ColumnDefinition Width="180.529"/>
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
-                    <Label  Style="{StaticResource inlineLabel}" Grid.ColumnSpan="4">Наименование проекта (в проектной документации):</Label>
+                    <Label  Style="{StaticResource inlineLabel}" Grid.ColumnSpan="4">Наименование проекта:</Label>
                     <TextBox Grid.Column="4"  Text="{Binding SelectedProject.Name}" Margin="10,5,10,0"/>
                 </Grid>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" >
-                <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition   x:Name="shortProjectNameRightGridColumn"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0"  Style="{StaticResource inlineLabel}" >Полное наименование проекта:</Label>
-                    <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedProject.FullName}"/>
-                </Grid>
-            </StackPanel>
+
             <StackPanel Orientation="Horizontal" >
                 <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="36.764"/>
-                        <ColumnDefinition Width="120.096"/>
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0"  Style="{StaticResource inlineLabel}" Grid.ColumnSpan="2" >Короткое наименование</Label>
                     <TextBox Grid.Column="2" Text="{Binding SelectedProject.ShortName}" Margin="10,5,10,0"/>
@@ -109,10 +94,10 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn  Header="Код"  Width="60"
+                                <DataGridTextColumn  Header="Код"  MinWidth="50"
                                                      Binding = "{Binding Path=Code}" />
                                 <DataGridTextColumn  Header="Наименование объекта"  
-                                                     Binding = "{Binding Path=ShortName}" Width="*" />
+                                                     Binding = "{Binding Path=Name}" Width="*" />
                             </DataGrid.Columns>
 
                         </DataGrid>

@@ -23,12 +23,16 @@
                                                 Grid.Column="0"
                                                 Margin="10 0 10 0"
                                                 HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Content="{Binding DataContext.Title}" />
+                                                VerticalAlignment="Center">
+                                <ContentControl.Content>
+                                    <TextBlock  Text="{Binding DataContext.Title}" TextTrimming="CharacterEllipsis" MaxWidth="120" />
+                                </ContentControl.Content>
+                            </ContentControl>
+                                               
                             <Button x:Name="close_button"
                                         Grid.Column="1"
                                         Width="15"
-                                        Height="15"
+                                        Height="20"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Command="{Binding DataContext.CloseCommand}"

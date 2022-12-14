@@ -9,11 +9,10 @@
              xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="1150" >
     
     <Grid   ShowGridLines="False">
         <Grid.Resources>
-       
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.05*"/>
@@ -28,19 +27,6 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="0.1*" />
         </Grid.RowDefinitions>
-        <!-- <i:Interaction.Triggers>
-            <i:EventTrigger EventName="GotFocus">
-                <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
-                                           CommandParameter="{Binding   SelectedItem , ElementName=bldObjectDataGrid}" />
-            </i:EventTrigger>
-         <i:EventTrigger EventName="GotFocus">
-                <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" CommandParameter="{Binding SelectedItem, ElementName=bldParticipantDataGrid}"/>
-            </i:EventTrigger>
-            <i:EventTrigger EventName="GotFocus">
-                <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" CommandParameter="{Binding SelectedItem, ElementName=bldResponsibleEmployeeDataGrid}"/>
-            </i:EventTrigger>
-        </i:Interaction.Triggers>-->
-
         <StackPanel x:Name="mainStakPanel" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="2" Orientation="Vertical" >
             <TextBlock
         Margin="10,5,10,0"
@@ -49,58 +35,66 @@
             <StackPanel Orientation="Horizontal"  >
                 <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock  Style="{StaticResource inlineText}">Код:</TextBlock>
-                    <TextBox Grid.Column="1"  Text="{Binding SelectedConstruction.Code}" Width="100" HorizontalAlignment="Left"/>
+                    <Label  Style="{StaticResource inlineLabel}">Код:</Label>
+                    <TextBox Grid.Column="1"  Text="{Binding SelectedWork.Code}" MinWidth="100" HorizontalAlignment="Left"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal"  >
                 <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock  Style="{StaticResource inlineText}">Наименование проекта (в проектной документации):</TextBlock>
-                    <TextBox Grid.Column="1"  Text="{Binding SelectedConstruction.Name}"/>
-                </Grid>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" >
-                <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition   x:Name="shortProjectNameRightGridColumn"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" >Полное наименование проекта:</TextBlock>
-                    <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedConstruction.FullName}"/>
+                    <Label  Style="{StaticResource inlineLabel}" >Наименование:</Label>
+                    <TextBox Grid.Column="1"  Text="{Binding SelectedWork.Name}"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
                 <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"  Style="{StaticResource inlineText}" >Короткое наименование</TextBlock>
-                    <TextBox Grid.Column="1" Text="{Binding SelectedConstruction.ShortName}"/>
+                    <Label Grid.Column="0"  Style="{StaticResource inlineLabel}" HorizontalAlignment="Right">Короткое наименование:</Label>
+                    <TextBox Grid.Column="2" Text="{Binding SelectedWork.ShortName}"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
-                <TextBlock  Style="{StaticResource inlineText}">Дата начала строительства:</TextBlock>
-                <DatePicker  IsDropDownOpen="False"
+                <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label  Grid.Column="0"  Style="{StaticResource inlineLabel}">Период работ:</Label>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.5*"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0"  Orientation="Horizontal">
+                            <Label  Style="{StaticResource inlineLabel}">Дата начала:</Label>
+                            <DatePicker  IsDropDownOpen="False"
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
-                    SelectedDate="{Binding SelectedConstruction.StartTime}" />
-                <TextBlock  Style="{StaticResource inlineText}">Дата окончания строительства:</TextBlock>
-                <DatePicker  IsDropDownOpen="False"
+                    SelectedDate="{Binding SelectedWork.StartTime}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2"  Orientation="Horizontal">
+                            <Label  Style="{StaticResource  inlineLabel}">Дата окончания:</Label>
+                            <DatePicker IsDropDownOpen="False"
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
-                    SelectedDate="{Binding SelectedConstruction.EndTime}" />
+                    SelectedDate="{Binding SelectedWork.EndTime}" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
             </StackPanel>
+
             <StackPanel  >
-                <TextBlock Style="{StaticResource inlineText}">Объекты строительства:</TextBlock>
+                <Label Style="{StaticResource inlineLabel}">Объекты строительства:</Label>
                 <StackPanel Orientation="Horizontal" x:Name="bldObjectStackPanel"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
@@ -119,8 +113,10 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
-                                <DataGridTextColumn  Header="Наименование консрукции"  
-                                                     Binding = "{Binding Path=Name}" />
+                                <DataGridTextColumn Binding = "{Binding Path=Code}"  
+                                                Header="Код" Width="Auto" MinWidth="40" />
+                                <DataGridTextColumn Binding = "{Binding Path=Name}"  
+                                                Header="Наименование" Width="*" />
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
@@ -133,7 +129,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel >
-                <TextBlock Style="{StaticResource inlineText}">Ведомость работ:</TextBlock>
+                <Label Style="{StaticResource inlineLabel}">Ведомость работ:</Label>
                 <StackPanel Orientation="Horizontal"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
                         <Grid.ColumnDefinitions>
@@ -152,9 +148,11 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
+                                <DataGridTextColumn Binding = "{Binding Path=Code}"  
+                                                Header="Код" Width="Auto" MinWidth="40" />
                                 <DataGridTextColumn Binding = "{Binding Path=Name}"  
-                                                Header="Нименование работ" Width="Auto" />
-                               
+                                                Header="Наименование работ" Width="*" />
+
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="1" Width="100" HorizontalAlignment="Right" >
@@ -169,7 +167,7 @@
 
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10">
-            <Button  Content="Сохранить ИД в Word" Width="Auto" Command="{Binding SaveAOSRsToWordCommand}" />
+            <!--<Button  Content="Сохранить ИД в Word" Width="Auto" Command="{Binding SaveAOSRsToWordCommand}" />-->
             <Button  Content="Сохранить" Width="Auto" Command="{Binding SaveCommand}" />
             <Button  Content="Закрыть"  Width="Auto" Command="{Binding CloseCommand}"
                                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,

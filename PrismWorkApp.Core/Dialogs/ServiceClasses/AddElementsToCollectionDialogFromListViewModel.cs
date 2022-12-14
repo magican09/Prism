@@ -117,9 +117,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             set { SetProperty(ref _predicateCollection, value);  }
         }
 
-        private ObservableCollection<object>  _treeViewCollection = new ObservableCollection<object>();
+        private NameableObservabelObjectsCollection  _treeViewCollection = new NameableObservabelObjectsCollection();
 
-        public ObservableCollection<object> TreeViewCollection
+        public NameableObservabelObjectsCollection TreeViewCollection
         {
             get { return _treeViewCollection; }
             set { SetProperty(ref _treeViewCollection, value); }
@@ -363,10 +363,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             SelectedPredicate = PredicateCollection[0];
             foreach (var  predicate in PredicateCollection)
             {
-                var tree_view_root_item = Activator.CreateInstance(CommonCollection.GetType());
+               // var tree_view_root_item = new NameableObservableCollection<T>();  //Activator.CreateInstance(CommonCollection.GetType());
+                var tree_view_root_item = new NameableObservabelObjectsCollection();  //Activator.CreateInstance(CommonCollection.GetType());
 
                 foreach (T element in predicate.Predicate.Invoke(CommonCollection))
-                    ((IList<T>)tree_view_root_item).Add(element);
+                    tree_view_root_item.Add(element);
                 ((INameable)tree_view_root_item).Name = predicate.Name;
                     TreeViewCollection.Add(tree_view_root_item);
             }

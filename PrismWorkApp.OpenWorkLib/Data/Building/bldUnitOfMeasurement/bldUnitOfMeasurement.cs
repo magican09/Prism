@@ -4,20 +4,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldUnitOfMeasurement : BindableBase, IbldUnitOfMeasurement, IEntityObject
     {
-
-        private Guid _storedId;
-        public Guid StoredId
-        {
-            get { return _storedId; }
-            set { SetProperty(ref _storedId, value); }
-        }
-        private string _code;
-        public string Code
-        {
-            get { return _code; }
-            set { SetProperty(ref _code, value); }
-        }//Код
-        private DateTime _date;
         private string _name = "ед.изм.";
         public string Name
         {

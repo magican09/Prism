@@ -369,6 +369,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedProject.ErrorsChanged += RaiseCanExecuteChanged;
                 Title = ResivedProject.ShortName;
                UnDoReDo.Register(SelectedProject);
+                Title = $"{SelectedProject.Code} {SelectedProject.ShortName}";
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)

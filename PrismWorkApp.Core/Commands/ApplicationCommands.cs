@@ -5,11 +5,11 @@
         NotifyCompositeCommand SaveAllCommand { get; }
         NotifyCompositeCommand UnDoCommand { get; }
         NotifyCompositeCommand ReDoCommand { get; }
-        NotifyCompositeCommand CreateCommand { get; }
-        NotifyCompositeCommand CreateFromTemplateCommand { get; }
-        NotifyCompositeCommand DeleteCommand { get; }
-        NotifyCompositeCommand MoveCommand { get; }
-        NotifyCompositeCommand AddCommand { get; }
+        NotifyCompositeCommand CreateWorkCommand { get; }
+        NotifyCompositeCommand CreateWorkFromTemplateCommand { get; }
+        NotifyCompositeCommand DeleteWorkCommand { get; }
+        NotifyCompositeCommand MoveWorkCommand { get; }
+        NotifyCompositeCommand AddWorkCommand { get; }
         NotifyCompositeCommand SaveExecutiveDocumentsCommand { get; }
 
     }
@@ -30,37 +30,37 @@
         {
             get { return _reDoCommand; }
         }
-        private NotifyCompositeCommand _createCommand = new NotifyCompositeCommand();
-        public NotifyCompositeCommand CreateCommand
+        private NotifyCompositeCommand _createWorkCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand CreateWorkCommand
         {
-            get { return _createCommand; }
+            get { return _createWorkCommand; }
         }
-        private NotifyCompositeCommand _createFromTemplateCommand = new NotifyCompositeCommand();
-        public NotifyCompositeCommand CreateFromTemplateCommand
+        private NotifyCompositeCommand _createWorkFromTemplateCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand CreateWorkFromTemplateCommand
         {
-            get { return _createFromTemplateCommand; }
+            get { return _createWorkFromTemplateCommand; }
         }
-        private NotifyCompositeCommand _deleteCommand = new NotifyCompositeCommand();
-        public NotifyCompositeCommand DeleteCommand
+        private NotifyCompositeCommand _deleteWorkCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand DeleteWorkCommand
         {
-            get { return _deleteCommand; }
+            get { return _deleteWorkCommand; }
         }
-        private NotifyCompositeCommand _saveExecutionDocumentationCommand = new NotifyCompositeCommand();
-        public NotifyCompositeCommand SaveExecutionDocumentationCommand
+        //private NotifyCompositeCommand _saveExecutionDocumentationCommand = new NotifyCompositeCommand();
+        //public NotifyCompositeCommand SaveExecutionDocumentationCommand
+        //{
+        //    get { return _saveExecutionDocumentationCommand; }
+        //}
+        private NotifyCompositeCommand _moveWorkCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand MoveWorkCommand
         {
-            get { return _saveExecutionDocumentationCommand; }
+            get { return _moveWorkCommand; }
         }
-        private NotifyCompositeCommand _moveCommand = new NotifyCompositeCommand();
-        public NotifyCompositeCommand MoveCommand
+        private NotifyCompositeCommand _addWorkCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand AddWorkCommand
         {
-            get { return _moveCommand; }
+            get { return _addWorkCommand; }
         }
-        private NotifyCompositeCommand _addCommand = new NotifyCompositeCommand();
-        public NotifyCompositeCommand AddCommand
-        {
-            get { return _addCommand; }
-        }
-        private NotifyCompositeCommand _saveExecutiveDocumentsCommand = new NotifyCompositeCommand();
+        private NotifyCompositeCommand _saveExecutiveDocumentsCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand SaveExecutiveDocumentsCommand
         {
             get { return _saveExecutiveDocumentsCommand; }

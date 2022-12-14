@@ -9,7 +9,7 @@
              xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
-             d:DesignHeight="450" d:DesignWidth="1100">
+              d:DesignHeight="600" d:DesignWidth="1150">
     <UserControl.Resources>
         <Style TargetType="Button" x:Key="removeAddButoomStyle">
             <Setter Property="Width"  Value="20"/>

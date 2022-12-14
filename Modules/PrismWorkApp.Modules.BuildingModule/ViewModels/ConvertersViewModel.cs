@@ -189,7 +189,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void LoadProjectFomDB()
         {
-            AllProjectsContext = new bldProjectsGroup(_buildingUnitsRepository.Projects.GetProjectsAsync());
+            AllProjectsContext = new bldProjectsGroup(_buildingUnitsRepository.Projects.GetAllAsync());
             EventMessage message = new EventMessage();
             bldProject project = new bldProject();
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldProjectsGroup, bldProject>(AllProjectsContext,

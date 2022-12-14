@@ -86,6 +86,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> RemoveExecutiveSchemeCommand { get; private set; }
 
         public ObservableCollection<INotifyCommand> WorksContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
+        public NotifyCommand CreateNewWorkCommand { get; private set; }
         public NotifyCommand<object> AddCreatedFromTemplateWorkCommand { get; private set; }
         public NotifyCommand MoveWorksToAnotherConatructionCommand { get; private set; }
         public NotifyCommand AddWorksFromAnotherConatructionCommand { get; private set; }
@@ -96,7 +97,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> DataGridSelectionChangedCommand { get; private set; }
 
 
-        public NotifyCommand CreateNewWorkCommand { get; private set; }
+    
         public NotifyCommand RemoveWorkCommand { get; private set; }
         // public NotifyCommand RemoveWorkCommand { get; private set; }
 
@@ -174,19 +175,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             #region Work Context Menu
             CreateNewWorkCommand = new NotifyCommand(OnAddNewWork);
             CreateNewWorkCommand.Name = "Создать новую работу";
-            _applicationCommands.CreateCommand.RegisterCommand(CreateNewWorkCommand);
+            _applicationCommands.CreateWorkCommand.RegisterCommand(CreateNewWorkCommand);
             AddCreatedFromTemplateWorkCommand = new NotifyCommand<object>(OnAddCreatedFromTemplateWork, (ob) => { return SelectedWorks.Count == 1; }).ObservesPropertyChangedEvent(SelectedWorks);
             AddCreatedFromTemplateWorkCommand.Name = "Создать на основании";
-            _applicationCommands.CreateFromTemplateCommand.RegisterCommand(AddCreatedFromTemplateWorkCommand);
+            _applicationCommands.CreateWorkFromTemplateCommand.RegisterCommand(AddCreatedFromTemplateWorkCommand);
             DeleteWorkCommand = new NotifyCommand(OnDeleteWork, () => SelectedWorks.Count > 0).ObservesPropertyChangedEvent(SelectedWorks);
             DeleteWorkCommand.Name = "Удалить";
-            _applicationCommands.DeleteCommand.RegisterCommand(DeleteWorkCommand);
-            MoveWorksToAnotherConatructionCommand = new NotifyCommand(OnMoveWorksToAnotherConatruction, () => { return SelectedWorks.Count > 0; }).ObservesPropertyChangedEvent(SelectedWorks);
+            _applicationCommands.DeleteWorkCommand.RegisterCommand(DeleteWorkCommand);
+            MoveWorksToAnotherConatructionCommand = new NotifyCommand(OnMoveWorksToAnotherConatruction, () => { return SelectedWorks.Count > 0; }).ObservesProperty(()=>SelectedWorks);
             MoveWorksToAnotherConatructionCommand.Name = "Переместить в другую консрукцию";
-            _applicationCommands.MoveCommand.RegisterCommand(MoveWorksToAnotherConatructionCommand);
+            _applicationCommands.MoveWorkCommand.RegisterCommand(MoveWorksToAnotherConatructionCommand);
             AddWorksFromAnotherConatructionCommand = new NotifyCommand(OnAddWorksFromAnotherConatruction);
             AddWorksFromAnotherConatructionCommand.Name = "Добавить из другой консрукции";
-            _applicationCommands.AddCommand.RegisterCommand(AddWorksFromAnotherConatructionCommand);
+            _applicationCommands.AddWorkCommand.RegisterCommand(AddWorksFromAnotherConatructionCommand);
             SaveWorksExecutiveDocumentationCommand = new NotifyCommand(OnSaveWorksExecutionDocumentation, () => { return SelectedWorks.Count > 0; }).ObservesPropertyChangedEvent(SelectedWorks);
             SaveWorksExecutiveDocumentationCommand.Name = "Выгрузить ИД";
             _applicationCommands.SaveExecutiveDocumentsCommand.RegisterCommand(SaveWorksExecutiveDocumentationCommand);
@@ -202,8 +203,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
 
-
-
             #region Ribbon Init
 
             #endregion
@@ -213,18 +212,18 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldConstructionsGroup All_Consructions = new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetAllAsync().Where(cn => cn.Id != SelectedConstruction.Id).ToList());
 
-            ObservableCollection<bldConstruction> constructions_for_add_collection = new ObservableCollection<bldConstruction>();
-            NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_1 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
+             bldConstructionsGroup constructions_for_add_collection = new bldConstructionsGroup();
+            NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_1 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_1.Name = "Показать только из текущего уровня.";
             predicate_1.Predicate = cl => cl.Where(el => (el?.bldObject != null || el.ParentConstruction?.Id != null) &&
                         (el?.bldObject.Id == SelectedConstruction?.bldObject?.Id || el.ParentConstruction?.Id != SelectedConstruction?.ParentConstruction?.Id)).ToList();
-            NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_2 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
+            NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_2 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_2.Name = "Показать все";
             predicate_2.Predicate = cl => cl;
-            NameablePredicateObservableCollection<ObservableCollection<bldConstruction>, bldConstruction> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldConstruction>, bldConstruction>();
+            NameablePredicateObservableCollection<bldConstructionsGroup, bldConstruction> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldConstructionsGroup, bldConstruction>();
             nameablePredicatesCollection.Add(predicate_1);
             nameablePredicatesCollection.Add(predicate_2);
-            CoreFunctions.AddElementsToCollectionWhithDialogList<ObservableCollection<bldConstruction>, bldConstruction>
+            CoreFunctions.AddElementsToCollectionWhithDialogList<bldConstructionsGroup, bldConstruction>
         (constructions_for_add_collection, All_Consructions,
          nameablePredicatesCollection,
         _dialogService,
@@ -400,7 +399,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnAddNewWork()
         {
             bldWork new_work = new bldWork();
-            UnDoReDo.Register(new_work);
+            new_work.UnitOfMeasurement = new bldUnitOfMeasurement();
+            new_work.WorkArea = new bldWorkArea();
+          //  UnDoReDo.Register(new_work);
             SelectedConstruction.AddWork(new_work);
         }
 
@@ -567,51 +568,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 });
 
         }
-        private void OnAddProjectsDocuments_1(object obj)
-        {
-            if (obj == null) return;
-            // bldProjectDocument removed_document = ((Tuple<object, object>)obj).Item1 as bldProjectDocument;
-            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
-            //ObservableCollection<bldProjectDocument> All_ProjectDocuments = newbldProjectDocumentsGroup(
-            //     _buildingUnitsRepository.ProjectDocuments.GetAllAsync().Where(pd => !selected_work.ProjectDocuments.Contains(pd)).ToList());
-           bldProjectDocumentsGroup All_ProjectDocuments = new bldProjectDocumentsGroup();
-            var bld_documentation = SelectedConstruction.Documentation.Where(dc => dc.GetType() == typeof(bldProjectDocument));
-            foreach (var document in bld_documentation)
-                All_ProjectDocuments.Add(document as bldProjectDocument);
-         
-            NameablePredicate<ObservableCollection<bldProjectDocument>, bldProjectDocument> predicate_1 = new NameablePredicate<ObservableCollection<bldProjectDocument>, bldProjectDocument>();
-            predicate_1.Name = "Показать все документы";
-            predicate_1.Predicate = cl => cl;
-            NameablePredicateObservableCollection<ObservableCollection<bldProjectDocument>, bldProjectDocument> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldProjectDocument>, bldProjectDocument>();
-            nameablePredicatesCollection.Add(predicate_1);
-           bldProjectDocumentsGroup documents_for_add_collection = new bldProjectDocumentsGroup();
-
-            CoreFunctions.AddElementsToCollectionWhithDialogList<ObservableCollection<bldProjectDocument>, bldProjectDocument>
-                (documents_for_add_collection, All_ProjectDocuments,
-               nameablePredicatesCollection,
-              _dialogService,
-               (result) =>
-               {
-                   if (result.Result == ButtonResult.Yes)
-                   {
-                       UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
-                       localUnDoReDo.Register(selected_work);
-                       foreach (bldProjectDocument document in documents_for_add_collection)
-                           selected_work.AddProjectDocument(document);
-                       SaveCommand.RaiseCanExecuteChanged();
-                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
-                   }
-                   if (result.Result == ButtonResult.No)
-                   {
-                   }
-               },
-              typeof(AddProjectDocumentToCollectionFromListDialogView).Name,
-               "Добавить документацию",
-               "Форма добавления документации.",
-               "Список документов", "");
-        }
-
-        private void OnRemoveMaterial(object obj)
+      private void OnRemoveMaterial(object obj)
         {
             bldMaterial removed_material = ((Tuple<object, object>)obj).Item1 as bldMaterial;
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
@@ -631,8 +588,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnAddMaterials(object obj)
         {
             if (obj == null) return;
-            //  bldMaterial removed_material = ((Tuple<object, object>)obj).Item1 as bldMaterial;
-            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+           bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             bldMaterialsGroup All_Materials = new bldMaterialsGroup("Все материалы");
             foreach (bldMaterial material in _buildingUnitsRepository.Materials.GetAllAsync().Where(mt => !selected_work.Materials.Contains(mt)).ToList())
                 All_Materials.Add(material);
@@ -713,11 +669,73 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
               "Форма для выбора единицы измерения.",
               "Список един измерения", "");
         }
+        private void OnAddPreviousWorks(object works)
+        {
+            if (works == null) return;
+            bldWork selected_work = ((Tuple<object, object>)works).Item2 as bldWork;
 
+
+            if (selected_work == null) return;
+            bldWorksGroup All_Works = new bldWorksGroup(_buildingUnitsRepository.Works.GetbldWorksAsync().Where(wr => wr.Id != selected_work.Id &&
+                                             !selected_work.PreviousWorks.Contains(wr) && !selected_work.PreviousWorks.Contains(wr)).ToList());
+            ObservableCollection<bldWork> works_for_add_collection = new ObservableCollection<bldWork>();
+            NameablePredicate<ObservableCollection<bldWork>, bldWork> predicate_1 = new NameablePredicate<ObservableCollection<bldWork>, bldWork>();
+            predicate_1.Name = "Показать только из текущей конструкции.";
+            predicate_1.Predicate = cl => cl.Where(el => el?.bldConstruction != null &&
+                                                        el?.bldConstruction.Id == selected_work?.bldConstruction?.Id).ToList();
+            NameablePredicate<ObservableCollection<bldWork>, bldWork> predicate_2 = new NameablePredicate<ObservableCollection<bldWork>, bldWork>();
+            predicate_2.Name = "Показать на одну ступень выше, но без работ текущей кострукции";
+            predicate_2.Predicate = cl => cl.Where(el => el?.bldConstruction?.Id != selected_work?.bldConstruction?.Id &&
+                                                        (el.bldConstruction?.ParentConstruction?.Id == selected_work.bldConstruction?.ParentConstruction?.Id ||
+                                                          el.bldConstruction?.bldObject?.Id == selected_work.bldConstruction?.bldObject?.Id)).ToList();
+            NameablePredicateObservableCollection<ObservableCollection<bldWork>, bldWork> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldWork>, bldWork>();
+            nameablePredicatesCollection.Add(predicate_1);
+            nameablePredicatesCollection.Add(predicate_2);
+            CoreFunctions.AddElementsToCollectionWhithDialogList<ObservableCollection<bldWork>, bldWork>
+              (works_for_add_collection, All_Works,
+               nameablePredicatesCollection,
+              _dialogService,
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
+                       localUnDoReDo.Register(selected_work);
+                       foreach (bldWork bld_work in works_for_add_collection)
+                           selected_work.AddPreviousWork(bld_work);
+                       SaveCommand.RaiseCanExecuteChanged();
+                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                   }
+                   if (result.Result == ButtonResult.No)
+                   {
+                   }
+               },
+              typeof(AddWorksToCollectionFromListDialogView).Name,
+               "Добавить работы как предыдущие",
+               "Форма добавления предыдущие работ.",
+               "Список работ", "");
+
+        }
+        private void OnRemovePreviousWork(object works)
+        {
+            bldWork removed_work = ((Tuple<object, object>)works).Item1 as bldWork;
+            bldWork selected_work = ((Tuple<object, object>)works).Item2 as bldWork;
+            if (removed_work == null || selected_work == null) return;
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
+                 (removed_work, "Предыдущая работа работа",
+                result =>
+                {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        UnDoReDo.Register(selected_work);
+                        selected_work.RemovePreviousWork(removed_work);
+                    }
+                }, _dialogService, Id);
+        }
+    
         private void OnAddNextWork(object works)
         {
             if (works == null) return;
-            //     bldWork removed_work = ((Tuple<object, object>)works).Item1 as bldWork; //Не используется 
             bldWork selected_work = ((Tuple<object, object>)works).Item2 as bldWork;
 
 
@@ -805,35 +823,33 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
             _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
-            _applicationCommands.CreateCommand.UnregisterCommand(CreateNewWorkCommand);
-            _applicationCommands.CreateFromTemplateCommand.UnregisterCommand(AddCreatedFromTemplateWorkCommand);
-            _applicationCommands.DeleteCommand.UnregisterCommand(DeleteWorkCommand);
-            _applicationCommands.MoveCommand.UnregisterCommand(MoveWorksToAnotherConatructionCommand);
+            _applicationCommands.CreateWorkCommand.UnregisterCommand(CreateNewWorkCommand);
+            _applicationCommands.CreateWorkFromTemplateCommand.UnregisterCommand(AddCreatedFromTemplateWorkCommand);
+            _applicationCommands.AddWorkCommand.UnregisterCommand(AddWorksFromAnotherConatructionCommand);
+            _applicationCommands.DeleteWorkCommand.UnregisterCommand(DeleteWorkCommand);
+            _applicationCommands.MoveWorkCommand.UnregisterCommand(MoveWorksToAnotherConatructionCommand);
             _applicationCommands.SaveExecutiveDocumentsCommand.UnregisterCommand(SaveWorksExecutiveDocumentationCommand);
-
-
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            ConveyanceObject navigane_message_works = (ConveyanceObject)navigationContext.Parameters["bld_works_group"];
-            // ConveyanceObject navigane_message_construction = (ConveyanceObject)navigationContext.Parameters["bld_construction"];
+            ConveyanceObject navigane_message_works = (ConveyanceObject)navigationContext.Parameters["bld_construction"];
             if (navigane_message_works != null)
             {
-                SelectedWorksGroup = (bldWorksGroup)navigane_message_works.Object;
-                EditMode = navigane_message_works.EditMode;
+                   EditMode = navigane_message_works.EditMode;
                 if (SelectedConstruction != null) SelectedConstruction.ErrorsChanged -= RaiseCanExecuteChanged;
-                SelectedConstruction = (bldConstruction)SelectedWorksGroup.ParentObject;
+                 SelectedConstruction = (bldConstruction)navigane_message_works.Object;
                 SelectedConstruction.ErrorsChanged += RaiseCanExecuteChanged;
+                SelectedWorksGroup = SelectedConstruction.Works;
                 UnDoReDo.Register(SelectedConstruction);
                 foreach (bldWork work in SelectedConstruction.Works)
                     UnDoReDo.Register(work);
-                //    SelectedConstruction.Works[0].UnitOfMeasurement = new bldUnitOfMeasurement("кг");
+                Title = $"{SelectedConstruction.Code} {SelectedConstruction.ShortName}";
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_works_group"];
-            if (((bldWorksGroup)navigane_message.Object).Id != SelectedWorksGroup.Id)
+            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_construction"];
+            if (((bldConstruction)navigane_message.Object).Id != SelectedConstruction.Id)
                 return false;
             else
                 return true;

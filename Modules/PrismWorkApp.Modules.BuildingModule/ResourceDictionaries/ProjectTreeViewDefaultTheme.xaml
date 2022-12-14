@@ -8,7 +8,7 @@
              xmlns:core="clr-namespace:PrismWorkApp.Core;assembly=PrismWorkApp.Core"
              xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:theme ="clr-nam"
+           
              xmlns:prism="http://prismlibrary.com/"
                    >
 
@@ -247,12 +247,12 @@
             <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
-    <HierarchicalDataTemplate ItemsSource="{Binding  }" DataType="{x:Type bld:NameableObservabelObjectsCollection}">
+    <HierarchicalDataTemplate   DataType="{x:Type bld:NameableObservabelObjectsCollection }">
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
-            <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
             <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
+    
 
 </ResourceDictionary>

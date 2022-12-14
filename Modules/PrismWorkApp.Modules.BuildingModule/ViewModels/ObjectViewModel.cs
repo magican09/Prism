@@ -185,9 +185,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldObjectsGroup All_BuildingObjects = new bldObjectsGroup(_buildingUnitsRepository.Objects.GetldObjectsAsync().Where(ob=>ob.Id!=SelectedBuildingObject.Id).ToList());//.GetBldObjects(SelectedProject.Id));
 
-            NameablePredicate<ObservableCollection<bldObject>, bldObject> predicate_1 = new NameablePredicate<ObservableCollection<bldObject>, bldObject>();
-            NameablePredicate<ObservableCollection<bldObject>, bldObject> predicate_2 = new NameablePredicate<ObservableCollection<bldObject>, bldObject>();
-            NameablePredicate<ObservableCollection<bldObject>, bldObject> predicate_3 = new NameablePredicate<ObservableCollection<bldObject>, bldObject>();
+            NameablePredicate<bldObjectsGroup, bldObject> predicate_1 = new NameablePredicate<bldObjectsGroup, bldObject>();
+            NameablePredicate<bldObjectsGroup, bldObject> predicate_2 = new NameablePredicate<bldObjectsGroup, bldObject>();
+            NameablePredicate<bldObjectsGroup, bldObject> predicate_3 = new NameablePredicate<bldObjectsGroup, bldObject>();
             predicate_1.Name = "Показать только из текущего проекта.";
             predicate_1.Predicate = cl => cl.Where(el => el.bldProject != null &&
                                                         el.bldProject.Id == SelectedBuildingObject?.bldProject?.Id).ToList();
@@ -197,12 +197,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             predicate_3.Name = "Показать все";
             predicate_3.Predicate = cl => cl;
 
-            NameablePredicateObservableCollection<ObservableCollection<bldObject>, bldObject> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldObject>, bldObject>();
+            NameablePredicateObservableCollection<bldObjectsGroup, bldObject> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldObjectsGroup, bldObject>();
             nameablePredicatesCollection.Add(predicate_1);
             nameablePredicatesCollection.Add(predicate_2);
             nameablePredicatesCollection.Add(predicate_3);
-            ObservableCollection<bldObject> objects_for_add_collection = new ObservableCollection<bldObject>();
-            CoreFunctions.AddElementToCollectionWhithDialog_Test<ObservableCollection<bldObject>, bldObject>
+            bldObjectsGroup objects_for_add_collection = new bldObjectsGroup();
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<bldObjectsGroup, bldObject>
                 (objects_for_add_collection, All_BuildingObjects,
                  nameablePredicatesCollection,
                 _dialogService,
@@ -233,26 +233,26 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldConstructionsGroup AllConstructions =
             new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync());
          //   new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync().Where(cn => !SelectedBuildingObject.Constructions.Contains(cn)).ToList());
-            NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_1 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
+            NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_1 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_1.Name = "Показать только из текущего проекта.";
             predicate_1.Predicate = cl => cl.Where(el => el.bldObject?.bldProject?.Id == SelectedBuildingObject?.bldProject?.Id).ToList();
-            NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_2 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
+            NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_2 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_2.Name = "Показать все кроме текущего объекта";
             predicate_2.Predicate = cl => cl.Where(el => el.bldObject?.Id != SelectedBuildingObject?.Id).ToList();
-            NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_3 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
+            NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_3 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_3.Name = "Показать  из  все из других проектов";
             predicate_3.Predicate = cl => cl.Where(el => el.bldObject?.bldProject?.Id != SelectedBuildingObject?.bldProject?.Id).ToList();
-            NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_4 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
+            NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_4 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_4.Name = "Показать все";
             predicate_4.Predicate = cl => cl;
 
-            NameablePredicateObservableCollection<ObservableCollection<bldConstruction>, bldConstruction> nameablePredicatesCollection = new NameablePredicateObservableCollection<ObservableCollection<bldConstruction>, bldConstruction>();
+            NameablePredicateObservableCollection<bldConstructionsGroup, bldConstruction> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldConstructionsGroup, bldConstruction>();
             nameablePredicatesCollection.Add(predicate_1);
             nameablePredicatesCollection.Add(predicate_2);
             nameablePredicatesCollection.Add(predicate_3);
             nameablePredicatesCollection.Add(predicate_4);
-            ObservableCollection<bldConstruction> objects_for_add_collection = new ObservableCollection<bldConstruction>();
-            CoreFunctions.AddElementToCollectionWhithDialog_Test<ObservableCollection<bldConstruction>, bldConstruction>
+            bldConstructionsGroup objects_for_add_collection = new bldConstructionsGroup();
+            CoreFunctions.AddElementToCollectionWhithDialog_Test<bldConstructionsGroup, bldConstruction>
                 (objects_for_add_collection, AllConstructions,
                 nameablePredicatesCollection,
                 _dialogService,
@@ -542,6 +542,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedBuildingObject.ErrorsChanged += RaiseCanExecuteChanged;
                 Title = ResivedObject.Name;
                UnDoReDo.Register(SelectedBuildingObject);
+                Title = $"{SelectedBuildingObject.Code} {SelectedBuildingObject.ShortName}";
             }
         }
     }

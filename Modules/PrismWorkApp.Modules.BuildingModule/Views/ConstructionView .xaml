@@ -39,7 +39,7 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Label  Style="{StaticResource inlineLabel}">Код:</Label>
-                    <TextBox Grid.Column="1"  Text="{Binding SelectedWork.Code}" MinWidth="100" HorizontalAlignment="Left"/>
+                    <TextBox Grid.Column="1"  Text="{Binding SelectedConstruction.Code}" MinWidth="100" HorizontalAlignment="Left"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal"  >
@@ -49,7 +49,7 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Label  Style="{StaticResource inlineLabel}" >Наименование:</Label>
-                    <TextBox Grid.Column="1"  Text="{Binding SelectedWork.Name}"/>
+                    <TextBox Grid.Column="1"  Text="{Binding SelectedConstruction.Name}"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
@@ -59,7 +59,7 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0"  Style="{StaticResource inlineLabel}" HorizontalAlignment="Right">Короткое наименование:</Label>
-                    <TextBox Grid.Column="2" Text="{Binding SelectedWork.ShortName}"/>
+                    <TextBox Grid.Column="2" Text="{Binding SelectedConstruction.ShortName}"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
@@ -79,14 +79,14 @@
                             <DatePicker  IsDropDownOpen="False"
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
-                    SelectedDate="{Binding SelectedWork.StartTime}" />
+                    SelectedDate="{Binding SelectedConstruction.StartTime}" />
                         </StackPanel>
                         <StackPanel Grid.Column="2"  Orientation="Horizontal">
                             <Label  Style="{StaticResource  inlineLabel}">Дата окончания:</Label>
                             <DatePicker IsDropDownOpen="False"
                     SelectedDateFormat="Short" 
                     HorizontalAlignment="Left" 
-                    SelectedDate="{Binding SelectedWork.EndTime}" />
+                    SelectedDate="{Binding SelectedConstruction.EndTime}" />
                         </StackPanel>
                     </Grid>
                 </Grid>

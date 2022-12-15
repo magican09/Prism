@@ -1,4 +1,7 @@
-﻿using Prism.Events;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Microsoft.Win32;
+using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
@@ -13,7 +16,11 @@ using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using System.Data.Odbc;
+using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -29,6 +36,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand SaveDataToDBCommand { get; private set; }
         public NotifyCommand CreateAOSRCommand { get; private set; }
         public NotifyCommand UnDoCommand { get; private set; }
+        public NotifyCommand LoadMaterialsFromAccessCommand { get; private set; }
 
         private const int CURRENT_MODULE_ID = 2;
         public IBuildingUnitsRepository _buildingUnitsRepository;
@@ -88,7 +96,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _applicationCommands, value); }
         }
 
-       
+
 
 
         public ConvertersViewModel(IRegionManager regionManager, IModulesContext modulesContext, IEventAggregator eventAggregator,
@@ -97,7 +105,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
             _regionManager = regionManager;
-          //  var quickAccessTollBar = new QuickAccessToolBarView();
+            //  var quickAccessTollBar = new QuickAccessToolBarView();
             //quickAccessTollBar.Items.Add(new QuickAccessToolBar());
             //quickAccessTollBar.DataContext = this;
             //_regionManager.Regions[RegionNames.RibbonQuickAccessToolBarRegion].Add(quickAccessTollBar);//Добавяем кнопку сохраниять все на панель панель быстрого вызова
@@ -108,15 +116,132 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _buildingUnitsRepository = buildingUnitsRepository;
             ApplicationCommands = applicationCommands;
             ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
- 
+
             LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
             LoadProjectFromDBCommand = new NotifyCommand(LoadProjectFomDB, CanLoadProjectFromDb);
             SaveDataToDBCommand = new NotifyCommand(SaveDataToDB, CanSaveDataToDB)
                 .ObservesProperty(() => AllChangesIsDone);
             AllChangesIsDone = true;
             ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
+            LoadMaterialsFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
+            ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
+
+        }
+
+        private void OnLoadMaterialsFromAccess()
+        {
+            string access_file_name;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+                access_file_name = openFileDialog.FileName;
+
+
+            string ConnectionString = @"Driver={Microsoft Access Driver (*.mdb, *.accdb)}; Dbq=C:\work\Металл 1.accdb; Uid = Admin; Pwd =; ";
+            string table_name = "Металл_1";
+            string query = $"SELECT * FROM {table_name}";
+
+            string BD_FilesDir = Directory.GetCurrentDirectory();
+            BD_FilesDir = Path.Combine(BD_FilesDir, table_name);
+            Directory.CreateDirectory(BD_FilesDir);
+            MemoryStream memoryStream = new MemoryStream();
+
+            using (OdbcConnection connection = new OdbcConnection(ConnectionString))
+            {
+                OdbcDataAdapter dataAdapter = new OdbcDataAdapter
+                         (query, connection);
+                DataSet dataSet = new DataSet();
+                dataAdapter.Fill(dataSet);
+                DataTable dataTable = dataSet.Tables[0];
+                int file_count = 0;
+                //  bldMaterialsGroup AllMaterials = new bldMaterialsGroup(_buildingUnitsRepository.Materials.GetAllAsync().ToString());
+                //bldMaterialCertificateGroup AllMaterialCertificates = 
+                //    new bldMaterialCertificateGroup(_buildingUnitsRepository.MaterialCertificates.GetAllAsync().ToList());
+                int files_count = 0;
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    try
+                    {
+                        bldMaterialCertificate materialCertificate = new bldMaterialCertificate();
+                        materialCertificate.MaterialName = row["Наименование _материала"].ToString();
+                        materialCertificate.GeometryParameters = row["Геометрические_параметры"].ToString();
+                        if (row["Кол-во"].ToString() != "-")
+                            materialCertificate.MaterialQuantity = Convert.ToDecimal(row["Кол-во"].ToString().Replace(',', '.'));
+                        materialCertificate.UnitsOfMeasure = row["Ед_изм"].ToString();
+                        materialCertificate.Name = row["Сертификаты,_паспорта"].ToString();
+                        materialCertificate.RegId = row["№_документа_о_качестве"].ToString();
+                        if (row["Дата_документа"].ToString() != "" && !row["Дата_документа"].ToString().Contains("-"))
+                        {
+                            materialCertificate.Date = Convert.ToDateTime(row["Дата_документа"]?.ToString());
+                            materialCertificate.StartTime = materialCertificate.Date;
+                        }
+                        else if (row["Дата_документа"].ToString().Length > 1)
+                        {
+                            string[] st_dates = row["Дата_документа"].ToString().Split('-');
+                            materialCertificate.Date = Convert.ToDateTime(st_dates[0]?.ToString());
+                            materialCertificate.StartTime = materialCertificate.Date;
+                            materialCertificate.EndTime = Convert.ToDateTime(st_dates[1]?.ToString());
+
+                        }
+
+                        materialCertificate.ControlingParament = row["Контрольный_параметр"].ToString();
+                        materialCertificate.RegulationDocumentsName = row["ГОСТ,_ТУ"].ToString();
+                        Picture picture = new Picture();
+                        picture.FileName = $"{BD_FilesDir}\\{materialCertificate.Name}{file_count.ToString()}.pdf";
+                        file_count++;
+                        picture.ImageFile = (byte[])row["files"];
+                        materialCertificate.ImageFile = picture;
+                        bldMaterial material = new bldMaterial();
+                        material.Name = materialCertificate.MaterialName;
+                        material.Quantity = materialCertificate.MaterialQuantity;
+                        material.UnitOfMeasurement = new bldUnitOfMeasurement(materialCertificate.UnitsOfMeasure);
+                        material.Documents.Add(materialCertificate);
+
+                        _buildingUnitsRepository.MaterialCertificates.Add(materialCertificate);
+                        _buildingUnitsRepository.Materials.Add(material);
+
+                        //using (System.IO.FileStream fs = new System.IO.FileStream(picture.FileName, FileMode.OpenOrCreate))
+                        //{
+                        //    fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
+                        //    if (++files_count > 5) break;
+                        //}
+                        //  using (BinaryWriter fs = new BinaryWriter(File.Open(picture.FileName, FileMode.OpenOrCreate)))
+                        //{
+                        //    //  fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
+                        //    File.WriteAllBytes(picture.FileName, picture.ImageFile);
+                        //    if (++files_count > 5) break;
+                        //}
+                        //
+                        using (FileStream fs = new FileStream(picture.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
+                        {
+                            fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
+                        }
+                        using (System.IO.FileStream fs = new System.IO.FileStream(picture.FileName, FileMode.OpenOrCreate))
+                        {
+                       //   PdfReader reader = PdfReader.GetStreamBytes(fs);
+                         }
+                        MemoryStream ms = new MemoryStream(picture.ImageFile);
+                        using (Document doc = new Document(PageSize.LETTER))
+                        {
+                            using (PdfWriter writer = PdfWriter.GetInstance(doc, ms))
+                            {
+                                writer.CloseStream = false;
+                                doc.Open();
+                                doc.Add(new Paragraph("fdsf"));
+                                doc.Close();
+                            }
+                        }
+                        
+
+                    }
+                    catch (Exception e)
+                    {
+                    }
+
+                }
+                _buildingUnitsRepository.Complete();
+
             }
-     
+        }
 
         private bool CanSaveDataToDB()
         {
@@ -164,7 +289,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _buildingUnitsRepository.Projects.Add(bld_project);
             _buildingUnitsRepository.Complete();
 
-       //     var pr_var = _buildingUnitsRepository.Projects.GetAll().FirstOrDefault();
+            //     var pr_var = _buildingUnitsRepository.Projects.GetAll().FirstOrDefault();
             var pr_var_og = _buildingUnitsRepository.Projects.GetProjectWithAll();
             bld_project = pr_var_og;
             EventMessage message = new EventMessage();

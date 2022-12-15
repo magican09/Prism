@@ -91,6 +91,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selecteLaboratoryReport; }
             set { SetProperty(ref _selecteLaboratoryReport, value); }
         }
+        private bldExecutiveScheme _selecteExecutiveScheme;
+        public bldExecutiveScheme SelecteExecutiveScheme
+        {
+            get { return _selecteExecutiveScheme; }
+            set { SetProperty(ref _selecteExecutiveScheme, value); }
+        }
         public Dictionary<Guid, object> _allDocuments = new Dictionary<Guid, object>();
         public Dictionary<Guid, object> AllDocuments
         {
@@ -127,6 +133,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand AddLaboratoryReportsCommand { get; private set; }
         public NotifyCommand RemoveLaboratoryReportCommand { get; private set; }
 
+        public NotifyCommand AddExecutiveSchemesCommand { get; private set; }
+        public NotifyCommand RemoveExecutiveSchemeCommand { get; private set; }
         public NotifyCommand SaveAOSRsToWordCommand { get; private set; }
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private IApplicationCommands _applicationCommands;
@@ -173,6 +181,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             AddLaboratoryReportsCommand.Name = "Добавить документ";
             RemoveLaboratoryReportCommand = new NotifyCommand(OnRemoveLaboratoryReport, () => SelecteLaboratoryReport != null).ObservesProperty(() => SelecteLaboratoryReport);
             RemoveLaboratoryReportCommand.Name = "Удалить документ";
+           
+            AddExecutiveSchemesCommand = new NotifyCommand(OnAddExecutiveSchemes);
+            AddExecutiveSchemesCommand.Name = "Добавить документ";
+            RemoveExecutiveSchemeCommand = new NotifyCommand(OnRemoveExecutiveScheme, () => SelecteExecutiveScheme != null).ObservesProperty(() => SelecteExecutiveScheme);
+            RemoveExecutiveSchemeCommand.Name = "Удалить документ";
 
             SaveAOSRsToWordCommand = new NotifyCommand(OnSaveAOSRsToWord);
 
@@ -182,18 +195,72 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
  
         }
 
+        private void OnRemoveExecutiveScheme()
+        {
+            bldExecutiveScheme scheme_report = SelecteExecutiveScheme;
+            if (scheme_report == null || SelectedWork == null) return;
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldExecutiveSchemesGroup, bldExecutiveScheme>
+                 (scheme_report, "Документ",
+                result =>
+                {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        SelectedWork.AddExecutiveScheme(scheme_report);
+                    }
+                }, _dialogService, Id);
+        }
+
+        private void OnAddExecutiveSchemes()
+        {
+            bldExecutiveSchemesGroup All_Schemes = new bldExecutiveSchemesGroup("Все схемы");
+            foreach (bldExecutiveScheme scheme in _buildingUnitsRepository.ExecutiveSchemes.GetAllAsync().Where(el => !SelectedWork.ExecutiveSchemes.Contains(el)).ToList())
+                All_Schemes.Add(scheme);
+
+            NameablePredicate<bldExecutiveSchemesGroup, bldExecutiveScheme> predicate_1 = new NameablePredicate<bldExecutiveSchemesGroup, bldExecutiveScheme>();
+            predicate_1.Name = "Показать все документы";
+            predicate_1.Predicate = cl => cl;
+            NameablePredicateObservableCollection<bldExecutiveSchemesGroup, bldExecutiveScheme> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldExecutiveSchemesGroup, bldExecutiveScheme>();
+            nameablePredicatesCollection.Add(predicate_1);
+            bldExecutiveSchemesGroup schemes_for_add_collection = new bldExecutiveSchemesGroup();
+
+            CoreFunctions.AddElementsToCollectionWhithDialogList<bldExecutiveSchemesGroup, bldExecutiveScheme>
+                (schemes_for_add_collection, All_Schemes,
+               nameablePredicatesCollection,
+              _dialogService,
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
+                       localUnDoReDo.Register(SelectedWork);
+                       UnDoReDo.UnRegister(SelectedWork);
+                       foreach (bldExecutiveScheme bld_scheme in schemes_for_add_collection)
+                           SelectedWork.AddExecutiveScheme(bld_scheme);
+                       SaveCommand.RaiseCanExecuteChanged();
+                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                       UnDoReDo.Register(SelectedWork);
+                   }
+                   if (result.Result == ButtonResult.No)
+                   {
+                   }
+               },
+              typeof(AddExecutiveSchemeToCollectionFromListDialogView).Name,
+               "Добавить документ",
+               "Форма добавления документов.",
+               "Список документов", "");
+        }
+
         private void OnRemoveLaboratoryReport()
         {
             bldLaboratoryReport removed_report = SelecteLaboratoryReport;
             if (removed_report == null || SelectedWork == null) return;
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldLaboratoryReportsGroup, bldLaboratoryReport>
-                 (removed_report, "Материал",
+                 (removed_report, "Документ",
                 result =>
                 {
                     if (result.Result == ButtonResult.Yes)
                     {
-                        UnDoReDo.Register(SelectedWork);
-                        SelectedWork.RemoveLaboratoryReport(removed_report);
+                       SelectedWork.RemoveLaboratoryReport(removed_report);
                     }
                 }, _dialogService, Id);
         }
@@ -201,7 +268,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnAddLaboratoryReports()
         {
             if (SelectedWork == null) return;
-            bldLaboratoryReportsGroup All_Materials = new bldLaboratoryReportsGroup("Все материалы");
+            bldLaboratoryReportsGroup All_Materials = new bldLaboratoryReportsGroup("Все лабораторные заключения");
             foreach (bldLaboratoryReport report in _buildingUnitsRepository.LaboratoryReports.GetAllAsync().Where(mt => !SelectedWork.LaboratoryReports.Contains(mt)).ToList())
                 All_Materials.Add(report);
 

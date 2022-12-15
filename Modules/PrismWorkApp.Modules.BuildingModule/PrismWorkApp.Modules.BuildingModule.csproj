@@ -40,6 +40,7 @@
         <None Remove="Resourses\Images\Ribbon\32x32\arrow_up.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\wand.png" />
+        <None Remove="Resourses\Images\Ribbon\access_icon.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
@@ -55,11 +56,13 @@
       </ItemGroup>
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="5.8.7" />
+    <PackageReference Include="iTextSharp" Version="5.5.13.3" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
+    <PackageReference Include="System.Data.Odbc" Version="4.7.0" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +106,7 @@
     <Resource Include="Resourses\Images\Ribbon\32x32\arrow_up.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\wand.png" />
+    <Resource Include="Resourses\Images\Ribbon\access_icon.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />

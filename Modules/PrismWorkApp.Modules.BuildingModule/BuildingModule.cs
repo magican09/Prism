@@ -54,10 +54,17 @@ namespace PrismWorkApp.Modules.BuildingModule
             var toolBarRibbonTab = new ToolBarRibbonTab();
             var toolBarRibbonTabDataContext = new ToolBarRibbonTabViewModel(_applicationCommands);
             toolBarRibbonTab.DataContext = toolBarRibbonTabDataContext;
+
+
+            var dataImportRibbonGroup = new DataImportRibbonGroupView();
+            toolBarRibbonTab.Items.Add(dataImportRibbonGroup); 
+            
             var toolBarRibbonGroup = new WorksGroupToolBarRibbonGroupView();
             toolBarRibbonTab.Items.Add(toolBarRibbonGroup);//Созадем группу панели инструметов с конвекторами
-               _regionManager.Regions[RegionNames.RibbonRegion].Add(toolBarRibbonTab);
-         
+           
+            _regionManager.Regions[RegionNames.RibbonRegion].Add(toolBarRibbonTab);
+
+
             var quickAccessTollBar = new QuickAccessToolBarView();
             quickAccessTollBar.Items.Add(new QuickAccessToolBar());
             quickAccessTollBar.DataContext = toolBarRibbonTabDataContext;

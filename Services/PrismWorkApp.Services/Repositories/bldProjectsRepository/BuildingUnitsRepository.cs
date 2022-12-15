@@ -17,6 +17,7 @@
         public bldMaterialsRepository Materials { get; }
         public bldLaboratoryReportsRepository LaboratoryReports { get; }
         public bldExecutiveSchemesRepository ExecutiveSchemes { get; }
+        public bldMaterialCertificatesRepository MaterialCertificates { get; }
         private readonly PlutoContext _context;
 
         public BuildingUnitsRepository(PlutoContext context)
@@ -36,6 +37,7 @@
             ProjectDocuments = new bldProjectDocumentsRepository(_context);
             LaboratoryReports = new bldLaboratoryReportsRepository(_context);
             ExecutiveSchemes = new bldExecutiveSchemesRepository(_context);
+            MaterialCertificates = new bldMaterialCertificatesRepository(_context);
         }
         public int Complete()
         {

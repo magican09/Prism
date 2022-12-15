@@ -254,6 +254,40 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel >
+                <TextBlock Style="{StaticResource titleText_1}">Исполнительные схемы:</TextBlock>
+                <StackPanel Orientation="Horizontal"  >
+                    <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160*"/>
+                            <ColumnDefinition Width="467*"/>
+                            <ColumnDefinition  Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid  x:Name="bldExecutiveSchemesDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedWork.ExecutiveSchemes}" 
+                                     SelectedItem="{Binding SelectedMaterial}"
+                                  Style="{StaticResource inlineDataGrid }" 
+                               AutoGenerateColumns="False"  IsReadOnly="True" 
+                                   HorizontalContentAlignment="Stretch" Grid.ColumnSpan="2" Margin="5,10,5,10" >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectedCellsChanged">
+                                    <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
+                                           CommandParameter="{Binding   SelectedItem , ElementName=bldExecutiveSchemesDataGrid}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding = "{Binding Path=Code}"  
+                                                Header="Код" Width="Auto" MinWidth="40" />
+                                <DataGridTextColumn Binding = "{Binding Path=Name}"  
+                                                Header="Наименование" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Grid.Column="2" Width="100" HorizontalAlignment="Center" >
+                            <Button  Command="{Binding AddExecutiveSchemesCommand}" >Добавить</Button>
+                            <Button Command="{Binding RemoveExecutiveSchemeCommand}" >Удалить</Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel >
                 <TextBlock Style="{StaticResource titleText_1}">Документация:</TextBlock>
                 <StackPanel Orientation="Horizontal"  >
                     <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">

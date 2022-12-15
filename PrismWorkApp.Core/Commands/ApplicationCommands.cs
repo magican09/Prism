@@ -11,7 +11,7 @@
         NotifyCompositeCommand MoveWorkCommand { get; }
         NotifyCompositeCommand AddWorkCommand { get; }
         NotifyCompositeCommand SaveExecutiveDocumentsCommand { get; }
-
+        NotifyCompositeCommand LoadMaterialsFromAccessCommand { get; }
     }
     public class ApplicationCommands : IApplicationCommands
     {
@@ -65,6 +65,12 @@
         {
             get { return _saveExecutiveDocumentsCommand; }
         }
+        private NotifyCompositeCommand _loadMaterialsFromAccessCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand LoadMaterialsFromAccessCommand
+        {
+            get { return _loadMaterialsFromAccessCommand; }
+        }
+        
     }
 
 

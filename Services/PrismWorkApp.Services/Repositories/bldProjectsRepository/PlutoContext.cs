@@ -9,8 +9,8 @@ namespace PrismWorkApp.Services.Repositories
     {
         public PlutoContext() : base()
         {
-            //Database.EnsureDeleted();
-            //Database.EnsureCreated();
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
         }
         #region Building Construction
         public virtual DbSet<bldProject> Projects { get; set; }
@@ -140,7 +140,7 @@ namespace PrismWorkApp.Services.Repositories
              .HasForeignKey(bo => bo.bldObjectId);
             modelBuilder.Entity<Employee>().ToTable("Employees");
             modelBuilder.Entity<bldResponsibleEmployee>().ToTable("ResponsibleEmployees");
-           
+
             modelBuilder.Entity<bldConstructionCompany>().ToTable("ConstructionCompanies");
             modelBuilder.Entity<bldParticipant>().ToTable("Participants");
 
@@ -152,9 +152,9 @@ namespace PrismWorkApp.Services.Repositories
             modelBuilder.Entity<bldPasportDocument>().ToTable("PasportDocuments");
             modelBuilder.Entity<bldProjectDocument>().ToTable("ProjectDocuments");
             modelBuilder.Entity<bldRegulationtDocument>().ToTable("RegulationtDocuments");
-  
-       
-           
+
+
+
             base.OnModelCreating(modelBuilder);
         }
         public override int SaveChanges()

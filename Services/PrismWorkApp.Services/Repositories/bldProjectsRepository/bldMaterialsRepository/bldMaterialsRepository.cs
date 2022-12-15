@@ -16,6 +16,10 @@ namespace PrismWorkApp.Services.Repositories
         {
             this.Dispose();
         }
+        public List<bldMaterial> GetByName(string name)
+        {
+            return PlutoContext.Materials.Where(m => m.Name == name).ToList();
+        }
         public List<bldMaterial> GetAllAsync()
         {
             return PlutoContext.Materials.ToList();

@@ -1,5 +1,4 @@
-﻿using iTextSharp.text;
-using iTextSharp.text.pdf;
+﻿using DAO;
 using Microsoft.Win32;
 using Prism.Events;
 using Prism.Regions;
@@ -128,7 +127,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-        private void OnLoadMaterialsFromAccess()
+        private void OnLoadMaterialsFromAccess_1()
         {
             string access_file_name;
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -145,104 +144,129 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             Directory.CreateDirectory(BD_FilesDir);
             MemoryStream memoryStream = new MemoryStream();
 
-            using (OdbcConnection connection = new OdbcConnection(ConnectionString))
-            {
-                OdbcDataAdapter dataAdapter = new OdbcDataAdapter
-                         (query, connection);
-                DataSet dataSet = new DataSet();
-                dataAdapter.Fill(dataSet);
-                DataTable dataTable = dataSet.Tables[0];
-                int file_count = 0;
-                //  bldMaterialsGroup AllMaterials = new bldMaterialsGroup(_buildingUnitsRepository.Materials.GetAllAsync().ToString());
-                //bldMaterialCertificateGroup AllMaterialCertificates = 
-                //    new bldMaterialCertificateGroup(_buildingUnitsRepository.MaterialCertificates.GetAllAsync().ToList());
-                int files_count = 0;
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    try
-                    {
-                        bldMaterialCertificate materialCertificate = new bldMaterialCertificate();
-                        materialCertificate.MaterialName = row["Наименование _материала"].ToString();
-                        materialCertificate.GeometryParameters = row["Геометрические_параметры"].ToString();
-                        if (row["Кол-во"].ToString() != "-")
-                            materialCertificate.MaterialQuantity = Convert.ToDecimal(row["Кол-во"].ToString().Replace(',', '.'));
-                        materialCertificate.UnitsOfMeasure = row["Ед_изм"].ToString();
-                        materialCertificate.Name = row["Сертификаты,_паспорта"].ToString();
-                        materialCertificate.RegId = row["№_документа_о_качестве"].ToString();
-                        if (row["Дата_документа"].ToString() != "" && !row["Дата_документа"].ToString().Contains("-"))
-                        {
-                            materialCertificate.Date = Convert.ToDateTime(row["Дата_документа"]?.ToString());
-                            materialCertificate.StartTime = materialCertificate.Date;
-                        }
-                        else if (row["Дата_документа"].ToString().Length > 1)
-                        {
-                            string[] st_dates = row["Дата_документа"].ToString().Split('-');
-                            materialCertificate.Date = Convert.ToDateTime(st_dates[0]?.ToString());
-                            materialCertificate.StartTime = materialCertificate.Date;
-                            materialCertificate.EndTime = Convert.ToDateTime(st_dates[1]?.ToString());
+            //using (OdbcConnection connection = new OdbcConnection(ConnectionString))
+            //{
+            //    OdbcDataAdapter dataAdapter = new OdbcDataAdapter
+            //             (query, connection);
+            //    DataSet dataSet = new DataSet();
+            //    dataAdapter.Fill(dataSet);
+            //    DataTable dataTable = dataSet.Tables[0];
+            //    int file_count = 0;
+            //    //  bldMaterialsGroup AllMaterials = new bldMaterialsGroup(_buildingUnitsRepository.Materials.GetAllAsync().ToString());
+            //    //bldMaterialCertificateGroup AllMaterialCertificates = 
+            //    //    new bldMaterialCertificateGroup(_buildingUnitsRepository.MaterialCertificates.GetAllAsync().ToList());
+            //    int files_count = 0;
+            //    foreach (DataRow row in dataTable.Rows)
+            //    {
+            //        try
+            //        {
+            //            bldMaterialCertificate materialCertificate = new bldMaterialCertificate();
+            //            materialCertificate.MaterialName = row["Наименование _материала"].ToString();
+            //            materialCertificate.GeometryParameters = row["Геометрические_параметры"].ToString();
+            //            if (row["Кол-во"].ToString() != "-")
+            //                materialCertificate.MaterialQuantity = Convert.ToDecimal(row["Кол-во"].ToString().Replace(',', '.'));
+            //            materialCertificate.UnitsOfMeasure = row["Ед_изм"].ToString();
+            //            materialCertificate.Name = row["Сертификаты,_паспорта"].ToString();
+            //            materialCertificate.RegId = row["№_документа_о_качестве"].ToString();
+            //            if (row["Дата_документа"].ToString() != "" && !row["Дата_документа"].ToString().Contains("-"))
+            //            {
+            //                materialCertificate.Date = Convert.ToDateTime(row["Дата_документа"]?.ToString());
+            //                materialCertificate.StartTime = materialCertificate.Date;
+            //            }
+            //            else if (row["Дата_документа"].ToString().Length > 1)
+            //            {
+            //                string[] st_dates = row["Дата_документа"].ToString().Split('-');
+            //                materialCertificate.Date = Convert.ToDateTime(st_dates[0]?.ToString());
+            //                materialCertificate.StartTime = materialCertificate.Date;
+            //                materialCertificate.EndTime = Convert.ToDateTime(st_dates[1]?.ToString());
 
-                        }
+            //            }
 
-                        materialCertificate.ControlingParament = row["Контрольный_параметр"].ToString();
-                        materialCertificate.RegulationDocumentsName = row["ГОСТ,_ТУ"].ToString();
-                        Picture picture = new Picture();
-                        picture.FileName = $"{BD_FilesDir}\\{materialCertificate.Name}{file_count.ToString()}.pdf";
-                        file_count++;
-                        picture.ImageFile = (byte[])row["files"];
-                        materialCertificate.ImageFile = picture;
-                        bldMaterial material = new bldMaterial();
-                        material.Name = materialCertificate.MaterialName;
-                        material.Quantity = materialCertificate.MaterialQuantity;
-                        material.UnitOfMeasurement = new bldUnitOfMeasurement(materialCertificate.UnitsOfMeasure);
-                        material.Documents.Add(materialCertificate);
+            //            materialCertificate.ControlingParament = row["Контрольный_параметр"].ToString();
+            //            materialCertificate.RegulationDocumentsName = row["ГОСТ,_ТУ"].ToString();
+            //            Picture picture = new Picture();
+            //            picture.FileName = $"{BD_FilesDir}\\{materialCertificate.Name}{file_count.ToString()}.pdf";
+            //            file_count++;
+            //            picture.ImageFile = (byte[])row["files"];
+            //            materialCertificate.ImageFile = picture;
+            //            bldMaterial material = new bldMaterial();
+            //            material.Name = materialCertificate.MaterialName;
+            //            material.Quantity = materialCertificate.MaterialQuantity;
+            //            material.UnitOfMeasurement = new bldUnitOfMeasurement(materialCertificate.UnitsOfMeasure);
+            //            material.Documents.Add(materialCertificate);
 
-                        _buildingUnitsRepository.MaterialCertificates.Add(materialCertificate);
-                        _buildingUnitsRepository.Materials.Add(material);
+            //            _buildingUnitsRepository.MaterialCertificates.Add(materialCertificate);
+            //            _buildingUnitsRepository.Materials.Add(material);
 
-                        //using (System.IO.FileStream fs = new System.IO.FileStream(picture.FileName, FileMode.OpenOrCreate))
-                        //{
-                        //    fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
-                        //    if (++files_count > 5) break;
-                        //}
-                        //  using (BinaryWriter fs = new BinaryWriter(File.Open(picture.FileName, FileMode.OpenOrCreate)))
-                        //{
-                        //    //  fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
-                        //    File.WriteAllBytes(picture.FileName, picture.ImageFile);
-                        //    if (++files_count > 5) break;
-                        //}
-                        //
-                        using (FileStream fs = new FileStream(picture.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
-                        {
-                            fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
-                        }
-                        using (System.IO.FileStream fs = new System.IO.FileStream(picture.FileName, FileMode.OpenOrCreate))
-                        {
-                       //   PdfReader reader = PdfReader.GetStreamBytes(fs);
-                         }
-                        MemoryStream ms = new MemoryStream(picture.ImageFile);
-                        using (Document doc = new Document(PageSize.LETTER))
-                        {
-                            using (PdfWriter writer = PdfWriter.GetInstance(doc, ms))
-                            {
-                                writer.CloseStream = false;
-                                doc.Open();
-                                doc.Add(new Paragraph("fdsf"));
-                                doc.Close();
-                            }
-                        }
+            //            //using (System.IO.FileStream fs = new System.IO.FileStream(picture.FileName, FileMode.OpenOrCreate))
+            //            //{
+            //            //    fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
+            //            //    if (++files_count > 5) break;
+            //            //}
+            //            //  using (BinaryWriter fs = new BinaryWriter(File.Open(picture.FileName, FileMode.OpenOrCreate)))
+            //            //{
+            //            //    //  fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
+            //            //    File.WriteAllBytes(picture.FileName, picture.ImageFile);
+            //            //    if (++files_count > 5) break;
+            //            //}
+            //            //
+            //           // using (FileStream fs = new FileStream(picture.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            //           // {
+            //           //     fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
+            //           // }
+            //           // using (System.IO.FileStream fs = new System.IO.FileStream(picture.FileName, FileMode.OpenOrCreate))
+            //           // {
+            //           ////   PdfReader reader = PdfReader.GetStreamBytes(fs);
+            //           //  }
+            //           // MemoryStream ms = new MemoryStream(picture.ImageFile);
+            //           // using (Document doc = new Document(PageSize.LETTER))
+            //           // {
+            //           //     using (PdfWriter writer = PdfWriter.GetInstance(doc, ms))
+            //           //     {
+            //           //         writer.CloseStream = false;
+            //           //         doc.Open();
+            //           //         doc.Add(new Paragraph("fdsf"));
+            //           //         doc.Close();
+            //           //     }
+            //           // }
                         
 
-                    }
-                    catch (Exception e)
+            //        }
+            //        catch (Exception e)
+            //        {
+            //        }
+
+            //    }
+            //    _buildingUnitsRepository.Complete();
+
+            //}
+        }
+        private void OnLoadMaterialsFromAccess()
+        {
+            string sMyDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string sPath = sMyDocumentsPath + "\\Employees.mdb";
+            string sPassword = "toto";
+            DBEngine dbEngine = new DBEngine();
+            try
+            {
+                Database db = dbEngine.OpenDatabase(sPath, true, false, ";PWD=" + sPassword);
+                if (db != null)
+                {
+                    Recordset rst = db.OpenRecordset("SELECT * FROM Employees WHERE Salary >= 40000");
+                    while (!rst.EOF)
                     {
+                        // Second column
+                      
+                        //comboBox1.Items.Add(rst.Fields["LastName"].Value);
+                        rst.MoveNext();
                     }
-
                 }
-                _buildingUnitsRepository.Complete();
-
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Database Error : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private bool CanSaveDataToDB()
         {
             return true;//AllProjectsContext.UnDoReDoSystem.Count > 0;

@@ -18,8 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Odbc;
-using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -243,28 +241,37 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnLoadMaterialsFromAccess()
         {
-            string sMyDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string sPath = sMyDocumentsPath + "\\Employees.mdb";
-            string sPassword = "toto";
-            DBEngine dbEngine = new DBEngine();
+           // string sMyDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            //string sPath = sMyDocumentsPath + "\\Employees.mdb"; C:\work\Металл 1.accdb
+            string sPath = @"C:\work\Металл_11.mdb";
+            string sOutPath = @"C:\work\Металл";
+
+            string sPassword = "";
+
+            DAO.Database DAODataBase;
+            DAO.DBEngine DAODBEngine = new DAO.DBEngine(); 
+            DAO.Recordset DAOFoundCode;
+            DAO.Workspace DAOWorkSpace;
+            DAOWorkSpace = DAODBEngine.Workspaces[0];
+            DAO.Recordset rs;
             try
             {
-                Database db = dbEngine.OpenDatabase(sPath, true, false, ";PWD=" + sPassword);
-                if (db != null)
+                DAODataBase = DAOWorkSpace.OpenDatabase(sPath, null, false, null);
+                rs = DAODataBase.OpenTable("Металл_1", 0);
+                Recordset rst = DAODataBase.OpenRecordset("SELECT * FROM  Металл_1");
+                while (!rst.EOF)
                 {
-                    Recordset rst = db.OpenRecordset("SELECT * FROM Employees WHERE Salary >= 40000");
-                    while (!rst.EOF)
-                    {
-                        // Second column
-                      
-                        //comboBox1.Items.Add(rst.Fields["LastName"].Value);
-                        rst.MoveNext();
-                    }
+                    byte[] bytes = rst.Fields[9].Value;
+                    //using (System.IO.FileStream fs = new System.IO.FileStream(sOutPath, FileMode.OpenOrCreate))
+                    //{
+                    //    fs.Write(bytes, 0, bytes.Length);
+                    //}
+                    rst.MoveNext();
                 }
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show("Database Error : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //   System.Windows.Forms.MessageBox.Show("Database Error : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private bool CanSaveDataToDB()

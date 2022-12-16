@@ -55,34 +55,18 @@
         <Page Remove="ResourceDictionaries\ProjectTreeViewDefaultTheme.xaml" />
       </ItemGroup>
       <ItemGroup>
-        <COMReference Include="Microsoft.Office.Core.dll">
-          <WrapperTool>tlbimp</WrapperTool>
-          <VersionMinor>8</VersionMinor>
-          <VersionMajor>2</VersionMajor>
-          <Guid>2df8d04c-5bfa-101b-bde5-00aa0044de52</Guid>
-          <Lcid>0</Lcid>
-          <Isolated>false</Isolated>
-        </COMReference>
-        <COMReference Include="DAO.dll">
+        <COMReference Include="DAO">
           <WrapperTool>tlbimp</WrapperTool>
           <VersionMinor>0</VersionMinor>
           <VersionMajor>5</VersionMajor>
           <Guid>00025e01-0000-0000-c000-000000000046</Guid>
           <Lcid>0</Lcid>
           <Isolated>false</Isolated>
-        </COMReference>
-        <COMReference Include="Microsoft.Office.Access.Dao.dll">
-          <WrapperTool>tlbimp</WrapperTool>
-          <VersionMinor>0</VersionMinor>
-          <VersionMajor>12</VersionMajor>
-          <Guid>4ac9e1da-5bad-4ac7-86e3-24f4cdceca28</Guid>
-          <Lcid>0</Lcid>
-          <Isolated>false</Isolated>
+          <EmbedInteropTypes>true</EmbedInteropTypes>
         </COMReference>
       </ItemGroup>
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="5.8.7" />
-    <PackageReference Include="iTextSharp" Version="5.5.13.3" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -267,6 +267,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     {
                         fs.Write(bytes, 0, bytes.Length);
                     }
+                 
                     rst.MoveNext();
                 }
             }

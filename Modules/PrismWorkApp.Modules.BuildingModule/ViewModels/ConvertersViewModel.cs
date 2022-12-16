@@ -244,15 +244,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
            // string sMyDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             //string sPath = sMyDocumentsPath + "\\Employees.mdb"; C:\work\Металл 1.accdb
             string sPath = @"C:\work\Металл_11.mdb";
-            string sOutPath = @"C:\work\Металл";
+            string sOutPath = @"C:\work\Металл.pdf";
 
             string sPassword = "";
 
             DAO.Database DAODataBase;
-            DAO.DBEngine DAODBEngine = new DAO.DBEngine(); 
+            DAO.DBEngine DAODBEngine = new DAO.DBEngine();
             DAO.Recordset DAOFoundCode;
             DAO.Workspace DAOWorkSpace;
             DAOWorkSpace = DAODBEngine.Workspaces[0];
+          //  byte[] bytes;
             DAO.Recordset rs;
             try
             {
@@ -261,11 +262,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 Recordset rst = DAODataBase.OpenRecordset("SELECT * FROM  Металл_1");
                 while (!rst.EOF)
                 {
-                    byte[] bytes = rst.Fields[9].Value;
-                    //using (System.IO.FileStream fs = new System.IO.FileStream(sOutPath, FileMode.OpenOrCreate))
-                    //{
-                    //    fs.Write(bytes, 0, bytes.Length);
-                    //}
+                    byte[] bytes = (byte[])rst.Fields[10].Value;
+                    using (System.IO.FileStream fs = new System.IO.FileStream(sOutPath, FileMode.OpenOrCreate))
+                    {
+                        fs.Write(bytes, 0, bytes.Length);
+                    }
                     rst.MoveNext();
                 }
             }

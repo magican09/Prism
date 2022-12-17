@@ -2,14 +2,17 @@
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Console;
 using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
+using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.Modules.BuildingModule.ViewModels.RibbonViewModels;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.Modules.BuildingModule.Views.RibbonViews;
+using PrismWorkApp.Services.Repositories;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
@@ -30,38 +33,49 @@ namespace PrismWorkApp.Modules.BuildingModule
             set { moduleName = value; }
         }
         private IApplicationCommands _applicationCommands;
-       
-        public BuildingModule(IRegionManager regionManager, IEventAggregator eventAggregator, IApplicationCommands applicationCommands)
+        private IBuildingUnitsRepository _buildingUnitsRepository;
+        private IDialogService _dialogService;
+        public BuildingModule(IRegionManager regionManager, IEventAggregator eventAggregator, IBuildingUnitsRepository buildingUnitsRepository,IDialogService dialogService, IApplicationCommands applicationCommands)
         {
 
             ModuleId = 2;
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _applicationCommands = applicationCommands;
+            _dialogService = dialogService;
+            _buildingUnitsRepository = buildingUnitsRepository;
+
         }
-    
+
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
             //    _regionManager.RequestNavigate(RegionNames.ContentRegion, "ProjectExplorerView");
             //  _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, "ConvertersView");
             _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new ProjectExplorerView());
-            var ribbinTab = new ProjectManagerRibbonTabView();
-            var ribbonGroup = new ConvertersView();
-                ribbinTab.Items.Add(ribbonGroup);//Созадем группу панели инструметов с конвекторами
-             _regionManager.Regions[RegionNames.RibbonRegion].Add(ribbinTab);
-      
-            var toolBarRibbonTab = new ToolBarRibbonTab();
-            var toolBarRibbonTabDataContext = new ToolBarRibbonTabViewModel(_applicationCommands);
-            toolBarRibbonTab.DataContext = toolBarRibbonTabDataContext;
-
-
+            var projectManagerRibbonTab = new ProjectManagerRibbonTabView();
             var dataImportRibbonGroup = new DataImportRibbonGroupView();
-            toolBarRibbonTab.Items.Add(dataImportRibbonGroup); 
+            var currentProjectRibbonGroup = new CurentProjectRibbonGroupView();
+
+            projectManagerRibbonTab.DataContext = new  ProjectManagerRibbonTabViewModel(_regionManager,_eventAggregator,_buildingUnitsRepository,_dialogService, _applicationCommands);
+
+            projectManagerRibbonTab.Items.Add(dataImportRibbonGroup);//
+            projectManagerRibbonTab.Items.Add(currentProjectRibbonGroup);//Созадем группу панели инструметов с конвекторами
+            _regionManager.Regions[RegionNames.RibbonRegion].Add(projectManagerRibbonTab);
+
+            var toolBarRibbonTab = new ToolBarRibbonTabView();
             
+            var toolBarRibbonTabDataContext = new ToolBarRibbonTabViewModel(_applicationCommands);
+
+              toolBarRibbonTab.DataContext = toolBarRibbonTabDataContext;
+
+
+           
+           // toolBarRibbonTab.Items.Add(dataImportRibbonGroup);
+
             var toolBarRibbonGroup = new WorksGroupToolBarRibbonGroupView();
             toolBarRibbonTab.Items.Add(toolBarRibbonGroup);//Созадем группу панели инструметов с конвекторами
-           
+
             _regionManager.Regions[RegionNames.RibbonRegion].Add(toolBarRibbonTab);
 
 
@@ -162,7 +176,7 @@ namespace PrismWorkApp.Modules.BuildingModule
 
             containerRegistry.RegisterDialog<AddbldConstructionToCollectionDialogView, AddbldConstructionToCollectionViewModel>();
             containerRegistry.RegisterDialog<AddbldConstructionToCollectionFromListDialogView, AddbldConstructioneToCollectionFromListDialogViewModel>();
-            
+
             containerRegistry.RegisterDialog<ConstructionDialogView, ConstructionDialogViewModel>();
 
             containerRegistry.RegisterDialog<AddbldWorkToCollectionDialogView, AddbldWorkToCollectionViewModel>();
@@ -174,7 +188,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<AddLaboratoryReportToCollectionFromListDialogView, AddLaboratoryReportToCollectionFromListDialogViewModel>();
             containerRegistry.RegisterDialog<AddExecutiveSchemeToCollectionFromListDialogView, AddExecutiveSchemeToCollectionFromListDialogViewModel>();
             containerRegistry.RegisterDialog<SelectConstructionFromTreeViewDialog, SelectConstructionFromTreeViewDialogViewModel>();
-            
+
             containerRegistry.RegisterDialog<AddbldParticipantToCollectionDialogView, AddbldParticipantToCollectionViewModel>();
             containerRegistry.RegisterDialog<ParticipantDialogView, ParticipantDialogViewModel>();
 
@@ -184,6 +198,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<SelectProjectFromCollectionDialogView, SelectProjectFromCollectionDialogViewModel>();
 
             containerRegistry.RegisterDialog<SelectDocumentFromTreeViewDialog, SelectDocumentFromTreeViewDialogViewModel>();
+          
+            //  containerRegistry.RegisterForNavigation<ToolBarRibbonTabView, ToolBarRibbonTabViewModel>();
             //   containerRegistry.RegisterDialog<ConfirmCreateDialogViewModel, ConfirmCreateDialogViewModel>();
 
             // containerRegistry.RegisterForNavigation<ProjectExplorerView>();

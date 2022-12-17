@@ -1,13 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:PrismWorkApp"
-                    xmlns:conv="clr-namespace:PrismWorkApp.Core.Converters;assembly=PrismWorkApp.Core"
-                   xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
-                
+                    xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
                     >
     <BooleanToVisibilityConverter  x:Key="bool2VisibilityConverter"/>
-    
-    
+     
     <Style x:Key="inlineText" TargetType="{x:Type TextBlock}">
         <Setter Property="Margin" Value="10,5,10,0"/>
         <Setter Property="FontWeight" Value="Normal"/>
@@ -74,8 +71,6 @@
         <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
 
-    
-    <!--#region DataTree Styles -->
-      <!--#endregion-->
+ 
     
 </ResourceDictionary>

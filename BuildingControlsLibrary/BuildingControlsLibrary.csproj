@@ -3,27 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
-    <RootNamespace>ResourceLibrary</RootNamespace>
+    <AssemblyName>PrismWorkApp.BuildingControlsLibrary</AssemblyName>
+    <RootNamespace>PrismWorkApp.BuildingControlsLibrary</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Images\**" />
-    <EmbeddedResource Remove="Images\**" />
-    <None Remove="Images\**" />
-    <Page Remove="Images\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Page Remove="bldWorkControl\WorkDataRowStyle.xaml" />
-    <Page Remove="Themes\WorkDataRowStyle.xaml" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="bldWorkControl\WorkDataRowStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Resource>
-    <Resource Include="Themes\WorkDataRowStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Resource>

@@ -6,9 +6,13 @@
                         DispatcherUnhandledException="PrismApplication_DispatcherUnhandledException"
                         Startup="PrismApplication_Startup">
     <Application.Resources>
-
-        <ResourceDictionary Source ="/resourcedictionaries/workresourcedictionary.xaml"/>
-        <!-- <ResourceDictionary Source="/resourcedictionaries/defaulttheme.xaml"/>-->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source ="/resourcedictionaries/workresourcedictionary.xaml"/>
+                <ResourceDictionary Source ="pack://application:,,,/ PrismWorkApp.Modules.BuildingModule;Component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+         <!-- <ResourceDictionary Source="/resourcedictionaries/defaulttheme.xaml"/>-->
 
     </Application.Resources>
 </prism:PrismApplication>

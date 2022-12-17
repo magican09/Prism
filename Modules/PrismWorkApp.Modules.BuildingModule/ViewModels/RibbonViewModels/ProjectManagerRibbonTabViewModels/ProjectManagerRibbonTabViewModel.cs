@@ -21,10 +21,12 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class ConvertersViewModel : LocalBindableBase, INotifyPropertyChanged
+    public class ProjectManagerRibbonTabViewModel : LocalBindableBase, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public NotifyCommand LoadProjectFromExcelCommand { get; private set; }
@@ -93,26 +95,30 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _applicationCommands, value); }
         }
 
+        //public ProjectManagerRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
+        //                                    IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
+        //{
+
+        //}
 
 
-
-        public ConvertersViewModel(IRegionManager regionManager, IModulesContext modulesContext, IEventAggregator eventAggregator,
+        public ProjectManagerRibbonTabViewModel(IRegionManager regionManager, IModulesContext modulesContext, IEventAggregator eventAggregator,
                                     IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands,
                                     IUnDoReDoSystem unDoReDo)
+        { 
+        }
+        public ProjectManagerRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
+                                            IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
         {
 
             _regionManager = regionManager;
-            //  var quickAccessTollBar = new QuickAccessToolBarView();
-            //quickAccessTollBar.Items.Add(new QuickAccessToolBar());
-            //quickAccessTollBar.DataContext = this;
-            //_regionManager.Regions[RegionNames.RibbonQuickAccessToolBarRegion].Add(quickAccessTollBar);//Добавяем кнопку сохраниять все на панель панель быстрого вызова
-
-            ModulesContext = modulesContext;
+          
+           // ModulesContext = modulesContext;
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             ApplicationCommands = applicationCommands;
-            ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
+          //  ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
 
             LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
             LoadProjectFromDBCommand = new NotifyCommand(LoadProjectFomDB, CanLoadProjectFromDb);
@@ -243,14 +249,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
            // string sMyDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             //string sPath = sMyDocumentsPath + "\\Employees.mdb"; C:\work\Металл 1.accdb
-            string sPath = @"C:\work\Металл_11.mdb";
-            string sOutPath = @"C:\work\Металл.pdf";
+            string sPath = @"C:\test\Металл_1.mdb";
+            string sOutFileName = @"C:\test\";
 
             string sPassword = "";
 
             DAO.Database DAODataBase;
             DAO.DBEngine DAODBEngine = new DAO.DBEngine();
-            DAO.Recordset DAOFoundCode;
             DAO.Workspace DAOWorkSpace;
             DAOWorkSpace = DAODBEngine.Workspaces[0];
           //  byte[] bytes;
@@ -262,10 +267,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 Recordset rst = DAODataBase.OpenRecordset("SELECT * FROM  Металл_1");
                 while (!rst.EOF)
                 {
-                    byte[] bytes = (byte[])rst.Fields[10].Value;
-                    using (System.IO.FileStream fs = new System.IO.FileStream(sOutPath, FileMode.OpenOrCreate))
+                    string file_name =(string) rst.Fields[1].Value;
+                   
+                    byte[] bytes = (byte[])rst.Fields[2].Value;
+                    string byte_string = Encoding.GetEncoding(1251).GetString(bytes);
+                    Regex regex_1 = new Regex($"%PDF-");
+                    MatchCollection matches_1 = regex_1.Matches(byte_string);
+                    int fist_byte = matches_1[0].Index;
+                    Regex regex_2 = new Regex(@"%%EOF");
+                    MatchCollection matches_2 = regex_2.Matches(byte_string);
+                    int last_byte = matches_2[matches_2.Count-1].Index+6;
+
+                    using (System.IO.FileStream fs = new System.IO.FileStream(sOutFileName + file_name + ".pdf", FileMode.OpenOrCreate))
                     {
-                        fs.Write(bytes, 0, bytes.Length);
+                        fs.Write(bytes, fist_byte, last_byte- fist_byte);
                     }
                  
                     rst.MoveNext();

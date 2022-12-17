@@ -8,7 +8,6 @@
              xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
              xmlns:core="clr-namespace:PrismWorkApp.Core;assembly=PrismWorkApp.Core"
              xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
-             xmlns:res="clr-namespace:PrismWorkApp.ResourceLibrary;assembly=PrismWorkApp.ResourceLibrary"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:prism="http://prismlibrary.com/"
              

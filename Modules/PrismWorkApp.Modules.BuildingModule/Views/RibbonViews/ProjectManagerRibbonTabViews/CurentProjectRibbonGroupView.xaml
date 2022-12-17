@@ -1,4 +1,4 @@
-﻿<RibbonGroup  x:Class="PrismWorkApp.Modules.BuildingModule.Views.ConvertersView"
+﻿<RibbonGroup  x:Class="PrismWorkApp.Modules.BuildingModule.Views.CurentProjectRibbonGroupView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -13,12 +13,7 @@
     
     <StackPanel Orientation="Horizontal">
 
-        <RibbonButton   Label ="Загрузить из Excel" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/load_from_exel.jpg" 
-
-                Command="{Binding LoadProjectFromExcelCommand}"/>
-        <RibbonButton Label ="Загрузить из БД" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/Load_from_db.jpg" 
-
-                Command="{Binding LoadProjectFromDBCommand}"/>
+      
         <RibbonButton Label ="Сохранить данные в БД"  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/save_to_db.jpg" 
                 Command="{Binding SaveDataToDBCommand}"/>
         <RibbonButton Label ="Сохранить"  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/save_to_db.jpg" 

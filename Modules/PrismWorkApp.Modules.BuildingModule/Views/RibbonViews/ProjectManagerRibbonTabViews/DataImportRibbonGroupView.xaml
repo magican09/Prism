@@ -8,8 +8,11 @@
     <StackPanel Orientation="Horizontal">
         <RibbonButton Label="Импорт материлов из Access"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/access_icon.png"
                       Command="{Binding ApplicationCommands.LoadMaterialsFromAccessCommand}"/>
-     
-        
+        <RibbonButton   Label ="Загрузить из Excel" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/load_from_exel.jpg" 
+                Command="{Binding LoadProjectFromExcelCommand}"/>
+        <RibbonButton Label ="Загрузить из БД" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/Load_from_db.jpg" 
+
+                Command="{Binding LoadProjectFromDBCommand}"/>
 
 
     </StackPanel>

@@ -47,12 +47,16 @@
         <None Remove="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\48x48\32.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+        <None Remove="Resourses\Images\Ribbon\PNG\minus_expanded.png" />
+        <None Remove="Resourses\Images\Ribbon\PNG\plus_folded.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
       </ItemGroup>
       <ItemGroup>
+        <Page Remove="Core\Converters.xaml" />
         <Page Remove="ResourceDictionaries\ProjectTreeViewDefaultTheme.xaml" />
+        <Page Remove="Themes\Generic.xaml" />
       </ItemGroup>
       <ItemGroup>
         <COMReference Include="DAO">
@@ -80,11 +84,13 @@
   <ItemGroup>
     <ProjectReference Include="..\..\PrismWorkApp.Core\PrismWorkApp.Core.csproj" />
     <ProjectReference Include="..\..\PrismWorkApp.OpenWorkLib\PrismWorkApp.OpenWorkLib.csproj" />
-    <ProjectReference Include="..\..\PrismWorkApp.ResourceLibrary\PrismWorkApp.ResourceLibrary.csproj" />
     <ProjectReference Include="..\..\Services\PrismWorkApp.Services.Interfaces\PrismWorkApp.Services.Interfaces.csproj" />
     <ProjectReference Include="..\..\Services\PrismWorkApp.Services\PrismWorkApp.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Core\Converters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
     <Resource Include="ResourceDictionaries\ProjectTreeViewDefaultTheme.xaml" />
     <Resource Include="Resourses\Images\bldProjectImages\bldAOSRDocument.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -125,9 +131,15 @@
     <Resource Include="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\48x48\32.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+    <Resource Include="Resourses\Images\Ribbon\PNG\minus_expanded.png" />
+    <Resource Include="Resourses\Images\Ribbon\PNG\plus_folded.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
+    <Resource Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Views\ConstructionView .xaml.cs">
@@ -135,11 +147,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="CustomControls\bldWorkControl\WorkDataRowStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\ConstructionView .xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\QuickAccessToolBarView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Views\RibbonViews\ProjectManagerRibbonTabViews\ProjectManagerRibbonTabView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
   </ItemGroup>

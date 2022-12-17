@@ -17,9 +17,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Views.RibbonViews
     /// <summary>
     /// Interaction logic for ToolBarRibbonTab.xaml
     /// </summary>
-    public partial class ToolBarRibbonTab : RibbonTab
+    public partial class ProjectManagerRibbonTabView : RibbonTab
     {
-        public ToolBarRibbonTab()
+        public ProjectManagerRibbonTabView()
         {
             InitializeComponent();
         }

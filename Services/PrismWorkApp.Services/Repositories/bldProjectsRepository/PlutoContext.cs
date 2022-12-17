@@ -9,8 +9,8 @@ namespace PrismWorkApp.Services.Repositories
     {
         public PlutoContext() : base()
         {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
+            //Database.EnsureDeleted();
+            //Database.EnsureCreated();
         }
         #region Building Construction
         public virtual DbSet<bldProject> Projects { get; set; }

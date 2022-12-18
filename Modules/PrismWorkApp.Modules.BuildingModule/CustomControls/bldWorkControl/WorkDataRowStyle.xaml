@@ -10,12 +10,16 @@
                     <Grid>
                         <DataGrid x:Name="bldWorkDataGrid" AutoGenerateColumns="False">
                             <DataGrid.Resources>
+                               <Style   TargetType="{x:Type DataGridCell}">
+                                    <Setter Property="Padding" Value="0"/>
+                                </Style>        
                                 <Style TargetType="{x:Type DataGridRow}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=IsExpanded,Converter={StaticResource bool2VisibilityConverter}}"  Value="Collapsed">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
                                     </Style.Triggers>
+                                    <!--<Setter Property="HorizontalContentAlignment" Value="Stretch"/>-->
                                 </Style>
                                 <Style x:Key="{x:Type CheckBox}" TargetType="{x:Type CheckBox}">
                                     <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -31,8 +35,12 @@
                                                                 <RectangleGeometry Rect="-6 3 6 3"  />
                                                             </Path.Data>
                                                         </Path>-->
-                                                        <Image x:Name="FoldedImage" Visibility="Visible" Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/plus_folded.png"/>
-                                                        <Image x:Name="ExpandedImage" Visibility="Collapsed" Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/minus_expanded.png"/>
+                                                        <Image x:Name="FoldedImage"
+                                                               Visibility="Visible" Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/interface/collapse.gif"
+                                                               Width="10" Height="10"/>
+                                                        <Image x:Name="ExpandedImage" Visibility="Collapsed"
+                                                               Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/interface/expand.gif"
+                                                                Width="10" Height="10"/>
                                                        <ContentPresenter Margin="4,0,0,0"
                                                                   VerticalAlignment="Center"
                                                                    HorizontalAlignment="Left"
@@ -56,20 +64,42 @@
                                 </Style>
                             </DataGrid.Resources>
                             <DataGrid.Columns>
-                                <DataGridTemplateColumn Header="Код и Нименование">
+                                <DataGridTemplateColumn Header="Код и Нименование" >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate DataType="{x:Type bld_controls:DataGridExpandedItem}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <CheckBox IsChecked="{Binding IsChildrenExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
-                                                          Margin="{Binding NameMagrin}" OverridesDefaultStyle="True"/>
-                                                <TextBox Text="{Binding  Object.Code}" Margin="0 0 0 0"/>
-                                                <TextBox Text="{Binding  Object.Name}" Margin="0 0 0 0"/>
-                                          </StackPanel>
+                                            <Grid   HorizontalAlignment ="Stretch" 
+                                                    VerticalAlignment="Stretch">
+                                                <StackPanel HorizontalAlignment="Stretch" 
+                                                            VerticalAlignment="Stretch"
+                                                             Orientation="Horizontal">
+                                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsChildrenExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                                          Margin="{Binding NameMagrin}" 
+                                                          OverridesDefaultStyle="True"
+                                                          HorizontalAlignment="Left"/>
+                                                    <TextBlock x:Name="codeTextBlock" Text="{Binding  Object.Code}"
+                                                         HorizontalAlignment="Left"
+                                                             VerticalAlignment="Stretch"/>
+                                                    <TextBlock x:Name="nameTextBlock" Text="{Binding  Object.Name ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                                        HorizontalAlignment="Stretch"
+                                                             VerticalAlignment="Stretch"
+                                                            TextWrapping="WrapWithOverflow"/>
+                                                    <TextBox x:Name="codeTextBox" Visibility="Collapsed" Text="{Binding  Object.Code}"
+                                                         HorizontalAlignment="Left"
+                                                             VerticalAlignment="Stretch"/>
+                                                    <TextBox  x:Name="nameTextBox" Visibility="Collapsed" Text="{Binding  Object.Name ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                                        HorizontalAlignment="Stretch"
+                                                             VerticalAlignment="Stretch"
+                                                            TextWrapping="WrapWithOverflow"/>
+                                                 </StackPanel>
+                                           </Grid>
+                                            <!--<DataTemplate.Triggers>
+                                                <DataTrigger  Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGridCell},Path=}"/>
+                                             
+                                            </DataTemplate.Triggers>-->
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Начало" Binding="{Binding Object.StartTime}"/>
-
+              
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>

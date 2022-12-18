@@ -38,8 +38,8 @@
                                         Command="{Binding DataContext.CloseCommand}"
                                         CommandParameter="{Binding }"
                                         DockPanel.Dock="Right">
-                                
-                                <Image Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/close-icon.png" Width="14" Height="14" 
+
+                                <Image Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Interface/close-icon.png" Width="14" Height="14" 
                                            HorizontalAlignment="Stretch" Margin="0"/>
 
                             </Button>

@@ -52,7 +52,7 @@
                             <ColumnDefinition  Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <DataGrid x:Name="bldWorks" Grid.Column="0" ItemsSource="{Binding SelectedWorksGroup}"   
+                        <DataGrid Visibility="Collapsed" x:Name="bldWorks" Grid.Column="0" ItemsSource="{Binding SelectedWorksGroup}"   
                                                   SelectedItem="{Binding SelectedWork}"  
                                                   Style="{StaticResource inlineDataGrid }"  
                                AutoGenerateColumns="False"  IsReadOnly="False"  

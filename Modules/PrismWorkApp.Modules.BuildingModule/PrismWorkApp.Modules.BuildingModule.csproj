@@ -35,6 +35,8 @@
         <None Remove="Resourses\Images\bldProjectImages\bldWork.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
         <None Remove="Resourses\Images\close-icon.png" />
+        <None Remove="Resourses\Images\Interface\collapse.gif" />
+        <None Remove="Resourses\Images\Interface\expand.gif" />
         <None Remove="Resourses\Images\Ribbon\32x32\add.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\arrow_down.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\arrow_up.png" />
@@ -47,8 +49,6 @@
         <None Remove="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\48x48\32.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
-        <None Remove="Resourses\Images\Ribbon\PNG\minus_expanded.png" />
-        <None Remove="Resourses\Images\Ribbon\PNG\plus_folded.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
@@ -118,7 +118,9 @@
     <Resource Include="Resourses\Images\bldProjectImages\bldResponsibleEmployee__OTHER.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldWork.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
-    <Resource Include="Resourses\Images\close-icon.png" />
+    <Resource Include="Resourses\Images\Interface\close-icon.png" />
+    <Resource Include="Resourses\Images\Interface\collapse.gif" />
+    <Resource Include="Resourses\Images\Interface\expand.gif" />
     <Resource Include="Resourses\Images\Ribbon\32x32\add.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\arrow_down.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\arrow_up.png" />
@@ -131,8 +133,6 @@
     <Resource Include="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\48x48\32.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
-    <Resource Include="Resourses\Images\Ribbon\PNG\minus_expanded.png" />
-    <Resource Include="Resourses\Images\Ribbon\PNG\plus_folded.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />

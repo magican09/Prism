@@ -8,9 +8,7 @@
              xmlns:core="clr-namespace:PrismWorkApp.Core;assembly=PrismWorkApp.Core"
              xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-           
-             xmlns:prism="http://prismlibrary.com/"
-                   >
+               xmlns:prism="http://prismlibrary.com/" >
 
 
     <loc_core:ProjectExplorerNodeViewConverter x:Key="ProjectNodeViewConverter"/>

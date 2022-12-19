@@ -6,16 +6,49 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Page Remove="bldWorkControl\WorkDataRowStyle.xaml" />
+    <None Remove="Resourses\Images\collapse.gif" />
+    <None Remove="Resourses\Images\expand.gif" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="CustomControls\ConstructionDataGrid\Styles.xaml" />
+    <Page Remove="CustomControls\ExpandBox\Styles.xaml" />
     <Page Remove="Themes\Generic.xaml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="bldWorkControl\WorkDataRowStyle.xaml">
+    <ProjectReference Include="..\PrismWorkApp.OpenWorkLib\PrismWorkApp.OpenWorkLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="CustomControls\ConstructionDataGrid\ConstructionDataGridStyle.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="CustomControls\ConstructionDataGrid\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Resource>
-    <Resource Include="Themes\Generic.xaml" />
+    <Resource Include="CustomControls\ExpandBox\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Resourses\Images\collapse.gif" />
+    <Resource Include="Resourses\Images\expand.gif" />
+    <Resource Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="CustomControls\bldWorkControl\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xam.DataGrid" Version="1.0.2" />
   </ItemGroup>
 
 </Project>

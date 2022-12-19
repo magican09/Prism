@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:prism="http://prismlibrary.com/"
-             xmlns:bld_controls="clr-namespace:PrismWorkApp.Modules.BuildingModule"
+             xmlns:сc="clr-namespace:bldCustomControlLibrary;assembly=bldCustomControlLibrary"
              xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -293,8 +293,8 @@
                     </Grid>
                   </StackPanel>
             </StackPanel>
-            <bld_controls:WorkDataRow DataContext="{Binding SelectedConstruction}"/>
-
+             <сc:ConstructionDataGrid DataContext="{Binding SelectedConstruction}"/>
+            <сc:ExpandBox IsChecked="True"/>
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10" >
            

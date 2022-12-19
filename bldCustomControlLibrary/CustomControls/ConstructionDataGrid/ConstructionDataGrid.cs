@@ -1,23 +1,18 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Drawing;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace PrismWorkApp.Modules.BuildingModule
+namespace bldCustomControlLibrary
 {
-    public class WorkDataRow:Control
+    public class ConstructionDataGrid: Control
     {
-
 
         //public bldWork DataSourse
         //{
@@ -30,64 +25,69 @@ namespace PrismWorkApp.Modules.BuildingModule
         //    DependencyProperty.Register("DataSourse", typeof(bldWork), typeof(ownerclass), new PropertyMetadata(0));
 
         public static RoutedEvent DataGridCell_MouseDoubleClickEvent =
-            EventManager.RegisterRoutedEvent("DataGridCell_MouseDoubleClick", RoutingStrategy.Tunnel, typeof(RoutedEventArgs), typeof(WorkDataRow));
+            EventManager.RegisterRoutedEvent("DataGridCell_MouseDoubleClick", RoutingStrategy.Tunnel, typeof(RoutedEventArgs), typeof(ConstructionDataGrid));
+
+        public static readonly RoutedCommand MouseDoubleClickRoutedCommand = new RoutedCommand();
 
         public event RoutedEventHandler MouseDoubleClick
-            {
+        {
             add
             {
                 AddHandler(DataGridCell_MouseDoubleClickEvent, value);
             }
             remove
             {
-                RemoveHandler(DataGridCell_MouseDoubleClickEvent,value);
+                RemoveHandler(DataGridCell_MouseDoubleClickEvent, value);
             }
 
         }
         private DataGrid _bldDataGrid;
         private DataGridExpandedItemCollection _dataGridExpandedItems = new DataGridExpandedItemCollection();
 
-        
-        static WorkDataRow()
+
+        static ConstructionDataGrid()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(WorkDataRow), 
-                new FrameworkPropertyMetadata(typeof(WorkDataRow)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ConstructionDataGrid),
+                new FrameworkPropertyMetadata(typeof(ConstructionDataGrid)));
 
         }
         public override void OnApplyTemplate()
         {
 
-            _bldDataGrid = Template.FindName("bldWorkDataGrid",this) as DataGrid;
-            _dataGridExpandedItems.Add(new DataGridExpandedItem(base.DataContext, true,true));
+            _bldDataGrid = Template.FindName("bldWorkDataGrid", this) as DataGrid;
+            _dataGridExpandedItems.Add(new DataGridExpandedItem(base.DataContext, true, true));
             _bldDataGrid.ItemsSource = _dataGridExpandedItems;
-            _bldDataGrid.MouseDoubleClick+= OnDataGridCell_MouseDoubleClick;
-
-
-             base.OnApplyTemplate();
+            _bldDataGrid.MouseDoubleClick += OnDataGridCell_MouseDoubleClick;
+            base.OnApplyTemplate();
         }
+
         private void OnDataGridCell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             // get the row and column index based on the pointer position in WPF
-
+            return;
             int numVisuals = VisualTreeHelper.GetChildrenCount(_bldDataGrid);
             DataGridRow dataGridRow = (DataGridRow)_bldDataGrid.ItemContainerGenerator.ContainerFromItem(_bldDataGrid.SelectedItem);
             var ff = _bldDataGrid.GetCell(_bldDataGrid.GetSelectedRow(), _bldDataGrid.CurrentCell.Column.DisplayIndex);
-            for(int ii=0;ii<numVisuals;ii++)
+            for (int ii = 0; ii < numVisuals; ii++)
             {
                 Visual v = (Visual)VisualTreeHelper.GetParent(_bldDataGrid);
 
             }
-            var selected_cell =VisualTreeHelper.GetParent(_bldDataGrid.CurrentCell.Column) ;
+            var selected_cell = VisualTreeHelper.GetParent(_bldDataGrid.CurrentCell.Column);
 
 
-            var rowColumnIndex = _bldDataGrid.GetCell(_bldDataGrid.GetSelectedRow(),_bldDataGrid.SelectedIndex);
-           
+            var rowColumnIndex = _bldDataGrid.GetCell(_bldDataGrid.GetSelectedRow(), _bldDataGrid.SelectedIndex);
+
             //Returns if caption summary or group summary row encountered.
 
-            RaiseEvent(new RoutedEventArgs(DataGridCell_MouseDoubleClickEvent,this));
+            RaiseEvent(new RoutedEventArgs(DataGridCell_MouseDoubleClickEvent, this));
         }
-       
-      
+        private void OnMouseDoubleClick(object sender, ExecutedRoutedEventArgs e)
+        {
+            // Do something
+        }
+
+
     }
     public class DataGridExpandedItem : BindableBase
     {
@@ -95,17 +95,19 @@ namespace PrismWorkApp.Modules.BuildingModule
         public bool IsExpanded
         {
             get { return _isExpanded; }
-            set { 
-             
+            set
+            {
+
                 SetProperty(ref _isExpanded, value);
-                
+
             }
         }
         private bool _isChildrenExpanded;
         public bool IsChildrenExpanded
         {
             get { return _isChildrenExpanded; }
-            set {
+            set
+            {
                 if (Children.Count > 0)
                     foreach (DataGridExpandedItem itm in Children)
                         itm.IsExpanded = value;
@@ -139,15 +141,15 @@ namespace PrismWorkApp.Modules.BuildingModule
             get { return _children; }
             set { SetProperty(ref _children, value); }
         }
-        public DataGridExpandedItem(object obj, bool is_expanded,bool is_children_expanded)
+        public DataGridExpandedItem(object obj, bool is_expanded, bool is_children_expanded)
         {
             Object = obj;
             IsExpanded = is_expanded;
             IsChildrenExpanded = is_children_expanded;
         }
     }
-        public class DataGridExpandedItemCollection:ObservableCollection<DataGridExpandedItem>
-        {
+    public class DataGridExpandedItemCollection : ObservableCollection<DataGridExpandedItem>
+    {
         public DataGridExpandedItemCollection()
         {
             CollectionChanged += OnCollectionCahged;
@@ -155,15 +157,15 @@ namespace PrismWorkApp.Modules.BuildingModule
 
         private void OnCollectionCahged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if(e.Action== NotifyCollectionChangedAction.Add)
+            if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                foreach(DataGridExpandedItem elm in e.NewItems)
+                foreach (DataGridExpandedItem elm in e.NewItems)
                 {
-                    if(elm.Object is bldConstruction construction)
+                    if (elm.Object is bldConstruction construction)
                     {
-                        foreach(bldWork work in construction.Works)
+                        foreach (bldWork work in construction.Works)
                         {
-                            DataGridExpandedItem expandedItem = new DataGridExpandedItem(work, elm.IsChildrenExpanded,false);
+                            DataGridExpandedItem expandedItem = new DataGridExpandedItem(work, elm.IsChildrenExpanded, false);
                             expandedItem.Parent = elm;
                             this.Add(expandedItem);
                             elm.Children.Add(expandedItem);
@@ -175,7 +177,7 @@ namespace PrismWorkApp.Modules.BuildingModule
                         }
                     }
                 }
-                        
+
             }
         }
 
@@ -184,6 +186,6 @@ namespace PrismWorkApp.Modules.BuildingModule
             var dataGridCellTarget = (DataGridCell)sender;
             // TODO: Your logic here
         }
+
     }
-    
 }

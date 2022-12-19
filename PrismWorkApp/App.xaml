@@ -9,7 +9,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source ="/resourcedictionaries/workresourcedictionary.xaml"/>
-                <ResourceDictionary Source ="pack://application:,,,/ PrismWorkApp.Modules.BuildingModule;Component/Themes/Generic.xaml"/>
+                <ResourceDictionary Source ="pack://application:,,,/bldCustomControlLibrary;Component/Themes/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
          <!-- <ResourceDictionary Source="/resourcedictionaries/defaulttheme.xaml"/>-->

@@ -32,6 +32,7 @@
     <PackageReference Include="Prism.DryIoc" Version="8.0.0.1909" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\bldCustomControlLibrary\bldCustomControlLibrary.csproj" />
     <ProjectReference Include="..\Modules\PrismWorkApp.Modules.BuildingModule\PrismWorkApp.Modules.BuildingModule.csproj" />
     <ProjectReference Include="..\Modules\PrismWorkApp.Modules.MainModule\PrismWorkApp.Modules.MainModule.csproj" />
     <ProjectReference Include="..\PrismWorkApp.Core\PrismWorkApp.Core.csproj" />

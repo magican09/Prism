@@ -56,7 +56,6 @@
       <ItemGroup>
         <Page Remove="Core\Converters.xaml" />
         <Page Remove="ResourceDictionaries\ProjectTreeViewDefaultTheme.xaml" />
-        <Page Remove="Themes\Generic.xaml" />
       </ItemGroup>
       <ItemGroup>
         <COMReference Include="DAO">
@@ -82,6 +81,7 @@
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\bldCustomControlLibrary\bldCustomControlLibrary.csproj" />
     <ProjectReference Include="..\..\PrismWorkApp.Core\PrismWorkApp.Core.csproj" />
     <ProjectReference Include="..\..\PrismWorkApp.OpenWorkLib\PrismWorkApp.OpenWorkLib.csproj" />
     <ProjectReference Include="..\..\Services\PrismWorkApp.Services.Interfaces\PrismWorkApp.Services.Interfaces.csproj" />
@@ -136,10 +136,6 @@
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
-    <Resource Include="Themes\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Views\ConstructionView .xaml.cs">
@@ -147,9 +143,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="CustomControls\bldWorkControl\WorkDataRowStyle.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="Views\ConstructionView .xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

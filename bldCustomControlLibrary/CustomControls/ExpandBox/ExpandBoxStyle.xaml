@@ -17,8 +17,8 @@
                         <BulletDecorator.Bullet>
                             <Grid>
                                 <Image x:Name="ExpandedMarker" Style="{StaticResource  ExpandedMarkerStyle}" />
-                                <Image x:Name="CollapsedMarkerStyle" Style="{StaticResource CollapsedMarkerStyle}" />
-                       
+                                <Image x:Name="CollapsedMarker" Style="{StaticResource CollapsedMarkerStyle}" />
+                                <Image x:Name="NothingMarker" Style="{StaticResource NothingMarkerStyle}" />
                             </Grid>
                         </BulletDecorator.Bullet>
                         <ContentPresenter Margin="4 0 0 0" VerticalAlignment="Center"
@@ -28,12 +28,20 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="ExpandedMarker" Property="Visibility" Value="Collapsed"/>
-                            <Setter TargetName="CollapsedMarkerStyle" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="CollapsedMarker" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="NothingMarker" Property="Visibility" Value="Collapsed"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="False">
                             <Setter TargetName="ExpandedMarker" Property="Visibility" Value="Visible"/>
-                            <Setter TargetName="CollapsedMarkerStyle" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="CollapsedMarker" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="NothingMarker" Property="Visibility" Value="Collapsed"/>
                         </Trigger>
+                        <Trigger Property="IsChecked" Value="{x:Null}">
+                            <Setter TargetName="CollapsedMarker" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="ExpandedMarker" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="NothingMarker" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                            
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

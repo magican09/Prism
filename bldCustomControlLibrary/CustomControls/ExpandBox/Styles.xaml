@@ -11,5 +11,9 @@
         <Setter Property="Height" Value="10"/>
         <Setter Property="Width"  Value="10"/>
     </Style>
-    
+    <Style x:Key="NothingMarkerStyle" TargetType="{x:Type Image}">
+        <Setter Property="Source" Value="/bldCustomControlLibrary;component/Resourses/Images/car.png"/>
+        <Setter Property="Height" Value="10"/>
+        <Setter Property="Width"  Value="10"/>
+    </Style>
 </ResourceDictionary>

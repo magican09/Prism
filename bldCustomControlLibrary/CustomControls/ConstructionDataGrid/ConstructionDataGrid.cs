@@ -55,44 +55,40 @@ namespace bldCustomControlLibrary
         {
 
             _bldDataGrid = Template.FindName("bldWorkDataGrid", this) as DataGrid;
-            _dataGridExpandedItems.Add(new DataGridExpandedItem(base.DataContext, true, true));
+            _dataGridExpandedItems.Add(new DataGridExpandedItem(base.DataContext, true, false));
             _bldDataGrid.ItemsSource = _dataGridExpandedItems;
-            _bldDataGrid.MouseDoubleClick += OnDataGridCell_MouseDoubleClick;
             base.OnApplyTemplate();
         }
 
-        private void OnDataGridCell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            // get the row and column index based on the pointer position in WPF
-            return;
-            int numVisuals = VisualTreeHelper.GetChildrenCount(_bldDataGrid);
-            DataGridRow dataGridRow = (DataGridRow)_bldDataGrid.ItemContainerGenerator.ContainerFromItem(_bldDataGrid.SelectedItem);
-            var ff = _bldDataGrid.GetCell(_bldDataGrid.GetSelectedRow(), _bldDataGrid.CurrentCell.Column.DisplayIndex);
-            for (int ii = 0; ii < numVisuals; ii++)
-            {
-                Visual v = (Visual)VisualTreeHelper.GetParent(_bldDataGrid);
+        //private void OnDataGridCell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        //{
+        //    // get the row and column index based on the pointer position in WPF
+        //    return;
+        //    int numVisuals = VisualTreeHelper.GetChildrenCount(_bldDataGrid);
+        //    DataGridRow dataGridRow = (DataGridRow)_bldDataGrid.ItemContainerGenerator.ContainerFromItem(_bldDataGrid.SelectedItem);
+        //    var ff = _bldDataGrid.GetCell(_bldDataGrid.GetSelectedRow(), _bldDataGrid.CurrentCell.Column.DisplayIndex);
+        //    for (int ii = 0; ii < numVisuals; ii++)
+        //    {
+        //        Visual v = (Visual)VisualTreeHelper.GetParent(_bldDataGrid);
 
-            }
-            var selected_cell = VisualTreeHelper.GetParent(_bldDataGrid.CurrentCell.Column);
+        //    }
+        //    var selected_cell = VisualTreeHelper.GetParent(_bldDataGrid.CurrentCell.Column);
 
 
-            var rowColumnIndex = _bldDataGrid.GetCell(_bldDataGrid.GetSelectedRow(), _bldDataGrid.SelectedIndex);
+        //    var rowColumnIndex = _bldDataGrid.GetCell(_bldDataGrid.GetSelectedRow(), _bldDataGrid.SelectedIndex);
 
-            //Returns if caption summary or group summary row encountered.
+        //    //Returns if caption summary or group summary row encountered.
 
-            RaiseEvent(new RoutedEventArgs(DataGridCell_MouseDoubleClickEvent, this));
-        }
-        private void OnMouseDoubleClick(object sender, ExecutedRoutedEventArgs e)
-        {
-            // Do something
-        }
+        //    RaiseEvent(new RoutedEventArgs(DataGridCell_MouseDoubleClickEvent, this));
+        //}
+     
 
 
     }
     public class DataGridExpandedItem : BindableBase
     {
-        private bool _isExpanded;
-        public bool IsExpanded
+        private bool? _isExpanded;
+        public bool? IsExpanded
         {
             get { return _isExpanded; }
             set
@@ -102,18 +98,22 @@ namespace bldCustomControlLibrary
 
             }
         }
-        private bool _isChildrenExpanded;
-        public bool IsChildrenExpanded
+        private bool? _isChildrenExpanded;
+        public bool? IsChildrenExpanded
         {
             get { return _isChildrenExpanded; }
             set
             {
                 if (Children.Count > 0)
                     foreach (DataGridExpandedItem itm in Children)
+                    {
                         itm.IsExpanded = value;
+                        if (itm.Children.Count == 0)
+                            itm.IsChildrenExpanded = null;
+                    }
                 else
                     _isChildrenExpanded = false;
-
+              
                 SetProperty(ref _isChildrenExpanded, value);
             }
         }
@@ -141,7 +141,7 @@ namespace bldCustomControlLibrary
             get { return _children; }
             set { SetProperty(ref _children, value); }
         }
-        public DataGridExpandedItem(object obj, bool is_expanded, bool is_children_expanded)
+        public DataGridExpandedItem(object obj, bool? is_expanded, bool? is_children_expanded)
         {
             Object = obj;
             IsExpanded = is_expanded;
@@ -170,10 +170,6 @@ namespace bldCustomControlLibrary
                             this.Add(expandedItem);
                             elm.Children.Add(expandedItem);
                             expandedItem.NameMagrin = new Thickness(10, 0, 0, 0);
-
-                            /// expandedItem.NameMagrin = new Thickness(10,0,0,0);
-
-
                         }
                     }
                 }

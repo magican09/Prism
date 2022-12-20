@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resourses\Images\car.png" />
     <None Remove="Resourses\Images\collapse.gif" />
     <None Remove="Resourses\Images\expand.gif" />
   </ItemGroup>
@@ -35,6 +36,7 @@
     <Resource Include="CustomControls\ExpandBox\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>
+    <Resource Include="Resourses\Images\car.png" />
     <Resource Include="Resourses\Images\collapse.gif" />
     <Resource Include="Resourses\Images\expand.gif" />
     <Resource Include="Themes\Generic.xaml">

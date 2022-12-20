@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,60 +12,39 @@ namespace bldCustomControlLibrary
     public partial class ConstructionDataGridStyle : ResourceDictionary
     {
 
-
-
-        private void NameContentControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void cell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var ds = this;
-            ContentControl content_control = sender as ContentControl;
-
-            TextBlock text_block = (TextBlock) LogicalTreeHelper.FindLogicalNode(sender as Visual,"nameTextBlock");
-            var p1 = LogicalTreeHelper.GetParent(content_control);
-            var p2 = LogicalTreeHelper.GetParent(p1);
-            var p3 = LogicalTreeHelper.GetParent(p2);
-            var p4 = LogicalTreeHelper.GetParent(p3);
-            var p5 = LogicalTreeHelper.GetParent(p4);
-          //  var p6 = LogicalTreeHelper.GetParent(p5);
-
-            //DataGrid data_grid = (DataGrid)LogicalTreeHelper.FindLogicalNode(sender as Visual, "bldWorkDataGrid");
-
-            text_block.Background = Brushes.Red;
-            content_control.UpdateLayout();
-            text_block.UpdateLayout();
-       
-            TextBlock text_block2 = (TextBlock)LogicalTreeHelper.FindLogicalNode(sender as Visual, "nameTextBlock");
-
-            //   var datagrid =  FindParentByType(sender, typeof(DataGrid));
+            ObservableCollection<object> textBlocks = new ObservableCollection<object>();
+            ObservableCollection<object> textBoxes = new ObservableCollection<object>();
+            FindChildrenByType(sender as Visual, typeof(TextBlock), textBlocks);
+            FindChildrenByType(sender as Visual, typeof(TextBox), textBoxes);
+            foreach (object txt_blok in textBlocks)
+                ((TextBlock)txt_blok).Visibility = Visibility.Hidden;
+            foreach (object txt_box in textBoxes)
+                ((TextBox)txt_box).Visibility = Visibility.Visible;
 
 
-            //if (content_control.Content is Grid grid)
-            //{
-            //    foreach (FrameworkElement element in grid.Children)
-            //    {
-            //        if (element is TextBox text_box)
-            //        {
-            //            text_box.Background = Brushes.Red;
-            //            text_box.Visibility = Visibility.Visible;
-            //            text_box.UpdateLayout();
-            //        }
-            //        grid.UpdateLayout();
-            //        //if (element is TextBlock text_block)
-            //        //{
-            //        //    text_block.Background = Brushes.Red;
-
-            //        //}
-            //    }
-            //}
-            //content_control.UpdateLayout();
-            //if (datagrid is DataGrid _grid)
-            //    _grid.UpdateLayout();
-            //SetTextBlocksAndTextBoxs(sender);
-            //(sender as ContentControl).UpdateLayout();
-            //FrameworkElement parent = (FrameworkElement)VisualTreeHelper.GetParent(content_control);
-            //parent.UpdateLayout();
 
         }
-        private TextBlock textBlock;
+
+
+        private void ContentControl_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ObservableCollection<object> textBlocks = new ObservableCollection<object>();
+            ObservableCollection<object> textBoxes = new ObservableCollection<object>();
+            FindChildrenByType(sender as Visual, typeof(TextBlock), textBlocks);
+            FindChildrenByType(sender as Visual, typeof(TextBox), textBoxes);
+            foreach (object txt_blok in textBlocks)
+                ((TextBlock)txt_blok).Visibility = Visibility.Visible;
+            foreach (object txt_box in textBoxes)
+                ((TextBox)txt_box).Visibility = Visibility.Hidden;
+        }
+
+        private void ContentControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DataGridCell dg_cell = (DataGridCell)FindParentByType(sender, typeof(DataGridCell));
+            dg_cell.MouseDoubleClick += cell_MouseDoubleClick;
+        }
         private void SetTextBlocksAndTextBoxs(object obj)
         {
 
@@ -75,7 +55,7 @@ namespace bldCustomControlLibrary
                 Visual cont_obj = (Visual)VisualTreeHelper.GetChild(content_contr, ii);
                 if (cont_obj is TextBlock text_block)
                 {
-                    textBlock = text_block;
+
                     text_block.Background = Brushes.Red;
 
                     text_block.Text = "sfsfsfsf";
@@ -104,8 +84,8 @@ namespace bldCustomControlLibrary
 
             Visual v = obj as Visual;
 
-            //    object parent = (Visual)VisualTreeHelper.GetParent(v);
-            object parent = (Visual)LogicalTreeHelper.GetParent(v);
+            object parent = (Visual)VisualTreeHelper.GetParent(v);
+            //    object parent = (Visual)LogicalTreeHelper.GetParent(v);
             if (parent.GetType() == type)
             {
                 return parent;
@@ -116,5 +96,54 @@ namespace bldCustomControlLibrary
             }
             return parent;
         }
+        private object FindChildByType(object obj, Type type)
+        {
+            Visual parent = obj as Visual;
+            object child = null;
+            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < numVisuals; i++)
+            {
+                child = (Visual)VisualTreeHelper.GetChild(parent, i);
+
+                if (child.GetType() == type)
+                {
+                    break;
+                }
+                else
+                {
+                    child = FindChildByType(child, type);
+                }
+
+
+            }
+
+            return child;
+
+        }
+        private void FindChildrenByType(object obj, Type type, ObservableCollection<object> collection)
+        {
+            Visual parent = obj as Visual;
+            object child = null;
+            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < numVisuals; i++)
+            {
+                child = (Visual)VisualTreeHelper.GetChild(parent, i);
+
+                if (child.GetType() == type)
+                {
+                    collection.Add(child);
+                    //  break;
+                }
+                else
+                {
+                    FindChildrenByType(child, type, collection);
+                    //   collection.Add(child);
+                }
+
+
+            }
+
+        }
     }
 }
+    

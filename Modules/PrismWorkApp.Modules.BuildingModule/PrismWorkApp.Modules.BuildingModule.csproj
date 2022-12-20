@@ -57,17 +57,6 @@
         <Page Remove="Core\Converters.xaml" />
         <Page Remove="ResourceDictionaries\ProjectTreeViewDefaultTheme.xaml" />
       </ItemGroup>
-      <ItemGroup>
-        <COMReference Include="DAO">
-          <WrapperTool>tlbimp</WrapperTool>
-          <VersionMinor>0</VersionMinor>
-          <VersionMajor>5</VersionMajor>
-          <Guid>00025e01-0000-0000-c000-000000000046</Guid>
-          <Lcid>0</Lcid>
-          <Isolated>false</Isolated>
-          <EmbedInteropTypes>true</EmbedInteropTypes>
-        </COMReference>
-      </ItemGroup>
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="5.8.7" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
@@ -78,6 +67,7 @@
     <PackageReference Include="Syncfusion.Pdf.Wpf" Version="20.3.0.61" />
     <PackageReference Include="Syncfusion.Tools.WPF" Version="20.3.0.61" />
     <PackageReference Include="System.Data.Odbc" Version="4.7.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿using DAO;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.Win32;
 using Prism.Events;
 using Prism.Regions;
@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Odbc;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -131,7 +132,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-        private void OnLoadMaterialsFromAccess_1()
+        private void OnLoadMaterialsFromAccess()
         {
             string access_file_name;
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -139,158 +140,148 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 access_file_name = openFileDialog.FileName;
 
 
-            string ConnectionString = @"Driver={Microsoft Access Driver (*.mdb, *.accdb)}; Dbq=C:\work\Металл 1.accdb; Uid = Admin; Pwd =; ";
-            string table_name = "Металл_1";
+            string ConnectionString = @"Driver={Microsoft Access Driver (*.mdb, *.accdb)}; Dbq="+
+                 openFileDialog.FileName + "; Uid = Admin; Pwd =; ";
+            string table_name = "Таблица_1";
             string query = $"SELECT * FROM {table_name}";
 
             string BD_FilesDir = Directory.GetCurrentDirectory();
             BD_FilesDir = Path.Combine(BD_FilesDir, table_name);
             Directory.CreateDirectory(BD_FilesDir);
+
             MemoryStream memoryStream = new MemoryStream();
 
-            //using (OdbcConnection connection = new OdbcConnection(ConnectionString))
-            //{
-            //    OdbcDataAdapter dataAdapter = new OdbcDataAdapter
-            //             (query, connection);
-            //    DataSet dataSet = new DataSet();
-            //    dataAdapter.Fill(dataSet);
-            //    DataTable dataTable = dataSet.Tables[0];
-            //    int file_count = 0;
-            //    //  bldMaterialsGroup AllMaterials = new bldMaterialsGroup(_buildingUnitsRepository.Materials.GetAllAsync().ToString());
-            //    //bldMaterialCertificateGroup AllMaterialCertificates = 
-            //    //    new bldMaterialCertificateGroup(_buildingUnitsRepository.MaterialCertificates.GetAllAsync().ToList());
-            //    int files_count = 0;
-            //    foreach (DataRow row in dataTable.Rows)
-            //    {
-            //        try
-            //        {
-            //            bldMaterialCertificate materialCertificate = new bldMaterialCertificate();
-            //            materialCertificate.MaterialName = row["Наименование _материала"].ToString();
-            //            materialCertificate.GeometryParameters = row["Геометрические_параметры"].ToString();
-            //            if (row["Кол-во"].ToString() != "-")
-            //                materialCertificate.MaterialQuantity = Convert.ToDecimal(row["Кол-во"].ToString().Replace(',', '.'));
-            //            materialCertificate.UnitsOfMeasure = row["Ед_изм"].ToString();
-            //            materialCertificate.Name = row["Сертификаты,_паспорта"].ToString();
-            //            materialCertificate.RegId = row["№_документа_о_качестве"].ToString();
-            //            if (row["Дата_документа"].ToString() != "" && !row["Дата_документа"].ToString().Contains("-"))
-            //            {
-            //                materialCertificate.Date = Convert.ToDateTime(row["Дата_документа"]?.ToString());
-            //                materialCertificate.StartTime = materialCertificate.Date;
-            //            }
-            //            else if (row["Дата_документа"].ToString().Length > 1)
-            //            {
-            //                string[] st_dates = row["Дата_документа"].ToString().Split('-');
-            //                materialCertificate.Date = Convert.ToDateTime(st_dates[0]?.ToString());
-            //                materialCertificate.StartTime = materialCertificate.Date;
-            //                materialCertificate.EndTime = Convert.ToDateTime(st_dates[1]?.ToString());
-
-            //            }
-
-            //            materialCertificate.ControlingParament = row["Контрольный_параметр"].ToString();
-            //            materialCertificate.RegulationDocumentsName = row["ГОСТ,_ТУ"].ToString();
-            //            Picture picture = new Picture();
-            //            picture.FileName = $"{BD_FilesDir}\\{materialCertificate.Name}{file_count.ToString()}.pdf";
-            //            file_count++;
-            //            picture.ImageFile = (byte[])row["files"];
-            //            materialCertificate.ImageFile = picture;
-            //            bldMaterial material = new bldMaterial();
-            //            material.Name = materialCertificate.MaterialName;
-            //            material.Quantity = materialCertificate.MaterialQuantity;
-            //            material.UnitOfMeasurement = new bldUnitOfMeasurement(materialCertificate.UnitsOfMeasure);
-            //            material.Documents.Add(materialCertificate);
-
-            //            _buildingUnitsRepository.MaterialCertificates.Add(materialCertificate);
-            //            _buildingUnitsRepository.Materials.Add(material);
-
-            //            //using (System.IO.FileStream fs = new System.IO.FileStream(picture.FileName, FileMode.OpenOrCreate))
-            //            //{
-            //            //    fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
-            //            //    if (++files_count > 5) break;
-            //            //}
-            //            //  using (BinaryWriter fs = new BinaryWriter(File.Open(picture.FileName, FileMode.OpenOrCreate)))
-            //            //{
-            //            //    //  fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
-            //            //    File.WriteAllBytes(picture.FileName, picture.ImageFile);
-            //            //    if (++files_count > 5) break;
-            //            //}
-            //            //
-            //           // using (FileStream fs = new FileStream(picture.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
-            //           // {
-            //           //     fs.Write(picture.ImageFile, 0, picture.ImageFile.Length);
-            //           // }
-            //           // using (System.IO.FileStream fs = new System.IO.FileStream(picture.FileName, FileMode.OpenOrCreate))
-            //           // {
-            //           ////   PdfReader reader = PdfReader.GetStreamBytes(fs);
-            //           //  }
-            //           // MemoryStream ms = new MemoryStream(picture.ImageFile);
-            //           // using (Document doc = new Document(PageSize.LETTER))
-            //           // {
-            //           //     using (PdfWriter writer = PdfWriter.GetInstance(doc, ms))
-            //           //     {
-            //           //         writer.CloseStream = false;
-            //           //         doc.Open();
-            //           //         doc.Add(new Paragraph("fdsf"));
-            //           //         doc.Close();
-            //           //     }
-            //           // }
-                        
-
-            //        }
-            //        catch (Exception e)
-            //        {
-            //        }
-
-            //    }
-            //    _buildingUnitsRepository.Complete();
-
-            //}
-        }
-        private void OnLoadMaterialsFromAccess()
-        {
-           // string sMyDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            //string sPath = sMyDocumentsPath + "\\Employees.mdb"; C:\work\Металл 1.accdb
-            string sPath = @"C:\test\Металл_1.mdb";
-            string sOutFileName = @"C:\test\";
-
-            string sPassword = "";
-
-            DAO.Database DAODataBase;
-            DAO.DBEngine DAODBEngine = new DAO.DBEngine();
-            DAO.Workspace DAOWorkSpace;
-            DAOWorkSpace = DAODBEngine.Workspaces[0];
-          //  byte[] bytes;
-            DAO.Recordset rs;
-            try
+            using (OdbcConnection connection = new OdbcConnection(ConnectionString))
             {
-                DAODataBase = DAOWorkSpace.OpenDatabase(sPath, null, false, null);
-                rs = DAODataBase.OpenTable("Металл_1", 0);
-                Recordset rst = DAODataBase.OpenRecordset("SELECT * FROM  Металл_1");
-                while (!rst.EOF)
+                //OdbcDataAdapter dataAdapter = new OdbcDataAdapter
+                //         (query, connection);
+                //DataSet dataSet = new DataSet();
+                string stmt = "SELECT COUNT(*) FROM "+ table_name;
+                OdbcCommand command = connection.CreateCommand();
+                command.CommandText = query;
+                connection.Open();
+                 //dataAdapter.Fill(dataSet,0,10, table_name);
+                //DataTable dataTable = dataSet.Tables[0];
+                OdbcDataReader row = command.ExecuteReader();
+                int file_count = 0;
+                //foreach (DataRow row in dataTable.Rows)
+                while(row.Read())
                 {
-                    string file_name =(string) rst.Fields[1].Value;
-                   
-                    byte[] bytes = (byte[])rst.Fields[2].Value;
-                    string byte_string = Encoding.GetEncoding(1251).GetString(bytes);
-                    Regex regex_1 = new Regex($"%PDF-");
-                    MatchCollection matches_1 = regex_1.Matches(byte_string);
-                    int fist_byte = matches_1[0].Index;
-                    Regex regex_2 = new Regex(@"%%EOF");
-                    MatchCollection matches_2 = regex_2.Matches(byte_string);
-                    int last_byte = matches_2[matches_2.Count-1].Index+6;
-
-                    using (System.IO.FileStream fs = new System.IO.FileStream(sOutFileName + file_name + ".pdf", FileMode.OpenOrCreate))
+                      file_count++;
+                    try
                     {
-                        fs.Write(bytes, fist_byte, last_byte- fist_byte);
+                      
+                        bldMaterialCertificate materialCertificate = new bldMaterialCertificate();
+                        materialCertificate.MaterialName = row["Наименование _материала"].ToString();
+                        materialCertificate.GeometryParameters = row["Геометрические_параметры"].ToString();
+                        if (row["Кол-во"].ToString() != "-")
+                            materialCertificate.MaterialQuantity = Convert.ToDecimal(row["Кол-во"].ToString().Replace(',', '.'));
+                        materialCertificate.UnitsOfMeasure = row["Ед_изм"].ToString();
+                        materialCertificate.Name = row["Сертификаты,_паспорта"].ToString();
+                        materialCertificate.RegId = row["№_документа_о_качестве"].ToString();
+                        string[] st_dates = row["Дата_документа"].ToString().Split('-');
+                        if (st_dates.Length>1 && st_dates[0]!="")
+                        {
+                            materialCertificate.Date = Convert.ToDateTime(st_dates[0]?.ToString());
+                            materialCertificate.StartTime = materialCertificate.Date;
+                            materialCertificate.EndTime = Convert.ToDateTime(st_dates[1]?.ToString());
+                        }
+                        else if (st_dates.Length == 1 && st_dates[0] != "")
+                        {
+                            materialCertificate.Date = Convert.ToDateTime(row["Дата_документа"]?.ToString());
+                            materialCertificate.StartTime = materialCertificate.Date;
+                        }
+                        else if (row["Дата_документа"].ToString().Length > 1)
+                        materialCertificate.ControlingParament = row["Контрольный_параметр"].ToString();
+                        materialCertificate.RegulationDocumentsName = row["ГОСТ,_ТУ"].ToString();
+                        Picture picture = new Picture();
+                        picture.FileName = Guid.NewGuid().ToString()+".pdf";
+                     //    picture.FileName =$"{materialCertificate.MaterialName} {materialCertificate.GeometryParameters} от {materialCertificate.Date.ToString("d")}{file_count.ToString()}.pdf";
+
+                        //  picture.ImageFile = (byte[])row["files"];
+                        byte[] bytes = (byte[])row["files"];
+                        materialCertificate.ImageFile = picture;
+                        bldMaterial material = new bldMaterial();
+                        material.Name = materialCertificate.MaterialName;
+                        material.Quantity = materialCertificate.MaterialQuantity;
+                        material.UnitOfMeasurement = new bldUnitOfMeasurement(materialCertificate.UnitsOfMeasure);
+                        material.Documents.Add(materialCertificate);
+                        _buildingUnitsRepository.MaterialCertificates.Add(materialCertificate);
+                        _buildingUnitsRepository.Materials.Add(material);
+                      //  byte[] bytes = picture.ImageFile;
+                        if (bytes != null)
+                        {
+                            string byte_string = Encoding.GetEncoding(1251).GetString(bytes);
+                            Regex regex_1 = new Regex($"%PDF-");
+                            MatchCollection matches_1 = regex_1.Matches(byte_string);
+                            int fist_byte = matches_1[0].Index;
+                            Regex regex_2 = new Regex(@"%%EOF");
+                            MatchCollection matches_2 = regex_2.Matches(byte_string);
+                            int last_byte = matches_2[matches_2.Count - 1].Index + 6;
+
+                            using (System.IO.FileStream fs = new System.IO.FileStream($"{BD_FilesDir }\\{picture.FileName}", FileMode.OpenOrCreate))
+                            {
+                                fs.Write(bytes, fist_byte, last_byte - fist_byte);
+
+                            }
+                        }
                     }
-                 
-                    rst.MoveNext();
+                    catch (Exception e)
+                    {
+                    }
+                   // System.Threading.Thread.Sleep(100);
                 }
-            }
-            catch (Exception ex)
-            {
-                //   System.Windows.Forms.MessageBox.Show("Database Error : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                row.Close();
+                _buildingUnitsRepository.Complete();
+
             }
         }
+        //private void OnLoadMaterialsFromAccess_1()
+        //{
+        //   // string sMyDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        //    //string sPath = sMyDocumentsPath + "\\Employees.mdb"; C:\work\Металл 1.accdb
+        //    string sPath = @"C:\test\Металл_1.mdb";
+        //    string sOutFileName = @"C:\test\";
+
+        //    string sPassword = "";
+
+        //    DAO.Database DAODataBase;
+        //    DAO.DBEngine DAODBEngine = new DAO.DBEngine();
+        //    DAO.Workspace DAOWorkSpace;
+        //    DAOWorkSpace = DAODBEngine.Workspaces[0];
+        //  //  byte[] bytes;
+        //    DAO.Recordset rs;
+        //    try
+        //    {
+        //        DAODataBase = DAOWorkSpace.OpenDatabase(sPath, null, false, null);
+        //        rs = DAODataBase.OpenTable("Металл_1", 0);
+        //        Recordset rst = DAODataBase.OpenRecordset("SELECT * FROM  Металл_1");
+        //        while (!rst.EOF)
+        //        {
+        //            string file_name =(string) rst.Fields[1].Value;
+                   
+        //            byte[] bytes = (byte[])rst.Fields[2].Value;
+        //            string byte_string = Encoding.GetEncoding(1251).GetString(bytes);
+        //            Regex regex_1 = new Regex($"%PDF-");
+        //            MatchCollection matches_1 = regex_1.Matches(byte_string);
+        //            int fist_byte = matches_1[0].Index;
+        //            Regex regex_2 = new Regex(@"%%EOF");
+        //            MatchCollection matches_2 = regex_2.Matches(byte_string);
+        //            int last_byte = matches_2[matches_2.Count-1].Index+6;
+
+        //            using (System.IO.FileStream fs = new System.IO.FileStream(sOutFileName + file_name + ".pdf", FileMode.OpenOrCreate))
+        //            {
+        //                fs.Write(bytes, fist_byte, last_byte- fist_byte);
+        //            }
+                 
+        //            rst.MoveNext();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //   System.Windows.Forms.MessageBox.Show("Database Error : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
         private bool CanSaveDataToDB()
         {
             return true;//AllProjectsContext.UnDoReDoSystem.Count > 0;

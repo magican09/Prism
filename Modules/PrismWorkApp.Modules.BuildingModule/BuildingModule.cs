@@ -13,6 +13,7 @@ using PrismWorkApp.Modules.BuildingModule.ViewModels.RibbonViewModels;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.Modules.BuildingModule.Views.RibbonViews;
 using PrismWorkApp.Services.Repositories;
+using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
@@ -50,6 +51,7 @@ namespace PrismWorkApp.Modules.BuildingModule
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             //    _regionManager.RequestNavigate(RegionNames.ContentRegion, "ProjectExplorerView");
             //  _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, "ConvertersView");
             _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new ProjectExplorerView());

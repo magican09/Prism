@@ -28,15 +28,15 @@
                                 <DataGridTemplateColumn Header="Код и Нименование" >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate DataType="{x:Type local:DataGridExpandedItem}">
-                                            <ContentControl HorizontalContentAlignment="Stretch" Background="Aqua">
+                                            <ItemsControl HorizontalContentAlignment="Stretch" >
                                                 <Grid   HorizontalAlignment ="Stretch" 
                                                     VerticalAlignment="Stretch">
                                                     <StackPanel HorizontalAlignment="Stretch" 
                                                             VerticalAlignment="Stretch"
-                                                             Orientation="Horizontal">
+                                                             Orientation="Horizontal" >
                                                         <local:ExpandBox Grid.Column="0" IsChecked="{Binding IsChildrenExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                                                           Margin="{Binding NameMagrin}"/>
-                                                        <ContentControl>
+                                                        <ContentControl >
                                                             <Grid>
                                                                 <TextBlock x:Name="codeTextBlock" Text="{Binding  Object.Code}"
                                                          HorizontalAlignment="Left"
@@ -64,7 +64,7 @@
                                                         </Border>
                                                     </StackPanel>
                                                 </Grid>
-                                            </ContentControl>
+                                            </ItemsControl>
                                            <DataTemplate.Triggers>
                                                 <!--<Trigger SourceName="nameTextBlock" Property="Visibility" Value="Visible">
                                                     <Setter TargetName="nameTextBox" Property="Visibility" Value="Hidden"/>
@@ -95,9 +95,9 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <ControlTemplate TargetType="DataGridRow" x:Key="bldWorkDataGridRoaTemplate">
+    <!--<ControlTemplate TargetType="DataGridRow" x:Key="bldWorkDataGridRowTemplate">
         <CheckBox IsChecked="True"/>
-    </ControlTemplate>
+    </ControlTemplate>-->
 
     <Style TargetType="{x:Type DataGridCell}" x:Key="ConstructionDataGridCellStyle">
         <Setter Property="Template">

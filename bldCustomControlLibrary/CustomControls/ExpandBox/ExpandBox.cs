@@ -7,7 +7,7 @@ namespace bldCustomControlLibrary
 {
     public class ExpandBox:CheckBox
     {
-       static ExpandBox()
+        static ExpandBox()
         {
 
         }

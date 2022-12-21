@@ -5,6 +5,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/ConstructionDataGrid/ConstructionDataGridStyle.xaml"/>
         <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/ExpandBox/ExpandBoxStyle.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/Converters/ConvertersDict.xaml"/>
     </ResourceDictionary.MergedDictionaries>
    
 

@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Remove="Converters\ConvertersDict.xaml" />
     <Page Remove="CustomControls\ConstructionDataGrid\Styles.xaml" />
     <Page Remove="CustomControls\ExpandBox\Styles.xaml" />
     <Page Remove="Themes\Generic.xaml" />
@@ -29,6 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Converters\ConvertersDict.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
     <Resource Include="CustomControls\ConstructionDataGrid\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

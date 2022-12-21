@@ -42,7 +42,7 @@ namespace bldCustomControlLibrary
 
         }
         private DataGrid _bldDataGrid;
-        private DataGridExpandedItemCollection _dataGridExpandedItems = new DataGridExpandedItemCollection();
+        private DataGridExpandedItemCollection _expandableDataItems = new DataGridExpandedItemCollection();
 
 
         static ConstructionDataGrid()
@@ -55,8 +55,10 @@ namespace bldCustomControlLibrary
         {
 
             _bldDataGrid = Template.FindName("bldWorkDataGrid", this) as DataGrid;
-            _dataGridExpandedItems.Add(new DataGridExpandedItem(base.DataContext, true, false));
-            _bldDataGrid.ItemsSource = _dataGridExpandedItems;
+            DataGridExpandedItem _item = new DataGridExpandedItem(base.DataContext, true);
+            _item.Visible = Visibility.Visible;
+            _expandableDataItems.Add(_item);
+            _bldDataGrid.ItemsSource = _expandableDataItems;
             base.OnApplyTemplate();
         }
 
@@ -85,103 +87,6 @@ namespace bldCustomControlLibrary
 
 
     }
-    public class DataGridExpandedItem : BindableBase
-    {
-        private bool? _isExpanded;
-        public bool? IsExpanded
-        {
-            get { return _isExpanded; }
-            set
-            {
-
-                SetProperty(ref _isExpanded, value);
-
-            }
-        }
-        private bool? _isChildrenExpanded;
-        public bool? IsChildrenExpanded
-        {
-            get { return _isChildrenExpanded; }
-            set
-            {
-                if (Children.Count > 0)
-                    foreach (DataGridExpandedItem itm in Children)
-                    {
-                        itm.IsExpanded = value;
-                        if (itm.Children.Count == 0)
-                            itm.IsChildrenExpanded = null;
-                    }
-                else
-                    _isChildrenExpanded = false;
-              
-                SetProperty(ref _isChildrenExpanded, value);
-            }
-        }
-        private object _object;
-        public object Object
-        {
-            get { return _object; }
-            set { SetProperty(ref _object, value); }
-        }
-        private object _parent;
-        public object Parent
-        {
-            get { return _parent; }
-            set { SetProperty(ref _parent, value); }
-        }
-        private Thickness _nameMagrin;
-        public Thickness NameMagrin
-        {
-            get { return _nameMagrin; }
-            set { SetProperty(ref _nameMagrin, value); }
-        }
-        private DataGridExpandedItemCollection _children = new DataGridExpandedItemCollection();
-        public DataGridExpandedItemCollection Children
-        {
-            get { return _children; }
-            set { SetProperty(ref _children, value); }
-        }
-        public DataGridExpandedItem(object obj, bool? is_expanded, bool? is_children_expanded)
-        {
-            Object = obj;
-            IsExpanded = is_expanded;
-            IsChildrenExpanded = is_children_expanded;
-        }
-    }
-    public class DataGridExpandedItemCollection : ObservableCollection<DataGridExpandedItem>
-    {
-        public DataGridExpandedItemCollection()
-        {
-            CollectionChanged += OnCollectionCahged;
-        }
-
-        private void OnCollectionCahged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (DataGridExpandedItem elm in e.NewItems)
-                {
-                    if (elm.Object is bldConstruction construction)
-                    {
-                        foreach (bldWork work in construction.Works)
-                        {
-                            DataGridExpandedItem expandedItem = new DataGridExpandedItem(work, elm.IsChildrenExpanded, false);
-                            expandedItem.Parent = elm;
-                            this.Add(expandedItem);
-                            elm.Children.Add(expandedItem);
-                            expandedItem.NameMagrin = new Thickness(10, 0, 0, 0);
-                        }
-                    }
-                }
-
-            }
-        }
-
-        private void DataGridCell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var dataGridCellTarget = (DataGridCell)sender;
-            // TODO: Your logic here
-        }
-
-    }
+   
+    
 }

@@ -18,58 +18,62 @@
                             <DataGrid.Resources>
                                 <Style TargetType="{x:Type DataGridRow}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=IsExpanded,Converter={StaticResource bool2VisibilityConverter}}"  Value="Collapsed">
+                                        <DataTrigger Binding="{Binding  Path=Visible}"  Value="Collapsed">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
+                                <!--<Style TargetType="{x:Type DataGridCell}" >
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding  Value,Converter={StaticResource DataTypeConverter}}" Value="{x:Type local:DataGridExpandedItem}">
+                                            
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>-->
                             </DataGrid.Resources>
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="Код и Нименование" >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate DataType="{x:Type local:DataGridExpandedItem}">
-                                            <ContentControl HorizontalContentAlignment="Stretch" MouseDoubleClick="ContentControl_MouseDoubleClick"  
-                                                            LostFocus="ContentControl_LostFocus">
-                                                <Grid   HorizontalAlignment ="Stretch" 
-                                                    VerticalAlignment="Stretch">
-                                                    <StackPanel HorizontalAlignment="Stretch" 
-                                                            VerticalAlignment="Stretch"
-                                                             Orientation="Horizontal" >
-                                                        <local:ExpandBox Grid.Column="0" IsChecked="{Binding IsChildrenExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                                     <StackPanel Orientation="Horizontal">
+                                                        <local:ExpandBox x:Name="expandBox"  IsChecked="{Binding IsExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                                                           Margin="{Binding NameMagrin}"/>
-                                                        <ContentControl Margin="4 0 0 0" >
-                                                            <Grid>
-                                                                <TextBlock x:Name="codeTextBlock" Text="{Binding  Object.Code}"
-                                                         HorizontalAlignment="Left"
-                                                             VerticalAlignment="Stretch"/>
-                                                                <TextBox x:Name="codeTextBox" Visibility="Collapsed" Text="{Binding  Object.Code}"
-                                                         HorizontalAlignment="Left"
-                                                             VerticalAlignment="Stretch"/>
-                                                            </Grid>
-                                                        </ContentControl >
-                                                        <ContentControl HorizontalAlignment="Stretch" Margin="4 0 0 0">
-                                                            <Grid>
-                                                                <TextBlock x:Name="nameTextBlock" Text="{Binding  Object.Name ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
-                                                              HorizontalAlignment="Stretch"
-                                                              VerticalAlignment="Stretch"
-                                                              TextWrapping="WrapWithOverflow" />
-                                                            <TextBox  x:Name="nameTextBox"   Text="{Binding  Object.Name ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
-                                                             HorizontalAlignment="Stretch"
-                                                             VerticalAlignment="Stretch"
-                                                            TextWrapping="WrapWithOverflow"   Visibility="Hidden"/>
-                                                            </Grid>
-                                                        </ContentControl>
+                                                <TextBlock x:Name="codeTextBlock"  Text="{Binding  Object.Code}"/>
+                                                <TextBlock  x:Name="nameTextlock"   Text="{Binding  Object.Name ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                                          HorizontalAlignment="Stretch"
+                                                            Margin="5 0 0 0"
+                                                          VerticalAlignment="Stretch"
+                                                          TextWrapping="WrapWithOverflow" />
                                                     </StackPanel>
-                                                </Grid>
-                                            </ContentControl>
                                             <DataTemplate.Triggers>
-                                                   
-
+                                                <DataTrigger Binding="{Binding IsExpandable}" Value= "False" >
+                                                    <Setter TargetName="expandBox" Property="Visibility" Value="Hidden" />
+                                                </DataTrigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate DataType="{x:Type local:DataGridExpandedItem}">
+                                            <StackPanel  Orientation="Horizontal">
+                                                <local:ExpandBox   x:Name="_expandBox" IsChecked="{Binding IsExpanded, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                                          Margin="{Binding NameMagrin}"/>
+                                                <TextBox x:Name="codeTextBox"  Text="{Binding  Object.Code}"/>
+                                                <TextBox  x:Name="nameTextBox"   Text="{Binding  Object.Name ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                                             HorizontalAlignment="Stretch"
+                                                                 Margin="5 0 0 0"
+                                                            VerticalAlignment="Stretch"
+                                                            TextWrapping="WrapWithOverflow"/>
+                                            </StackPanel>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding IsExpandable}" Value= "False" >
+                                                    <Setter TargetName="_expandBox" Property="Visibility" Value="Hidden" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
                                 </DataGridTemplateColumn>
-
+                                <DataGridTextColumn 
+                                
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>

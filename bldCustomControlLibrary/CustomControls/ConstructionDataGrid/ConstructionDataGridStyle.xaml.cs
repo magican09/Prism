@@ -43,7 +43,7 @@ namespace bldCustomControlLibrary
         private void ContentControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DataGridCell dg_cell = (DataGridCell)FindParentByType(sender, typeof(DataGridCell));
-            dg_cell.MouseDoubleClick += cell_MouseDoubleClick;
+           // dg_cell.MouseDoubleClick += cell_MouseDoubleClick;
         }
         private void SetTextBlocksAndTextBoxs(object obj)
         {

@@ -8,7 +8,6 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/ConstructionDataGrid/Styles.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-
     <Style TargetType="{x:Type local:ConstructionDataGrid}">
         <Setter Property="Template">
             <Setter.Value>
@@ -23,13 +22,6 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                                <!--<Style TargetType="{x:Type DataGridCell}" >
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding  Value,Converter={StaticResource DataTypeConverter}}" Value="{x:Type local:DataGridExpandedItem}">
-                                            
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>-->
                             </DataGrid.Resources>
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="Код и Нименование" >
@@ -72,8 +64,16 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellEditingTemplate>
                                 </DataGridTemplateColumn>
-                            
-                                
+                                <DataGridTextColumn  Header="Дата начала"   Width="Auto"
+                                                     Binding = "{Binding Object.StartTime,StringFormat=d,ConverterCulture=ru}" IsReadOnly="False" />
+                                <DataGridTextColumn  Header="Дата завершения"   Width="Auto"
+                                                     Binding = "{Binding Object.EndTime,StringFormat=d,ConverterCulture=ru}" IsReadOnly="False"/>
+                                <DataGridTextColumn  Header="Отметки"   Width="Auto"
+                                                     Binding = "{Binding Object.WorkArea.Levels}" />
+                                <DataGridTextColumn  Header="Оси"   Width="Auto"
+                                                     Binding = "{Binding Object.WorkArea.Axes}" />
+                                <DataGridTextColumn  Header="Объем"    Width="Auto"
+                                                     Binding = "{Binding Object.Quantity}" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -85,7 +85,7 @@
         <CheckBox IsChecked="True"/>
     </ControlTemplate>-->
 
-    <Style TargetType="{x:Type DataGridCell}" x:Key="ConstructionDataGridCellStyle">
+    <!--<Style TargetType="{x:Type DataGridCell}" x:Key="ConstructionDataGridCellStyle">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGridCell}">
@@ -119,6 +119,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
 
 </ResourceDictionary>

@@ -6,23 +6,43 @@ using System.Collections.Specialized;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace bldCustomControlLibrary
 {
-    public class ConstructionDataGrid: Control
+    public class ConstructionDataGrid : Control
     {
 
-        //public bldWork DataSourse
-        //{
-        //    get { return (bldWork)GetValue(DataSourseProperty); }
-        //    set { SetValue(DataSourseProperty, value); }
-        //}
 
-        //// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-        //public static readonly DependencyProperty DataSourseProperty =
-        //    DependencyProperty.Register("DataSourse", typeof(bldWork), typeof(ownerclass), new PropertyMetadata(0));
+
+        public object SelectedItem
+        {
+            get { return (object)GetValue(SelectedItemProperty); }
+            set { SetValue(SelectedItemProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedItem.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedItemProperty =
+            DependencyProperty.Register("SelectedItem", typeof(object), typeof(ConstructionDataGrid),
+                new PropertyMetadata(new ValidateValueCallback(OnValidateValueCallback),
+                        new PropertyChangedCallback(OnPropertyChangedCallback),new CoerceValueCallback(OnCoerceValueCallback)));
+
+        private static object OnCoerceValueCallback(DependencyObject d, object baseValue)
+        {
+            return baseValue;
+        }
+
+        private static void OnPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+         
+        }
+
+        private static bool OnValidateValueCallback(object value)
+        {
+            return true;
+        }
 
         public static RoutedEvent DataGridCell_MouseDoubleClickEvent =
             EventManager.RegisterRoutedEvent("DataGridCell_MouseDoubleClick", RoutingStrategy.Tunnel, typeof(RoutedEventArgs), typeof(ConstructionDataGrid));
@@ -59,6 +79,12 @@ namespace bldCustomControlLibrary
             _item.Visible = Visibility.Visible;
             _expandableDataItems.Add(_item);
             _bldDataGrid.ItemsSource = _expandableDataItems;
+            Binding bind = new Binding("SelectedItem");
+            bind.Source = _bldDataGrid;
+            bind.Mode = BindingMode.TwoWay;
+            bind.Converter = new TestConverter();
+            //   this.SetBinding(ConstructionDataGrid.SelectedItemProperty, bind);
+            BindingOperations.SetBinding(this, ConstructionDataGrid.SelectedItemProperty, bind);
             base.OnApplyTemplate();
         }
 
@@ -83,10 +109,10 @@ namespace bldCustomControlLibrary
 
         //    RaiseEvent(new RoutedEventArgs(DataGridCell_MouseDoubleClickEvent, this));
         //}
-     
+
 
 
     }
-   
-    
+
+
 }

@@ -15,6 +15,7 @@
     <Page Remove="Converters\ConvertersDict.xaml" />
     <Page Remove="CustomControls\ConstructionDataGrid\Styles.xaml" />
     <Page Remove="CustomControls\ExpandBox\Styles.xaml" />
+    <Page Remove="CustomControls\Styles.xaml" />
     <Page Remove="Themes\Generic.xaml" />
   </ItemGroup>
 
@@ -23,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="CustomControls\ConstructionDataGrid\ConstructionDataGridStyle.xaml">
+    <Page Update="CustomControls\ConstructionDataGrid\ConstructionDataGridTemplate.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
@@ -40,6 +41,10 @@
     <Resource Include="CustomControls\ExpandBox\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>
+    <Resource Include="CustomControls\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
     <Resource Include="Resourses\Images\car.png" />
     <Resource Include="Resourses\Images\collapse.gif" />
     <Resource Include="Resourses\Images\expand.gif" />
@@ -51,6 +56,7 @@
 
   <ItemGroup>
     <Folder Include="CustomControls\bldWorkControl\" />
+    <Folder Include="CustomControls\GanttDiargamDataGrid\GanttChartItem\" />
   </ItemGroup>
 
   <ItemGroup>

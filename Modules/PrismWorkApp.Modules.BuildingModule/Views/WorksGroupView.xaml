@@ -25,6 +25,7 @@
         <loc_core:BindingProxy x:Key="Proxy" Data="{Binding}" />
         <loc_core:NextPreviousWorkMultiConverter x:Key="NextPreviousWorkMultiConverter"/>
         <loc_core:ObjectsPairMultiConverter x:Key="ObjectsPairMultiConverter"/>
+        <сc:TestConverter x:Key="TestConvector"/>
     </UserControl.Resources>
 
     <Grid>
@@ -89,7 +90,7 @@
                                                      Binding = "{Binding Path=Code}" />
                                 <DataGridTextColumn  Header="Дата начала"   Width="Auto"
                                                      Binding = "{Binding Path=StartTime,StringFormat=d,ConverterCulture=ru}" IsReadOnly="False" />
-                                <DataGridTextColumn  Header="Дата завешения"   Width="Auto"
+                                <DataGridTextColumn  Header="Дата завершения"   Width="Auto"
                                                      Binding = "{Binding Path=EndTime,StringFormat=d,ConverterCulture=ru}" IsReadOnly="False"/>
                                 <DataGridTextColumn  Header="Наименование работы"   Width="Auto"
                                                      Binding = "{Binding Path=Name}" IsReadOnly="False" />
@@ -293,8 +294,8 @@
                     </Grid>
                   </StackPanel>
             </StackPanel>
-             <сc:ConstructionDataGrid DataContext="{Binding SelectedConstruction}"/>
-        
+            <сc:ConstructionDataGrid DataContext="{Binding SelectedConstruction}"  SelectedItem="{Binding SelectedWork, Mode=TwoWay}" />
+            <сc:GanttDiargamDataGrid ItemsSource="{Binding SelectedWorksGroup}"  SelectedItem="{Binding SelectedWork}" />
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10" >
            

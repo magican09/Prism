@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:bldCustomControlLibrary"
                     xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib">
 
-    <Style TargetType="{x:Type DataGrid}">
+    <Style TargetType="{x:Type local:GanttDiargamDataGrid}">
         <Setter Property="Foreground"
           Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <Setter Property="BorderBrush">
@@ -29,7 +29,7 @@
           Value="False" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type DataGrid}">
+                <ControlTemplate TargetType="{x:Type  local:GanttDiargamDataGrid}">
                     <Border x:Name="border"
                 SnapsToDevicePixels="True"
                 BorderBrush="{TemplateBinding BorderBrush}"

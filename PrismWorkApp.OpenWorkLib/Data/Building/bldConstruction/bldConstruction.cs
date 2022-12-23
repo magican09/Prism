@@ -7,14 +7,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldConstruction : BindableBase, IbldConstruction, IEntityObject, ICloneable
+    public class bldConstruction : BindableBase, IbldConstruction, ICloneable
     {
-        private Guid _storedId;
-        public Guid StoredId
-        {
-            get { return _storedId; }
-            set { SetProperty(ref _storedId, value); }
-        }
 
         private DateTime _date;
         public DateTime Date
@@ -22,14 +16,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _date; }
             set { SetProperty(ref _date, value); }
         }
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-            set { SetProperty(ref _name, value); }
-        }
         private string _shortName;
-
         public string ShortName
         {
             get
@@ -168,6 +155,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bldConstruction()
         {
             Works.ParentObject = this;
+            Works.Parent = this;
+
         }
         public object Clone()
         {

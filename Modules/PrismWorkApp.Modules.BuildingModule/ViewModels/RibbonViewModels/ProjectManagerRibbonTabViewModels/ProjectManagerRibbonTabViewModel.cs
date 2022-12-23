@@ -24,6 +24,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -106,20 +107,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public ProjectManagerRibbonTabViewModel(IRegionManager regionManager, IModulesContext modulesContext, IEventAggregator eventAggregator,
                                     IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands,
                                     IUnDoReDoSystem unDoReDo)
-        { 
+        {
         }
         public ProjectManagerRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
                                             IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
         {
 
             _regionManager = regionManager;
-          
-           // ModulesContext = modulesContext;
+
+            // ModulesContext = modulesContext;
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             ApplicationCommands = applicationCommands;
-          //  ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
+            //  ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
 
             LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
             LoadProjectFromDBCommand = new NotifyCommand(LoadProjectFomDB, CanLoadProjectFromDb);
@@ -140,7 +141,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 access_file_name = openFileDialog.FileName;
 
 
-            string ConnectionString = @"Driver={Microsoft Access Driver (*.mdb, *.accdb)}; Dbq="+
+            string ConnectionString = @"Driver={Microsoft Access Driver (*.mdb, *.accdb)}; Dbq=" +
                  openFileDialog.FileName + "; Uid = Admin; Pwd =; ";
             string table_name = "Таблица_1";
             string query = $"SELECT * FROM {table_name}";
@@ -156,47 +157,52 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 //OdbcDataAdapter dataAdapter = new OdbcDataAdapter
                 //         (query, connection);
                 //DataSet dataSet = new DataSet();
-                string stmt = "SELECT COUNT(*) FROM "+ table_name;
+                string stmt = "SELECT COUNT(*) FROM " + table_name;
                 OdbcCommand command = connection.CreateCommand();
                 command.CommandText = query;
                 connection.Open();
-                 //dataAdapter.Fill(dataSet,0,10, table_name);
+                //dataAdapter.Fill(dataSet,0,10, table_name);
                 //DataTable dataTable = dataSet.Tables[0];
                 OdbcDataReader row = command.ExecuteReader();
                 int file_count = 0;
                 //foreach (DataRow row in dataTable.Rows)
-                while(row.Read())
+                while (row.Read())
                 {
-                      file_count++;
+                    file_count++;
                     try
                     {
-                      
+
                         bldMaterialCertificate materialCertificate = new bldMaterialCertificate();
                         materialCertificate.MaterialName = row["Наименование _материала"].ToString();
                         materialCertificate.GeometryParameters = row["Геометрические_параметры"].ToString();
-                        if (row["Кол-во"].ToString() != "-")
+                        if (row["Кол-во"].ToString() != "-" && row["Кол-во"].ToString() != "")
                             materialCertificate.MaterialQuantity = Convert.ToDecimal(row["Кол-во"].ToString().Replace(',', '.'));
                         materialCertificate.UnitsOfMeasure = row["Ед_изм"].ToString();
                         materialCertificate.Name = row["Сертификаты,_паспорта"].ToString();
                         materialCertificate.RegId = row["№_документа_о_качестве"].ToString();
                         string[] st_dates = row["Дата_документа"].ToString().Split('-');
-                        if (st_dates.Length>1 && st_dates[0]!="")
+                        if ( row["Дата_документа"].ToString() != "")
                         {
-                            materialCertificate.Date = Convert.ToDateTime(st_dates[0]?.ToString());
-                            materialCertificate.StartTime = materialCertificate.Date;
-                            materialCertificate.EndTime = Convert.ToDateTime(st_dates[1]?.ToString());
+                            if (st_dates.Length > 1 && st_dates[0] != "")
+                            {
+                                materialCertificate.Date = Convert.ToDateTime(st_dates[0]?.ToString());
+                                materialCertificate.StartTime = materialCertificate.Date;
+                                materialCertificate.EndTime = Convert.ToDateTime(st_dates[1]?.ToString());
+                            }
+                            else if (st_dates.Length == 1 && st_dates[0] != "")
+                            {
+                                materialCertificate.Date = Convert.ToDateTime(row["Дата_документа"]?.ToString());
+                                materialCertificate.StartTime = materialCertificate.Date;
+                            }
                         }
-                        else if (st_dates.Length == 1 && st_dates[0] != "")
-                        {
-                            materialCertificate.Date = Convert.ToDateTime(row["Дата_документа"]?.ToString());
-                            materialCertificate.StartTime = materialCertificate.Date;
-                        }
-                        else if (row["Дата_документа"].ToString().Length > 1)
+
                         materialCertificate.ControlingParament = row["Контрольный_параметр"].ToString();
                         materialCertificate.RegulationDocumentsName = row["ГОСТ,_ТУ"].ToString();
                         Picture picture = new Picture();
-                        picture.FileName = Guid.NewGuid().ToString()+".pdf";
-                     //    picture.FileName =$"{materialCertificate.MaterialName} {materialCertificate.GeometryParameters} от {materialCertificate.Date.ToString("d")}{file_count.ToString()}.pdf";
+                        //  picture.FileName = Guid.NewGuid().ToString()+".pdf";
+                        picture.FileName = ($"{materialCertificate.MaterialName} {materialCertificate.GeometryParameters}  №{materialCertificate.RegId} от {materialCertificate.Date.ToString("d")}  {file_count.ToString()}.pdf")
+                            .Replace("/", "_").Replace("(", "").Replace(")", "").Replace("*", " ").Replace("\n","").Replace(@"\", "_")
+                            .Replace("\r", "_");
 
                         //  picture.ImageFile = (byte[])row["files"];
                         byte[] bytes = (byte[])row["files"];
@@ -208,7 +214,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         material.Documents.Add(materialCertificate);
                         _buildingUnitsRepository.MaterialCertificates.Add(materialCertificate);
                         _buildingUnitsRepository.Materials.Add(material);
-                      //  byte[] bytes = picture.ImageFile;
+                        //  byte[] bytes = picture.ImageFile;
                         if (bytes != null)
                         {
                             string byte_string = Encoding.GetEncoding(1251).GetString(bytes);
@@ -228,8 +234,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     }
                     catch (Exception e)
                     {
+                        MessageBox.Show("Обнаружено не обработанное исключение: " + e.Message, "Ошибка записи данных", MessageBoxButton.OK, MessageBoxImage.Error);
+                   //     break;
                     }
-                   // System.Threading.Thread.Sleep(100);
+                    // System.Threading.Thread.Sleep(100);
                 }
                 row.Close();
                 _buildingUnitsRepository.Complete();
@@ -259,7 +267,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         //        while (!rst.EOF)
         //        {
         //            string file_name =(string) rst.Fields[1].Value;
-                   
+
         //            byte[] bytes = (byte[])rst.Fields[2].Value;
         //            string byte_string = Encoding.GetEncoding(1251).GetString(bytes);
         //            Regex regex_1 = new Regex($"%PDF-");
@@ -273,7 +281,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         //            {
         //                fs.Write(bytes, fist_byte, last_byte- fist_byte);
         //            }
-                 
+
         //            rst.MoveNext();
         //        }
         //    }

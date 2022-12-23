@@ -41,7 +41,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-        public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
+        public virtual void OnSave<T>(T selected_obj, string object_name = "") where T :  IEntityObject
         {
             CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
             {
@@ -61,7 +61,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-        public virtual void OnClose<T>(object view, T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
+        public virtual void OnClose<T>(object view, T selected_obj, string object_name = "") where T : IEntityObject
         {
             if (UnDoReDo != null && !UnDoReDo.IsSatcksEmpty())//selected_obj!=null&&добавлено 27,10,22
             {

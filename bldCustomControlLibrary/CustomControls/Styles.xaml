@@ -114,4 +114,10 @@
     <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
 
     <SolidColorBrush x:Key="LightColorBrush" Color="#DDD" />
+    <Color x:Key="ControlNormalColor">#FFFFFF</Color>
+    <Color x:Key="ControlMouseOverColor">#999999</Color>
+    <Color x:Key="DisabledControlColor">#FFFFFF</Color>
+    <Color x:Key="DisabledForegroundColor">#999999</Color>
+    <Color x:Key="ControlPressedColor">#999999</Color>
+
 </ResourceDictionary>

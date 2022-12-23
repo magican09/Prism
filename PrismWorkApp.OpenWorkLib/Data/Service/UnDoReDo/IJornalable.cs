@@ -3,11 +3,10 @@ using System;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public interface IJornalable : IKeyable, ICuntextIdable
+    public interface IJornalable : IKeyable//, ICuntextIdable
     {
         public void JornalingOff();
         public void JornalingOn();
-  //      public bool IsVisible { get; set; }
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged;
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
    

@@ -295,7 +295,7 @@
                   </StackPanel>
             </StackPanel>
             <сc:ConstructionDataGrid DataContext="{Binding SelectedConstruction}"  SelectedItem="{Binding SelectedWork, Mode=TwoWay}" />
-            <сc:GanttDiargamDataGrid x:Name="ganttDataGrid" ItemsSource="{Binding SelectedWorksGroup}"  SelectedItem="{Binding SelectedWork,Mode=TwoWay}"  Items >
+            <сc:GanttDiargamDataGrid x:Name="ganttDataGrid" ItemsSource="{Binding SelectedWorksGroup}"  SelectedItem="{Binding SelectedWork,Mode=TwoWay}" >
                 
             </сc:GanttDiargamDataGrid>
         </StackPanel>

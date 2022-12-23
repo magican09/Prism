@@ -1,9 +1,13 @@
-﻿namespace PrismWorkApp.OpenWorkLib.Data
+﻿using PrismWorkApp.OpenWorkLib.Data.Service;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+
+namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IBindableBase
+    public interface IBindableBase:INameable,IJornalable,IKeyable,ICodeable,IValidateable, IHierarchical,INotifyPropertyChanged
     {
-        //    public bool IsUnDoReDoSystemIsEmpty(Guid currentContextId);
-        //  public void SetCopy<TSourse>(object pointer, Func<TSourse, bool> predicate) where TSourse : IEntityObject;
-        public bool IsVisible { get; set; }
+        public Func<IEntityObject, bool> RestrictionPredicate { get; set; }
     }
 }

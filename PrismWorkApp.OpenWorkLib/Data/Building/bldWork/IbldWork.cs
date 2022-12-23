@@ -1,6 +1,6 @@
 ﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldWork : IRegisterable, IMeasurable, ITemporal, ILaborIntensiveable, IDateable
+    public interface IbldWork : IRegisterable, IMeasurable, ITemporal, ILaborIntensiveable, IDateable,ITask
     {
 
         public bldMaterialsGroup Materials { get; set; }

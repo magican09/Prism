@@ -21,23 +21,23 @@ namespace PrismWorkApp.Core
             set
             {
                 SetProperty(ref _id, value);
-                SetPropertiesCurrentId();
+                //SetPropertiesCurrentId();
 
             }
         }
-        private void SetPropertiesCurrentId()
-        {
-            var prop_infoes = this.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0 &&
-                                                                    pr.PropertyType is IJornalable);
-            foreach (PropertyInfo prop_info in prop_infoes)
-            {
-                IJornalable prop_val = (IJornalable)prop_info.GetValue(this);
-                if (prop_val != null)
-                {
-                    prop_val.CurrentContextId = Id;
-                }
-            }
-        }
+        //private void SetPropertiesCurrentId()
+        //{
+        //    var prop_infoes = this.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0 &&
+        //                                                            pr.PropertyType is IJornalable);
+        //    foreach (PropertyInfo prop_info in prop_infoes)
+        //    {
+        //        IJornalable prop_val = (IJornalable)prop_info.GetValue(this);
+        //        if (prop_val != null)
+        //        {
+        //            prop_val.CurrentContextId = Id;
+        //        }
+        //    }
+        //}
         protected override bool SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = null)
         {
             if (val is ICuntextIdable)

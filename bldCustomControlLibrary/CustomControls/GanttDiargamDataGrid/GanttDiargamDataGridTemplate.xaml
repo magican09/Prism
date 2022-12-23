@@ -2,7 +2,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:bldCustomControlLibrary"
                     xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib">
-
+    
+    <ResourceDictionary.MergedDictionaries>
+        <!--<ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/GanttDiargammGridViewColumnHeader/GanttDiargammGridViewColumnHeaderTemplate.xaml"/>-->
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/GanttDiagramDataGridRow/GanttDiagramDataGridRowTemplate.xaml"/>
+        
+    </ResourceDictionary.MergedDictionaries>
+    
     <Style TargetType="{x:Type local:GanttDiargamDataGrid}">
         <Setter Property="Foreground"
           Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
@@ -71,22 +77,22 @@
                                         </Grid.RowDefinitions>
 
                                         <Button Focusable="false"
-                          Command="{x:Static DataGrid.SelectAllCommand}"
+                          Command="{x:Static  local:GanttDiargamDataGrid.SelectAllCommand}"
                           Style="{DynamicResource {ComponentResourceKey 
                       ResourceId=DataGridSelectAllButtonStyle, 
-                      TypeInTargetAssembly={x:Type DataGrid}}}"
+                      TypeInTargetAssembly={x:Type local:GanttDiargamDataGrid}}}"
                           Visibility="{Binding HeadersVisibility, 
                       ConverterParameter={x:Static DataGridHeadersVisibility.All}, 
-                      Converter={x:Static DataGrid.HeadersVisibilityConverter}, 
-                      RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                      Converter={x:Static local:GanttDiargamDataGrid.HeadersVisibilityConverter}, 
+                      RelativeSource={RelativeSource AncestorType={x:Type local:GanttDiargamDataGrid}}}"
                           Width="{Binding CellsPanelHorizontalOffset, 
-                      RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                      RelativeSource={RelativeSource AncestorType={x:Type local:GanttDiargamDataGrid}}}" />
 
                                         <DataGridColumnHeadersPresenter x:Name="PART_ColumnHeadersPresenter"
                                                   Grid.Column="1"
                                                   Visibility="{Binding HeadersVisibility, 
                       ConverterParameter={x:Static DataGridHeadersVisibility.Column}, 
-                      Converter={x:Static DataGrid.HeadersVisibilityConverter}, 
+                      Converter={x:Static local:GanttDiargamDataGrid.HeadersVisibilityConverter}, 
                       RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
 
                                         <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
@@ -104,8 +110,7 @@
                              Value="{Binding VerticalOffset, Mode=OneWay, 
                       RelativeSource={RelativeSource TemplatedParent}}"/>
 
-                                        <Grid Grid.Column="1"
-                        Grid.Row="2">
+                                        <Grid Grid.Column="1"  Grid.Row="2">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="{Binding NonFrozenColumnsViewportHorizontalOffset, 
                           RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
@@ -124,7 +129,7 @@
                                     </Grid>
                                 </ControlTemplate>
                             </ScrollViewer.Template>
-                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            <ItemsPresenter x:Name="ganttItemsPresenter" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </ScrollViewer>
                     </Border>
                 </ControlTemplate>
@@ -138,6 +143,9 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+   
+   
+    
     <!--<Style TargetType="{x:Type local:GanttDiargamDataGrid}">
         <Setter Property="Template">
             <Setter.Value>
@@ -189,96 +197,7 @@
             </Setter.Value>
         </Setter>
     </Style>-->
-    <!--<Style x:Key="GridViewColumnHeaderGripper" TargetType="Thumb">
-        <Setter Property="Width" Value="18"/>
-        <Setter Property="Background" Value="{StaticResource NormalBorderBrush}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Thumb}">
-                    <Border Padding="{TemplateBinding Padding}"
-          Background="Transparent">
-                        <Rectangle HorizontalAlignment="Center"
-            Width="1"
-            Fill="{TemplateBinding Background}"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    <Style x:Key="{x:Type GridViewColumnHeader}"
-       TargetType="GridViewColumnHeader">
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Foreground"
-          Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="GridViewColumnHeader">
-                    <Grid>
-                        <Border Name="HeaderBorder"
-            BorderThickness="0,1,0,1"
-            BorderBrush="{StaticResource NormalBorderBrush}"
-            Background="{StaticResource LightBrush}"
-            Padding="2,0,2,0">
-                            <ContentPresenter Name="HeaderContent"
-              Margin="0,0,0,1"
-              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-              RecognizesAccessKey="True"
-              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                        </Border>
-                        <Thumb x:Name="PART_HeaderGripper"
-            HorizontalAlignment="Right"
-            Margin="0,0,-9,0"
-            Style="{StaticResource GridViewColumnHeaderGripper}"/>
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="HeaderBorder"
-                    Property="Background" Value="{StaticResource NormalBrush}"/>
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="true">
-                            <Setter TargetName="HeaderBorder"
-                    Property="Background" Value="{StaticResource PressedBrush}"/>
-                            <Setter TargetName="HeaderContent"
-                    Property="Margin" Value="1,1,0,0"/>
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Foreground"
-                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="Role" Value="Floating">
-                <Setter Property="Opacity" Value="0.7"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="GridViewColumnHeader">
-                            <Canvas Name="PART_FloatingHeaderCanvas">
-                                <Rectangle Fill="#60000000"
-                Width="{TemplateBinding ActualWidth}"
-                Height="{TemplateBinding ActualHeight}"/>
-                            </Canvas>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-            <Trigger Property="Role" Value="Padding">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="GridViewColumnHeader">
-                            <Border Name="HeaderBorder"
-              BorderThickness="0,1,0,1"
-              BorderBrush="{StaticResource }"
-              Background="{StaticResource LightBrush}"/>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>-->
+    <!--
+    -->
 
 </ResourceDictionary>

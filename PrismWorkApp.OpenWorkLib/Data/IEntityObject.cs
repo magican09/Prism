@@ -3,12 +3,8 @@ using System;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IEntityObject : INameable, IJornalable,IKeyable
+    public interface IEntityObject :IBindableBase
     {
-
-        //public Guid Id { get; set; }
-        //public Guid StoredId { get; set; }
-        public Func<IEntityObject, bool> RestrictionPredicate { get; set; }
-     //   public bool CopingEnable { get; set; }
+       
     }
 }

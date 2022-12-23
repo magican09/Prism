@@ -39,7 +39,7 @@ namespace PrismWorkApp.Core
                (T element, string element_type_name,
             Action<IDialogResult> elm_erase_action, IDialogService dialogService, Guid current_context_id)
            where TContainer : ICollection<T>
-           where T :  INameable, IRegisterable
+           where T :  IEntityObject
         {
             var dialog_par = new DialogParameters();
             dialog_par.Add("massege",
@@ -139,7 +139,7 @@ namespace PrismWorkApp.Core
             string refuse_action_name,
             string cencel_action_name,
             Action<IDialogResult> elm_save_action, IDialogService dialogService)
-          where T : INameable, IRegisterable
+          where T : IEntityObject
         {
             var dialog_par = new DialogParameters();
             dialog_par.Add("massege",
@@ -238,7 +238,7 @@ namespace PrismWorkApp.Core
                    IUnDoReDoSystem undo_redo,
                    string title = "",
                    string message = "")
-               where T : INameable, IRegisterable, new()
+               where T : IEntityObject, new()
         {
             var dialog_par = new DialogParameters();
             dialog_par.Add("title", title);

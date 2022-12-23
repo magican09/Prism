@@ -16,7 +16,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
     public abstract class AddElementsToCollectionDialogFromListViewModel<TConteiner, T> : LocalBindableBase, IDialogAware
         where TConteiner : ICollection<T>/*, INameable, INameableOservableCollection<T>*/, new()
-        where T : class, IRegisterable, IEntityObject, new()
+        where T : class, IEntityObject, new()
     {
         private string _title = "Диалоговое окно сообщения";
         public string Title
@@ -255,7 +255,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             CoreFunctions.SetAllIdToZero(new_element, true);
             new_element.Id = Guid.Empty;
             new_element.StoredId = Guid.NewGuid();
-            new_element.CurrentContextId = Id;
+            //new_element.CurrentContextId = Id;
             ConveyanceObject conveyanceObject =
             new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
             dialog_par.Add("selected_element_conveyance_object", conveyanceObject);
@@ -288,7 +288,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             T new_element = new T(); //Создаем новый элемент
             new_element.Id = Guid.Empty;
             new_element.StoredId = Guid.NewGuid();
-            new_element.CurrentContextId = Id;
+            //new_element.CurrentContextId = Id;
             ConveyanceObject conveyanceObject =
                 new ConveyanceObject(new_element, ConveyanceObjectModes.EditMode.FOR_EDIT);
             dialog_par.Add("selected_element_conveyance_object", conveyanceObject);

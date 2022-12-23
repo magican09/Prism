@@ -13,7 +13,7 @@ using System.Runtime.CompilerServices;
 namespace PrismWorkApp.OpenWorkLib.Data
 {
  
-    public  class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>,ICollection<TEntity>, IEntityObject, IJornalable, INameableOservableCollection<TEntity> where TEntity : IEntityObject
+    public  class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableOservableCollection<TEntity> where TEntity : IEntityObject
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
@@ -100,9 +100,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Id = Guid.NewGuid();
             CollectionChanged += OnCollectionChangedMethod;
+            
         }
-
-
 
         public NameableObservableCollection(string name) : this()
         {
@@ -177,7 +176,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             IsVisible = Count > 0;
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-          
+                foreach (IBindableBase added_element in e.NewItems)
+                    added_element.Parent = Parent;
             }
          }
         private object GetPropertyValue(string propName,object obj)
@@ -196,7 +196,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bool IsPointerContainer { get; set; }
         public bool CopingEnable { get; set; } = true;
 
-
+        private IBindableBase _parent;
+         public IBindableBase Parent
+        {
+            get { return _parent; }
+            set { _parent = value; }
+        }
+        private ObservableCollection<IBindableBase> _children;
+        public ObservableCollection<IBindableBase> Children
+        {
+            get { return _children; }
+            set { _children = value; }
+        }
 
 
     }

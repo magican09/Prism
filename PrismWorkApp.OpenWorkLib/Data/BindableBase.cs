@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,14 +12,16 @@ using System.Runtime.CompilerServices;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public abstract class BindableBase : INotifyPropertyChanged, IJornalable, IValidateable, IBindableBase
+    public abstract class BindableBase : IBindableBase, IEntityObject
     {
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        //      public event PropertyChangedEventHandler PropertyBeforeChanged = delegate { };
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated = delegate { };
+        /// <summary>
+        /// Вызывается для добалвения UnDoRedo команды в систему UnDoRedo
+        /// </summary>
+        /// <param name="command"></param>
         public void InvokeUnDoReDoCommandCreatedEvent(IUnDoRedoCommand command)
         {
             UnDoReDoCommandCreated.Invoke(this, new UnDoReDoCommandCreateEventsArgs(command));
@@ -35,6 +38,22 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _storedId; }
             set { SetProperty(ref _storedId, value); }
         }
+        private string _code;
+        public string Code
+        {
+            get
+            {
+                return _code;
+                //return StructureLevel.Code;
+            }
+            set { SetProperty(ref _code, value); }
+        }//Код
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set { SetProperty(ref _name, value); }
+        }
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
@@ -46,7 +65,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (object.Equals(val, member)) return false;
             if (b_jornal_recording_flag)
             {
-              PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
+                PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
             }
             member = val;
             //Type tp = Children[Children.Count - 1].GetType();
@@ -98,29 +117,29 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         private bool b_jornal_recording_flag = true;
         private bool visible = true;
-        private Guid _currentContextId;
-        [NotMapped]
-        public Guid CurrentContextId
-        {
-            get { return _currentContextId; }
-            set
-            {
-                b_jornal_recording_flag = false;
-                SetProperty(ref _currentContextId, value);
-                b_jornal_recording_flag = true;
-            }
-        }
-        [NotMapped]
-        public bool IsVisible
-        {
-            get { return visible; }
-            set
-            {
-                b_jornal_recording_flag = false;
-                SetProperty(ref visible, value);
-                b_jornal_recording_flag = true;
-            }
-        }
+        //private Guid _currentContextId;
+        //[NotMapped]
+        //public Guid CurrentContextId
+        //{
+        //    get { return _currentContextId; }
+        //    set
+        //    {
+        //        b_jornal_recording_flag = false;
+        //        SetProperty(ref _currentContextId, value);
+        //        b_jornal_recording_flag = true;
+        //    }
+        //}
+        //[NotMapped]
+        //public bool IsVisible
+        //{
+        //    get { return visible; }
+        //    set
+        //    {
+        //        b_jornal_recording_flag = false;
+        //        SetProperty(ref visible, value);
+        //        b_jornal_recording_flag = true;
+        //    }
+        //}
 
         public void JornalingOff()
         {
@@ -132,33 +151,36 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (b_jornal_recording_flag == false)
                 b_jornal_recording_flag = true;
         }
-
         #endregion
-
-
         public BindableBase()
         {
         }
-        private string _code;
-        public string Code
-        {
-            get
-            {
-                return _code;
-                //return StructureLevel.Code;
-            }
-            set { SetProperty(ref _code, value); }
-        }//Код
 
         [NotMapped]
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе (например копирования рефлексией) с данныv объектом по умолчанию 
         [NotMapped]
         public bool CopingEnable { get; set; } = true;
 
-
-
-
-
+        private IBindableBase _parent;
+        [NotMapped]
+        public IBindableBase Parent
+        {
+            get { return _parent; }
+            set
+            {
+               
+                SetProperty(ref _parent, value);
+                foreach (IBindableBase elm in Children)
+                    elm.Parent = _parent;
+            }
+        }
+        private ObservableCollection<IBindableBase> _children = new ObservableCollection<IBindableBase>();
+        [NotMapped]
+        public ObservableCollection<IBindableBase> Children
+        {
+            get { return _children; }
+            set { _children = value; }
+        }
 
     }
 

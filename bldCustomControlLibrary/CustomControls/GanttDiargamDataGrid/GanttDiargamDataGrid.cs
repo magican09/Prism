@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace bldCustomControlLibrary
 {
-    public class GanttDiargamDataGrid : DataGrid
+    public class GanttDiargamDataGrid : DataGrid DataGridCellsPresenter// DataGridColumnHeader GridViewColumnHeader//DataGridColumnHeader  //DataGridColumnHeadersPresenter, DataGridRowHeader
     {
         //public object SelectedItem
         //{
@@ -42,16 +43,16 @@ namespace bldCustomControlLibrary
 
         public GanttDiargamDataGrid()
         {
-            SelectedItemProperty.OverrideMetadata(typeof(GanttDiargamDataGrid), new FrameworkPropertyMetadata(
-               null,
-               FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-               SelectedItemPropertyChangedCallback, new CoerceValueCallback(OnSelectedItemCoerceValueCallback)));
+            //SelectedItemProperty.OverrideMetadata(typeof(GanttDiargamDataGrid), new FrameworkPropertyMetadata(
+            //   null,
+            //   FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+            //   SelectedItemPropertyChangedCallback, new CoerceValueCallback(OnSelectedItemCoerceValueCallback)));
 
-            ItemsSourceProperty.OverrideMetadata(typeof(GanttDiargamDataGrid),
-                new FrameworkPropertyMetadata(
-                    null,
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                SourcePropertyChangedCallback, SourcePropertyCoerceValueCallback));
+            //ItemsSourceProperty.OverrideMetadata(typeof(GanttDiargamDataGrid),
+            //    new FrameworkPropertyMetadata(
+            //        null,
+            //        FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+            //    SourcePropertyChangedCallback, SourcePropertyCoerceValueCallback));
         }
         #region CalckbackMethods
         private object OnSelectedItemCoerceValueCallback(DependencyObject d, object baseValue)

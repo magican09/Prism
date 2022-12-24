@@ -3,9 +3,11 @@
 
 
     <ResourceDictionary.MergedDictionaries>
-         <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/GanttDiagramDataGridRow/GanttDiagrammDataGridRowHeader/GanttDiagrammDataGridRowHeaderTemplate.xaml"/>
-        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/GanttDiagramDataGridRow/GanttDiargammGridViewColumnHeader/GanttDiargammGridViewColumnHeaderTemplate.xaml"/>
-        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/GanttDiagramDataGridRow/GanttDiargamDataGridCell/GanttDiargamDataGridCellTemplate.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGridRow/TaskDataGridColumnHeader/TaskGridViewColumnHeaderTemplate.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGridRow/TaskDataGridColumnHeader/TaskDataGridColumnHeaderPresenter/TaskDataGridColumnHeaderPresenterTemplate.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGridRow/TaskDataGridRowHeader/TaskDataGridRowHeaderTemplate.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGridRow/TaskDataGridCell/TaskDataGridCellTemplate.xaml"/>
+         
     </ResourceDictionary.MergedDictionaries>
   
     <!--Style and template for the DataGridRow.-->

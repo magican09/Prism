@@ -4,11 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views"
+             xmlns:cc="clr-namespace:bldCustomControlLibrary;assembly=bldCustomControlLibrary"
+             xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Header="{Binding Title}">
     <RibbonGroup.Resources>
-        
+        <bld:bldWork x:Key="Work_1" Name="Работа" Code="Кода 1213"/>
     </RibbonGroup.Resources>
     
     <StackPanel Orientation="Horizontal">
@@ -18,7 +20,14 @@
                 Command="{Binding SaveDataToDBCommand}"/>
         <RibbonButton Label ="Сохранить"  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/save_to_db.jpg" 
                 Command="{Binding ApplicationCommands.SaveAllCommand}"/>
-
+        <cc:BldTaskRow  DataContext="{StaticResource   Work_1}" Item="{Binding }"  >
+            <cc:BldTaskRow.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </cc:BldTaskRow.ItemsPanel>
+            
+        </cc:BldTaskRow>
         <!--  <RibbonButton Label ="Загрузить из excel" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/add.png" 
                 Command="{Binding CreateProjectStructureCommand}"/> -->
 

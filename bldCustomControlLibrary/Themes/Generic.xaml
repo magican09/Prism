@@ -6,8 +6,9 @@
         <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/ConstructionDataGrid/ConstructionDataGridTemplate.xaml"/>
         <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/ExpandBox/ExpandBoxStyle.xaml"/>
         <ResourceDictionary Source="/bldCustomControlLibrary;component/Converters/ConvertersDict.xaml"/>
-        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/GanttDiargamDataGridTemplate.xaml"/>
         <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/Styles.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/GanttDiargamDataGridTemplate.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/BldTaskControls/BldTaskControlsTemplates.xaml"/>
 
     </ResourceDictionary.MergedDictionaries>
    

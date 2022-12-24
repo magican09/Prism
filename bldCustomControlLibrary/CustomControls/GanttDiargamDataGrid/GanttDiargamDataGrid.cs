@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 
 namespace bldCustomControlLibrary
 {
-    public class GanttDiargamDataGrid : DataGrid DataGridCellsPresenter// DataGridColumnHeader GridViewColumnHeader//DataGridColumnHeader  //DataGridColumnHeadersPresenter, DataGridRowHeader
+    public class GanttDiargamDataGrid : DataGrid   //DataGridCellsPresenter// DataGridColumnHeader GridViewColumnHeader//DataGridColumnHeader  //DataGridColumnHeadersPresenter, DataGridRowHeader
     {
         //public object SelectedItem
         //{
@@ -31,7 +27,7 @@ namespace bldCustomControlLibrary
         //public static readonly DependencyProperty ItemsSourceProperty =
         //    DependencyProperty.Register("ItemsSource", typeof(object), typeof(GanttDiargamDataGrid), new PropertyMetadata(new CoerceValueCallback(OnCoerceValueCallback)));
 
-       public object ConsructionProject
+        public object ConsructionProject
         {
             get { return (object)GetValue(ConsructionProjectProperty); }
             set { SetValue(ConsructionProjectProperty, value); }
@@ -59,12 +55,17 @@ namespace bldCustomControlLibrary
         {
             return baseValue;
         }
-        object  dsd;
+        object dsd;
         public override void OnApplyTemplate()
         {
-            //ItemsSourceProperty.OverrideMetadata(typeof(GanttDiargamDataGrid), new PropertyMetadata(new PropertyMetadata(new ValidateValueCallback(OnValidateValueCallback),
-            //             new PropertyChangedCallback(OnPropertyChangedCallback), new CoerceValueCallback(OnCoerceValueCallback))));
-            dsd = Template.FindName("ganttItemsPresenter",this);
+            dsd = Template.FindName("ganttItemsPresenter", this);
+            //ScrollViewer diagrammViewer = Template.FindName("DG_ScrollViewer", this) as ScrollViewer;
+
+            //var dgsd = Template.FindName("PART_ColumnHeadersPresenter", this);
+
+            //var presenter = WPFExtendedFunctions.GetVisualChild<TaskDataGridColumnHeaderPresenter>(diagrammViewer);
+            //var sd = LogicalTreeHelper.GetChildren(diagrammViewer);
+
             base.OnApplyTemplate();
         }
 

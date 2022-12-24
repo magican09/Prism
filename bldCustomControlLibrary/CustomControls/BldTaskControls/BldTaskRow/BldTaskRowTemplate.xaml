@@ -1,17 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
-
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGridRow/TaskDataGridColumnHeader/TaskGridViewColumnHeaderTemplate.xaml"/>
-        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGridRow/TaskDataGridColumnHeader/TaskDataGridColumnHeaderPresenter/TaskDataGridColumnHeaderPresenterTemplate.xaml"/>
-        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGridRow/TaskDataGridRowHeader/TaskDataGridRowHeaderTemplate.xaml"/>
-        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGridRow/TaskDataGridCell/TaskDataGridCellTemplate.xaml"/>
-         
-    </ResourceDictionary.MergedDictionaries>
-  
-    <!--Style and template for the DataGridRow.-->
-    <Style TargetType="{x:Type DataGridRow}">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:bldCustomControlLibrary">
+   
+    <Style TargetType="{x:Type local:BldTaskRow}">
         <Setter Property="Background">
             <Setter.Value>
                 <SolidColorBrush Color="{DynamicResource ControlLightColor}" />
@@ -33,7 +24,7 @@
         </Setter>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type DataGridRow}">
+                <ControlTemplate TargetType="{x:Type local:BldTaskRow}">
                     <Border x:Name="DGR_Border"
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}"
@@ -50,8 +41,9 @@
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" />
-
-                                <!--Provide a different appearance for every other row.-->
+                            
+                        <!--Provide a different appearance for every other row.-->
+                        
                                 <VisualState x:Name="Normal_AlternatingRow">
                                     <Storyboard>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
@@ -75,6 +67,7 @@
               Normal_Selected, Unfocused_Selected, Normal_Editing, 
               MouseOver_Editing, MouseOver_Unfocused_Editing,
               and Unfocused_Editing are identical.-->
+                                
                                 <VisualState x:Name="Normal_Selected">
                                     <Storyboard>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
@@ -194,7 +187,7 @@
                                     </Storyboard>
                                 </VisualState>
 
-                                <!--In this example, the appearance of a selected row 
+                             <!--   In this example, the appearance of a selected row 
               that has the mouse over it is the same regardless of
               whether the row is selected.  In other words, the states 
               MouseOver_Editing and MouseOver_Unfocused_Editing are identical.-->
@@ -233,34 +226,39 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-
-                        <SelectiveScrollingGrid>
-                            <SelectiveScrollingGrid.ColumnDefinitions>
+                   
+                      
+                        <local:BldTaskSelectiveScrollingGrid>
+                            <local:BldTaskSelectiveScrollingGrid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </SelectiveScrollingGrid.ColumnDefinitions>
-                            <SelectiveScrollingGrid.RowDefinitions>
+                                <ColumnDefinition Width="500" />
+                            </local:BldTaskSelectiveScrollingGrid.ColumnDefinitions>
+                            <local:BldTaskSelectiveScrollingGrid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
-                            </SelectiveScrollingGrid.RowDefinitions>
-                            <DataGridCellsPresenter Grid.Column="1"
+                            </local:BldTaskSelectiveScrollingGrid.RowDefinitions>
+                            <DataGrid Grid.Column="1">
+                                <Button>sddddddddd</Button>
+                                <ContentPresenter />
+                            </DataGrid>
+                            <local:BldTaskCellsPresenter x:Name="PART_BldTaskCellsPresenter" Grid.Column="1"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                            <DataGridDetailsPresenter Grid.Column="1"
+                            <!--<DataGridDetailsPresenter Grid.Column="1"
                                       Grid.Row="1"
                                       Visibility="{TemplateBinding DetailsVisibility}"
                                       SelectiveScrollingGrid.SelectiveScrollingOrientation=
-                "{Binding AreRowDetailsFrozen, 
-                ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical},
-                Converter={x:Static DataGrid.RowDetailsScrollingConverter}, 
-                RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
+                                            "{Binding AreRowDetailsFrozen, 
+                                            ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical},
+                                            Converter={x:Static DataGrid.RowDetailsScrollingConverter}, 
+                                            RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
                             <DataGridRowHeader Grid.RowSpan="2"
-                               SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"
-                               Visibility="{Binding HeadersVisibility, 
-                ConverterParameter={x:Static DataGridHeadersVisibility.Row}, 
-                Converter={x:Static DataGrid.HeadersVisibilityConverter}, 
-                RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                        </SelectiveScrollingGrid>
+                                               SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"
+                                               Visibility="{Binding HeadersVisibility, 
+                                                    ConverterParameter={x:Static DataGridHeadersVisibility.Row}, 
+                                                    Converter={x:Static DataGrid.HeadersVisibilityConverter}, 
+                                                    RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />-->
+                        </local:BldTaskSelectiveScrollingGrid>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

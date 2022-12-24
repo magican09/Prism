@@ -4,11 +4,9 @@
                     xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib">
 
     <ResourceDictionary.MergedDictionaries>
-        <!--<ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/GanttDiargammGridViewColumnHeader/GanttDiargammGridViewColumnHeaderTemplate.xaml"/>-->
-        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGridRow/TaskDataGridRowTemplate.xaml"/>
-        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/DiargamDataGridRow/DiargamDataGridRowTemplate.xaml"/>
-        
-    </ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGrid/TaskDataGridTemplate.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/DiargamDataGrid/DiargamDataGridTemplate.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type local:GanttDiargamDataGrid}">
         <Setter Property="Foreground"
@@ -99,7 +97,7 @@
                                                                   Width="{Binding CellsPanelHorizontalOffset, 
                                                               RelativeSource={RelativeSource AncestorType={x:Type local:GanttDiargamDataGrid}}}" />
 
-                                            <local:TaskDataGridColumnHeaderPresenter x:Name="PART_ColumnHeadersPresenter"
+                                            <DataGridColumnHeadersPresenter x:Name="PART_ColumnHeadersPresenter"
                                                                                         Grid.Column="1"
                                                                                           Visibility="{Binding HeadersVisibility, 
                                                               ConverterParameter={x:Static DataGridHeadersVisibility.Column}, 
@@ -142,7 +140,7 @@
                                 </ScrollViewer.Template>
                                 <ItemsPresenter x:Name="ganttItemsPresenter" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             </ScrollViewer>
-                            <!--<ScrollViewer x:Name="Diagram_ScrollView" Grid.Column="2" 
+                            <ScrollViewer x:Name="Diagram_ScrollView" Grid.Column="2" 
                                                       local:ScrollSynchronizer.ScrollGroup="Group1"
                                                       Focusable="false"
                                                   Background="Black" HorizontalScrollBarVisibility="Visible">
@@ -167,7 +165,7 @@
                                                     <RowDefinition Height="*" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <local:DiargamDataGridColumnHeadersPresenter x:Name="PART_ColumnHeadersPresenter"
+                                                <local:DiargamDataGridColumnHeadersPresenter x:Name="PART_Diagram_ColumnHeadersPresenter"
                                                                                         Grid.Column="1"
                                                                                           Visibility="{Binding HeadersVisibility, 
                                                               ConverterParameter={x:Static DataGridHeadersVisibility.Column}, 
@@ -208,7 +206,7 @@
                                     </ControlTemplate>
                                 </ScrollViewer.Template>
  
-                            </ScrollViewer>-->
+                            </ScrollViewer>
 
                         </Grid>
 

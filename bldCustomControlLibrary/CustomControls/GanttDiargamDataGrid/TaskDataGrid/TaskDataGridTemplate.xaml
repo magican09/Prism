@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:bldCustomControlLibrary">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGrid/Templates/TaskGridViewColumnHeaderTemplate.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGrid/Templates/TaskDataGridColumnHeaderPresenterTemplate.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGrid/Templates/TaskDataGridRowHeaderTemplate.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGrid/Templates/TaskDataGridCellTemplate.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/GanttDiargamDataGrid/TaskDataGrid/Templates/TaskDataGridRowTemplate.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

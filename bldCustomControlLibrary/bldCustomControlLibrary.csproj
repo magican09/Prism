@@ -3,7 +3,19 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <RootNamespace>bldCustomControlLibrary</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="CustomControls\bldWorkControl\**" />
+    <Compile Remove="CustomControls\GanttDiargamDataGrid\GanttChartItem\**" />
+    <EmbeddedResource Remove="CustomControls\bldWorkControl\**" />
+    <EmbeddedResource Remove="CustomControls\GanttDiargamDataGrid\GanttChartItem\**" />
+    <None Remove="CustomControls\bldWorkControl\**" />
+    <None Remove="CustomControls\GanttDiargamDataGrid\GanttChartItem\**" />
+    <Page Remove="CustomControls\bldWorkControl\**" />
+    <Page Remove="CustomControls\GanttDiargamDataGrid\GanttChartItem\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Resourses\Images\car.png" />
@@ -55,12 +67,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CustomControls\bldWorkControl\" />
-    <Folder Include="CustomControls\GanttDiargamDataGrid\GanttChartItem\" />
+    <PackageReference Include="Xam.DataGrid" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xam.DataGrid" Version="1.0.2" />
+    <Folder Include="CustomControls\NewFolder\" />
   </ItemGroup>
 
 </Project>

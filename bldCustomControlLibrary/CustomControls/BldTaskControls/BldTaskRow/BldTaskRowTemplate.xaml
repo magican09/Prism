@@ -12,7 +12,7 @@
           Value="true" />
         <Setter Property="Validation.ErrorTemplate"
           Value="{x:Null}" />
-        <Setter Property="ValidationErrorTemplate">
+        <!--<Setter Property="ValidationErrorTemplate">
             <Setter.Value>
                 <ControlTemplate>
                     <TextBlock Foreground="Red"
@@ -21,7 +21,7 @@
                    VerticalAlignment="Center" />
                 </ControlTemplate>
             </Setter.Value>
-        </Setter>
+        </Setter>-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:BldTaskRow}">
@@ -226,24 +226,21 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                   
-                      
                         <local:BldTaskSelectiveScrollingGrid>
                             <local:BldTaskSelectiveScrollingGrid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="500" />
+                                <ColumnDefinition Width="*" />
                             </local:BldTaskSelectiveScrollingGrid.ColumnDefinitions>
                             <local:BldTaskSelectiveScrollingGrid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </local:BldTaskSelectiveScrollingGrid.RowDefinitions>
-                            <DataGrid Grid.Column="1">
-                                <Button>sddddddddd</Button>
-                                <ContentPresenter />
-                            </DataGrid>
-                            <local:BldTaskCellsPresenter x:Name="PART_BldTaskCellsPresenter" Grid.Column="1"
+                               <local:BldTaskCellsPresenter x:Name="PART_BldTaskCellsPresenter" Grid.Column="1"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            <TextBlock Text="Column 0" Grid.Column="0"/>
+                            <TextBlock Text="Row 0" Grid.Column="0" Grid.Row="1"/>
+
                             <!--<DataGridDetailsPresenter Grid.Column="1"
                                       Grid.Row="1"
                                       Visibility="{TemplateBinding DetailsVisibility}"

@@ -71,7 +71,7 @@
                                                      local:ScrollSynchronizer.ScrollGroup="Group1"
                                                       Focusable="false"
                                                         Background="Black" >
-                                <ScrollViewer.Template>
+                                <!--<ScrollViewer.Template>
                                     <ControlTemplate TargetType="{x:Type ScrollViewer}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -137,10 +137,10 @@
                                             </Grid>
                                         </Grid>
                                     </ControlTemplate>
-                                </ScrollViewer.Template>
+                                </ScrollViewer.Template>-->
                                 <ItemsPresenter x:Name="ganttItemsPresenter" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             </ScrollViewer>
-                            <ScrollViewer x:Name="Diagram_ScrollView" Grid.Column="2" 
+                            <!--<ScrollViewer x:Name="Diagram_ScrollView" Grid.Column="2" 
                                                       local:ScrollSynchronizer.ScrollGroup="Group1"
                                                       Focusable="false"
                                                   Background="Black" HorizontalScrollBarVisibility="Visible">
@@ -206,7 +206,7 @@
                                     </ControlTemplate>
                                 </ScrollViewer.Template>
  
-                            </ScrollViewer>
+                            </ScrollViewer>-->
 
                         </Grid>
 

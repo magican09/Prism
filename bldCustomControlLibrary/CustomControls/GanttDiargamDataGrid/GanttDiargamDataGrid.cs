@@ -58,7 +58,6 @@ namespace bldCustomControlLibrary
         object dsd;
         public override void OnApplyTemplate()
         {
-            dsd = Template.FindName("ganttItemsPresenter", this);
             //ScrollViewer diagrammViewer = Template.FindName("DG_ScrollViewer", this) as ScrollViewer;
 
             //var dgsd = Template.FindName("PART_ColumnHeadersPresenter", this);
@@ -67,6 +66,8 @@ namespace bldCustomControlLibrary
             //var sd = LogicalTreeHelper.GetChildren(diagrammViewer);
 
             base.OnApplyTemplate();
+            dsd = Template.FindName("ganttItemsPresenter", this);
+
         }
 
         private object SourcePropertyCoerceValueCallback(DependencyObject d, object baseValue)

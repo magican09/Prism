@@ -7,6 +7,9 @@ namespace bldCustomControlLibrary
 {
     public class BldTaskCell:DataGridCell
     {
-
+        //public  DataGridColumn Column { get; }
+        public BldTaskCell()
+        {
+        }
     }
 }

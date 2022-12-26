@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace bldCustomControlLibrary
 {
-    public class GanttDiargamDataGrid : DataGrid   //DataGridCellsPresenter// DataGridColumnHeader GridViewColumnHeader//DataGridColumnHeader  //DataGridColumnHeadersPresenter, DataGridRowHeader
+    public partial class GanttDiargamDataGrid : DataGrid   //DataGridCellsPresenter// DataGridColumnHeader GridViewColumnHeader//DataGridColumnHeader  //DataGridColumnHeadersPresenter, DataGridRowHeader
     {
         //public object SelectedItem
         //{

@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UseWPF>true</UseWPF>
+    <!--<TargetFramework>netcoreapp3.1</TargetFramework>-->
+	  <!--<TargetFramework>netstandard2.1</TargetFramework>-->
+	 <TargetFramework>netcoreapp3.1</TargetFramework>
+	  <UseWPF>true</UseWPF>
     <RootNamespace>bldCustomControlLibrary</RootNamespace>
   </PropertyGroup>
 

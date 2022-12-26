@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrismWorkApp.OpenWorkLib", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bldCustomControlLibrary", "bldCustomControlLibrary\bldCustomControlLibrary.csproj", "{CA698EF1-218B-46C4-A7A4-EE1163AA921C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Styling", "Common.Styling\Common.Styling.csproj", "{E430432F-105C-44D4-A915-D41351EAD534}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Styling", "Common.Styling\Common.Styling.csproj", "{E430432F-105C-44D4-A915-D41351EAD534}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PresentationFramework", "Framework\wpf\PresentationFramework.csproj", "{A5A62F2C-AF36-40F6-A892-2D4CA28C0334}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{E430432F-105C-44D4-A915-D41351EAD534}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E430432F-105C-44D4-A915-D41351EAD534}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E430432F-105C-44D4-A915-D41351EAD534}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5A62F2C-AF36-40F6-A892-2D4CA28C0334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5A62F2C-AF36-40F6-A892-2D4CA28C0334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5A62F2C-AF36-40F6-A892-2D4CA28C0334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5A62F2C-AF36-40F6-A892-2D4CA28C0334}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

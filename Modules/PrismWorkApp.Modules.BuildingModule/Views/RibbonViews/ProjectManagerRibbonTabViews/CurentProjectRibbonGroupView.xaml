@@ -10,6 +10,16 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              Header="{Binding Title}">
     <RibbonGroup.Resources>
+        <bld:bldConstructionsGroup Name="Объект 1" x:Key="Constructions">
+                <bld:bldConstruction Name="Конструкция 1">
+                    <bld:bldConstruction.Works>
+                        <bld:bldWork Name="Работа 1"/>
+                        <bld:bldWork Name="Работа 2"/>
+                        <bld:bldWork Name="Работа 3"/>
+                        <bld:bldWork Name="Работа 4"/>
+                    </bld:bldConstruction.Works>
+                </bld:bldConstruction>
+        </bld:bldConstructionsGroup>
         <bld:bldWork x:Key="Work_1" Name="Работа" Code="Кода 1213"/>
     </RibbonGroup.Resources>
     
@@ -20,11 +30,12 @@
                 Command="{Binding SaveDataToDBCommand}"/>
         <RibbonButton Label ="Сохранить"  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/save_to_db.jpg" 
                 Command="{Binding ApplicationCommands.SaveAllCommand}"/>
-        <cc:BldTaskRow  DataContext="{StaticResource   Work_1}" Item="{Binding }"  >
-           
-        </cc:BldTaskRow>
-        <!--  <RibbonButton Label ="Загрузить из excel" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/add.png" 
-                Command="{Binding CreateProjectStructureCommand}"/> -->
-        <!--<cc:BldTaskCellsPresenter />-->
+        <cc:BldTaskDataGrid ItemsSource="{StaticResource  Constructions}" AutoGenerateColumns="False" CanUserAddRows="False">
+            <cc:BldTaskDataGrid.Columns>
+                <DataGridTextColumn  Header="Код"   Width="Auto" 
+                                                     Binding = "{Binding Path=Name}" />
+            </cc:BldTaskDataGrid.Columns>
+        </cc:BldTaskDataGrid>
+        
     </StackPanel>
 </RibbonGroup>

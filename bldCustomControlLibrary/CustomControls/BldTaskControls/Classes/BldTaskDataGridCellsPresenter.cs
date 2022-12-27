@@ -24,15 +24,27 @@ namespace bldCustomControlLibrary
         {
           
         }
+        public override void OnApplyTemplate()
+        {
+            ObservableCollection<object> collection = new ObservableCollection<object>();
+            TextBlock textBlock = new TextBlock();
+            textBlock.Text = "CellPresenter";
+            TextBlock textBlock2 = new TextBlock();
+            textBlock2.Text = "CellPresenter 2";
+            collection.Add(textBlock);
+            collection.Add(textBlock2);
+            ItemsSource = collection;
+            base.OnApplyTemplate();
+        }
         //protected override bool IsItemItsOwnContainerOverride(object item)
         //{
         //    return item is BldTaskCell;
         //}
         //protected override DependencyObject GetContainerForItemOverride()
         //{
-           
+
         //    return new BldTaskCell();
-          
+
         //}
         //
         // Summary:

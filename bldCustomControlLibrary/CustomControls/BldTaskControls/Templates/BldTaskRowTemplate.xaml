@@ -38,11 +38,11 @@
                             Offset="1" />
                             </LinearGradientBrush>
                         </Border.Background>
-                        <VisualStateManager.VisualStateGroups>
+                        <!--<VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" />
                             
-                        <!--Provide a different appearance for every other row.-->
+                        --><!--Provide a different appearance for every other row.--><!--
                         
                                 <VisualState x:Name="Normal_AlternatingRow">
                                     <Storyboard>
@@ -62,11 +62,11 @@
                                     </Storyboard>
                                 </VisualState>
 
-                                <!--In this example, a row in Editing or selected mode has an
+                                --><!--In this example, a row in Editing or selected mode has an
               identical appearances. In other words, the states 
               Normal_Selected, Unfocused_Selected, Normal_Editing, 
               MouseOver_Editing, MouseOver_Unfocused_Editing,
-              and Unfocused_Editing are identical.-->
+              and Unfocused_Editing are identical.--><!--
                                 
                                 <VisualState x:Name="Normal_Selected">
                                     <Storyboard>
@@ -187,10 +187,10 @@
                                     </Storyboard>
                                 </VisualState>
 
-                             <!--   In this example, the appearance of a selected row 
+                             --><!--   In this example, the appearance of a selected row 
               that has the mouse over it is the same regardless of
               whether the row is selected.  In other words, the states 
-              MouseOver_Editing and MouseOver_Unfocused_Editing are identical.-->
+              MouseOver_Editing and MouseOver_Unfocused_Editing are identical.--><!--
                                 <VisualState x:Name="MouseOver_Selected">
                                     <Storyboard>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="DGR_Border"
@@ -225,7 +225,7 @@
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
+                        </VisualStateManager.VisualStateGroups>-->
                         <local:BldTaskSelectiveScrollingGrid>
                             <local:BldTaskSelectiveScrollingGrid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -235,7 +235,7 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </local:BldTaskSelectiveScrollingGrid.RowDefinitions>
-                           
+                            <TextBlock>DaraOw</TextBlock>
                             <local:BldTaskDataGridCellsPresenter x:Name="PART_BldTaskDataGridCellsPresenter" Grid.Column="1"
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             <!--<TextBlock Text="Column 0" Grid.Column="0"/>

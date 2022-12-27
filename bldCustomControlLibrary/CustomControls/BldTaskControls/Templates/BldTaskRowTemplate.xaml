@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:bldCustomControlLibrary">
    
-    <Style TargetType="{x:Type local:BldTaskRow}">
+    <Style TargetType="{x:Type local:BldTaskDataGridRow}">
         <Setter Property="Background">
             <Setter.Value>
                 <SolidColorBrush Color="{DynamicResource ControlLightColor}" />
@@ -24,7 +24,7 @@
         </Setter>-->
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:BldTaskRow}">
+                <ControlTemplate TargetType="{x:Type local:BldTaskDataGridRow}">
                     <Border x:Name="DGR_Border"
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}"
@@ -235,8 +235,8 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </local:BldTaskSelectiveScrollingGrid.RowDefinitions>
-                               <local:BldTaskCellsPresenter x:Name="PART_BldTaskCellsPresenter" Grid.Column="1"
-                                  
+                           
+                            <local:BldTaskDataGridCellsPresenter x:Name="PART_BldTaskDataGridCellsPresenter" Grid.Column="1"
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             <!--<TextBlock Text="Column 0" Grid.Column="0"/>
                             <TextBlock Text="Row 0" Grid.Column="0" Grid.Row="1"/>-->

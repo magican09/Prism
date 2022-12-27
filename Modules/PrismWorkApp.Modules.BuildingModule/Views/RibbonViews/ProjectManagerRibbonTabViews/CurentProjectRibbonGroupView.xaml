@@ -19,6 +19,14 @@
                         <bld:bldWork Name="Работа 4"/>
                     </bld:bldConstruction.Works>
                 </bld:bldConstruction>
+            <bld:bldConstruction Name="Конструкция 2">
+                <bld:bldConstruction.Works>
+                    <bld:bldWork Name="Работа 1"/>
+                    <bld:bldWork Name="Работа 2"/>
+                    <bld:bldWork Name="Работа 3"/>
+                    <bld:bldWork Name="Работа 4"/>
+                </bld:bldConstruction.Works>
+            </bld:bldConstruction>
         </bld:bldConstructionsGroup>
         <bld:bldWork x:Key="Work_1" Name="Работа" Code="Кода 1213"/>
     </RibbonGroup.Resources>
@@ -30,11 +38,11 @@
                 Command="{Binding SaveDataToDBCommand}"/>
         <RibbonButton Label ="Сохранить"  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/save_to_db.jpg" 
                 Command="{Binding ApplicationCommands.SaveAllCommand}"/>
-        <cc:BldTaskDataGrid ItemsSource="{StaticResource  Constructions}" AutoGenerateColumns="False" CanUserAddRows="False">
-            <cc:BldTaskDataGrid.Columns>
+        <cc:BldTaskDataGrid ItemsSource="{StaticResource  Constructions}" >
+            <!--<cc:BldTaskDataGrid.Columns>
                 <DataGridTextColumn  Header="Код"   Width="Auto" 
                                                      Binding = "{Binding Path=Name}" />
-            </cc:BldTaskDataGrid.Columns>
+            </cc:BldTaskDataGrid.Columns>-->
         </cc:BldTaskDataGrid>
         
     </StackPanel>

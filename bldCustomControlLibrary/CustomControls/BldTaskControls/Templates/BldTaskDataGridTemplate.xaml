@@ -19,8 +19,8 @@
         </Setter>
         <Setter Property="BorderThickness"
           Value="1" />
-        <Setter Property="RowDetailsVisibilityMode"
-          Value="VisibleWhenSelected" />
+        <!--<Setter Property="RowDetailsVisibilityMode"
+          Value="VisibleWhenSelected" />-->
         <Setter Property="ScrollViewer.CanContentScroll"
           Value="true" />
         <Setter Property="ScrollViewer.PanningMode"
@@ -38,7 +38,7 @@
                         <Border.Background>
                             <SolidColorBrush Color="{DynamicResource ControlLightColor}" />
                         </Border.Background>
-                        <VisualStateManager.VisualStateGroups>
+                        <!--<VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Disabled">
                                     <Storyboard>
@@ -52,8 +52,8 @@
                                 </VisualState>
                                 <VisualState x:Name="Normal" />
                             </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                        <ScrollViewer x:Name="DG_ScrollViewer"
+                        </VisualStateManager.VisualStateGroups>-->
+                        <!--<ScrollViewer x:Name="DG_ScrollViewer"
                         Focusable="false"
                         Background="Black">
                             <ScrollViewer.Template>
@@ -124,10 +124,17 @@
                                     </Grid>
                                 </ControlTemplate>
                             </ScrollViewer.Template>
-                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </ScrollViewer>
+                          </ScrollViewer>-->
+                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </Border>
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel   />
+                </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>

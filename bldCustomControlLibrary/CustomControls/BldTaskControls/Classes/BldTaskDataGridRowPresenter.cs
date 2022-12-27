@@ -5,12 +5,9 @@ using System.Windows.Controls;
 
 namespace bldCustomControlLibrary
 {
-    public class BldTaskCell:DataGridCell
+    public class BldTaskDataGridRowPresenter:StackPanel
     {
-        //public  DataGridColumn Column { get; }
-        public BldTaskCell()
-        {
 
-        }
+
     }
 }

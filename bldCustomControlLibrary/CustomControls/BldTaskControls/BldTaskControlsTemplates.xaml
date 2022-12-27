@@ -5,5 +5,6 @@
         <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/BldTaskControls/Templates/BldTaskRowTemplate.xaml"/>
         <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/BldTaskControls/Templates/BldTaskCellsPresenterTemplate.xaml"/>
         <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/BldTaskControls/Templates/BldTaskCellTemplate.xaml"/>
+        <ResourceDictionary Source="/bldCustomControlLibrary;component/CustomControls/BldTaskControls/Templates/BldTaskDataGridTemplate.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

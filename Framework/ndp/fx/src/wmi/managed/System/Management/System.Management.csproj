@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <ProjectGuid>{6916bebd-8179-4895-b8a5-a9ec1b41347e}</ProjectGuid>
+    <ProjectGuid>{6916BEBD-8179-4895-B8A5-A9EC1B41347E}</ProjectGuid>
     <OutputPath>.</OutputPath>
     <OutputType>Library</OutputType>
     <AssemblyName>System.Management</AssemblyName>
@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\clr\src\bcl\mscorlib.csproj">
@@ -45,16 +45,26 @@
     <Compile Include="Instrumentation\SchemaRegistration.cs" />
     <Compile Include="Instrumentation\WMICapabilities.cs" />
     <Compile Include="InteropClasses\WMIInterop.cs" />
-    <Compile Include="managementbaseobject.cs" />
-    <Compile Include="managementclass.cs" />
+    <Compile Include="managementbaseobject.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="managementclass.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ManagementDatetime.cs" />
     <Compile Include="managementeventargs.cs" />
-    <Compile Include="managementeventwatcher.cs" />
+    <Compile Include="managementeventwatcher.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="managementexception.cs" />
     <Compile Include="managementnamedvaluecollection.cs" />
-    <Compile Include="managementobject.cs" />
+    <Compile Include="managementobject.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="managementobjectcollection.cs" />
-    <Compile Include="managementobjectsearcher.cs" />
+    <Compile Include="managementobjectsearcher.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="managementoperationwatcher.cs" />
     <Compile Include="managementoptions.cs" />
     <Compile Include="managementpath.cs" />

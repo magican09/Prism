@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <ProjectGuid>{dc49391d-17b4-49be-95e5-c3c78d52c872}</ProjectGuid>
+    <ProjectGuid>{DC49391D-17B4-49BE-95E5-C3C78D52C872}</ProjectGuid>
     <OutputPath>.</OutputPath>
     <OutputType>Library</OutputType>
     <AssemblyName>System.Web</AssemblyName>
@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\clr\src\bcl\mscorlib.csproj">
@@ -894,7 +894,9 @@
     <Compile Include="UI\DesignTimeTemplateParser.cs" />
     <Compile Include="UI\EmptyControlCollection.cs" />
     <Compile Include="UI\EmptyTextWriter.cs" />
-    <Compile Include="UI\ErrorFormatterPage.cs" />
+    <Compile Include="UI\ErrorFormatterPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UI\EventEntry.cs" />
     <Compile Include="UI\EventValidationStore.cs" />
     <Compile Include="UI\ExpressionBinding.cs" />
@@ -1206,7 +1208,9 @@
     <Compile Include="UI\WebControls\DataGridLinkButton.cs" />
     <Compile Include="UI\WebControls\DataGridPageChangedEventArgs.cs" />
     <Compile Include="UI\WebControls\DataGridPageChangedEventHandler.cs" />
-    <Compile Include="UI\WebControls\DataGridPagerStyle.cs" />
+    <Compile Include="UI\WebControls\DataGridPagerStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebControls\DataGridSortCommandEventArgs.cs" />
     <Compile Include="UI\WebControls\DataGridSortCommandEventHandler.cs" />
     <Compile Include="UI\WebControls\DataKey.cs" />
@@ -1253,8 +1257,12 @@
     <Compile Include="UI\WebControls\EmbeddedMailObject.cs" />
     <Compile Include="UI\WebControls\EmbeddedMailObjectsCollection.cs" />
     <Compile Include="UI\WebControls\EmptyStringExpandableObjectConverter.cs" />
-    <Compile Include="UI\WebControls\ErrorStyle.cs" />
-    <Compile Include="UI\WebControls\ErrorTableItemStyle.cs" />
+    <Compile Include="UI\WebControls\ErrorStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\WebControls\ErrorTableItemStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebControls\FileUpload.cs" />
     <Compile Include="UI\WebControls\FilteredDataSetHelper.cs" />
     <Compile Include="UI\WebControls\FirstDayOfWeek.cs" />
@@ -1323,7 +1331,9 @@
     <Compile Include="UI\WebControls\HyperLink.cs" />
     <Compile Include="UI\WebControls\HyperLinkColumn.cs" />
     <Compile Include="UI\WebControls\HyperLinkField.cs" />
-    <Compile Include="UI\WebControls\HyperLinkStyle.cs" />
+    <Compile Include="UI\WebControls\HyperLinkStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebControls\IBorderPaddingControl.cs" />
     <Compile Include="UI\WebControls\IButtonControl.cs" />
     <Compile Include="UI\WebControls\ICallbackContainer.cs" />
@@ -1381,7 +1391,9 @@
     <Compile Include="UI\WebControls\MenuItemBinding.cs" />
     <Compile Include="UI\WebControls\MenuItemBindingCollection.cs" />
     <Compile Include="UI\WebControls\MenuItemCollection.cs" />
-    <Compile Include="UI\WebControls\MenuItemStyle.cs" />
+    <Compile Include="UI\WebControls\MenuItemStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebControls\MenuItemStyleCollection.cs" />
     <Compile Include="UI\WebControls\MenuRenderer.cs" />
     <Compile Include="UI\WebControls\MenuRendererClassic.cs" />
@@ -1421,7 +1433,9 @@
     <Compile Include="UI\WebControls\PagerSettings.cs" />
     <Compile Include="UI\WebControls\PagerTable.cs" />
     <Compile Include="UI\WebControls\Panel.cs" />
-    <Compile Include="UI\WebControls\PanelStyle.cs" />
+    <Compile Include="UI\WebControls\PanelStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebControls\Parameter.cs" />
     <Compile Include="UI\WebControls\ParameterCollection.cs" />
     <Compile Include="UI\WebControls\ParsingCulture.cs" />
@@ -1487,9 +1501,13 @@
     <Compile Include="UI\WebControls\SqlDataSourceStatusEventHandler.cs" />
     <Compile Include="UI\WebControls\SqlDataSourceView.cs" />
     <Compile Include="UI\WebControls\StringArrayConverter.cs" />
-    <Compile Include="UI\WebControls\Style.cs" />
+    <Compile Include="UI\WebControls\Style.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebControls\StyleCollection.cs" />
-    <Compile Include="UI\WebControls\SubMenuStyle.cs" />
+    <Compile Include="UI\WebControls\SubMenuStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebControls\SubMenuStyleCollection.cs" />
     <Compile Include="UI\WebControls\Substitution.cs" />
     <Compile Include="UI\WebControls\Table.cs" />
@@ -1500,12 +1518,18 @@
     <Compile Include="UI\WebControls\TableHeaderCell.cs" />
     <Compile Include="UI\WebControls\TableHeaderRow.cs" />
     <Compile Include="UI\WebControls\TableHeaderScope.cs" />
-    <Compile Include="UI\WebControls\TableItemStyle.cs" />
+    <Compile Include="UI\WebControls\TableItemStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebControls\TableRow.cs" />
     <Compile Include="UI\WebControls\TableRowCollection.cs" />
     <Compile Include="UI\WebControls\TableRowSection.cs" />
-    <Compile Include="UI\WebControls\TableSectionStyle.cs" />
-    <Compile Include="UI\WebControls\TableStyle.cs" />
+    <Compile Include="UI\WebControls\TableSectionStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\WebControls\TableStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebControls\TargetConverter.cs" />
     <Compile Include="UI\WebControls\TemplateColumn.cs" />
     <Compile Include="UI\WebControls\TemplatedWizardStep.cs" />
@@ -1521,7 +1545,9 @@
     <Compile Include="UI\WebControls\TreeNodeEventArgs.cs" />
     <Compile Include="UI\WebControls\TreeNodeEventHandler.cs" />
     <Compile Include="UI\WebControls\TreeNodeSelectAction.cs" />
-    <Compile Include="UI\WebControls\TreeNodeStyle.cs" />
+    <Compile Include="UI\WebControls\TreeNodeStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebControls\TreeNodeStyleCollection.cs" />
     <Compile Include="UI\WebControls\TreeNodeType.cs" />
     <Compile Include="UI\WebControls\TreeView.cs" />
@@ -1625,7 +1651,9 @@
     <Compile Include="UI\WebParts\SharedPersonalizationStateInfo.cs" />
     <Compile Include="UI\WebParts\SqlPersonalizationProvider.cs" />
     <Compile Include="UI\WebParts\TableCallback.cs" />
-    <Compile Include="UI\WebParts\TitleStyle.cs" />
+    <Compile Include="UI\WebParts\TitleStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebParts\ToolZone.cs" />
     <Compile Include="UI\WebParts\TransformerConfigurationWizardBase.cs" />
     <Compile Include="UI\WebParts\TransformerTypeCollection.cs" />
@@ -1682,7 +1710,9 @@
     <Compile Include="UI\WebParts\WebPartManager.cs" />
     <Compile Include="UI\WebParts\WebPartManagerInternals.cs" />
     <Compile Include="UI\WebParts\WebPartMenu.cs" />
-    <Compile Include="UI\WebParts\WebPartMenuStyle.cs" />
+    <Compile Include="UI\WebParts\WebPartMenuStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\WebParts\WebPartMinimizeVerb.cs" />
     <Compile Include="UI\WebParts\WebPartMovingEventArgs.cs" />
     <Compile Include="UI\WebParts\WebPartMovingEventHandler.cs" />

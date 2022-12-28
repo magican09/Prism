@@ -24,15 +24,7 @@ namespace bldCustomControlLibrary
         {
           
         }
-        public override void OnApplyTemplate()
-        {
-           
-            base.OnApplyTemplate();
-
-            BldTaskDataGridRow owningRow = DataGridRowOwner;
-            owningRow.CellsPresenter = this;
-            Item = owningRow.Item;
-        }
+        
 
         public object Item
         {
@@ -59,8 +51,8 @@ namespace bldCustomControlLibrary
         /// <param name="newItem">The new value of Item.</param>
         protected virtual void OnItemChanged(object oldItem, object newItem)
         {
-            ObservableCollection<object> columns = new ObservableCollection<object>();
-            //ObservableCollection<DataGridColumn> columns = Columns;
+            ObservableCollection<object> collection = new ObservableCollection<object>();
+            ObservableCollection<DataGridColumn> columns = Columns;
 
             //if (columns != null)
             //{
@@ -83,19 +75,170 @@ namespace bldCustomControlLibrary
             textBlock_2.Text = "item 2";
             TextBlock textBlock_3 = new TextBlock();
             textBlock_3.Text = "item 3";
-            columns.Add(textBlock_1);
-            columns.Add(textBlock_2);
-            columns.Add(textBlock_3);
+            collection.Add(textBlock_1);
+            collection.Add(textBlock_2);
+            collection.Add(textBlock_3);
 
-            ItemsSource = columns;
+            ItemsSource = collection;
         }
+
+        #region Row Communication
+       /// <summary>
+        ///     Tells the row owner about this element.
+        /// </summary>
+        public override void OnApplyTemplate()
+        {
+            // If a new template has just been generated then 
+            // be sure to clear any stale ItemsHost references
+            //if (InternalItemsHost != null && !this.IsAncestorOf(InternalItemsHost))
+            //{
+            //    InternalItemsHost = null;
+            //}
+
+            base.OnApplyTemplate();
+
+            BldTaskDataGridRow owningRow = DataGridRowOwner;
+            owningRow.CellsPresenter = this;
+            Item = owningRow.Item;
+
+            // At the time that a Row is prepared we can't Sync because the CellsPresenter isn't created yet.
+            // Doing it here ensures that the CellsPresenter is in the visual tree.
+            SyncProperties(false);
+
+        }
+        internal void SyncProperties(bool forcePrepareCells)
+        {
+            var dataGridOwner = DataGridOwner;
+            if (dataGridOwner == null)
+            {
+                return;
+            }
+
+            //DataGridHelper.TransferProperty(this, HeightProperty);
+            //DataGridHelper.TransferProperty(this, MinHeightProperty);
+            //DataGridHelper.TransferProperty(this, VirtualizingPanel.IsVirtualizingProperty);
+
+            // This is a convenient way to walk through all cells and force them to call CoerceValue(StyleProperty)
+            //NotifyPropertyChanged(this, new DependencyPropertyChangedEventArgs(DataGrid.CellStyleProperty, null, null), DataGridNotificationTarget.Cells);
+
+            // We may have missed an Add / Remove of a column from the grid (DataGridRow.OnColumnsChanged)
+            // Sync the MultipleCopiesCollection count and update the Column on changed cells
+            //MultipleCopiesCollection cellItems = ItemsSource as MultipleCopiesCollection;
+            ObservableCollection<object> cellItems = ItemsSource as ObservableCollection<object>;
+            if (cellItems != null)
+            {
+                BldTaskDataGridCell cell;
+                ObservableCollection<DataGridColumn> columns = dataGridOwner.Columns;
+                int newColumnCount = columns.Count;
+                int oldColumnCount = cellItems.Count;
+                int dirtyCount = 0;
+                bool measureAndArrangeInvalidated = false;
+
+                //if (newColumnCount != oldColumnCount)
+                //{
+                //    cellItems.SyncToCount(newColumnCount);
+
+                //    // Newly added or removed containers will be updated by the generator via PrepareContainer.
+                //    // All others may have a different column
+                //    dirtyCount = Math.Min(newColumnCount, oldColumnCount);
+                //}
+                //else if (forcePrepareCells)
+                //{
+                //    dirtyCount = newColumnCount;
+                //}
+
+                // if the DataGridCellsPanel missed out on some column virtualization
+                // activity while the row was virtualized, it needs to be measured
+                DataGridCellsPanel cellsPanel = InternalItemsHost as DataGridCellsPanel;
+                if (cellsPanel != null)
+                {
+                    //if (cellsPanel.HasCorrectRealizedColumns)
+                    //{
+                    //    // This operation is performed when a DataGridRow is being prepared. So if we are working 
+                    //    // with a recycled DataGridRow we need to make sure to re-arrange it so that it picks up the 
+                    //    // correct CellsPanelHorizontalOffset. See Dev11 170908.
+                    //    cellsPanel.InvalidateArrange();
+                    //}
+                    //else
+                    //{
+                    //    InvalidateDataGridCellsPanelMeasureAndArrange();
+                    //    measureAndArrangeInvalidated = true;
+                    //}
+                }
+
+                BldTaskDataGridRow row = DataGridRowOwner;
+
+                //// Prepare the cells until dirtyCount is reached. Also invalidate the cells panel's measure
+                //// and arrange if there is a mismatch between cell.ActualWidth and Column.Width.DisplayValue
+                //for (int i = 0; i < dirtyCount; i++)
+                //{
+                //    cell = (BldTaskDataGridCell)ItemContainerGenerator.ContainerFromIndex(i);
+                //    if (cell != null)
+                //    {
+                //        cell.PrepareCell(row.Item, this, row);
+                //        if (!measureAndArrangeInvalidated && !DoubleUtil.AreClose(cell.ActualWidth, columns[i].Width.DisplayValue))
+                //        {
+                //            InvalidateDataGridCellsPanelMeasureAndArrange();
+                //            measureAndArrangeInvalidated = true;
+                //        }
+                //    }
+                //}
+
+                // Keep searching for the mismatch between cell.ActualWidth
+                // and Column.Width.DisplayValue
+                //if (!measureAndArrangeInvalidated)
+                //{
+                //    for (int i = dirtyCount; i < newColumnCount; i++)
+                //    {
+                //        cell = (DataGridCell)ItemContainerGenerator.ContainerFromIndex(i);
+                //        if (cell != null)
+                //        {
+                //            if (!DoubleUtil.AreClose(cell.ActualWidth, columns[i].Width.DisplayValue))
+                //            {
+                //                InvalidateDataGridCellsPanelMeasureAndArrange();
+                //                break;
+                //            }
+                //        }
+                //    }
+                //}
+            }
+        }
+        #endregion
+        #region Cell Container Genertor
+      
+        /// <summary>
+        ///     Workaround for not being able to access the panel instance of
+        ///     itemscontrol directly
+        /// </summary>
+        internal Panel InternalItemsHost
+        {
+            get { return _internalItemsHost; }
+            set { _internalItemsHost = value; }
+        }
+        #endregion
         #region Helpers 
+        /// <summary>
+        ///     The DataGrid that owns this control
+        /// </summary>
+        internal BldTaskDataGrid DataGridOwner
+        {
+            get
+            {
+                BldTaskDataGridRow parent = DataGridRowOwner;
+                if (parent != null)
+                {
+                    return parent.DataGridOwner;
+                }
+
+                return null;
+            }
+        }
         internal BldTaskDataGridRow DataGridRowOwner
         {
             get { return DataGridHelper.FindParent<BldTaskDataGridRow>(this);  }
         }
 
-        private ObservableCollection<BldTaskDataGridColumn> Columns
+        private ObservableCollection<DataGridColumn> Columns
         {
             get
             {
@@ -108,7 +251,8 @@ namespace bldCustomControlLibrary
         #region Data
 
         private object _item;
-     
+        private Panel _internalItemsHost;
+
         #endregion
     }
 }

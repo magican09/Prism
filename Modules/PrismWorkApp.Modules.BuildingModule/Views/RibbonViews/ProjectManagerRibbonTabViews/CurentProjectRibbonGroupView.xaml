@@ -39,10 +39,9 @@
         <RibbonButton Label ="Сохранить"  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/save_to_db.jpg" 
                 Command="{Binding ApplicationCommands.SaveAllCommand}"/>
         <cc:BldTaskDataGrid ItemsSource="{StaticResource  Constructions}" >
-            <!--<cc:BldTaskDataGrid.Columns>
-                <DataGridTextColumn  Header="Код"   Width="Auto" 
-                                                     Binding = "{Binding Path=Name}" />
-            </cc:BldTaskDataGrid.Columns>-->
+            <cc:BldTaskDataGrid.Columns>
+                <DataGridTextColumn  Header="Код"   />
+            </cc:BldTaskDataGrid.Columns>
         </cc:BldTaskDataGrid>
         
     </StackPanel>

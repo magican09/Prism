@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <ProjectGuid>{51b8f0ab-a844-41bb-b659-9d7afb68d3b7}</ProjectGuid>
+    <ProjectGuid>{51B8F0AB-A844-41BB-B659-9D7AFB68D3B7}</ProjectGuid>
     <OutputPath>.</OutputPath>
     <OutputType>Library</OutputType>
     <AssemblyName>System.Web.Entity</AssemblyName>
@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\clr\src\bcl\mscorlib.csproj">
@@ -92,7 +92,9 @@
     <Compile Include="System\Data\WebControls\EntityDataSourceUtil.cs" />
     <Compile Include="System\Data\WebControls\EntityDataSourceValidationException.cs" />
     <Compile Include="System\Data\WebControls\EntityDataSourceView.cs" />
-    <Compile Include="System\Data\WebControls\EntityDataSourceViewSchema.cs" />
+    <Compile Include="System\Data\WebControls\EntityDataSourceViewSchema.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="System\Data\WebControls\EntityDataSourceWrapper.cs" />
     <Compile Include="System\Data\WebControls\EntityDataSourceWrapperCollection.cs" />
     <Compile Include="System\Data\WebControls\EntityDataSourceWrapperPropertyDescriptor.cs" />

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <ProjectGuid>{695a711a-f3be-4114-b32e-aefdc39485cb}</ProjectGuid>
+    <ProjectGuid>{695A711A-F3BE-4114-B32E-AEFDC39485CB}</ProjectGuid>
     <OutputPath>.</OutputPath>
     <OutputType>Library</OutputType>
     <AssemblyName>System.Web.Mobile</AssemblyName>
@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\clr\src\bcl\mscorlib.csproj">
@@ -178,7 +178,9 @@
     <Compile Include="UI\MobileControls\Design\Adapters\DesignerValidatorAdapter.cs" />
     <Compile Include="UI\MobileControls\Design\Adapters\MSHTMLHostUtil.cs" />
     <Compile Include="UI\MobileControls\Design\AdRotatorDesigner.cs" />
-    <Compile Include="UI\MobileControls\Design\AppliedDeviceFiltersDialog.cs" />
+    <Compile Include="UI\MobileControls\Design\AppliedDeviceFiltersDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\AppliedDeviceFiltersEditor.cs" />
     <Compile Include="UI\MobileControls\Design\BaseTemplatedMobileComponentEditor.cs" />
     <Compile Include="UI\MobileControls\Design\BaseValidatorDesigner.cs" />
@@ -199,8 +201,12 @@
     <Compile Include="UI\MobileControls\Design\Converters\StyleReferenceConverter.cs" />
     <Compile Include="UI\MobileControls\Design\Converters\ValidatedMobileControlConverter.cs" />
     <Compile Include="UI\MobileControls\Design\DesignerCapabilities.cs" />
-    <Compile Include="UI\MobileControls\Design\DesignerForm.cs" />
-    <Compile Include="UI\MobileControls\Design\DeviceFilterEditorDialog.cs" />
+    <Compile Include="UI\MobileControls\Design\DesignerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\MobileControls\Design\DeviceFilterEditorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\DeviceSpecificDesigner.cs" />
     <Compile Include="UI\MobileControls\Design\DeviceSpecificDialogCachedState.cs" />
     <Compile Include="UI\MobileControls\Design\ExternDll.cs" />
@@ -218,11 +224,19 @@
     <Compile Include="UI\MobileControls\Design\LabelDesigner.cs" />
     <Compile Include="UI\MobileControls\Design\LinkDesigner.cs" />
     <Compile Include="UI\MobileControls\Design\ListComponentEditor.cs" />
-    <Compile Include="UI\MobileControls\Design\ListComponentEditorPage.cs" />
+    <Compile Include="UI\MobileControls\Design\ListComponentEditorPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\ListDesigner.cs" />
-    <Compile Include="UI\MobileControls\Design\ListGeneralPage.cs" />
-    <Compile Include="UI\MobileControls\Design\ListItemsPage.cs" />
-    <Compile Include="UI\MobileControls\Design\MobileComponentEditorPage.cs" />
+    <Compile Include="UI\MobileControls\Design\ListGeneralPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\MobileControls\Design\ListItemsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\MobileControls\Design\MobileComponentEditorPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\MobileContainerDesigner.cs" />
     <Compile Include="UI\MobileControls\Design\MobileControlDesigner.cs" />
     <Compile Include="UI\MobileControls\Design\MobileControlPersister.cs" />
@@ -231,41 +245,67 @@
     <Compile Include="UI\MobileControls\Design\MobileUITypeEditor.cs" />
     <Compile Include="UI\MobileControls\Design\MobileUserControlDesigner.cs" />
     <Compile Include="UI\MobileControls\Design\NativeMethods.cs" />
-    <Compile Include="UI\MobileControls\Design\ObjectListCommandsPage.cs" />
+    <Compile Include="UI\MobileControls\Design\ObjectListCommandsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\ObjectListComponentEditor.cs" />
     <Compile Include="UI\MobileControls\Design\ObjectListDesigner.cs" />
-    <Compile Include="UI\MobileControls\Design\ObjectListFieldsPage.cs" />
-    <Compile Include="UI\MobileControls\Design\ObjectListGeneralPage.cs" />
+    <Compile Include="UI\MobileControls\Design\ObjectListFieldsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\MobileControls\Design\ObjectListGeneralPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\PanelDesigner.cs" />
     <Compile Include="UI\MobileControls\Design\PhoneCallDesigner.cs" />
-    <Compile Include="UI\MobileControls\Design\PropertyOverridesDialog.cs" />
+    <Compile Include="UI\MobileControls\Design\PropertyOverridesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\PropertyOverridesTypeEditor.cs" />
     <Compile Include="UI\MobileControls\Design\SafeNativeMethods.cs" />
     <Compile Include="UI\MobileControls\Design\SelectionListComponentEditor.cs" />
     <Compile Include="UI\MobileControls\Design\SelectionListDesigner.cs" />
     <Compile Include="UI\MobileControls\Design\SR.cs" />
-    <Compile Include="UI\MobileControls\Design\StylesEditorDialog.cs" />
+    <Compile Include="UI\MobileControls\Design\StylesEditorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\StyleSheetComponentEditor.cs" />
     <Compile Include="UI\MobileControls\Design\StyleSheetDesigner.cs" />
     <Compile Include="UI\MobileControls\Design\StyleSheetRefUrlEditor.cs" />
     <Compile Include="UI\MobileControls\Design\TableFieldsEditor.cs" />
-    <Compile Include="UI\MobileControls\Design\TemplatingOptionsDialog.cs" />
+    <Compile Include="UI\MobileControls\Design\TemplatingOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\TextBoxDesigner.cs" />
     <Compile Include="UI\MobileControls\Design\TextViewDesigner.cs" />
-    <Compile Include="UI\MobileControls\Design\Util\DefaultDialogButtons.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\DefaultDialogButtons.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\Util\DesignerUtility.cs" />
-    <Compile Include="UI\MobileControls\Design\Util\EditableTreeList.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\EditableTreeList.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\Util\FileReader.cs" />
     <Compile Include="UI\MobileControls\Design\Util\GenericUI.cs" />
-    <Compile Include="UI\MobileControls\Design\Util\GroupLabel.cs" />
-    <Compile Include="UI\MobileControls\Design\Util\HeaderLabel.cs" />
-    <Compile Include="UI\MobileControls\Design\Util\HeaderPanel.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\GroupLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\MobileControls\Design\Util\HeaderLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\MobileControls\Design\Util\HeaderPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\Util\ImageCreator.cs" />
     <Compile Include="UI\MobileControls\Design\Util\InterchangeableLists.cs" />
-    <Compile Include="UI\MobileControls\Design\Util\MSHTMLHost.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\MSHTMLHost.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\Util\SimpleParser.cs" />
     <Compile Include="UI\MobileControls\Design\Util\TemporaryBitmapFile.cs" />
-    <Compile Include="UI\MobileControls\Design\Util\UnsettableComboBox.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\UnsettableComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\Design\Util\WbmpConverter.cs" />
     <Compile Include="UI\MobileControls\Design\Util\WebConfigManager.cs" />
     <Compile Include="UI\MobileControls\Design\ValidationSummaryDesigner.cs" />
@@ -275,7 +315,9 @@
     <Compile Include="UI\MobileControls\DeviceSpecific.cs" />
     <Compile Include="UI\MobileControls\DeviceSpecificChoice.cs" />
     <Compile Include="UI\MobileControls\DeviceSpecificChoiceCollection.cs" />
-    <Compile Include="UI\MobileControls\ErrorFormatterPage.cs" />
+    <Compile Include="UI\MobileControls\ErrorFormatterPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\FactoryGenerator.cs" />
     <Compile Include="UI\MobileControls\FontInfo.cs" />
     <Compile Include="UI\MobileControls\Form.cs" />
@@ -310,9 +352,13 @@
     <Compile Include="UI\MobileControls\MobileControlsSectionHelper.cs" />
     <Compile Include="UI\MobileControls\MobileListItem.cs" />
     <Compile Include="UI\MobileControls\MobileListItemCollection.cs" />
-    <Compile Include="UI\MobileControls\MobilePage.cs" />
+    <Compile Include="UI\MobileControls\MobilePage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\MobileSysDescriptionAttribute.cs" />
-    <Compile Include="UI\MobileControls\MobileUserControl.cs" />
+    <Compile Include="UI\MobileControls\MobileUserControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="UI\MobileControls\ObjectList.cs" />
     <Compile Include="UI\MobileControls\ObjectListCommand.cs" />
     <Compile Include="UI\MobileControls\ObjectListCommandCollection.cs" />

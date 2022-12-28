@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <ProjectGuid>{db3703cc-a1d5-42b5-892b-85450ff822e0}</ProjectGuid>
+    <ProjectGuid>{DB3703CC-A1D5-42B5-892B-85450FF822E0}</ProjectGuid>
     <OutputPath>.</OutputPath>
     <OutputType>Library</OutputType>
     <AssemblyName>System</AssemblyName>
@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\clr\src\bcl\mscorlib.csproj">
@@ -31,8 +31,12 @@
     <Compile Include="..\..\..\InternalApis\Clr\inc\LocalAppContext.cs" />
     <Compile Include="..\..\..\InternalApis\NDP_Common\inc\PinnableBufferCache.cs" />
     <Compile Include="..\..\..\InternalApis\NDP_FX\inc\ZLibNative.cs" />
-    <Compile Include="compmod\microsoft\csharp\csharpcodeprovider.cs" />
-    <Compile Include="compmod\microsoft\visualbasic\VBCodeProvider.cs" />
+    <Compile Include="compmod\microsoft\csharp\csharpcodeprovider.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="compmod\microsoft\visualbasic\VBCodeProvider.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="compmod\microsoft\win32\NativeMethods.cs" />
     <Compile Include="compmod\microsoft\win32\PowerModeChangedEventArgs.cs" />
     <Compile Include="compmod\microsoft\win32\PowerModeChangedEventHandler.cs" />
@@ -150,7 +154,9 @@
     <Compile Include="compmod\system\codedom\CodeVariableReferenceExpression.cs" />
     <Compile Include="compmod\system\codedom\compiler\CodeCompiler.cs" />
     <Compile Include="compmod\system\codedom\compiler\CodeDomConfigurationHandler.cs" />
-    <Compile Include="compmod\system\codedom\compiler\CodeDOMProvider.cs" />
+    <Compile Include="compmod\system\codedom\compiler\CodeDOMProvider.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="compmod\system\codedom\compiler\CodeGenerator.cs" />
     <Compile Include="compmod\system\codedom\compiler\CodeGeneratorOptions.cs" />
     <Compile Include="compmod\system\codedom\compiler\CodeParser.cs" />
@@ -212,7 +218,9 @@
     <Compile Include="compmod\system\componentmodel\AsyncOperationManager.cs" />
     <Compile Include="compmod\system\componentmodel\AttributeCollection.cs" />
     <Compile Include="compmod\system\componentmodel\AttributeProviderAttribute.cs" />
-    <Compile Include="compmod\system\componentmodel\BackgroundWorker.cs" />
+    <Compile Include="compmod\system\componentmodel\BackgroundWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="compmod\system\componentmodel\BaseComponentEditor.cs" />
     <Compile Include="compmod\system\componentmodel\basenumberconverter.cs" />
     <Compile Include="compmod\system\componentmodel\BindableAttribute.cs" />
@@ -232,7 +240,9 @@
     <Compile Include="compmod\system\componentmodel\CollectionConverter.cs" />
     <Compile Include="compmod\system\componentmodel\ComplexBindingPropertiesAttribute.cs" />
     <Compile Include="compmod\system\componentmodel\CompModSwitches.cs" />
-    <Compile Include="compmod\system\componentmodel\Component.cs" />
+    <Compile Include="compmod\system\componentmodel\Component.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="compmod\system\componentmodel\ComponentCollection.cs" />
     <Compile Include="compmod\system\componentmodel\ComponentConverter.cs" />
     <Compile Include="compmod\system\componentmodel\ComponentResourceManager.cs" />
@@ -418,7 +428,9 @@
     <Compile Include="compmod\system\componentmodel\ListSortDirection.cs" />
     <Compile Include="compmod\system\componentmodel\LocalizableAttribute.cs" />
     <Compile Include="compmod\system\componentmodel\LookupBindingPropertiesAttribute.cs" />
-    <Compile Include="compmod\system\componentmodel\MarshalByValueComponent.cs" />
+    <Compile Include="compmod\system\componentmodel\MarshalByValueComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="compmod\system\componentmodel\MaskedTextProvider.cs" />
     <Compile Include="compmod\system\componentmodel\MaskedTextResultHint.cs" />
     <Compile Include="compmod\system\componentmodel\MemberDescriptor.cs" />
@@ -905,7 +917,9 @@
     <Compile Include="net\System\Net\UnicodeDecodingConformance.cs" />
     <Compile Include="net\System\Net\UnicodeEncodingConformance.cs" />
     <Compile Include="net\System\Net\UnsafeNativeMethods.cs" />
-    <Compile Include="net\System\Net\webclient.cs" />
+    <Compile Include="net\System\Net\webclient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="net\System\Net\WebException.cs" />
     <Compile Include="net\System\Net\WebExceptionStatus.cs" />
     <Compile Include="net\System\Net\WebHeaderCollection.cs" />
@@ -1007,7 +1021,9 @@
     <Compile Include="services\io\system\io\ErrorEventHandler.cs" />
     <Compile Include="services\io\system\io\FileSystemEventArgs.cs" />
     <Compile Include="services\io\system\io\FileSystemEventHandler.cs" />
-    <Compile Include="services\io\system\io\FileSystemWatcher.cs" />
+    <Compile Include="services\io\system\io\FileSystemWatcher.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="services\io\system\io\InternalBufferOverflowException.cs" />
     <Compile Include="services\io\system\io\IODescriptionAttribute.cs" />
     <Compile Include="services\io\system\io\PatternMatcher.cs" />
@@ -1026,8 +1042,12 @@
     <Compile Include="services\monitoring\system\diagnosticts\EntryWrittenEventArgs.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\EntryWrittenEventHandler.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\EventData.cs" />
-    <Compile Include="services\monitoring\system\diagnosticts\EventLog.cs" />
-    <Compile Include="services\monitoring\system\diagnosticts\EventLogEntry.cs" />
+    <Compile Include="services\monitoring\system\diagnosticts\EventLog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="services\monitoring\system\diagnosticts\EventLogEntry.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="services\monitoring\system\diagnosticts\EventLogEntryCollection.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\EventLogEntryType.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\EventLogInternal.cs" />
@@ -1045,7 +1065,9 @@
     <Compile Include="services\monitoring\system\diagnosticts\InstanceDataCollectionCollection.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\MonitoringDescriptionAttribute.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\OverflowAction.cs" />
-    <Compile Include="services\monitoring\system\diagnosticts\PerformanceCounter.cs" />
+    <Compile Include="services\monitoring\system\diagnosticts\PerformanceCounter.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="services\monitoring\system\diagnosticts\PerformanceCounterCategory.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\PerformanceCounterCategoryType.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\PerformanceCounterInstanceLifetime.cs" />
@@ -1057,13 +1079,19 @@
     <Compile Include="services\monitoring\system\diagnosticts\PerformanceCounterPermissionEntry.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\PerformanceCounterPermissionEntryCollection.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\PerformanceCounterType.cs" />
-    <Compile Include="services\monitoring\system\diagnosticts\Process.cs" />
+    <Compile Include="services\monitoring\system\diagnosticts\Process.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="services\monitoring\system\diagnosticts\ProcessManager.cs" />
-    <Compile Include="services\monitoring\system\diagnosticts\ProcessModule.cs" />
+    <Compile Include="services\monitoring\system\diagnosticts\ProcessModule.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="services\monitoring\system\diagnosticts\ProcessModuleCollection.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\ProcessPriorityClass.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\ProcessStartInfo.cs" />
-    <Compile Include="services\monitoring\system\diagnosticts\ProcessThread.cs" />
+    <Compile Include="services\monitoring\system\diagnosticts\ProcessThread.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="services\monitoring\system\diagnosticts\ProcessThreadCollection.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\processwaithandle.cs" />
     <Compile Include="services\monitoring\system\diagnosticts\ProcessWindowStyle.cs" />
@@ -1075,7 +1103,9 @@
     <Compile Include="services\monitoring\system\diagnosticts\ThreadWaitReason.cs" />
     <Compile Include="services\timers\system\timers\ElapsedEventArgs.cs" />
     <Compile Include="services\timers\system\timers\ElapsedEventHandler.cs" />
-    <Compile Include="services\timers\system\timers\Timer.cs" />
+    <Compile Include="services\timers\system\timers\Timer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="services\timers\system\timers\TimersDescriptionAttribute.cs" />
     <Compile Include="sys\AppContextDefaultValues.Defaults.cs" />
     <Compile Include="sys\AssemblyInfo.cs" />
@@ -1164,11 +1194,15 @@
     <Compile Include="sys\system\io\ports\Parity.cs" />
     <Compile Include="sys\system\io\ports\SerialErrors.cs" />
     <Compile Include="sys\system\io\ports\SerialPinChanges.cs" />
-    <Compile Include="sys\system\io\ports\SerialPort.cs" />
+    <Compile Include="sys\system\io\ports\SerialPort.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="sys\system\io\ports\SerialReceived.cs" />
     <Compile Include="sys\system\io\ports\SerialStream.cs" />
     <Compile Include="sys\system\io\ports\StopBits.cs" />
-    <Compile Include="sys\system\Media\SoundPlayer.cs" />
+    <Compile Include="sys\system\Media\SoundPlayer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="sys\system\Media\SystemSounds.cs" />
     <Compile Include="sys\system\Reflection\ICustomTypeProvider.cs" />
     <Compile Include="sys\system\runtime\interopservices\DefaultParameterValueAttribute.cs" />

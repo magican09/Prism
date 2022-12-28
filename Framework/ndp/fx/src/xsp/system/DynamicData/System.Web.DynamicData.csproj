@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <ProjectGuid>{08f5b97b-8630-4b30-a6b5-28ae1f0b5636}</ProjectGuid>
+    <ProjectGuid>{08F5B97B-8630-4B30-A6B5-28AE1F0B5636}</ProjectGuid>
     <OutputPath>.</OutputPath>
     <OutputType>Library</OutputType>
     <AssemblyName>System.Web.DynamicData</AssemblyName>
@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\clr\src\bcl\mscorlib.csproj">
@@ -119,12 +119,18 @@
     <Compile Include="DynamicData\DynamicValidator.cs" />
     <Compile Include="DynamicData\EntityTemplate.cs" />
     <Compile Include="DynamicData\EntityTemplateFactory.cs" />
-    <Compile Include="DynamicData\EntityTemplateUserControl.cs" />
+    <Compile Include="DynamicData\EntityTemplateUserControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="DynamicData\FieldTemplateFactory.cs" />
-    <Compile Include="DynamicData\FieldTemplateUserControl.cs" />
+    <Compile Include="DynamicData\FieldTemplateUserControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="DynamicData\FilterFactory.cs" />
     <Compile Include="DynamicData\FilterRepeater.cs" />
-    <Compile Include="DynamicData\FilterUserControlBase.cs" />
+    <Compile Include="DynamicData\FilterUserControlBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="DynamicData\IControlParameterTarget.cs" />
     <Compile Include="DynamicData\IFieldFormattingOptions.cs" />
     <Compile Include="DynamicData\IFieldTemplate.cs" />
@@ -160,11 +166,15 @@
     <Compile Include="DynamicData\ModelProviders\TableProvider.cs" />
     <Compile Include="DynamicData\PageAction.cs" />
     <Compile Include="DynamicData\QueryableFilterRepeater.cs" />
-    <Compile Include="DynamicData\QueryableFilterUserControl.cs" />
+    <Compile Include="DynamicData\QueryableFilterUserControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="DynamicData\QueryStringHandler.cs" />
     <Compile Include="DynamicData\RepeaterDataBoundAdapter.cs" />
     <Compile Include="DynamicData\SimpleFieldTemplateFactory.cs" />
-    <Compile Include="DynamicData\SimpleFieldTemplateUserControl.cs" />
+    <Compile Include="DynamicData\SimpleFieldTemplateUserControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="DynamicData\TableNameAttribute.cs" />
     <Compile Include="DynamicData\Util\AttributeExtensions.cs" />
     <Compile Include="DynamicData\Util\DataControlHelper.cs" />

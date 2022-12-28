@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <ProjectGuid>{059b88da-ce73-4af9-8680-fb7ab44d06e7}</ProjectGuid>
+    <ProjectGuid>{059B88DA-CE73-4AF9-8680-FB7AB44D06E7}</ProjectGuid>
     <OutputPath>.</OutputPath>
     <OutputType>Library</OutputType>
     <AssemblyName>System.Data.Entity</AssemblyName>
@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\clr\src\bcl\mscorlib.csproj">
@@ -207,9 +207,13 @@
     <Compile Include="System\Data\EntityClient\DbParameterCollectionHelper.cs" />
     <Compile Include="System\Data\EntityClient\DbParameterHelper.cs" />
     <Compile Include="System\Data\EntityClient\EntityAdapter.cs" />
-    <Compile Include="System\Data\EntityClient\EntityCommand.cs" />
+    <Compile Include="System\Data\EntityClient\EntityCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="System\Data\EntityClient\EntityCommandDefinition.cs" />
-    <Compile Include="System\Data\EntityClient\EntityConnection.cs" />
+    <Compile Include="System\Data\EntityClient\EntityConnection.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="System\Data\EntityClient\EntityConnectionStringBuilder.cs" />
     <Compile Include="System\Data\EntityClient\EntityDataReader.cs" />
     <Compile Include="System\Data\EntityClient\EntityParameter.cs" />

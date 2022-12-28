@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Text;
@@ -21,6 +22,12 @@ namespace bldCustomControlLibrary
 
 
         }
+
+        private static void OnCoerceItemsSourceProperty(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+           
+        }
+
         public BldTaskDataGrid()
         {
             ((INotifyCollectionChanged)Items).CollectionChanged += new NotifyCollectionChangedEventHandler(OnItemsCollectionChanged);
@@ -74,22 +81,22 @@ namespace bldCustomControlLibrary
             base.PrepareContainerForItemOverride(element, item);
 
            BldTaskDataGridRow row = (BldTaskDataGridRow)element;
-            //if (row.DataGridOwner != this)
-            //{
-            //    //    row.Tracker.StartTracking(ref _rowTrackingRoot);
-            //    if (item == CollectionView.NewItemPlaceholder ||
-            //        (IsAddingNewItem && item == EditableItems.CurrentAddItem))
-            //    {
-            //        row.IsNewItem = true;
-            //    }
-            //    else
-            //    {
-            //        row.ClearValue(BldTaskDataGridRow.IsNewItemPropertyKey);
-            //    }
-            //    //   EnsureInternalScrollControls();
-            //    //    EnqueueNewItemMarginComputation();
-            //}
-                   row.PrepareRow(item, this); 
+            if (row.DataGridOwner != this)
+            {
+                 row.Tracker.StartTracking(ref _rowTrackingRoot); //Создаем или регистриуем связаннный список DataRow  объектов
+                if (item == CollectionView.NewItemPlaceholder ||
+                    (IsAddingNewItem && item == EditableItems.CurrentAddItem)) //If DataRow added to DataGrid ItemsCollection 
+                {
+                    row.IsNewItem = true;
+                }
+                else
+                {
+                    row.ClearValue(BldTaskDataGridRow.IsNewItemPropertyKey);
+                }
+                //    //   EnsureInternalScrollControls();
+                //    //    EnqueueNewItemMarginComputation();
+                }
+                row.PrepareRow(item, this); 
             //    OnLoadingRow(new DataGridRowEventArgs(row));
         }
 
@@ -162,33 +169,92 @@ namespace bldCustomControlLibrary
         }
         #endregion
         #region Column Auto Generation 
-        private static object OnCoerceItemsSourceProperty(DependencyObject d, object baseValue)
+        protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
         {
-            BldTaskDataGrid dataGrid = (BldTaskDataGrid)d;
-            //if (baseValue != dataGrid._cachedItemsSource && dataGrid._cachedItemsSource != null)
+            base.OnItemsSourceChanged(oldValue, newValue);
+
+            // ItemsControl calls a ClearValue on ItemsSource property
+            // whenever it is set to null. So Coercion is not called
+            // in such case. Hence clearing the SortDescriptions and
+            // GroupDescriptions here when new value is null.
+            //if (newValue == null)
             //{
-            //    dataGrid.ClearSortDescriptionsOnItemsSourceChange();
+            //    ClearSortDescriptionsOnItemsSourceChange();
             //}
 
-            return baseValue;
-        }
-        /// <summary>
-        ///     Helper method to clear SortDescriptions and all related
-        ///     member when ItemsSource changes
-        /// </summary>
-        private void ClearSortDescriptionsOnItemsSourceChange()
-        {
-            Items.SortDescriptions.Clear();
-            _sortingStarted = false;
-            List<int> groupingSortDescriptionIndices = GroupingSortDescriptionIndices;
-            if (groupingSortDescriptionIndices != null)
-            {
-                groupingSortDescriptionIndices.Clear();
-            }
-            //foreach (DataGridColumn column in Columns)
+            _cachedItemsSource = newValue;
+
+            //using (UpdateSelectedCells())
             //{
-            //    column.SortDirection = null;
+            //    // Selector will try to maintain the previous row selection.
+            //    // Keep SelectedCells in sync.
+            //    List<Tuple<int, int>> ranges = new List<Tuple<int, int>>();
+            //    LocateSelectedItems(ranges);
+            //    _selectedCells.RestoreOnlyFullRows(ranges);
             //}
+
+           // if (AutoGenerateColumns == true)
+            {
+                RegenerateAutoColumns();
+            }
+
+            //InternalColumns.RefreshAutoWidthColumns = true;
+            //InternalColumns.InvalidateColumnWidthsComputation();
+
+            //CoerceValue(CanUserAddRowsProperty);
+            //CoerceValue(CanUserDeleteRowsProperty);
+            //DataGridHelper.TransferProperty(this, CanUserSortColumnsProperty);
+
+            //ResetRowHeaderActualWidth();
+
+            //UpdateNewItemPlaceholder(/* isAddingNewItem = */ false);
+
+            //HasCellValidationError = false;
+            //HasRowValidationError = false;
+        }
+
+        /// <summary>
+        /// Method which regenerates the columns for the datagrid
+        /// </summary>
+        private void RegenerateAutoColumns()
+        {
+        //    DeleteAutoColumns();
+            AddAutoColumns();
+        }
+      
+        /// <summary>
+        /// Method which generated auto columns and adds to the data grid.
+        /// </summary>
+        private void AddAutoColumns()
+        {
+            ReadOnlyCollection<ItemPropertyInfo> itemProperties = ((IItemProperties)Items).ItemProperties;
+            //if (itemProperties == null && DataItemsCount == 0)
+            //{
+            //    // do deferred generation
+            //    DeferAutoGeneration = true;
+            //}
+            //else if (!_measureNeverInvoked)
+            //{
+            //    DataGrid.GenerateColumns(
+            //        itemProperties,
+            //        this,
+            //        null);
+
+            //    DeferAutoGeneration = false;
+
+            //    OnAutoGeneratedColumns(EventArgs.Empty);
+            //}
+        }
+        #endregion
+        #region Columns
+
+        /// <summary>
+        ///     A collection of column definitions describing the individual
+        ///     columns of each row.
+        /// </summary>
+        public ObservableCollection<BldTaskDataGridColumn> Columns
+        {
+            get { return _columns; }
         }
         #endregion
         #region Auto Sort
@@ -219,6 +285,10 @@ namespace bldCustomControlLibrary
         private bool _sortingStarted = false;                               // Flag used to track if Sorting ever started or not.
         private List<int> _groupingSortDescriptionIndices = null;           // List to hold the indices of SortDescriptions added for the sake of GroupDescriptions.
         private DataGridCell _currentCellContainer;                         // Reference to the cell container corresponding to CurrentCell (use CurrentCellContainer property instead)
+        private DataGridColumnCollection _columns;                          // Stores the columns
+
+        private ContainerTracking<BldTaskDataGridRow> _rowTrackingRoot;            // Root of a linked list of active row containers
+
 
         private const string ItemsPanelPartName = "PART_RowsPresenter";
         #endregion

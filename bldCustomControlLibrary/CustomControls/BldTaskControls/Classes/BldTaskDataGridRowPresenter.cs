@@ -5,7 +5,7 @@ using System.Windows.Controls;
 
 namespace bldCustomControlLibrary
 {
-    public class BldTaskDataGridRowPresenter:StackPanel
+    public class BldTaskDataGridRowPresenter:ItemsControl
     {
 
 

@@ -235,8 +235,7 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </local:BldTaskSelectiveScrollingGrid.RowDefinitions>
-                            <TextBlock>DaraOw</TextBlock>
-                            <local:BldTaskDataGridCellsPresenter x:Name="PART_BldTaskDataGridCellsPresenter" Grid.Column="1"
+                            <local:BldTaskDataGridCellsPresenter  Grid.Column="1"
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             <!--<TextBlock Text="Column 0" Grid.Column="0"/>
                             <TextBlock Text="Row 0" Grid.Column="0" Grid.Row="1"/>-->

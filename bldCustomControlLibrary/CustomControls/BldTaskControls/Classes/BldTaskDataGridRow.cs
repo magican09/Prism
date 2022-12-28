@@ -19,7 +19,7 @@ namespace bldCustomControlLibrary
         }
         public BldTaskDataGridRow()
         {
-           
+            _tracker = new ContainerTracking<BldTaskDataGridRow>(this);
         }
         public override void OnApplyTemplate()
         {
@@ -55,7 +55,7 @@ namespace bldCustomControlLibrary
         }
         internal void NotifyPropertyChanged(DependencyObject d, string propertyName, DependencyPropertyChangedEventArgs e, DataGridNotificationTarget target)
         {
-            if (BldTaskDataGridHelper.ShouldNotifyRows(target))
+            if (DataGridHelper.ShouldNotifyRows(target))
             {
                 if (e.Property == ItemProperty)
                 {
@@ -89,6 +89,59 @@ namespace bldCustomControlLibrary
         #region Row Generation
 
         /// <summary>
+        ///     Fired when the Row is attached to the DataGrid.  The scenario here is if the user is scrolling and
+        ///     the Row is a recycled container that was just added back to the visual tree.  Properties that rely on a value from
+        ///     the Grid should be reevaluated because they may be stale.  
+        /// </summary>
+        /// <remarks>
+        ///     Properties can obviously be stale if the DataGrid's value changes while the row is disconnected.  They can also
+        ///     be stale for unobvious reasons.
+        /// 
+        ///     For example, the Style property is invalidated when we detect a new Visual parent.  This happens for 
+        ///     elements in the row (such as the RowHeader) before Prepare is called on the Row.  The coercion callback
+        ///     will thus be unable to find the DataGrid and will return the wrong value.  
+        /// 
+        ///     There is a potential for perf work here.  If we know a DP isn't invalidated when the visual tree is reconnected
+        ///     and we know that the Grid hasn't modified that property then its value is likely fine.  We could also cache whether
+        ///     or not the Grid's property is the one that's winning.  If not, no need to redo the coercion.  This notification 
+        ///     is pretty fast already and thus not worth the work for now.
+        /// </remarks>
+        private void SyncProperties(bool forcePrepareCells)
+        {
+            // Coerce all properties on Row that depend on values from the DataGrid
+            // Style is ok since it's equivalent to ItemContainerStyle and has already been invalidated.
+            //DataGridHelper.TransferProperty(this, BackgroundProperty);
+            //DataGridHelper.TransferProperty(this, HeaderStyleProperty);
+            //DataGridHelper.TransferProperty(this, H   eaderTemplateProperty);
+            //DataGridHelper.TransferProperty(this, HeaderTemplateSelectorProperty);
+            //DataGridHelper.TransferProperty(this, ValidationErrorTemplateProperty);
+            //DataGridHelper.TransferProperty(this, DetailsTemplateProperty);
+            //DataGridHelper.TransferProperty(this, DetailsTemplateSelectorProperty);
+            //DataGridHelper.TransferProperty(this, DetailsVisibilityProperty);
+
+            CoerceValue(VisibilityProperty); // Handle NewItemPlaceholder case
+
+            //RestoreAttachedItemValue(this, DetailsVisibilityProperty);
+
+            var cellsPresenter = CellsPresenter;
+            if (cellsPresenter != null)
+            {
+                //cellsPresenter.SyncProperties(forcePrepareCells);
+                //RestoreAttachedItemValue(cellsPresenter, DataGridCellsPresenter.HeightProperty);
+            }
+
+            //if (DetailsPresenter != null)
+            //{
+            //    DetailsPresenter.SyncProperties();
+            //}
+
+            //if (RowHeader != null)
+            //{
+            //    RowHeader.SyncProperties();
+            //}
+        }
+
+        /// <summary>
         ///     Prepares a row container for active use.
         /// </summary>
         /// <remarks>
@@ -115,7 +168,14 @@ namespace bldCustomControlLibrary
                     forcePrepareCells = true;
                 }
 
-               
+                
+                // Since we just changed _owner we need to invalidate all child properties that rely on a value supplied by the DataGrid.
+                // A common scenario is when a recycled Row was detached from the visual tree and has just been reattached (we always clear out the 
+                // owner when recycling a container).
+                if (fireOwnerChanged)
+                {
+                    SyncProperties(forcePrepareCells);
+                }
             }
 
             //if (IsEditing)
@@ -136,6 +196,13 @@ namespace bldCustomControlLibrary
 
             //// Re-run validation, but wait until Binding has occured.
             //Dispatcher.BeginInvoke(new DispatcherOperationCallback(DelayedValidateWithoutUpdate), DispatcherPriority.DataBind, BindingGroup);
+        }
+        /// <summary>
+        ///     Used by the DataGrid owner to send notifications to the row container.
+        /// </summary>
+        internal ContainerTracking<BldTaskDataGridRow> Tracker
+        {
+            get { return _tracker; }
         }
 
         #endregion
@@ -215,6 +282,7 @@ namespace bldCustomControlLibrary
         #region Data
         private BldTaskDataGrid _owner;
         private BldTaskDataGridCellsPresenter _cellsPresenter;
+        private ContainerTracking<BldTaskDataGridRow> _tracker;
         #endregion
     }
 }

@@ -5,10 +5,10 @@ using System.Windows.Controls;
 
 namespace bldCustomControlLibrary
 {
-    public class BldTaskCell:DataGridCell
+    public class BldTaskDataGridCell:DataGridCell
     {
         //public  DataGridColumn Column { get; }
-        public BldTaskCell()
+        public BldTaskDataGridCell()
         {
 
         }

@@ -26,67 +26,89 @@ namespace bldCustomControlLibrary
         }
         public override void OnApplyTemplate()
         {
-            ObservableCollection<object> collection = new ObservableCollection<object>();
-            TextBlock textBlock = new TextBlock();
-            textBlock.Text = "CellPresenter";
-            TextBlock textBlock2 = new TextBlock();
-            textBlock2.Text = "CellPresenter 2";
-            collection.Add(textBlock);
-            collection.Add(textBlock2);
-            ItemsSource = collection;
+           
             base.OnApplyTemplate();
+
+            BldTaskDataGridRow owningRow = DataGridRowOwner;
+            owningRow.CellsPresenter = this;
+            Item = owningRow.Item;
         }
-        //protected override bool IsItemItsOwnContainerOverride(object item)
-        //{
-        //    return item is BldTaskCell;
-        //}
-        //protected override DependencyObject GetContainerForItemOverride()
-        //{
 
-        //    return new BldTaskCell();
-
-        //}
-        //
-        // Summary:
-        //     Gets the data item that the row represents.
-        //
-        // Returns:
-        //     The data item that the row represents.
-        public object Item { get; set; }
-
-
-    
-        // Summary:
-        //     Updates the displayed cells when the System.Windows.Controls.Primitives.DataGridCellsPresenter.Item
-        //     property value has changed.
-        //
-        // Parameters:
-        //   oldItem:
-        //     The previous value of the System.Windows.Controls.Primitives.DataGridCellsPresenter.Item
-        //     property.
-        //
-        //   newItem:
-        //     The new value of the System.Windows.Controls.Primitives.DataGridCellsPresenter.Item
-        //     property.
-        protected virtual void OnItemChanged(object oldItem, object newItem)
+        public object Item
         {
+            get
+            {
+                return _item;
+            }
 
+            internal set
+            {
+                if (_item != value)
+                {
+                    object oldItem = _item;
+                    _item = value;
+                    OnItemChanged(oldItem, _item);
+                }
+            }
         }
         
-        // Summary:
-        //     Updates the displayed cells when the System.Windows.Controls.DataGrid.Columns
-        //     collection has changed.
-        //
-        // Parameters:
-        //   columns:
-        //     The System.Windows.Controls.DataGrid.Columns collection.
-        //
-        //   e:
-        //     The event data from the System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged
-        //     event of the System.Windows.Controls.DataGrid.Columns collection.
-        protected internal virtual void OnColumnsChanged(ObservableCollection<DataGridColumn> columns, NotifyCollectionChangedEventArgs e)
+        /// <summary>
+        ///     Called when the value of the Item property changes.
+        /// </summary>
+        /// <param name="oldItem">The old value of Item.</param>
+        /// <param name="newItem">The new value of Item.</param>
+        protected virtual void OnItemChanged(object oldItem, object newItem)
         {
+            ObservableCollection<object> columns = new ObservableCollection<object>();
+            //ObservableCollection<DataGridColumn> columns = Columns;
 
+            //if (columns != null)
+            //{
+            //    // Either update or create a collection that will return the row's data item
+            //    // n number of times, where n is the number of columns.
+            //    MultipleCopiesCollection cellItems = ItemsSource as MultipleCopiesCollection;
+            //    if (cellItems == null)
+            //    {
+            //        cellItems = new MultipleCopiesCollection(newItem, columns.Count);
+            //        ItemsSource = cellItems;
+            //    }
+            //    else
+            //    {
+            //        cellItems.CopiedItem = newItem;
+            //    }
+            //}
+            TextBlock textBlock_1 = new TextBlock();
+            textBlock_1.Text = "item 1";
+            TextBlock textBlock_2 = new TextBlock();
+            textBlock_2.Text = "item 2";
+            TextBlock textBlock_3 = new TextBlock();
+            textBlock_3.Text = "item 3";
+            columns.Add(textBlock_1);
+            columns.Add(textBlock_2);
+            columns.Add(textBlock_3);
+
+            ItemsSource = columns;
         }
+        #region Helpers 
+        internal BldTaskDataGridRow DataGridRowOwner
+        {
+            get { return DataGridHelper.FindParent<BldTaskDataGridRow>(this);  }
+        }
+
+        private ObservableCollection<BldTaskDataGridColumn> Columns
+        {
+            get
+            {
+                BldTaskDataGridRow owningRow = DataGridRowOwner;
+                BldTaskDataGrid owningDataGrid = (owningRow != null) ? owningRow.DataGridOwner : null;
+                return (owningDataGrid != null) ? owningDataGrid.Columns : null;
+            }
+        }
+        #endregion
+        #region Data
+
+        private object _item;
+     
+        #endregion
     }
 }

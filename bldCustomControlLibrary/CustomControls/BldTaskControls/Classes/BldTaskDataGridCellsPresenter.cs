@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,7 +53,7 @@ namespace bldCustomControlLibrary
         protected virtual void OnItemChanged(object oldItem, object newItem)
         {
             ObservableCollection<object> collection = new ObservableCollection<object>();
-            ObservableCollection<DataGridColumn> columns = Columns;
+            ObservableCollection<BldTaskDataGridColumn> columns = Columns;
 
             //if (columns != null)
             //{
@@ -128,7 +129,7 @@ namespace bldCustomControlLibrary
             if (cellItems != null)
             {
                 BldTaskDataGridCell cell;
-                ObservableCollection<DataGridColumn> columns = dataGridOwner.Columns;
+                ObservableCollection<BldTaskDataGridColumn> columns = dataGridOwner.Columns;
                 int newColumnCount = columns.Count;
                 int oldColumnCount = cellItems.Count;
                 int dirtyCount = 0;
@@ -215,6 +216,26 @@ namespace bldCustomControlLibrary
             get { return _internalItemsHost; }
             set { _internalItemsHost = value; }
         }
+
+        /// <summary>
+        ///     Notification from the DataGrid that the columns collection has changed.
+        /// </summary>
+        /// <param name="columns">The columns collection.</param>
+        /// <param name="e">The event arguments from the collection's change event.</param>
+        protected internal virtual void OnColumnsChanged(ObservableCollection<BldTaskDataGridColumn> columns, NotifyCollectionChangedEventArgs e)
+        {
+            // Update the ItemsSource for the cells
+            //MultipleCopiesCollection cellItems = ItemsSource as MultipleCopiesCollection;
+            //if (cellItems != null)
+            //{
+            //    cellItems.MirrorCollectionChange(e);
+            //}
+            var itms = ItemsSource;
+            // For a reset event the only thing the MultipleCopiesCollection can do is set its count to 0.
+            Debug.Assert(
+                e.Action != NotifyCollectionChangedAction.Reset || columns.Count == 0,
+                "A Reset event should only be fired for a Clear event from the columns collection");
+        }
         #endregion
         #region Helpers 
         /// <summary>
@@ -238,7 +259,7 @@ namespace bldCustomControlLibrary
             get { return DataGridHelper.FindParent<BldTaskDataGridRow>(this);  }
         }
 
-        private ObservableCollection<DataGridColumn> Columns
+        private ObservableCollection<BldTaskDataGridColumn> Columns
         {
             get
             {

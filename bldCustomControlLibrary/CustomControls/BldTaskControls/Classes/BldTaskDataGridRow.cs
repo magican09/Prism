@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Text;
 using System.Windows;
@@ -73,10 +74,9 @@ namespace bldCustomControlLibrary
                 cellsPresenter.Item = newItem;
             }
         }
-      
-        #endregion
-        #region Notification Propagation
 
+        #endregion
+        #region Columns Notification
         /// <summary>
         ///     Set by the CellsPresenter when it is created.  Used by the Row to send down property change notifications.
         /// </summary>
@@ -84,6 +84,22 @@ namespace bldCustomControlLibrary
         {
             get { return _cellsPresenter; }
             set { _cellsPresenter = value; }
+        }
+        #endregion
+        #region Notification Propagation
+
+        /// <summary>
+        ///     Notification from the DataGrid that the columns collection has changed.
+        /// </summary>
+        /// <param name="columns">The columns collection.</param>
+        /// <param name="e">The event arguments from the collection's change event.</param>
+        protected internal virtual void OnColumnsChanged(ObservableCollection<BldTaskDataGridColumn> columns, NotifyCollectionChangedEventArgs e)
+        {
+            BldTaskDataGridCellsPresenter cellsPresenter = CellsPresenter;
+            if (cellsPresenter != null)
+            {
+                cellsPresenter.OnColumnsChanged(columns, e);
+            }
         }
         #endregion
         #region Row Generation
@@ -110,9 +126,9 @@ namespace bldCustomControlLibrary
         {
             // Coerce all properties on Row that depend on values from the DataGrid
             // Style is ok since it's equivalent to ItemContainerStyle and has already been invalidated.
-            //DataGridHelper.TransferProperty(this, BackgroundProperty);
+            DataGridHelper.TransferProperty(this, BackgroundProperty);
             //DataGridHelper.TransferProperty(this, HeaderStyleProperty);
-            //DataGridHelper.TransferProperty(this, H   eaderTemplateProperty);
+            //DataGridHelper.TransferProperty(this, HeaderTemplateProperty);
             //DataGridHelper.TransferProperty(this, HeaderTemplateSelectorProperty);
             //DataGridHelper.TransferProperty(this, ValidationErrorTemplateProperty);
             //DataGridHelper.TransferProperty(this, DetailsTemplateProperty);

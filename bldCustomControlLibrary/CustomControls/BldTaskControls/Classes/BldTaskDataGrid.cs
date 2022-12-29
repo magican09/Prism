@@ -19,7 +19,7 @@ namespace bldCustomControlLibrary
         static BldTaskDataGrid()
         {
             Type ownerType = typeof(BldTaskDataGrid);
-          //  DefaultStyleKeyProperty.OverrideMetadata(ownerType, new FrameworkPropertyMetadata(typeof(BldTaskDataGrid)));
+            //  DefaultStyleKeyProperty.OverrideMetadata(ownerType, new FrameworkPropertyMetadata(typeof(BldTaskDataGrid)));
             ItemsSourceProperty.OverrideMetadata(ownerType, new FrameworkPropertyMetadata((PropertyChangedCallback)null, OnCoerceItemsSourceProperty));
 
 
@@ -27,13 +27,15 @@ namespace bldCustomControlLibrary
 
         private static void OnCoerceItemsSourceProperty(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-           
-        }
 
+        }
         public BldTaskDataGrid()
         {
-            ((INotifyCollectionChanged)Items).CollectionChanged += new NotifyCollectionChangedEventHandler(OnItemsCollectionChanged);
+            _columns = new DataGridColumnCollection(this);
+            _columns.CollectionChanged += new NotifyCollectionChangedEventHandler(OnColumnsChanged);
 
+            ((INotifyCollectionChanged)Items).CollectionChanged += new NotifyCollectionChangedEventHandler(OnItemsCollectionChanged);
+          
 
         }
         #region Templation
@@ -42,11 +44,9 @@ namespace bldCustomControlLibrary
             base.OnApplyTemplate();
         }
         #endregion
-
         #region Item
 
         #endregion
-
         #region Notifications 
         internal void NotifyPropertyChanged(DependencyObject d, string propertyName, DependencyPropertyChangedEventArgs e, DataGridNotificationTarget target)
         {
@@ -54,11 +54,10 @@ namespace bldCustomControlLibrary
         }
         #endregion
         #region Notification Propagation
-
        
+
         #endregion
         #region Row Generation
-
         /// <summary>
         ///     Determines if an item is its own container.
         /// </summary>
@@ -66,7 +65,7 @@ namespace bldCustomControlLibrary
         /// <returns>true if the item is a DataGridRow, false otherwise.</returns>
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
-           return item is BldTaskDataGridRow;
+            return item is BldTaskDataGridRow;
         }
         /// <summary>
         ///     Instantiates an instance of a container.
@@ -75,9 +74,6 @@ namespace bldCustomControlLibrary
         protected override DependencyObject GetContainerForItemOverride()
         {
             return new BldTaskDataGridRow();
-            //TextBlock textBlock = new TextBlock();
-            //textBlock.Text  = "nhjhnkj";
-            //return textBlock;
         }
         /// <summary>
         ///     Prepares a new container for a given item.
@@ -87,11 +83,10 @@ namespace bldCustomControlLibrary
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
         {
             base.PrepareContainerForItemOverride(element, item);
-
-           BldTaskDataGridRow row = (BldTaskDataGridRow)element;
+            BldTaskDataGridRow row = (BldTaskDataGridRow)element;
             if (row.DataGridOwner != this)
             {
-                 row.Tracker.StartTracking(ref _rowTrackingRoot); //Создаем или регистриуем связаннный список DataRow  объектов
+                row.Tracker.StartTracking(ref _rowTrackingRoot); //Создаем или регистриуем связаннный список DataRow  объектов
                 if (item == CollectionView.NewItemPlaceholder ||
                     (IsAddingNewItem && item == EditableItems.CurrentAddItem)) //If DataRow added to DataGrid ItemsCollection 
                 {
@@ -103,8 +98,8 @@ namespace bldCustomControlLibrary
                 }
                 //    //   EnsureInternalScrollControls();
                 //    //    EnqueueNewItemMarginComputation();
-                }
-                row.PrepareRow(item, this); 
+            }
+            row.PrepareRow(item, this);
             //    OnLoadingRow(new DataGridRowEventArgs(row));
         }
 
@@ -123,7 +118,21 @@ namespace bldCustomControlLibrary
             //OnUnloadingRow(new DataGridRowEventArgs(row));
             //row.ClearRow(this);
         }
-
+     
+        /// <summary>
+        ///     Propagates the collection changed notification on Columns down to
+        ///     each active DataGridRow.
+        /// </summary>
+        /// <param name="e">The event arguments from the original collection changed event.</param>
+        private void UpdateColumnsOnRows(NotifyCollectionChangedEventArgs e)
+        {
+            ContainerTracking<BldTaskDataGridRow> tracker = _rowTrackingRoot;
+            while (tracker != null)
+            {
+                tracker.Container.OnColumnsChanged(_columns, e);
+                tracker = tracker.Next;
+            }
+        }
         private IEditableCollectionView EditableItems
         {
             get { return (IEditableCollectionView)Items; }
@@ -133,50 +142,55 @@ namespace bldCustomControlLibrary
             get { return EditableItems.IsAddingNew; }
         }
         #endregion
-        #region Colomn Autogeneration
-        protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
-        {
-            base.OnItemsChanged(e);
+        #region Columns Notification
 
-            //if (e.Action == NotifyCollectionChangedAction.Add)
-            //{
-            //    if (DeferAutoGeneration)
-            //    {
-            //        // Add Auto columns only if it was deferred earlier
-            //        AddAutoColumns();
-            //    }
-            //}
-            //else if ((e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Replace))
-            //{
-            //    if (HasRowValidationError || HasCellValidationError)
-            //    {
-            //        foreach (object item in e.OldItems)
-            //        {
-            //            if (IsAddingOrEditingRowItem(item))
-            //            {
-            //                HasRowValidationError = false;
-            //                HasCellValidationError = false;
-            //                break;
-            //            }
-            //        }
-            //    }
-            //}
-            //else if (e.Action == NotifyCollectionChangedAction.Reset)
-            //{
-            //    ResetRowHeaderActualWidth();
-            //    HasRowValidationError = false;
-            //    HasCellValidationError = false;
-            //}
-        }
+       
+
         #endregion
+        //#region Colomn Autogeneration
+        //protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
+        //{
+        //    base.OnItemsChanged(e);
+
+        //    //if (e.Action == NotifyCollectionChangedAction.Add)
+        //    //{
+        //    //    if (DeferAutoGeneration)
+        //    //    {
+        //    //        // Add Auto columns only if it was deferred earlier
+        //    //        AddAutoColumns();
+        //    //    }
+        //    //}
+        //    //else if ((e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Replace))
+        //    //{
+        //    //    if (HasRowValidationError || HasCellValidationError)
+        //    //    {
+        //    //        foreach (object item in e.OldItems)
+        //    //        {
+        //    //            if (IsAddingOrEditingRowItem(item))
+        //    //            {
+        //    //                HasRowValidationError = false;
+        //    //                HasCellValidationError = false;
+        //    //                break;
+        //    //            }
+        //    //        }
+        //    //    }
+        //    //}
+        //    //else if (e.Action == NotifyCollectionChangedAction.Reset)
+        //    //{
+        //    //    ResetRowHeaderActualWidth();
+        //    //    HasRowValidationError = false;
+        //    //    HasCellValidationError = false;
+        //    //}
+        //}
+        //#endregion
         #region Selection
         private void OnItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-          
-            
+
+
         }
         #endregion
-        #region Column Auto Generation 
+        #region Column (Auto) Generation 
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
         {
             base.OnItemsSourceChanged(oldValue, newValue);
@@ -201,7 +215,8 @@ namespace bldCustomControlLibrary
             //    _selectedCells.RestoreOnlyFullRows(ranges);
             //}
 
-           // if (AutoGenerateColumns == true)
+             //if (AutoGenerateColumns == true)
+             if(false)
             {
                 RegenerateAutoColumns();
             }
@@ -226,17 +241,17 @@ namespace bldCustomControlLibrary
         /// </summary>
         private void RegenerateAutoColumns()
         {
-        //    DeleteAutoColumns();
-            AddAutoColumns();
+            //    DeleteAutoColumns();
+            AddColumns();
         }
-      
+
         /// <summary>
         /// Method which generated auto columns and adds to the data grid.
         /// </summary>
-        private void AddAutoColumns()
+        private void AddColumns()
         {
             ReadOnlyCollection<ItemPropertyInfo> itemProperties = ((IItemProperties)Items).ItemProperties;
-           
+
             //if (itemProperties == null && DataItemsCount == 0)
             //{
             //    // do deferred generation
@@ -318,7 +333,7 @@ namespace bldCustomControlLibrary
                     {
                         columnCollection.Add(dataGridColumn);
                     }
-                   
+
                 }
             }
         }
@@ -336,9 +351,108 @@ namespace bldCustomControlLibrary
         ///     A collection of column definitions describing the individual
         ///     columns of each row.
         /// </summary>
-        public ObservableCollection<DataGridColumn> Columns
+        public ObservableCollection<BldTaskDataGridColumn> Columns
         {
             get { return _columns; }
+        }
+        /// <summary>
+        ///     Updates the reference to this DataGrid on the list of columns.
+        /// </summary>
+        /// <param name="list">The list of affected columns.</param>
+        /// <param name="clear">Whether to add or remove the reference to this grid.</param>
+        internal void UpdateDataGridReference(IList list, bool clear)
+        {
+            int numItems = list.Count;
+            for (int i = 0; i < numItems; i++)
+            {
+                BldTaskDataGridColumn column = (BldTaskDataGridColumn)list[i];
+                if (clear)
+                {
+                    // Set the owner to null only if the current owner is this grid
+                    if (column.DataGridOwner == this)
+                    {
+                        column.DataGridOwner = null;
+                    }
+                }
+                else
+                {
+                    // Remove the column from any old owner
+                    if (column.DataGridOwner != null && column.DataGridOwner != this)
+                    {
+                        column.DataGridOwner.Columns.Remove(column);
+                    }
+
+                    column.DataGridOwner = this;
+                }
+            }
+        }
+        /// <summary>
+        ///     Called when the Columns collection changes.
+        /// </summary>
+        private void OnColumnsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // Update the reference to this DataGrid on the affected column(s)
+            // and update the SelectedCells collection.
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    UpdateDataGridReference(e.NewItems, /* clear = */ false);
+                    UpdateColumnSizeConstraints(e.NewItems);
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    UpdateDataGridReference(e.OldItems, /* clear = */ true);
+                    break;
+
+                case NotifyCollectionChangedAction.Replace:
+                    UpdateDataGridReference(e.OldItems, /* clear = */ true);
+                    UpdateDataGridReference(e.NewItems, /* clear = */ false);
+                    UpdateColumnSizeConstraints(e.NewItems);
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    // We can't clear column references on Reset: _columns has 0 items and e.OldItems is empty.
+                  //  _selectedCells.Clear();
+                    break;
+            }
+
+            //// FrozenColumns rely on column DisplayIndex
+            //// Delay the coercion if necessary
+            //if (InternalColumns.DisplayIndexMapInitialized)
+            //{
+            //    CoerceValue(FrozenColumnCountProperty);
+            //}
+
+            //bool visibleColumnsChanged = HasVisibleColumns(e.OldItems);
+            //visibleColumnsChanged |= HasVisibleColumns(e.NewItems);
+            //visibleColumnsChanged |= (e.Action == NotifyCollectionChangedAction.Reset);
+
+            //if (visibleColumnsChanged)
+            //{
+            //    InternalColumns.InvalidateColumnRealization(true);
+            //}
+
+            UpdateColumnsOnRows(e);
+
+            //// Recompute the column width if required, but wait until the first load
+            //if (visibleColumnsChanged && e.Action != NotifyCollectionChangedAction.Move)
+            //{
+            //    InternalColumns.InvalidateColumnWidthsComputation();
+            //}
+        }
+
+        /// <summary>
+        ///     Updates the transferred size constraints from DataGrid on the columns.
+        /// </summary>
+        /// <param name="list">The list of affected columns.</param>
+        private static void UpdateColumnSizeConstraints(IList list)
+        {
+            var count = list.Count;
+            for (var i = 0; i < count; i++)
+            {
+                var column = (BldTaskDataGridColumn)list[i];
+                column.SyncProperties();
+            }
         }
         #endregion
         #region Auto Sort
@@ -363,13 +477,12 @@ namespace bldCustomControlLibrary
         #region Helpers
 
         #endregion
-
         #region Data
         private IEnumerable _cachedItemsSource = null;                      // Reference to the ItemsSource instance, used to clear SortDescriptions on ItemsSource change
         private bool _sortingStarted = false;                               // Flag used to track if Sorting ever started or not.
         private List<int> _groupingSortDescriptionIndices = null;           // List to hold the indices of SortDescriptions added for the sake of GroupDescriptions.
         private DataGridCell _currentCellContainer;                         // Reference to the cell container corresponding to CurrentCell (use CurrentCellContainer property instead)
-        private ObservableCollection<DataGridColumn> _columns = new ObservableCollection<DataGridColumn>();                          // Stores the columns
+        private ObservableCollection<BldTaskDataGridColumn> _columns ;                          // Stores the columns
 
         private ContainerTracking<BldTaskDataGridRow> _rowTrackingRoot;            // Root of a linked list of active row containers
 

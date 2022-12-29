@@ -73,7 +73,7 @@ namespace bldCustomControlLibrary
         /// <summary>
         ///     Creates the visual tree for text based cells.
         /// </summary>
-        protected  override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
+        protected  override FrameworkElement GenerateElement(BldTaskDataGridCell cell, object dataItem)
         {
             TextBlock textBlock = new TextBlock();
 
@@ -82,8 +82,8 @@ namespace bldCustomControlLibrary
             // ApplyStyle(/* isEditing = */ false, /* defaultToElementStyle = */ false, textBlock);
             //ApplyBinding(textBlock, TextBlock.TextProperty);
             var _cell = cell as BldTaskDataGridCell;
-            // DataGridHelper.RestoreFlowDirection(textBlock, _cell);
-            textBlock.Text = cell.Column.Header.ToString();
+            DataGridHelper.RestoreFlowDirection(textBlock, _cell);
+            //textBlock.Text = cell.Column.Header.ToString();
             return textBlock;
         }
        
@@ -283,7 +283,12 @@ namespace bldCustomControlLibrary
             //}
         }
 
-       
+        protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
         #endregion
 

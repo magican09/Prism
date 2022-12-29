@@ -13,13 +13,52 @@ namespace bldCustomControlLibrary
     public abstract partial class BldTaskDataGridColumn : DataGridBoundColumn
     {
 
-        #region Oner Communication
-        protected internal DataGrid DataGridOwner
+        #region Owner Communication
+        protected internal BldTaskDataGrid DataGridOwner
         {
             get { return _dataGridOwner; }
             internal set { _dataGridOwner = value; }
         }
+        /// <summary>
+        ///     Ensures that any properties that may be influenced by a change to the DataGrid are syncronized.
+        /// </summary>
+        internal void SyncProperties()
+        {
+            DataGridHelper.TransferProperty(this, MinWidthProperty);
+            DataGridHelper.TransferProperty(this, MaxWidthProperty);
+            DataGridHelper.TransferProperty(this, WidthProperty);
+            DataGridHelper.TransferProperty(this, HeaderStyleProperty);
+            DataGridHelper.TransferProperty(this, CellStyleProperty);
+            DataGridHelper.TransferProperty(this, IsReadOnlyProperty);
+            DataGridHelper.TransferProperty(this, DragIndicatorStyleProperty);
+            DataGridHelper.TransferProperty(this, CanUserSortProperty);
+            DataGridHelper.TransferProperty(this, CanUserReorderProperty);
+            DataGridHelper.TransferProperty(this, CanUserResizeProperty);
+        }
+        #endregion
+        #region Visula Tree Generation 
+        /// <summary>
+        ///     Creates the visual tree that will become the content of a cell.
+        /// </summary>
+        /// <param name="isEditing">Whether the editing version is being requested.</param>
+        /// <param name="dataItem">The data item for the cell.</param>
+        /// <param name="cell">The cell container that will receive the tree.</param>
+        internal FrameworkElement BuildVisualTree(bool isEditing, object dataItem, BldTaskDataGridCell cell)
+        {
+            if (isEditing)
+            {
+                return GenerateEditingElement(cell, dataItem);
+            }
+            else
+            {
+                return GenerateElement(cell, dataItem);
+            }
+        }
 
+        /// <summary>
+        ///     Creates the visual tree that will become the content of a cell.
+        /// </summary>
+        protected abstract FrameworkElement GenerateElement(BldTaskDataGridCell cell, object dataItem);
         #endregion
         #region Hidden Columns
         /// <summary>
@@ -118,7 +157,7 @@ namespace bldCustomControlLibrary
         }
         #endregion
         #region Data
-        private DataGrid _dataGridOwner = null;                     // This property is updated by DataGrid when the column is added to the DataGrid.Columns collection
+        private BldTaskDataGrid _dataGridOwner = null;                     // This property is updated by DataGrid when the column is added to the DataGrid.Columns collection
 
         #endregion
 

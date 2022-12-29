@@ -40,7 +40,7 @@
                 Command="{Binding ApplicationCommands.SaveAllCommand}"/>
         <cc:BldTaskDataGrid ItemsSource="{StaticResource  Constructions}" >
             <cc:BldTaskDataGrid.Columns>
-                <DataGridTextColumn  Header="Код"   />
+                <cc:BldTaskDataGridTextColumn  Header="Код"  Binding="{Binding Name}"  />
             </cc:BldTaskDataGrid.Columns>
         </cc:BldTaskDataGrid>
         

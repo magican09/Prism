@@ -5,6 +5,7 @@ using System.Linq;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Specialized;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -151,7 +152,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bldAOSRDocument AOSRDocument
         {
             get { return _aOSRDocument; }
-            set { SetProperty(ref _aOSRDocument, value); }
+            set { SetProperty(ref _aOSRDocument, value);  }
         }
         private bldProjectDocumentsGroup _projectDocuments = new bldProjectDocumentsGroup("Рабочая документация");
         public bldProjectDocumentsGroup ProjectDocuments
@@ -166,11 +167,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _regulationDocuments, value); }
         }
 
-        private bldWorkExecutiveDocumentation _executiveDocumentation;
+        private bldWorkExecutiveDocumentation _executiveDocumentation = new bldWorkExecutiveDocumentation();
         public bldWorkExecutiveDocumentation? ExecutiveDocumentation
         {
             get
             {
+                if(AOSRDocument!=null && !_executiveDocumentation.AOSRDocuments.Contains(AOSRDocument))
+                    _executiveDocumentation.AOSRDocuments.Add(AOSRDocument);
+
                 return _executiveDocumentation;
             }
             set { SetProperty(ref _executiveDocumentation, value); }
@@ -194,9 +198,35 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             PreviousWorks.CopingEnable = false; //отключаем при копировании
             NextWorks.CopingEnable = false; //отключаем при копировании 
+
+            ExecutiveSchemes.CollectionChanged += OnAddExecutiveScheme;
+            LaboratoryReports.CollectionChanged += OnAddLaboratoryReport;
+          //  Documentation.Add(LaboratoryReports);
+
             //AOSRDocument = new bldAOSRDocument();
             //WorkArea = new bldWorkArea();
-           //        RestrictionPredicate = x => x.CopingEnable;// Определяет условтия я своего копировани в время глубокого копирования рефлексией 
+            //        RestrictionPredicate = x => x.CopingEnable;// Определяет условтия я своего копировани в время глубокого копирования рефлексией 
+        }
+
+        private void OnAddExecutiveScheme(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+                foreach (bldDocument document in e.NewItems)
+                    ExecutiveDocumentation.ExecutiveSchemes.Add(document as bldExecutiveScheme);
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+                foreach (bldDocument document in e.OldItems)
+                    ExecutiveDocumentation.ExecutiveSchemes.Remove(document as bldExecutiveScheme);
+        }
+
+        private void OnAddLaboratoryReport(object sender, NotifyCollectionChangedEventArgs e)
+        {
+
+            if (e.Action == NotifyCollectionChangedAction.Add)
+                foreach (bldDocument document in e.NewItems)
+                    ExecutiveDocumentation.LaboratoryReports.Add(document as bldLaboratoryReport);
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+                foreach (bldDocument document in e.OldItems)
+                    ExecutiveDocumentation.LaboratoryReports.Remove(document as bldLaboratoryReport);
         }
 
         public object Clone()
@@ -220,18 +250,32 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             return new_work;
         }
-        private bldDocumentsGroup _documentation;
+        //private bldDocument _documentation = new bldDocument();
+        //[NotMapped]
+        //public bldDocument Documentation
+        //{
+        //    get
+        //    {
+        //        return _documentation;
+        //    }
+        //    set { SetProperty(ref _documentation, value); }
+        //}
+        private bldDocumentsGroup _documentation = new bldDocumentsGroup();
         [NotMapped]
         public bldDocumentsGroup Documentation
         {
             get
             {
-                if (_documentation != null) return _documentation;
-                if (bldConstruction != null) return bldConstruction.Documentation;
-                return null;
+                //     if (_documentation != null) return _documentation;
+                //   if (bldConstruction != null) return bldConstruction.Documentation;
+                //    return null;
+                return _documentation;
             }
             set { SetProperty(ref _documentation, value); }
         }
+
+       
+
         public void SaveAOSRsToWord(string folderPath)
         {
             //if (AOSRDocuments.Count > 1)
@@ -246,6 +290,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             //}
             if (AOSRDocument != null) AOSRDocument.SaveAOSRToWord(folderPath);
         }
+
 
         #region EditMethods
         public void RemovePreviousWork(bldWork work)

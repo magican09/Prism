@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldDocument : BindableBase, IbldDocument, IEntityObject
+    public class bldDocument : BindableBase, IbldDocument
     {
        
         private DateTime _date;

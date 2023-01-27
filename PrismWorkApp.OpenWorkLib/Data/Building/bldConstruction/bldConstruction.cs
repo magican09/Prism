@@ -195,8 +195,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public void RemoveWork(bldWork work)
         {
-            RemoveFromCollectionCommand<bldWorksGroup, bldWork> Command =
-                 new RemoveFromCollectionCommand<bldWorksGroup, bldWork>(Works, work);
+            RemoveWorkCommand Command = new RemoveWorkCommand(this, work);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         //public void RemoveResponsibleEmployee(bldResponsibleEmployee empl)

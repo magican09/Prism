@@ -328,7 +328,8 @@ namespace PrismWorkApp.Core
            string title = "",
            string message = "",
            string currentCollectionName = "",
-           string commonCollectionName = ""
+           string commonCollectionName = "",
+           string confirmButtonContent= "Сохранить"
            )
        where TContainer : ICollection<T>, new()
        where T : class,IEntityObject
@@ -344,7 +345,7 @@ namespace PrismWorkApp.Core
             dialog_par.Add("common_collection_name", commonCollectionName);
             dialog_par.Add("common_collection", common_collection);
             dialog_par.Add("current_collection", current_collection);
-            dialog_par.Add("confirm_button_content", "Сохранить");
+            dialog_par.Add("confirm_button_content", confirmButtonContent);
             dialog_par.Add("refuse_button_content", "Закрыть");
             dialog_par.Add("predicate_collection", predicate_collection);
 

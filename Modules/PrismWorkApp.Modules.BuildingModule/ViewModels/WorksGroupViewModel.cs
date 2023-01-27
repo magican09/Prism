@@ -1,4 +1,5 @@
-﻿using Prism.Regions;
+﻿using Prism;
+using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
@@ -20,7 +21,7 @@ using System.Windows.Input;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class WorksGroupViewModel : BaseViewModel<bldWorksGroup>, INotifyPropertyChanged, INavigationAware
+    public class WorksGroupViewModel : BaseViewModel<bldWorksGroup>, INotifyPropertyChanged, INavigationAware, IActiveAware
     {
         private string _title = "Ведомость работ";
         public string Title
@@ -125,9 +126,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             #region Commands Init
             _applicationCommands = applicationCommands;
-            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
-            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
-            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+          
 
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
@@ -175,23 +174,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             #region Work Context Menu
             CreateNewWorkCommand = new NotifyCommand(OnAddNewWork);
             CreateNewWorkCommand.Name = "Создать новую работу";
-            _applicationCommands.CreateWorkCommand.RegisterCommand(CreateNewWorkCommand);
-            AddCreatedFromTemplateWorkCommand = new NotifyCommand<object>(OnAddCreatedFromTemplateWork, (ob) => { return SelectedWorks.Count == 1; }).ObservesPropertyChangedEvent(SelectedWorks);
+             AddCreatedFromTemplateWorkCommand = new NotifyCommand<object>(OnAddCreatedFromTemplateWork, (ob) => { return SelectedWorks.Count == 1; }).ObservesPropertyChangedEvent(SelectedWorks);
             AddCreatedFromTemplateWorkCommand.Name = "Создать на основании";
-            _applicationCommands.CreateWorkFromTemplateCommand.RegisterCommand(AddCreatedFromTemplateWorkCommand);
             DeleteWorkCommand = new NotifyCommand(OnDeleteWork, () => SelectedWorks.Count > 0).ObservesPropertyChangedEvent(SelectedWorks);
             DeleteWorkCommand.Name = "Удалить";
-            _applicationCommands.DeleteWorkCommand.RegisterCommand(DeleteWorkCommand);
             MoveWorksToAnotherConatructionCommand = new NotifyCommand(OnMoveWorksToAnotherConatruction, () => { return SelectedWorks.Count > 0; }).ObservesProperty(()=>SelectedWorks);
             MoveWorksToAnotherConatructionCommand.Name = "Переместить в другую консрукцию";
-            _applicationCommands.MoveWorkCommand.RegisterCommand(MoveWorksToAnotherConatructionCommand);
-            AddWorksFromAnotherConatructionCommand = new NotifyCommand(OnAddWorksFromAnotherConatruction);
+                AddWorksFromAnotherConatructionCommand = new NotifyCommand(OnAddWorksFromAnotherConatruction);
             AddWorksFromAnotherConatructionCommand.Name = "Добавить из другой консрукции";
-            _applicationCommands.AddWorkCommand.RegisterCommand(AddWorksFromAnotherConatructionCommand);
-            SaveWorksExecutiveDocumentationCommand = new NotifyCommand(OnSaveWorksExecutionDocumentation, () => { return SelectedWorks.Count > 0; }).ObservesPropertyChangedEvent(SelectedWorks);
+             SaveWorksExecutiveDocumentationCommand = new NotifyCommand(OnSaveWorksExecutionDocumentation, () => { return SelectedWorks.Count > 0; }).ObservesPropertyChangedEvent(SelectedWorks);
             SaveWorksExecutiveDocumentationCommand.Name = "Выгрузить ИД";
-            _applicationCommands.SaveExecutiveDocumentsCommand.RegisterCommand(SaveWorksExecutiveDocumentationCommand);
-
+         
             WorksContextMenuCommands.Add(AddCreatedFromTemplateWorkCommand);
             WorksContextMenuCommands.Add(SaveWorksExecutiveDocumentationCommand);
             WorksContextMenuCommands.Add(MoveWorksToAnotherConatructionCommand);
@@ -206,13 +199,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             #region Ribbon Init
 
             #endregion
+
+            IsActiveChanged += OnActiveChanged;
         }
+
        
+
         private void OnAddWorksFromAnotherConatruction()
         {
             bldConstructionsGroup All_Consructions = new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetAllAsync().Where(cn => cn.Id != SelectedConstruction.Id).ToList());
 
-             bldConstructionsGroup constructions_for_add_collection = new bldConstructionsGroup();
+            bldConstructionsGroup constructions_for_add_collection = new bldConstructionsGroup();
             NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_1 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_1.Name = "Показать только из текущего уровня.";
             predicate_1.Predicate = cl => cl.Where(el => (el?.bldObject != null || el.ParentConstruction?.Id != null) &&
@@ -253,28 +250,31 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
                       foreach (bldWork bld_work in works_for_add_collection)
                           SelectedConstruction.AddWork(bld_work);
-
+       
+                      UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                      SaveCommand.RaiseCanExecuteChanged();
                   }
                   if (result.Result == ButtonResult.No)
                   {
+
                   }
               },
              typeof(AddWorksToCollectionFromListDialogView).Name,
               "Добавить работы как послудующие",
               "Форма добавления послудующих работ.",
-              "Список работ", "");
+              "Список работ", "","Добавить");
 
-                 SaveCommand.RaiseCanExecuteChanged();
-                 UnDoReDo.AddUnDoReDo(localUnDoReDo);
+               
              }
              if (result.Result == ButtonResult.No)
              {
+
              }
          },
         typeof(AddbldConstructionToCollectionFromListDialogView).Name,
          "Выбрать конструкцию",
          "Форма выбора конструкции",
-         "Список кострукций", "");
+         "Список кострукций", "" ,"Выбрать");
 
         }
 
@@ -305,7 +305,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
             localUnDoReDo.Register(SelectedConstruction);
             foreach (bldWork work in works_for_delete)
-                SelectedConstruction.RemoveWork(work);
+                if(SelectedConstruction.Works.Contains(work)) 
+                    SelectedConstruction.RemoveWork(work);
             UnDoReDo.AddUnDoReDo(localUnDoReDo);
             UnDoReDo.Register(SelectedConstruction);
 
@@ -401,6 +402,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldWork new_work = new bldWork();
             new_work.UnitOfMeasurement = new bldUnitOfMeasurement();
             new_work.WorkArea = new bldWorkArea();
+            new_work.AOSRDocument = new bldAOSRDocument();
           //  UnDoReDo.Register(new_work);
             SelectedConstruction.AddWork(new_work);
         }
@@ -797,8 +799,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }, _dialogService, Id);
         }
 
-
-
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             SaveCommand.RaiseCanExecuteChanged();
@@ -844,21 +844,60 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 foreach (bldWork work in SelectedConstruction.Works)
                     UnDoReDo.Register(work);
                 Title = $"{SelectedConstruction.Code} {SelectedConstruction.ShortName}";
+
+
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_construction"];
             if (((bldConstruction)navigane_message.Object).Id != SelectedConstruction.Id)
+            {
+              
                 return false;
+            }
             else
                 return true;
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-
+          
         }
 
+        #region on Activate event  
+        private void OnActiveChanged(object sender, EventArgs e)
+        {
+            if (IsActive)
+                RegisterAplicationCommands();
+            else
+                UnRegisterAplicationCommands();
+
+        }
+        private void  RegisterAplicationCommands()
+        {
+            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+            _applicationCommands.MoveWorkCommand.RegisterCommand(MoveWorksToAnotherConatructionCommand);
+            _applicationCommands.SaveExecutiveDocumentsCommand.RegisterCommand(SaveWorksExecutiveDocumentationCommand);
+            _applicationCommands.AddWorkCommand.RegisterCommand(AddWorksFromAnotherConatructionCommand);
+            _applicationCommands.DeleteWorkCommand.RegisterCommand(DeleteWorkCommand);
+            _applicationCommands.CreateWorkFromTemplateCommand.RegisterCommand(AddCreatedFromTemplateWorkCommand);
+            _applicationCommands.CreateWorkCommand.RegisterCommand(CreateNewWorkCommand);
+        }
+        private void UnRegisterAplicationCommands()
+        {
+            _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+            _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
+            _applicationCommands.CreateWorkCommand.UnregisterCommand(CreateNewWorkCommand);
+            _applicationCommands.CreateWorkFromTemplateCommand.UnregisterCommand(AddCreatedFromTemplateWorkCommand);
+            _applicationCommands.AddWorkCommand.UnregisterCommand(AddWorksFromAnotherConatructionCommand);
+            _applicationCommands.DeleteWorkCommand.UnregisterCommand(DeleteWorkCommand);
+            _applicationCommands.MoveWorkCommand.UnregisterCommand(MoveWorksToAnotherConatructionCommand);
+            _applicationCommands.SaveExecutiveDocumentsCommand.UnregisterCommand(SaveWorksExecutiveDocumentationCommand);
+        }
+        #endregion
     }
 }

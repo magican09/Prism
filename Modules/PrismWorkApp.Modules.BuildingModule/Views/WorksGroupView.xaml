@@ -53,7 +53,7 @@
                             <ColumnDefinition  Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <DataGrid Visibility="Collapsed" x:Name="bldWorks" Grid.Column="0" ItemsSource="{Binding SelectedWorksGroup}"   
+                        <DataGrid Visibility="Visible" x:Name="bldWorks" Grid.Column="0" ItemsSource="{Binding SelectedWorksGroup}"   
                                                   SelectedItem="{Binding SelectedWork}"  
                                                   Style="{StaticResource inlineDataGrid }"  
                                AutoGenerateColumns="False"  IsReadOnly="False"  
@@ -294,12 +294,12 @@
                     </Grid>
                   </StackPanel>
             </StackPanel>
-            <сc:ConstructionDataGrid DataContext="{Binding SelectedConstruction}"  SelectedItem="{Binding SelectedWork, Mode=TwoWay}" />
+            <!--<сc:ConstructionDataGrid DataContext="{Binding SelectedConstruction}"  SelectedItem="{Binding SelectedWork, Mode=TwoWay}" />
             <сc:GanttDiargamDataGrid x:Name="ganttDataGrid" ItemsSource="{Binding SelectedWorksGroup}"
                                      SelectedItem="{Binding SelectedWork,Mode=TwoWay}"
                                      Height="100">
                 
-            </сc:GanttDiargamDataGrid>
+            </сc:GanttDiargamDataGrid>-->
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10" >
            

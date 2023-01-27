@@ -171,15 +171,26 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public Func<TEntity, bool> SortPridicate;
         public string SortedPropertyName;
+        //private void OnCollectionChangedMethod(object sender, NotifyCollectionChangedEventArgs e) 26.01.2023
+        //{
+        //    IsVisible = Count > 0;
+        //    if (e.Action == NotifyCollectionChangedAction.Add)
+        //    {
+        //        foreach (IBindableBase added_element in e.NewItems)
+        //            added_element.Parent = Parent;
+        //    }
+
+        //}
         private void OnCollectionChangedMethod(object sender, NotifyCollectionChangedEventArgs e)
         {
-            IsVisible = Count > 0;
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (IBindableBase added_element in e.NewItems)
                     added_element.Parent = Parent;
+                   IsVisible = Count > 0;
             }
-         }
+
+        }
         private object GetPropertyValue(string propName,object obj)
         {
             var obj_prop_val = obj.GetType().GetProperty(SortedPropertyName)?.GetValue(obj);

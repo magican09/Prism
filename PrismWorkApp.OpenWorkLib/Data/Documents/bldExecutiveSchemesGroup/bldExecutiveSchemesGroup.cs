@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldExecutiveSchemesGroup : NameableObservableCollection<bldExecutiveScheme>, IbldExecutiveSchemesGroup, IEntityObject
+    public class bldExecutiveSchemesGroup : NameableObservableCollection<bldExecutiveScheme>, IbldExecutiveSchemesGroup, IEntityObject, INotifyCollectionChanged
     {
         public bldExecutiveSchemesGroup()
         {

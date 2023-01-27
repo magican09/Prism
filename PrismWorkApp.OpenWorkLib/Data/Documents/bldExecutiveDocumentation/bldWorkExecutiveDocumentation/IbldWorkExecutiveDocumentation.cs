@@ -2,7 +2,7 @@
 {
     public interface IbldWorkExecutiveDocumentation
     {
-        bldAOSRDocument AOSRDocument { get; set; }
+        bldAOSRDocumentsGroup AOSRDocuments { get; set; }
         bldExecutiveSchemesGroup ExecutiveSchemes { get; set; }
         bldLaboratoryReportsGroup LaboratoryReports { get; set; }
         string Name { get; set; }

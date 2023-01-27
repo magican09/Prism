@@ -25,8 +25,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void Execute(object parameter = null)
         {
 
-            _CurrentWork.bldConstruction = _AddPreviosWorkConstruction;
-            _AddPreviosWork.bldConstruction = _CurrentWorkConstruction;
+            //_CurrentWork.bldConstruction = _AddPreviosWorkConstruction;
+            //_AddPreviosWork.bldConstruction = _CurrentWorkConstruction;
             _AddPreviosWork.NextWorks.Add(_CurrentWork);
             _CurrentWork.PreviousWorks.Add(_AddPreviosWork);
         }
@@ -34,8 +34,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void UnExecute()
         {
 
-            _CurrentWork.bldConstruction = _CurrentWorkConstruction ;
-            _AddPreviosWork.bldConstruction = _AddPreviosWorkConstruction; 
+            //_CurrentWork.bldConstruction = _CurrentWorkConstruction ;
+            //_AddPreviosWork.bldConstruction = _AddPreviosWorkConstruction; 
             _AddPreviosWork.NextWorks.Remove(_CurrentWork);
             _CurrentWork.PreviousWorks.Remove(_AddPreviosWork);
         }
@@ -44,11 +44,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             _CurrentWork = work;
             _AddPreviosWork = previous_work;
          
-            _CurrentWorkConstruction = _CurrentWork.bldConstruction;
-            _AddPreviosWorkConstruction = _AddPreviosWork.bldConstruction;
+            //_CurrentWorkConstruction = _CurrentWork.bldConstruction;
+            //_AddPreviosWorkConstruction = _AddPreviosWork.bldConstruction;
 
-            _CurrentWork.bldConstruction = _AddPreviosWorkConstruction;
-            _AddPreviosWork.bldConstruction = _CurrentWorkConstruction;
+            //_CurrentWork.bldConstruction = _AddPreviosWorkConstruction;
+            //_AddPreviosWork.bldConstruction = _CurrentWorkConstruction;
             _AddPreviosWork.NextWorks.Add(_CurrentWork);
             _CurrentWork.PreviousWorks.Add(_AddPreviosWork);
 

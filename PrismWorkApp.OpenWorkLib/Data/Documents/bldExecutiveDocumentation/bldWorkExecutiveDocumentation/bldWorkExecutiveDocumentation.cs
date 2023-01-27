@@ -35,11 +35,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _executiveSchemes; }
             set { SetProperty(ref _executiveSchemes, value); }
         }
-        private bldAOSRDocument _aOSRDocument;
-        public bldAOSRDocument AOSRDocument
+        private bldAOSRDocumentsGroup _aOSRDocuments = new bldAOSRDocumentsGroup();
+        public bldAOSRDocumentsGroup AOSRDocuments
         {
-            get { return _aOSRDocument; }
-            set { SetProperty(ref _aOSRDocument, value); }
+            get { return _aOSRDocuments; }
+            set { SetProperty(ref _aOSRDocuments, value); }
         }
         private bldProjectDocumentsGroup _projectDocuments = new bldProjectDocumentsGroup("Рабочая документация");
         public bldProjectDocumentsGroup ProjectDocuments

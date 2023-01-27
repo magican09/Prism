@@ -176,10 +176,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
         }
     }
 
-    public class GetCollectionFrombldProjectModelConvecter :   IValueConverter
+    public class GetCollectionFrombldProjectModelConvecter : IValueConverter
 
     {
-        public  object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Type val_type = value.GetType();
             ObservableCollection<object> collection = new ObservableCollection<object>();
@@ -242,7 +242,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             SortDescription sort = new SortDescription("Date", ListSortDirection.Ascending);
                             view.SortDescriptions.Add(sort);
                             collection.Add(view);*/
-                    //        bldWorksGroup  sorted_coll = new bldWorksGroup(((bldConstruction)value).Works);
+                            //        bldWorksGroup  sorted_coll = new bldWorksGroup(((bldConstruction)value).Works);
+                            ((bldConstruction)value).Works.IsVisible = true;
                             collection.Add(((bldConstruction)value).Works);
 
                         }
@@ -259,9 +260,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         SortDescription sort = new SortDescription("StartTime", ListSortDirection.Ascending);
                         ICollectionView collectionView;
                         collectionView = CollectionViewSource.GetDefaultView((bldWorksGroup)value);
-                  //      collectionView.SortDescriptions.Add(sort);
-                   //     Task task  = new Task( ()=> { collectionView.SortDescriptions.Add(sort); });
-                    //    task.Wait();
+                        //      collectionView.SortDescriptions.Add(sort);
+                        //     Task task  = new Task( ()=> { collectionView.SortDescriptions.Add(sort); });
+                        //    task.Wait();
                         return collectionView;
                         break;
                     }
@@ -281,13 +282,14 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         if (work.PreviousWorks != null) collection.Add(work.PreviousWorks);
                         if (work.NextWorks != null) collection.Add(work.NextWorks);
                         if (work.Materials != null) collection.Add(work.Materials);
-                        NameableObservabelObjectsCollection docs_treeViewItem = new NameableObservabelObjectsCollection();
-                        docs_treeViewItem.Name = "Документация";
-                      //  if (work.AOSRDocuments != null) docs_treeViewItem.Add(work.AOSRDocuments);
-                        if (work.AOSRDocument != null) docs_treeViewItem.Add(work.AOSRDocument);
-                        if (work.LaboratoryReports != null) docs_treeViewItem.Add(work.LaboratoryReports);
-                        if (work.ExecutiveSchemes != null) docs_treeViewItem.Add(work.ExecutiveSchemes);
-                        if (work.Materials != null) docs_treeViewItem.Add(work.Materials);
+                        //NameableObservabelObjectsCollection docs_treeViewItem = new NameableObservabelObjectsCollection();
+                        //docs_treeViewItem.Name = "Документация";
+                        ////  if (work.AOSRDocuments != null) docs_treeViewItem.Add(work.AOSRDocuments);
+                        //if (work.AOSRDocument != null) docs_treeViewItem.Add(work.AOSRDocument);
+                        //if (work.LaboratoryReports != null) docs_treeViewItem.Add(work.LaboratoryReports);
+                        //if (work.ExecutiveSchemes != null) docs_treeViewItem.Add(work.ExecutiveSchemes);
+                        //if (work.Materials != null) docs_treeViewItem.Add(work.Materials);
+
                         //if (work.Materials != null)
                         //{
 
@@ -299,7 +301,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         //    docs_treeViewItem.Add(materials_docs);
 
                         //}
-                        collection.Add(docs_treeViewItem);
+                      //  collection.Add(docs_treeViewItem);
+                        if (work.ExecutiveDocumentation != null) collection.Add(work.ExecutiveDocumentation);
                         break;
                     }
                 case nameof(bldParticipant):
@@ -316,10 +319,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         //    }
                         //}
                         foreach (bldResponsibleEmployee employee in participant.ResponsibleEmployees)
-                                {
-                                    collection.Add(employee);
-                                }
-                            break;
+                        {
+                            collection.Add(employee);
+                        }
+                        break;
                     }
                 case nameof(bldCompany):
                     {
@@ -352,6 +355,17 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         bldAOSRDocument document = value as bldAOSRDocument;
                         if (document.AttachedDocuments != null) collection.Add(document.AttachedDocuments);
                         if (document.ResponsibleEmployees != null) collection.Add(document.ResponsibleEmployees);
+                        break;
+                    }
+                case nameof(bldWorkExecutiveDocumentation):
+                    {
+                        bldWorkExecutiveDocumentation documention = value as bldWorkExecutiveDocumentation;
+                        //if(documention.AOSRDocuments.Count>0) collection.Add(documention.AOSRDocuments);
+                        //if (documention.ExecutiveSchemes.Count > 0) collection.Add(documention.ExecutiveSchemes);
+                        //if (documention.LaboratoryReports.Count > 0) collection.Add(documention.LaboratoryReports);
+                        collection.Add(documention.AOSRDocuments);
+                        collection.Add(documention.ExecutiveSchemes);
+                        collection.Add(documention.LaboratoryReports);
                         break;
                     }
                 case nameof(bldMaterialsGroup):
@@ -422,10 +436,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     {
                         bldDocument document = value as bldDocument;
                         if (document?.AttachedDocuments != null)
-                         {
-                            foreach(bldDocument document1 in document.AttachedDocuments)
-                             collection.Add(document1);
-                         }
+                        {
+                            foreach (bldDocument document1 in document.AttachedDocuments)
+                                collection.Add(document1);
+                        }
                         break;
                     }
                 case nameof(NameableObservabelObjectsCollection):
@@ -436,7 +450,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 case nameof(NameablePredicate):
                     {
                         NameablePredicate predicate = value as NameablePredicate;
-                        if (predicate.ResultCollection!=null)
+                        if (predicate.ResultCollection != null)
                         {
                             foreach (var elm in predicate.ResultCollection)
                                 collection.Add(elm);
@@ -466,7 +480,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             return true;
         }
 
-     
+
     }
     public class GetKeyValueFromChildrenKeyValuesConvecter : IValueConverter
     {
@@ -533,7 +547,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
 
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            Tuple<object, object> tuple = new Tuple<object, object>(values[0],values[1]);
+            Tuple<object, object> tuple = new Tuple<object, object>(values[0], values[1]);
             return tuple;
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldDocument : IRegisterable, IEntityObject
+    public interface IbldDocument : IRegisterable, IEntityObject,INameable
     {
         public string FullName { get; set; }
         public int PagesNumber { get; set; }

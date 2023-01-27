@@ -35,8 +35,6 @@ namespace bldCustomControlLibrary
             _columns.CollectionChanged += new NotifyCollectionChangedEventHandler(OnColumnsChanged);
 
             ((INotifyCollectionChanged)Items).CollectionChanged += new NotifyCollectionChangedEventHandler(OnItemsCollectionChanged);
-          
-
         }
         #region Templation
         public override void OnApplyTemplate()

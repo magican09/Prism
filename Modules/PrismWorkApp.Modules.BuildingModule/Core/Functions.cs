@@ -2,10 +2,12 @@
 using Microsoft.WindowsAPICodePack.Dialogs;
 using OfficeOpenXml;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Estimate;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml;
 /*using AOSRDocument = PrismWorkApp.ProjectModel.Data.Models.AOSRDocument;
 using Document = PrismWorkApp.ProjectModel.Data.Models.Document;
 using Position = PrismWorkApp.ProjectModel.Data.Models.Position;
@@ -25,8 +27,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             bldLaboratoryReportsGroup bld_LaboratoryReports = new bldLaboratoryReportsGroup();
             bldParticipantsGroup bld_Participants = new bldParticipantsGroup();
             bldProjectDocumentsGroup bldProjectDocuments = new bldProjectDocumentsGroup();
-            bldRegulationtDocumentsGroup  RegulationtDocuments = new bldRegulationtDocumentsGroup();
-            bldExecutiveSchemesGroup ExecutiveSchemes = new  bldExecutiveSchemesGroup();
+            bldRegulationtDocumentsGroup RegulationtDocuments = new bldRegulationtDocumentsGroup();
+            bldExecutiveSchemesGroup ExecutiveSchemes = new bldExecutiveSchemesGroup();
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "EXCEL Files (*.xlsx)|*.xlsx|EXCEL Files 2003 (*.xls)|*.xls|All files (*.*)|*.*";
@@ -270,7 +272,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         project_documentacion = bldProjectDocuments.Where(pd => pd.Name == project_documentacion.Name).FirstOrDefault();
                     else
                         bldProjectDocuments.Add(project_documentacion);
-                     
+
                     bld_work.ProjectDocuments.Add(project_documentacion);
 
                     string text = AOSRDataWorksheet.Cells[rowIndex, 18].Value?.ToString();
@@ -377,11 +379,81 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             bld_project.Documentation.Add(ProjectDocumentation);
             return bld_project;
         }
+
+        public static bldProject LoadprojectFromARP()
+        {
+            bldProject project = new bldProject();
+            Estimate estimate = new Estimate();
+            string filename;
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.FileName = "Смета"; // Default file name
+            dlg.DefaultExt = ".arp"; // Default file extension
+            dlg.Filter = "ARP documents (.arp)|*.arp"; // Filter files by extension
+
+            // Show open file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+            // Process open file dialog box results
+            if (result == true)
+            {
+                filename = dlg.FileName;
+                estimate.LoadARPData(filename);
+                project.Name = estimate.Caption;
+                project.BuildingObjects.Add(new bldObject("Объект тестовый", "Объект тестовый"));
+                foreach (Chapter chapter in estimate.Chapters)
+                {
+                        bldConstruction construction = new bldConstruction(chapter.Caption, chapter.Caption);
+                        project.BuildingObjects[0].Constructions.Add(construction);
+                        foreach (Position position in chapter.Positions)
+                        {
+                            bldWork work = new bldWork();
+                            work.Name = position.Caption;
+                            work.Quantity = Convert.ToDecimal(position.Quantity);
+                            work.Laboriousness = Convert.ToDecimal(position.Labor);
+
+                            foreach (Resource resource in position.Resurсes)
+                            {
+                                switch (resource.Type)
+                                {
+                                    case ResurceType.MATERIAL:
+                                        {
+                                            bldMaterial material = new bldMaterial();
+                                            material.Name = resource.Name;
+                                            work.Materials.Add(material);
+                                            break;
+                                        }
+
+
+                                }
+                            }
+                            if(position.Type==PositionType.TER)
+                                   construction.Works.Add(work);
+                        }
+                }
+
+            }
+            return project;
+        }
+
         public static string GetFolderPath()
         {
+        //    var dialog = new Microsoft.Win32.OpenFileDialog();
+        //    dialog.FileName = "Document"; // Default file name
+        //    dialog.DefaultExt = ".XLS"; // Default file extension
+        //    dialog.Filter = "Text documents (.XLS)|*.XLSM"; // Filter files by extension
+
+        //    // Show open file dialog box
+        //    bool? result = dialog.ShowDialog();
+        //    // Process open file dialog box results
+        //    if (result == true)
+        //    {
+        //        // Open document
+        //        string filename = dialog.FileName;
+        //        return filename;
+        //    }
+
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            //  dialog.InitialDirectory = "C:\\Users";
-            dialog.IsFolderPicker = true;
+             //  dialog.InitialDirectory = "C:\\Users";
+          dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 return dialog.FileName;

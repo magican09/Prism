@@ -168,7 +168,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         }
                         string disigner_company_name = all_participants.FirstOrDefault(p => p.Role.RoleCode== ParticipantRole.DISIGNER)?.Name;
 
-                        world_document.Bookmarks["project"].Range.Text = $"{current_work.ProjectDocuments[0]?.Name} {disigner_company_name}";  //Проектная документация
+                        if(current_work.ProjectDocuments.Count>0)
+                             world_document.Bookmarks["project"].Range.Text = $"{current_work.ProjectDocuments[0]?.Name} {disigner_company_name}";  //Проектная документация
 
                         #region Вывод данных по используемым материалам
                         str = "";

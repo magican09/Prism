@@ -94,7 +94,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
 
-        private bldObjectsGroup _buildingObjects;
+        private bldObjectsGroup _buildingObjects = new bldObjectsGroup("Объекты строительства");
         public bldObjectsGroup? BuildingObjects
         {
             get { return _buildingObjects; }

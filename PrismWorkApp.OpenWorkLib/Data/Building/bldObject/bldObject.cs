@@ -117,6 +117,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _buildingObjects; }
             set { SetProperty(ref _buildingObjects, value); }
         }
+        #region Construcctions 
+        public bldObject()
+        {
+
+        }
+        public bldObject(string name,string short_name)
+        {
+            Name = name;
+            ShortName = short_name;
+        }
+        #endregion
 
         private bldProject _bldProject;
         [NavigateProperty]

@@ -32,6 +32,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public NotifyCommand LoadProjectFromExcelCommand { get; private set; }
+        public NotifyCommand LoadProjectFromARPCommand { get; private set; }
         public NotifyCommand CreateProjectStructureCommand { get; private set; }
         public NotifyCommand LoadProjectFromDBCommand { get; private set; }
         public NotifyCommand SaveDataToDBCommand { get; private set; }
@@ -123,6 +124,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //  ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
 
             LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
+            LoadProjectFromARPCommand = new NotifyCommand(LoadProjectFromARP, CanLoadAllProjects);
             LoadProjectFromDBCommand = new NotifyCommand(LoadProjectFomDB, CanLoadProjectFromDb);
             SaveDataToDBCommand = new NotifyCommand(SaveDataToDB, CanSaveDataToDB)
                 .ObservesProperty(() => AllChangesIsDone);
@@ -130,6 +132,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
             LoadMaterialsFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
             ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
+
+        }
+
+        private void LoadProjectFromARP()
+        {
+            var project = Functions.LoadprojectFromARP();
+            bldProject bld_project = project;
+
+
+            _buildingUnitsRepository.Projects.Add(bld_project);
+            var navParam = new NavigationParameters();
+            navParam.Add("bld_project", bld_project);
+            _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(ProjectExplorerView).Name, navParam);
+            //  _buildingUnitsRepository.Complete();
 
         }
 

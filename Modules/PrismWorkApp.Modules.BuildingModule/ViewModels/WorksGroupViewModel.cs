@@ -54,6 +54,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedConstruction; }
             set { SetProperty(ref _selectedConstruction, value); }
         }
+
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
         public NotifyCommand UnDoCommand { get; protected set; }
         public NotifyCommand ReDoCommand { get; protected set; }
@@ -94,13 +95,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand DeleteWorkCommand { get; private set; }
         public NotifyCommand SaveWorksExecutiveDocumentationCommand { get; private set; }
 
-
         public NotifyCommand<object> DataGridSelectionChangedCommand { get; private set; }
 
 
-    
+
         public NotifyCommand RemoveWorkCommand { get; private set; }
         // public NotifyCommand RemoveWorkCommand { get; private set; }
+
 
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
@@ -110,7 +111,18 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
+        //ObservableCollection<GanttChartItem> items = new ObservableCollection<GanttChartItem>
+        //{
+        //    new GanttChartItem { Content = "Task 1" },
+        //    new GanttChartItem { Content = "Task 1.1", Indentation = 1, Start = new DateTime(), Finish = new DateTime()},
+        //    new GanttChartItem { Content = "Task 1.2", Indentation = 1, Start = new DateTime(), Finish = new DateTime()},
+        //    new GanttChartItem { Content = "Task 2" },
+        //    new GanttChartItem { Content = "Task 2.1", Indentation = 1, Start = new DateTime(), Finish = new DateTime()},
+        //    new GanttChartItem { Content = "Task 2.2", Indentation = 1,  },
+        //    new GanttChartItem { Content = "Task 2.2.1", Indentation = 2, Start = new DateTime(), Finish = new DateTime() },
+        //    new GanttChartItem { Content = "Task 2.2.2", Indentation = 2, Start = new DateTime(), IsMilestone = true,  }
 
+        //};
         public WorksGroupViewModel(IDialogService dialogService,
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
@@ -126,7 +138,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             #region Commands Init
             _applicationCommands = applicationCommands;
-          
+
 
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
@@ -174,17 +186,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             #region Work Context Menu
             CreateNewWorkCommand = new NotifyCommand(OnAddNewWork);
             CreateNewWorkCommand.Name = "Создать новую работу";
-             AddCreatedFromTemplateWorkCommand = new NotifyCommand<object>(OnAddCreatedFromTemplateWork, (ob) => { return SelectedWorks.Count == 1; }).ObservesPropertyChangedEvent(SelectedWorks);
+            AddCreatedFromTemplateWorkCommand = new NotifyCommand<object>(OnAddCreatedFromTemplateWork, (ob) => { return SelectedWorks.Count == 1; }).ObservesPropertyChangedEvent(SelectedWorks);
             AddCreatedFromTemplateWorkCommand.Name = "Создать на основании";
             DeleteWorkCommand = new NotifyCommand(OnDeleteWork, () => SelectedWorks.Count > 0).ObservesPropertyChangedEvent(SelectedWorks);
             DeleteWorkCommand.Name = "Удалить";
-            MoveWorksToAnotherConatructionCommand = new NotifyCommand(OnMoveWorksToAnotherConatruction, () => { return SelectedWorks.Count > 0; }).ObservesProperty(()=>SelectedWorks);
+            MoveWorksToAnotherConatructionCommand = new NotifyCommand(OnMoveWorksToAnotherConatruction, () => { return SelectedWorks.Count > 0; }).ObservesProperty(() => SelectedWorks);
             MoveWorksToAnotherConatructionCommand.Name = "Переместить в другую консрукцию";
-                AddWorksFromAnotherConatructionCommand = new NotifyCommand(OnAddWorksFromAnotherConatruction);
+            AddWorksFromAnotherConatructionCommand = new NotifyCommand(OnAddWorksFromAnotherConatruction);
             AddWorksFromAnotherConatructionCommand.Name = "Добавить из другой консрукции";
-             SaveWorksExecutiveDocumentationCommand = new NotifyCommand(OnSaveWorksExecutionDocumentation, () => { return SelectedWorks.Count > 0; }).ObservesPropertyChangedEvent(SelectedWorks);
+            SaveWorksExecutiveDocumentationCommand = new NotifyCommand(OnSaveWorksExecutionDocumentation, () => { return SelectedWorks.Count > 0; }).ObservesPropertyChangedEvent(SelectedWorks);
             SaveWorksExecutiveDocumentationCommand.Name = "Выгрузить ИД";
-         
+
             WorksContextMenuCommands.Add(AddCreatedFromTemplateWorkCommand);
             WorksContextMenuCommands.Add(SaveWorksExecutiveDocumentationCommand);
             WorksContextMenuCommands.Add(MoveWorksToAnotherConatructionCommand);
@@ -199,11 +211,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             #region Ribbon Init
 
             #endregion
-
             IsActiveChanged += OnActiveChanged;
+
+
         }
 
-       
+
 
         private void OnAddWorksFromAnotherConatruction()
         {
@@ -250,7 +263,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
                       foreach (bldWork bld_work in works_for_add_collection)
                           SelectedConstruction.AddWork(bld_work);
-       
+
                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
                       SaveCommand.RaiseCanExecuteChanged();
                   }
@@ -262,9 +275,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
              typeof(AddWorksToCollectionFromListDialogView).Name,
               "Добавить работы как послудующие",
               "Форма добавления послудующих работ.",
-              "Список работ", "","Добавить");
+              "Список работ", "", "Добавить");
 
-               
+
              }
              if (result.Result == ButtonResult.No)
              {
@@ -274,7 +287,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         typeof(AddbldConstructionToCollectionFromListDialogView).Name,
          "Выбрать конструкцию",
          "Форма выбора конструкции",
-         "Список кострукций", "" ,"Выбрать");
+         "Список кострукций", "", "Выбрать");
 
         }
 
@@ -305,7 +318,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
             localUnDoReDo.Register(SelectedConstruction);
             foreach (bldWork work in works_for_delete)
-                if(SelectedConstruction.Works.Contains(work)) 
+                if (SelectedConstruction.Works.Contains(work))
                     SelectedConstruction.RemoveWork(work);
             UnDoReDo.AddUnDoReDo(localUnDoReDo);
             UnDoReDo.Register(SelectedConstruction);
@@ -315,7 +328,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             DialogParameters param = new DialogParameters();
             param.Add("common_collection", new ObservableCollection<IEntityObject>(SelectedConstruction.bldProject.BuildingObjects));
-            ObservableCollection<IEntityObject> current_collection= new ObservableCollection<IEntityObject>();
+            ObservableCollection<IEntityObject> current_collection = new ObservableCollection<IEntityObject>();
             current_collection.Add(SelectedConstruction);
             param.Add("current_element_collection", current_collection);
             param.Add("element_type", typeof(bldConstruction));
@@ -403,7 +416,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             new_work.UnitOfMeasurement = new bldUnitOfMeasurement();
             new_work.WorkArea = new bldWorkArea();
             new_work.AOSRDocument = new bldAOSRDocument();
-          //  UnDoReDo.Register(new_work);
+            //  UnDoReDo.Register(new_work);
             SelectedConstruction.AddWork(new_work);
         }
 
@@ -432,7 +445,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldWork scheme_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             bldExecutiveSchemesGroup All_ExecutiveSchemes = new bldExecutiveSchemesGroup(
                  _buildingUnitsRepository.ExecutiveSchemes.GetAllAsync().Where(ech => !scheme_work.ExecutiveSchemes.Contains(ech)).ToList());
-            
+
             NameablePredicate<bldExecutiveSchemesGroup, bldExecutiveScheme> predicate_1 = new NameablePredicate<bldExecutiveSchemesGroup, bldExecutiveScheme>();
             predicate_1.Name = "Показать все схемы";
             predicate_1.Predicate = cl => cl;
@@ -490,7 +503,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             bldLaboratoryReportsGroup All_LaboratoryRecords = new bldLaboratoryReportsGroup(
                  _buildingUnitsRepository.LaboratoryReports.GetAllAsync().Where(lr => !selected_work.LaboratoryReports.Contains(lr)).ToList());
-            
+
             NameablePredicate<bldLaboratoryReportsGroup, bldLaboratoryReport> predicate_1 = new NameablePredicate<bldLaboratoryReportsGroup, bldLaboratoryReport>();
             predicate_1.Name = "Показать все документы";
             predicate_1.Predicate = cl => cl;
@@ -558,19 +571,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _dialogService.ShowDialog(typeof(SelectDocumentFromTreeViewDialog).Name, param,
                 (result) =>
                 {
-                    if(result.Result== ButtonResult.Yes)
+                    if (result.Result == ButtonResult.Yes)
                     {
                         bldProjectDocument documents_for_adding = result.Parameters.GetValue<bldProjectDocument>("selected_element");
 
                         SelectedWork.AddProjectDocument(documents_for_adding);
                         SaveCommand.RaiseCanExecuteChanged();
-                        
+
                     }
 
                 });
 
         }
-      private void OnRemoveMaterial(object obj)
+        private void OnRemoveMaterial(object obj)
         {
             bldMaterial removed_material = ((Tuple<object, object>)obj).Item1 as bldMaterial;
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
@@ -590,11 +603,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnAddMaterials(object obj)
         {
             if (obj == null) return;
-           bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             bldMaterialsGroup All_Materials = new bldMaterialsGroup("Все материалы");
             foreach (bldMaterial material in _buildingUnitsRepository.Materials.GetAllAsync().Where(mt => !selected_work.Materials.Contains(mt)).ToList())
                 All_Materials.Add(material);
-         
+
             NameablePredicate<bldMaterialsGroup, bldMaterial> predicate_1 = new NameablePredicate<bldMaterialsGroup, bldMaterial>();
             predicate_1.Name = "Показать все материалы";
             predicate_1.Predicate = cl => cl;
@@ -734,7 +747,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     }
                 }, _dialogService, Id);
         }
-    
+
         private void OnAddNextWork(object works)
         {
             if (works == null) return;
@@ -835,9 +848,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ConveyanceObject navigane_message_works = (ConveyanceObject)navigationContext.Parameters["bld_construction"];
             if (navigane_message_works != null)
             {
-                   EditMode = navigane_message_works.EditMode;
+                EditMode = navigane_message_works.EditMode;
                 if (SelectedConstruction != null) SelectedConstruction.ErrorsChanged -= RaiseCanExecuteChanged;
-                 SelectedConstruction = (bldConstruction)navigane_message_works.Object;
+                SelectedConstruction = (bldConstruction)navigane_message_works.Object;
                 SelectedConstruction.ErrorsChanged += RaiseCanExecuteChanged;
                 SelectedWorksGroup = SelectedConstruction.Works;
                 UnDoReDo.Register(SelectedConstruction);
@@ -853,7 +866,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_construction"];
             if (((bldConstruction)navigane_message.Object).Id != SelectedConstruction.Id)
             {
-              
+
                 return false;
             }
             else
@@ -862,7 +875,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-          
+
         }
 
         #region on Activate event  
@@ -874,7 +887,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 UnRegisterAplicationCommands();
 
         }
-        private void  RegisterAplicationCommands()
+        private void RegisterAplicationCommands()
         {
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);

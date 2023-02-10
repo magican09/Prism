@@ -152,12 +152,19 @@ namespace PrismWorkApp.OpenWorkLib.Data
              }
             set { SetProperty(ref _documentation, value); }
         }
+        #region Constructions
         public bldConstruction()
         {
             Works.ParentObject = this;
             Works.Parent = this;
 
         }
+        public bldConstruction(string name, string short_name)
+        {
+                Name = name;
+                ShortName = short_name;
+        }
+        #endregion
         public object Clone()
         {
             throw new NotImplementedException();

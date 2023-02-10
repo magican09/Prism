@@ -43,6 +43,7 @@
         <None Remove="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\wand.png" />
         <None Remove="Resourses\Images\Ribbon\access_icon.png" />
+        <None Remove="Resourses\Images\Ribbon\grand_smeta_file.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
@@ -65,10 +66,8 @@
     </PackageReference>
     <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
     <PackageReference Include="Syncfusion.Pdf.Wpf" Version="20.3.0.61" />
-    <PackageReference Include="Syncfusion.Tools.WPF" Version="20.3.0.61" />
     <PackageReference Include="System.Data.Odbc" Version="4.7.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
-    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+    <PackageReference Include="WindowsAPICodePack" Version="7.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\bldCustomControlLibrary\bldCustomControlLibrary.csproj" />
@@ -117,6 +116,7 @@
     <Resource Include="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\wand.png" />
     <Resource Include="Resourses\Images\Ribbon\access_icon.png" />
+    <Resource Include="Resourses\Images\Ribbon\grand_smeta_file.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
@@ -128,9 +128,20 @@
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Views\ConstructionView .xaml.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ConstructionView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\ConstructionView .xaml">

@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views.RibbonViews"
              mc:Ignorable="d"  Header="Импор">
     <StackPanel Orientation="Horizontal">
+        <RibbonButton Label="Импорт материлов из GradSmeta"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/grand_smeta_file.png"
+                      Command="{Binding  LoadProjectFromARPCommand}"/>
         <RibbonButton Label="Импорт материлов из Access"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/access_icon.png"
                       Command="{Binding ApplicationCommands.LoadMaterialsFromAccessCommand}"/>
         <RibbonButton   Label ="Загрузить из Excel" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/load_from_exel.jpg" 

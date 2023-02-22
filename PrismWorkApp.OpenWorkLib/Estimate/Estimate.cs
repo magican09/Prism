@@ -72,6 +72,7 @@ namespace PrismWorkApp.OpenWorkLib.Estimate
             ImplemActs = new ObservableCollection<ImplemAct>();
             Indexes = new ObservableCollection<Index>();
         }
+
         public void LoadXMLData(XmlDocument xmlDoc) // Загрузка сметы из файла XmL
         {
             var root = xmlDoc.DocumentElement; // загружаем корневой узел xml документа
@@ -294,6 +295,7 @@ namespace PrismWorkApp.OpenWorkLib.Estimate
 
             var ImplemActsXml = root.GetElementsByTagName("ImplemActs"); //Загружаем наборы текущих индесов 
             int iImplemActsCount = 0;
+           if(ImplemActsXml.Count>0)
             foreach (XmlNode childnode_1 in ImplemActsXml[0])
             {
                 ImplemActs.Add(new ImplemAct());
@@ -393,6 +395,7 @@ namespace PrismWorkApp.OpenWorkLib.Estimate
             }
 
         }
+       
         public void LoadARPData(string fileName) // Загрузка сметы из файла АРП
         {
             int positionCounter = 0;

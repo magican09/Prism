@@ -380,7 +380,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             return bld_project;
         }
 
-        public static bldProject LoadprojectFromARP()
+        public static bldProject LoadProjectFromARPEstimate()
         {
             bldProject project = new bldProject();
             Estimate estimate = new Estimate();
@@ -430,10 +430,68 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         }
                 }
 
+
             }
             return project;
         }
 
+        public static bldProject LoadProjectFromXMLEstimate()
+        {
+            bldProject project = new bldProject();
+            Estimate estimate = new Estimate();
+            var xmlDoc = new XmlDocument();
+            string filename;
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.FileName = "Смета"; // Default file name
+            dlg.DefaultExt = ".xml"; // Default file extension
+            dlg.Filter = "xml documents (.xml)|*.xml"; // Filter files by extension
+            Nullable<bool> result = dlg.ShowDialog();
+            // Process open file dialog box results
+            if (result == true)
+            {
+                filename = dlg.FileName;
+          
+                xmlDoc.Load(filename);
+
+                estimate.LoadXMLData(xmlDoc);
+                project.Name = estimate.Caption;
+                project.BuildingObjects.Add(new bldObject("Объект тестовый", "Объект тестовый"));
+                foreach (Chapter chapter in estimate.Chapters)
+                {
+                    bldConstruction construction = new bldConstruction(chapter.Caption, chapter.Caption);
+                    project.BuildingObjects[0].Constructions.Add(construction);
+                    foreach (Position position in chapter.Positions)
+                    {
+                        bldWork work = new bldWork();
+                        work.Name = position.Caption;
+                        work.Quantity = Convert.ToDecimal(position.Quantity);
+                        work.Laboriousness = Convert.ToDecimal(position.Labor);
+
+                        foreach (Resource resource in position.Resurсes)
+                        {
+                            switch (resource.Type)
+                            {
+                                case ResurceType.MATERIAL:
+                                    {
+                                        bldMaterial material = new bldMaterial();
+                                        material.Name = resource.Name;
+                                        work.Materials.Add(material);
+                                        break;
+                                    }
+
+
+                            }
+                        }
+                        if (position.Type == PositionType.TER)
+                            construction.Works.Add(work);
+                    }
+                }
+
+
+            }
+
+            return project;
+        }
         public static string GetFolderPath()
         {
         //    var dialog = new Microsoft.Win32.OpenFileDialog();

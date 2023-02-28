@@ -110,7 +110,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _selectedDocumentsList, value); }
         }
 
-       
+        private bldResponsibleEmployee _selectedResponsibleEmployee;
+        public bldResponsibleEmployee SelectedResponsibleEmployee
+        {
+            get { return _selectedResponsibleEmployee; }
+            set { SetProperty(ref _selectedResponsibleEmployee, value); }
+        }
 
 
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }

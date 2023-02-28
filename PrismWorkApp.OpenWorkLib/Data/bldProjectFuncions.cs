@@ -1,4 +1,0 @@
-﻿namespace PrismWorkApp.OpenWorkLib.Data
-{
-}
-

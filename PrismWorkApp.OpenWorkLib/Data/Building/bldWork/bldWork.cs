@@ -179,16 +179,32 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { SetProperty(ref _executiveDocumentation, value); }
         }
-        private bldParticipantsGroup _participants;
+        private bldParticipantsGroup? _participants;
         public bldParticipantsGroup? Participants
         {
             get
             {
                 if (_participants != null) return _participants;
-                if (this.bldConstruction != null) return this.bldConstruction.Participants;
+                if (this.bldConstruction != null)
+                {
+                 
+                    return this.bldConstruction.Participants;
+                }
                 return null;
             }
             set { SetProperty(ref _participants, value); }
+        }
+
+        private bldResponsibleEmployeesGroup? _responsibleEmployees;
+        public bldResponsibleEmployeesGroup? ResponsibleEmployees
+        {
+            get
+            {
+                if (_responsibleEmployees != null) return _responsibleEmployees;
+                if (this.bldConstruction != null) return bldConstruction.ResponsibleEmployees;
+                return null;
+            }
+            set { SetProperty(ref _responsibleEmployees, value); }
         }
 
         [NavigateProperty]

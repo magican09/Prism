@@ -113,7 +113,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { SetProperty(ref _participants, value); }
         }
-
+        private bldResponsibleEmployeesGroup? _responsibleEmployees;
+        public bldResponsibleEmployeesGroup? ResponsibleEmployees
+        {
+            get
+            {
+                if (_responsibleEmployees != null) return _responsibleEmployees;
+                if (this.bldObject != null) return bldObject.ResponsibleEmployees;
+                return null;
+            }
+            set { SetProperty(ref _responsibleEmployees, value); }
+        }
         private bldObject _bldObject;
         [NavigateProperty]
         public virtual bldObject? bldObject

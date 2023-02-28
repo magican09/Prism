@@ -55,8 +55,6 @@ namespace PrismWorkApp.Core
         }
         */
         private bool _editMode;
-
-
         public bool EditMode
         {
             get { return _editMode; }

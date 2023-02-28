@@ -8,7 +8,7 @@
               mc:Ignorable="d" 
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             d:DesignHeight="650" d:DesignWidth="1150" >
+             d:DesignHeight="950" d:DesignWidth="1150" >
     <Grid   ShowGridLines="False">
         <Grid.Resources>
 
@@ -332,7 +332,48 @@
                     </Grid>
                 </StackPanel>
             </StackPanel>
-
+            <StackPanel >
+                <TextBlock Style="{StaticResource titleText_1}">Отвественные</TextBlock>
+                <StackPanel Orientation="Horizontal"  >
+                    <Grid Width="{Binding ElementName=mainStakPanel, Path=ActualWidth}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160*"/>
+                            <ColumnDefinition Width="467*"/>
+                            <ColumnDefinition  Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid  x:Name="bldParticipantsDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedWork.ResponsibleEmployees}" 
+                                     SelectedItem="{Binding SelectedResponsibleEmployee}"
+                                  Style="{StaticResource inlineDataGrid }" 
+                               AutoGenerateColumns="False"  IsReadOnly="True" 
+                                   HorizontalContentAlignment="Stretch" Grid.ColumnSpan="2" Margin="5,10,5,10" >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectedCellsChanged">
+                                    <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
+                                           CommandParameter="{Binding   SelectedItem , ElementName=bldParticipantsDataGrid}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding = "{Binding Path=Code}"  
+                                                Header="Код" Width="Auto" MinWidth="40" />
+                                <DataGridTextColumn Binding = "{Binding Path=DocConfirmingTheAthority.Name}"  
+                                                Header="Документ" Width="Auto" MinWidth="40" />
+                                <!--<DataGridTextColumn Binding = "{Binding Path=DocConfirmingTheAthority.EndTime}"  
+                                                Header="До" Width="Auto" MinWidth="40" />-->
+                                <DataGridTextColumn Binding = "{Binding Path= Employee.Name}"  
+                                                Header="Ф.И.О." Width="*" />
+                                <DataGridTextColumn Binding = "{Binding Path= bldParticipant.Name}"  
+                                                Header="Роль организации" Width="*" />
+                                <DataGridTextColumn Binding = "{Binding Path= Role.FullName}"  
+                                                Header="Роль конкретно" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Grid.Column="2" Width="100" HorizontalAlignment="Center" >
+                            <Button  Command="{Binding AddResponsibleEmployeesCommand}" >Добавить</Button>
+                            <Button Command="{Binding RemoveResponsibleEmployeesCommand}" >Удалить</Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10">
             <!--<Button  Content="Сохранить ИД в Word" Width="Auto" Command="{Binding SaveAOSRsToWordCommand}" />-->

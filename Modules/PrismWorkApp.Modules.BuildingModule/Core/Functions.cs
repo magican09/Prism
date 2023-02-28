@@ -4,10 +4,13 @@ using OfficeOpenXml;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Estimate;
 using System;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Xml.Schema;
+
 /*using AOSRDocument = PrismWorkApp.ProjectModel.Data.Models.AOSRDocument;
 using Document = PrismWorkApp.ProjectModel.Data.Models.Document;
 using Position = PrismWorkApp.ProjectModel.Data.Models.Position;
@@ -452,6 +455,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 filename = dlg.FileName;
           
                 xmlDoc.Load(filename);
+                XmlTextReader xtr = new XmlTextReader(filename);
+                DataSet ds = new DataSet();
+             
+                ds.ReadXmlSchema(xtr);
 
                 estimate.LoadXMLData(xmlDoc);
                 project.Name = estimate.Caption;

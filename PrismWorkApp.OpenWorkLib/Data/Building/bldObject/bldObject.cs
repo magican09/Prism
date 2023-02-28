@@ -192,6 +192,19 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _participants, value); }
         }
 
+        private bldResponsibleEmployeesGroup? _responsibleEmployees;
+
+        public bldResponsibleEmployeesGroup? ResponsibleEmployees
+        {
+            get
+            {
+                if (_responsibleEmployees != null) return _responsibleEmployees;
+                if (this.bldProject != null) return bldProject.ResponsibleEmployees;
+                     
+                    return null;
+            }
+            set { SetProperty(ref _responsibleEmployees, value); }
+        }
         public void SaveAOSRsToWord(string folderPath = null)
         {
             foreach (bldConstruction construction in Constructions)

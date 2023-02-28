@@ -73,7 +73,7 @@ namespace PrismWorkApp.OpenWorkLib.Estimate
             Indexes = new ObservableCollection<Index>();
         }
 
-        public void LoadXMLData(XmlDocument xmlDoc) // Загрузка сметы из файла XmL
+        public void LoadXMLData_1(XmlDocument xmlDoc) // Загрузка сметы из файла XmL
         {
             var root = xmlDoc.DocumentElement; // загружаем корневой узел xml документа
 
@@ -395,7 +395,330 @@ namespace PrismWorkApp.OpenWorkLib.Estimate
             }
 
         }
-       
+
+        public void LoadXMLData(XmlDocument xmlDoc) // Загрузка сметы из файла XmL
+        {
+            var root = xmlDoc.DocumentElement; // загружаем корневой узел xml документа
+
+            foreach (XmlNode childnode_1 in root)
+            {
+
+                if (childnode_1.Name == "Chapters")
+                    foreach (XmlNode childnode_2 in childnode_1)
+                    {
+                        if (childnode_2.Name == "Chapter")//Ищем раздел сметы
+                        {
+                            Chapters.Add(new Chapter()); //Создаем раздел сметы
+                            if (childnode_2.Attributes.GetNamedItem("Caption") != null)
+                            {
+                                Chapters[Chapters.Count - 1].Name = childnode_2.Attributes.GetNamedItem("Caption").Value;
+                                Chapters[Chapters.Count - 1].Caption = childnode_2.Attributes.GetNamedItem("Caption").Value;
+                            }
+                            else
+                                Chapters[Chapters.Count - 1].Caption = "Нет названия";
+                            if (childnode_2.Attributes.GetNamedItem("SysID") != null)
+                                Chapters[Chapters.Count - 1].SysID = Convert.ToInt32(childnode_2.Attributes.GetNamedItem("SysID").Value);
+                            foreach (XmlNode childnode_3 in childnode_2)
+                            {
+                                string sHeader = "";
+                                if (childnode_3.Name == "Header") sHeader = childnode_3.Attributes.GetNamedItem("Caption").Value;
+                                if (childnode_3.Name == "Position") //Проходим по расценкам сметы
+                                {
+                                    int iChapterPointer, iPositionPointer;
+                                    iChapterPointer = Chapters.Count - 1;
+                                    if (childnode_3.Attributes.GetNamedItem("Caption") != null)
+                                    {
+                                        Chapters[iChapterPointer].Positions.Add(new Position(childnode_3.Attributes.GetNamedItem("Caption").Value.Replace(";", ",")));//Добравляем расценку 
+                                        iPositionPointer = Chapters[iChapterPointer].Positions.Count - 1;
+
+                                        Chapters[iChapterPointer].Positions[iPositionPointer].Namber = Convert.ToInt32(childnode_3.Attributes.GetNamedItem("Number").Value);
+                                        Chapters[iChapterPointer].Positions[iPositionPointer].Code = childnode_3.Attributes.GetNamedItem("Code").Value;
+                                        Chapters[iChapterPointer].Positions[iPositionPointer].Units = childnode_3.Attributes.GetNamedItem("Units").Value;
+                                        Chapters[iChapterPointer].Positions[iPositionPointer].SysID = Convert.ToInt32(childnode_3.Attributes.GetNamedItem("SysID").Value);
+
+                                        foreach (XmlNode childnode_4 in childnode_3)//По разделам расценки
+                                        {
+                                            if (childnode_4.Name == "PriceBase")
+                                            {
+                                                if (childnode_4.Attributes.GetNamedItem("PZ") != null)
+                                                    Chapters[iChapterPointer].Positions[iPositionPointer].PZ = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("PZ").Value.Replace(",", "."));
+                                                if (childnode_4.Attributes.GetNamedItem("OZ") != null)
+                                                    Chapters[iChapterPointer].Positions[iPositionPointer].OZ = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("OZ").Value.Replace(",", "."));
+                                                if (childnode_4.Attributes.GetNamedItem("EM") != null)
+                                                    Chapters[iChapterPointer].Positions[iPositionPointer].EM = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("EM").Value.Replace(",", "."));
+                                                if (childnode_4.Attributes.GetNamedItem("ZM") != null)
+                                                    Chapters[iChapterPointer].Positions[iPositionPointer].ZM = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("ZM").Value.Replace(",", "."));
+                                                if (childnode_4.Attributes.GetNamedItem("MT") != null)
+                                                    Chapters[iChapterPointer].Positions[iPositionPointer].MT = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("MT").Value.Replace(",", "."));
+
+
+                                            }
+                                            if (childnode_4.Name == "Quantity")
+                                            {
+                                                if (childnode_4.Attributes.GetNamedItem("KUnit") != null)
+                                                    Chapters[iChapterPointer].Positions[iPositionPointer].KUnit = Convert.ToInt32(childnode_4.Attributes.GetNamedItem("KUnit").Value);
+                                                double dbuffer = 0;
+                                                string sbuf;
+                                                if (childnode_4.Attributes.GetNamedItem("Result") != null)
+                                                {
+                                                    sbuf = childnode_4.Attributes.GetNamedItem("Result").Value;
+
+                                                    Chapters[iChapterPointer].Positions[iPositionPointer].Quantity = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("Result").Value.Replace(',', '.'));
+
+                                                    // Chapters[iChapterPointer].Positions[iPositionPointer].Quantity = dbuffer;
+                                                }
+                                            }
+                                            if (childnode_4.Name == "Resources")
+                                                foreach (XmlNode childnode_5 in childnode_4)//По разделам ресурсов расценки 
+                                                {
+                                                    if (childnode_5.Name == "Tzr" || childnode_5.Name == "Mch" || childnode_5.Name == "Mat")
+                                                    {
+                                                        int iResursePointer;
+                                                        Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes.Add(new Resource());
+                                                        iResursePointer = Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes.Count - 1;
+                                                        Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes[iResursePointer].Caption = childnode_5.Attributes.GetNamedItem("Caption").Value.Replace(";", ",");
+                                                        Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes[iResursePointer].Code = childnode_5.Attributes.GetNamedItem("Code").Value;
+                                                        Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes[iResursePointer].Units = childnode_5.Attributes.GetNamedItem("Units").Value;
+                                                        if (childnode_5.Name != "Tzm" && childnode_5.Name != "Mat")
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes[iResursePointer].PriceBase = Convert.ToDouble(childnode_5.ChildNodes[0].Attributes["Value"].Value.Replace(",", "."));
+                                                        if (childnode_5.Name == "Tzr")
+                                                        {
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes[iResursePointer].Type = ResurceType.WORKER;
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes[iResursePointer].Group = "Трудовые";
+                                                            //  Chapters[iChapterPointer].Positions[iPositionPointer].Resourсes[iResursePointer].WorkClass = childnode_5.Attributes.GetNamedItem("WorkClass").Value;
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes[iResursePointer].WorkClass = Convert.ToDouble(childnode_5.Attributes.GetNamedItem("WorkClass").Value.Replace(',', '.'));
+
+                                                        }
+                                                        if (childnode_5.Name == "Mch")
+                                                        {
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes[iResursePointer].Type = ResurceType.MEC_WORKER;
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes[iResursePointer].Group = "Машины и механизмы";
+                                                        }
+                                                        if (childnode_5.Name == "Mat")
+                                                        {
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes[iResursePointer].Type = ResurceType.MATERIAL;
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes[iResursePointer].Group = "Материалы";
+                                                            //if(childnode_5.ChildNodes.Count>0)
+                                                            //Chapters[iChapterPointer].Positions[iPositionPointer].Resourсes[iResursePointer].PriceBase = Convert.ToDouble(childnode_5.ChildNodes[0].Attributes.GetNamedItem("Value").Value.Replace(",", "."));
+
+                                                        }
+
+                                                        /*if (childnode_5.Attributes.GetNamedItem("Quantity") != null)
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].Resourсes[iResursePointer].NormConsumption =// Устанавливаемнорму расхода ресурса на единицу
+                                                            Convert.ToDouble(childnode_5.Attributes.GetNamedItem("Quantity").Value.Replace(',', '.'));
+                                                      *///  Chapters[iChapterPointer].Positions[iPositionPointer].Resourсes[iResursePointer].Quantity = // Устанавливаемрасход ресурса
+                                                        /* Chapters[iChapterPointer].Positions[iPositionPointer].Resourсes[iResursePointer].NormConsumption *
+                                                         Convert.ToDouble(Chapters[iChapterPointer].Positions[iPositionPointer].Quantity); *///Высляеми фактический расход
+
+                                                    }
+
+                                                }
+                                            if (childnode_4.Name == "WorksList")
+                                            {
+                                                foreach (XmlNode childnode_5 in childnode_4)//По разделам ресурсов расценки 
+                                                {
+                                                    if (childnode_5.Name == "Work")
+                                                    {
+                                                        foreach (Resource res in Chapters[iChapterPointer].Positions[iPositionPointer].Resurсes)
+                                                        {
+                                                            if (res.Type == ResurceType.WORKER) res.ResurсesTypeList.Add(childnode_5.Attributes.GetNamedItem("Caption").Value);
+                                                            // res.ResourсesTypeObservableCollection.Add("dsd");
+                                                        }
+                                                    }
+
+
+                                                }
+
+                                            }//По списку работ...
+
+                                            if (childnode_4.Name == "Koefficients")
+                                            {
+                                                foreach (XmlNode childnode_5 in childnode_4)//По разделам ресурсов расценки 
+                                                {
+                                                    if (childnode_5.Name == "K")
+                                                    {
+                                                        /* Chapters[iChapterPointer].Positions[iPositionPointer].Koefficients.Add(new Koefficient());
+                                                      Chapters[iChapterPointer].Positions[iPositionPointer].Koefficients[Chapters[iChapterPointer].Positions[iPositionPointer].Koefficients.Count -1].Value_OZ =
+                                                      Convert.ToDouble(childnode_5.Attributes.GetNamedItem("Value_OZ").Value.Replace(",", "."));
+                                                      Chapters[iChapterPointer].Positions[iPositionPointer].Koefficients[Chapters[iChapterPointer].Positions[iPositionPointer].Koefficients.Count - 1].Value_EM =
+                                                      Convert.ToDouble(childnode_5.Attributes.GetNamedItem("Value_EM").Value.Replace(",", "."));
+                                                      Chapters[iChapterPointer].Positions[iPositionPointer].Koefficients[Chapters[iChapterPointer].Positions[iPositionPointer].Koefficients.Count - 1].Level =
+                                                      Convert.ToInt32(childnode_5.Attributes.GetNamedItem("Level").Value.Replace(",", "."));
+                                                      */
+                                                        if (childnode_5.Attributes.GetNamedItem("Value_OZ") != null)
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].K_OZ = Convert.ToDouble(childnode_5.Attributes.GetNamedItem("Value_OZ").Value.Replace(",", "."));
+                                                        else Chapters[iChapterPointer].Positions[iPositionPointer].K_OZ = 1;
+                                                        if (childnode_5.Attributes.GetNamedItem("Value_EM") != null)
+                                                        {
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].K_EM = Convert.ToDouble(childnode_5.Attributes.GetNamedItem("Value_EM").Value.Replace(",", "."));
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].K_ZM = Chapters[iChapterPointer].Positions[iPositionPointer].K_EM;
+                                                        }
+                                                        else Chapters[iChapterPointer].Positions[iPositionPointer].K_EM = 1;
+                                                        if (childnode_5.Attributes.GetNamedItem("Value_MT") != null)
+                                                            Chapters[iChapterPointer].Positions[iPositionPointer].K_MT = Convert.ToDouble(childnode_5.Attributes.GetNamedItem("Value_MT").Value.Replace(",", "."));
+                                                        else Chapters[iChapterPointer].Positions[iPositionPointer].K_MT = 1;
+                                                        //  if (childnode_5.Attributes.GetNamedItem("Value_ZM") != null)
+                                                        //    Chapters[iChapterPointer].Positions[iPositionPointer].K_ZM = Convert.ToDouble(childnode_5.Attributes.GetNamedItem("Value_ZM").Value.Replace(",", "."));
+                                                        //  else
+                                                        //    Chapters[iChapterPointer].Positions[iPositionPointer].K_ZM = 1;
+
+                                                    }
+                                                }
+
+                                            }//По списку коэффицентов...
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+            }
+            var IndexesXml = root.GetElementsByTagName("Indexes"); //Загружаем наборы текущих индесов  общий
+            int IndexesCount = 0;
+            foreach (XmlNode childnode_1 in IndexesXml[0])
+            {
+
+                foreach (XmlNode childnode_2 in childnode_1) //Пробегаем по внутренней структуре  ImplemActs
+                {
+                    if (childnode_2.Name == "Index")
+                        Indexes.Add(new Index());
+                    IndexesCount = Indexes.Count - 1;
+                    foreach (XmlAttribute ind_atr in childnode_2.Attributes)
+                    {
+
+                        switch (ind_atr.Name)
+                        {
+
+                            case "Caption":
+                                Indexes[IndexesCount].Caption = (childnode_2.Attributes.GetNamedItem("Caption").Value);
+                                break;
+                            case "Code":
+                                Indexes[IndexesCount].Code = (childnode_2.Attributes.GetNamedItem("Code").Value);
+                                break;
+                            case "OZ":
+                                Indexes[IndexesCount].K_OZ = Convert.ToDouble(childnode_2.Attributes.GetNamedItem("OZ").Value.Replace(",", "."));
+                                break;
+                            case "EM":
+                                Indexes[IndexesCount].K_EM = Convert.ToDouble(childnode_2.Attributes.GetNamedItem("EM").Value.Replace(",", "."));
+                                break;
+                            case "ZM":
+                                Indexes[IndexesCount].K_ZM = Convert.ToDouble(childnode_2.Attributes.GetNamedItem("ZM").Value.Replace(",", "."));
+                                break;
+                            case "MT":
+                                Indexes[IndexesCount].K_MT = Convert.ToDouble(childnode_2.Attributes.GetNamedItem("MT").Value.Replace(",", "."));
+                                break;
+                        }
+
+                    }
+                }
+
+
+            }
+
+            var ImplemActsXml = root.GetElementsByTagName("ImplemActs"); //Загружаем наборы текущих индесов 
+            int iImplemActsCount = 0;
+            if (ImplemActsXml.Count > 0)
+                foreach (XmlNode childnode_1 in ImplemActsXml[0])
+                {
+                    ImplemActs.Add(new ImplemAct());
+                    iImplemActsCount = ImplemActs.Count - 1;
+                    foreach (XmlAttribute atr in childnode_1.Attributes)
+                    {
+                        switch (atr.Name)
+                        {
+                            case "Caption":
+                                ImplemActs[iImplemActsCount].Caption = childnode_1.Attributes.GetNamedItem("Caption").Value;
+                                break;
+                            case "Number":
+                                ImplemActs[iImplemActsCount].Namber = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("Number").Value);
+                                break;
+                            case "MakingDate":
+                                ImplemActs[iImplemActsCount].MakingDate = Convert.ToDateTime(childnode_1.Attributes.GetNamedItem("MakingDate").Value);
+                                break;
+                            case "Year":
+                                ImplemActs[iImplemActsCount].Year = childnode_1.Attributes.GetNamedItem("Year").Value;
+                                break;
+                            case "Month":
+                                ImplemActs[iImplemActsCount].Month = childnode_1.Attributes.GetNamedItem("Month").Value;
+                                break;
+                            case "DayStart":
+                                ImplemActs[iImplemActsCount].DayStart = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("DayStart").Value);
+                                break;
+                            case "DayFinish":
+                                ImplemActs[iImplemActsCount].DayFinish = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("DayFinish").Value);
+                                break;
+                            case "ActIndex":
+                                ImplemActs[iImplemActsCount].ActIndex = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("ActIndex").Value);
+                                break;
+
+                        }
+
+                        foreach (XmlNode childnode_2 in childnode_1) //Пробегаем по внутренней структуре  ImplemActs
+                        {
+                            if (childnode_2.Name == "Indexes")
+                                foreach (XmlNode childnode_3 in childnode_2)
+                                {
+                                    if (childnode_3.Name == "IndexesPos")
+                                    {
+                                        foreach (XmlNode childnode_4 in childnode_3)
+                                        {
+                                            ImplemActs[iImplemActsCount].Indexs.Add(new Index());
+                                            foreach (XmlAttribute ind_atr in childnode_4.Attributes)
+                                            {
+
+                                                int iIndexesCount = ImplemActs[iImplemActsCount].Indexs.Count - 1;
+                                                switch (ind_atr.Name)
+                                                {
+
+                                                    case "Caption":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].Caption = (childnode_4.Attributes.GetNamedItem("Caption").Value);
+                                                        break;
+                                                    case "Code":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].Code = (childnode_4.Attributes.GetNamedItem("Code").Value);
+                                                        break;
+                                                    case "OZ":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_OZ = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("OZ").Value.Replace(",", "."));
+                                                        break;
+                                                    case "EM":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_EM = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("EM").Value.Replace(",", "."));
+                                                        break;
+                                                    case "ZM":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_ZM = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("ZM").Value.Replace(",", "."));
+                                                        break;
+                                                    case "MT":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_MT = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("MT").Value.Replace(",", "."));
+                                                        break;
+                                                }
+                                                if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_OZ == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_OZ = 1;
+                                                if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_EM == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_EM = 1;
+                                                if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_ZM == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_ZM = 1;
+                                                if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_MT == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_MT = 1;
+                                            }
+                                        }
+                                    }
+                                }
+
+
+
+                        }
+                    }
+                }
+
+            foreach (Chapter chapter in Chapters)
+            {
+                foreach (Position position in chapter.Positions)
+                {
+                    foreach (Index index in Indexes)
+                    {
+                        if (position.Code == index.Code)
+                            position.Index = index;
+                    }
+                }
+            }
+
+        }
+
         public void LoadARPData(string fileName) // Загрузка сметы из файла АРП
         {
             int positionCounter = 0;

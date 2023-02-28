@@ -13,14 +13,14 @@
              d:DesignHeight="600" d:DesignWidth="1150">
     <!--xmlns:bld_controls="clr-namespace:bldCustomControlLibrary;assembly=bldCustomControlLibrary"-->
     <UserControl.Resources>
-        <!--<ResourceDictionary Source="/Themes/generic.xaml"/>-->
-        <!--<Style TargetType="{x:Type Button}" x:Key="removeAddButoomStyle">
+        <!--<ResourceDictionary Source="/Themes/generic.xaml"/>
+        <Style TargetType="{x:Type Button}" x:Key="removeAddButoomStyle">
             <Setter Property="Width"  Value="20"/>
             <Setter Property="Height" Value="20"/>
-        </Style>
+        </Style>-->
         <Style x:Key="codeTextBoxStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="Margin" Value="0 0 5 0"/>
-        </Style>-->
+        </Style>
 
         <loc_core:BindingProxy x:Key="Proxy" Data="{Binding}" />
         <loc_core:NextPreviousWorkMultiConverter x:Key="NextPreviousWorkMultiConverter"/>
@@ -290,7 +290,7 @@
 
                             </DataGrid.Columns>
                         </DataGrid>
-
+                      
                     </Grid>
                    
                 </StackPanel>

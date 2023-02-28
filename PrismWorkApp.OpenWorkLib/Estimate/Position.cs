@@ -145,6 +145,7 @@ namespace PrismWorkApp.OpenWorkLib.Estimate
         public double K_ZM { get; set; } // коэффицент персчета в текущие цены зарплаты машиниста
         public double K_MT { get; set; } // коэффицент персчета в текущие цены материалов
         public Index Index { get; set; } // индексы пересчете общие для данной расцеки
+
         public ObservableCollection<Double> BaseParams
         {
             get { return baseParams; }

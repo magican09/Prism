@@ -86,19 +86,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> CloseCommand { get; protected set; }
         public NotifyCommand RemoveBuildingObjectCommand { get; private set; }
         public NotifyCommand RemoveParticipantCommand { get; private set; }
-       public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
+        public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
         public NotifyCommand AddBuildingObjectsCommand { get; private set; }
         public NotifyCommand AddParticipantCommand { get; private set; }
         public NotifyCommand EditBuildingObjectCommand { get; private set; }
         public NotifyCommand EditParticipantCommand { get; private set; }
-         public IBuildingUnitsRepository _buildingUnitsRepository { get; set; }
+        public IBuildingUnitsRepository _buildingUnitsRepository { get; set; }
         private IApplicationCommands _applicationCommands;
         public IApplicationCommands ApplicationCommands
         {
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
-    
+
 
 
         public ProjectViewModel(IDialogService dialogService, IBuildingUnitsRepository buildingUnitsRepository,
@@ -116,14 +116,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             AddBuildingObjectsCommand = new NotifyCommand(OnAddBuildingObject);
             AddParticipantCommand = new NotifyCommand(OnAddParticipant);
-          
+
             EditBuildingObjectCommand = new NotifyCommand(OnEditBuildingObject,
                                    () => SelectedBuildingObject != null)
                .ObservesProperty(() => SelectedBuildingObject);
             EditParticipantCommand = new NotifyCommand(OnEditParticipant,
                                      () => SelectedParticipant != null)
                  .ObservesProperty(() => SelectedParticipant);
-           
+
 
             RemoveBuildingObjectCommand = new NotifyCommand(OnRemoveBuildingObject,
                                        () => SelectedBuildingObject != null)
@@ -132,7 +132,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveParticipantCommand = new NotifyCommand(OnRemoveParticipant,
                                         () => SelectedParticipant != null)
                     .ObservesProperty(() => SelectedParticipant);
-             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
 
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
@@ -156,7 +156,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     }
                 }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", UnDoReDo);
         }
-      
+
         private void OnEditParticipant()
         {
             CoreFunctions.EditElementDialog<bldParticipant>(SelectedParticipant, "Учасник строительства",
@@ -172,7 +172,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         }
-       
+
         private void OnAddParticipant()
         {
             bldParticipantsGroup All_Participants =
@@ -207,9 +207,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          SaveCommand.RaiseCanExecuteChanged();
                          foreach (bldParticipant participant in collection_for_add)
                          {
-                         //   UnDoReDo.Register(participant);
+                             //   UnDoReDo.Register(participant);
                              SelectedProject.AddParticipant(participant);
-                        //    UnDoReDo.UnRegister(participant);
+                             //    UnDoReDo.UnRegister(participant);
 
                          }
                      }
@@ -254,9 +254,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      {
                          foreach (bldObject bld_obj in objects_for_add_collection)
                          {
-                   //         UnDoReDo.Register(bld_obj);
+                             //         UnDoReDo.Register(bld_obj);
                              SelectedProject.AddBuildindObject(bld_obj);
-                  //          UnDoReDo.UnRegister(bld_obj);
+                             //          UnDoReDo.UnRegister(bld_obj);
                          }
                          SaveCommand.RaiseCanExecuteChanged();
 
@@ -286,11 +286,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                           SelectedBuildingObject = null;
                           SaveCommand.RaiseCanExecuteChanged();
                       }
-                 }, _dialogService, Id);
+                  }, _dialogService, Id);
 
 
         }
-          private void OnRemoveParticipant()
+        private void OnRemoveParticipant()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
                  (SelectedParticipant, "Учасник строительства",
@@ -302,7 +302,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          SelectedParticipant = null;
                          SaveCommand.RaiseCanExecuteChanged();
                      }
-                }, _dialogService, Id);
+                 }, _dialogService, Id);
 
         }
         private void OnDataGridLostSocus(object obj)
@@ -368,7 +368,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedProject = ResivedProject;
                 SelectedProject.ErrorsChanged += RaiseCanExecuteChanged;
                 Title = ResivedProject.ShortName;
-               UnDoReDo.Register(SelectedProject);
+                UnDoReDo.Register(SelectedProject);
                 Title = $"{SelectedProject.Code} {SelectedProject.ShortName}";
             }
         }

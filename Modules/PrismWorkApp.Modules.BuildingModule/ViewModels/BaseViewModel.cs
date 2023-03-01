@@ -1,11 +1,8 @@
 ﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
-using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
-using System;
 using System.ComponentModel;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
@@ -41,7 +38,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-        public virtual void OnSave<T>(T selected_obj, string object_name = "") where T :  IEntityObject
+        public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IEntityObject
         {
             CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
             {

@@ -1,5 +1,4 @@
-﻿using Prism.Commands;
-using Prism.Events;
+﻿using Prism.Events;
 using Prism.Regions;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;

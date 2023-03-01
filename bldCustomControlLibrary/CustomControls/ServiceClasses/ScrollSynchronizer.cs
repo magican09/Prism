@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -26,27 +24,27 @@ namespace bldCustomControlLibrary
             DependencyProperty.RegisterAttached("ScrollGroup", typeof(string), typeof(ScrollSynchronizer),
                 new PropertyMetadata(new PropertyChangedCallback(OnScrollGroupChanged)));
 
-      
+
         private static void OnScrollGroupChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var scrollViewer = d as ScrollViewer;
-            if(scrollViewer!=null)
+            if (scrollViewer != null)
             {
-                if(!string.IsNullOrEmpty((string)e.OldValue))
+                if (!string.IsNullOrEmpty((string)e.OldValue))
                 {
                     //Remove scrollViewrs
-                    if(scrollViewers.ContainsKey(scrollViewer))
+                    if (scrollViewers.ContainsKey(scrollViewer))
                     {
                         scrollViewer.ScrollChanged -=
                             new ScrollChangedEventHandler(ScrollViewer_ScrollChanged);
                         scrollViewers.Remove(scrollViewer);
                     }
                 }
-                if(!string.IsNullOrEmpty((string)e.NewValue))
+                if (!string.IsNullOrEmpty((string)e.NewValue))
                 {
                     // If group already exists, set scrollposition of 
                     // new scrollviewer to the scrollposition of the group
-                    if(horizontalScrollOffsets.ContainsKey((string)e.NewValue))
+                    if (horizontalScrollOffsets.ContainsKey((string)e.NewValue))
                     {
                         scrollViewer.ScrollToHorizontalOffset(
                             horizontalScrollOffsets[(string)e.NewValue]);
@@ -55,7 +53,7 @@ namespace bldCustomControlLibrary
                     {
                         horizontalScrollOffsets.Add((string)e.NewValue, scrollViewer.HorizontalOffset);
                     }
-                  
+
                     if (verticalScrollOffsets.ContainsKey((string)e.NewValue))
                     {
                         scrollViewer.ScrollToVerticalOffset(
@@ -74,7 +72,7 @@ namespace bldCustomControlLibrary
 
         private static void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-           if(e.VerticalChange!=0||e.HorizontalChange!=0)
+            if (e.VerticalChange != 0 || e.HorizontalChange != 0)
             {
                 var changedScrollViewer = sender as ScrollViewer;
                 Scroll(changedScrollViewer);
@@ -85,9 +83,9 @@ namespace bldCustomControlLibrary
             var group = scrollViewers[changedScrollViewer];
             verticalScrollOffsets[group] = changedScrollViewer.VerticalOffset;
             horizontalScrollOffsets[group] = changedScrollViewer.HorizontalOffset;
-            foreach(var scrollViewer in scrollViewers.Where(s=>s.Value!=group &&s.Key!=changedScrollViewer))
+            foreach (var scrollViewer in scrollViewers.Where(s => s.Value != group && s.Key != changedScrollViewer))
             {
-                if(scrollViewer.Key.VerticalOffset!=changedScrollViewer.VerticalOffset)
+                if (scrollViewer.Key.VerticalOffset != changedScrollViewer.VerticalOffset)
                 {
                     scrollViewer.Key.ScrollToVerticalOffset(changedScrollViewer.VerticalOffset);
                 }
@@ -102,7 +100,7 @@ namespace bldCustomControlLibrary
         private static Dictionary<string, double> verticalScrollOffsets = new Dictionary<string, double>();
 
 
-      
+
 
 
 

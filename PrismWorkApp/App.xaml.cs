@@ -7,7 +7,6 @@ using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule;
 using PrismWorkApp.Modules.MainModule;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services;
 using PrismWorkApp.Services.Interfaces;
 using PrismWorkApp.Services.Repositories;
@@ -56,8 +55,8 @@ namespace PrismWorkApp
             ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType) =>
             {
                 var viewName = viewType.FullName.Replace("Views", "ViewModels");
-                   //viewName = viewName.TrimEnd("View");
-                   var viewAssemblyName = viewType.Assembly.FullName;
+                //viewName = viewName.TrimEnd("View");
+                var viewAssemblyName = viewType.Assembly.FullName;
                 var viewModelName = $"{viewName}ViewModel, {viewAssemblyName}";
                 viewModelName = viewModelName.Replace("ViewView", "View");
                 return Type.GetType(viewModelName);
@@ -79,7 +78,7 @@ namespace PrismWorkApp
             //splash_window.Show();
             //System.Threading.Thread.Sleep(1000);
             //splash_window.Hide();
-           
+
 
         }
     }

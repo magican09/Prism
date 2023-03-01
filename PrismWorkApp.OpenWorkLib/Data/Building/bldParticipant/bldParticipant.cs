@@ -1,5 +1,4 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,7 +11,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public string Name
         {
             get { return Role.Name; }
-            set { } 
+            set { }
         }
         private DateTime _startTime;
         public DateTime StartTime
@@ -32,16 +31,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _netExecutionTime; }
             set { SetProperty(ref _netExecutionTime, value); }
         }//Чистое время выполнения
-       
+
         private bldConstructionCompany _constructionCompany;
         public bldConstructionCompany ConstructionCompany
         {
             get { return _constructionCompany; }
             set { SetProperty(ref _constructionCompany, value); }
         }
- 
-       
-        private bldParticipantRole _role; 
+
+
+        private bldParticipantRole _role;
         public bldParticipantRole Role
         {
             get { return _role; }

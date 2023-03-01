@@ -1,5 +1,4 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,8 +11,8 @@ using System.Runtime.CompilerServices;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
- 
-    public  class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableOservableCollection<TEntity> where TEntity : IEntityObject
+
+    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableOservableCollection<TEntity> where TEntity : IEntityObject
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
@@ -100,7 +99,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Id = Guid.NewGuid();
             CollectionChanged += OnCollectionChangedMethod;
-            
+
         }
 
         public NameableObservableCollection(string name) : this()
@@ -153,7 +152,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
         }
         //    public ObservableCollection<IJornalable> ParentObjects { get; set; }
-        public  object ParentObject { get; set; }
+        public object ParentObject { get; set; }
         public ObservableCollection<IJornalable> ChildObjects { get; set; }
         public AdjustStatus AdjustedStatus { get; set; } = AdjustStatus.UNADJUSTED;
         public void JornalingOff()
@@ -187,11 +186,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 foreach (IBindableBase added_element in e.NewItems)
                     added_element.Parent = Parent;
-                   IsVisible = Count > 0;
+                IsVisible = Count > 0;
             }
 
         }
-        private object GetPropertyValue(string propName,object obj)
+        private object GetPropertyValue(string propName, object obj)
         {
             var obj_prop_val = obj.GetType().GetProperty(SortedPropertyName)?.GetValue(obj);
 
@@ -208,7 +207,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bool CopingEnable { get; set; } = true;
 
         private IBindableBase _parent;
-         public IBindableBase Parent
+        public IBindableBase Parent
         {
             get { return _parent; }
             set { _parent = value; }

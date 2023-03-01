@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public class UnDoReDoSystem : IUnDoReDoSystem,IUnDoRedoCommand
+    public class UnDoReDoSystem : IUnDoReDoSystem, IUnDoRedoCommand
     {
         private Stack<IUnDoRedoCommand> _UnDoCommands = new Stack<IUnDoRedoCommand>();
         private int _UnDoCounter = 0;
@@ -49,23 +49,23 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             return (_ReDoCommands.Count > 0) ? true : false;
 
         }
-        public void  UnDoAll()
+        public void UnDoAll()
         {
-  
+
             while (_UnDoCommands.Count > 0)
             {
                 UnDo(1);
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnDoAll"));
         }
-      
+
         public bool AllUnDoIsDone()
         {
             return _UnDoCommands.Count == 0;
         }
-        public bool  IsSatcksEmpty()
+        public bool IsSatcksEmpty()
         {
-            return _UnDoCommands.Count == 0 && _ReDoCommands.Count==0;
+            return _UnDoCommands.Count == 0 && _ReDoCommands.Count == 0;
         }
         public void ClearStacks()
         {
@@ -99,7 +99,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 _RegistedModels.Remove(obj);
             }
         }
-        public void AddUnDoReDo(IUnDoReDoSystem unDoReDo )
+        public void AddUnDoReDo(IUnDoReDoSystem unDoReDo)
         {
             _UnDoCommands.Push((UnDoReDoSystem)unDoReDo);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AddUnDoReDo"));
@@ -135,6 +135,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             Id = Guid.NewGuid();
         }
-       
+
     }
 }

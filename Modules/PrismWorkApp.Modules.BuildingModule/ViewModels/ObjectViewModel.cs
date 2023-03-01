@@ -6,7 +6,6 @@ using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.ObjectModel;
@@ -91,7 +90,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand AddParticipantCommand { get; private set; }
         public NotifyCommand AddResponsibleEmployeesCommand { get; private set; }
         public NotifyCommand AddConstructionCommand { get; private set; }
-       
+
         public NotifyCommand EditBuildingObjectCommand { get; private set; }
         public NotifyCommand EditConstructionCommand { get; private set; }
         public NotifyCommand EditParticipantCommand { get; private set; }
@@ -111,7 +110,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             UnDoReDoSystem CommonUnDoReDo = unDoReDo as UnDoReDoSystem;
             UnDoReDo = new UnDoReDoSystem();
-         
+
             SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedBuildingObject);
             CloseCommand = new NotifyCommand<object>(OnClose);
             UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
@@ -183,7 +182,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnAddBuildingObject()
         {
-            bldObjectsGroup All_BuildingObjects = new bldObjectsGroup(_buildingUnitsRepository.Objects.GetldObjectsAsync().Where(ob=>ob.Id!=SelectedBuildingObject.Id).ToList());//.GetBldObjects(SelectedProject.Id));
+            bldObjectsGroup All_BuildingObjects = new bldObjectsGroup(_buildingUnitsRepository.Objects.GetldObjectsAsync().Where(ob => ob.Id != SelectedBuildingObject.Id).ToList());//.GetBldObjects(SelectedProject.Id));
 
             NameablePredicate<bldObjectsGroup, bldObject> predicate_1 = new NameablePredicate<bldObjectsGroup, bldObject>();
             NameablePredicate<bldObjectsGroup, bldObject> predicate_2 = new NameablePredicate<bldObjectsGroup, bldObject>();
@@ -232,7 +231,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldConstructionsGroup AllConstructions =
             new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync());
-         //   new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync().Where(cn => !SelectedBuildingObject.Constructions.Contains(cn)).ToList());
+            //   new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync().Where(cn => !SelectedBuildingObject.Constructions.Contains(cn)).ToList());
             NameablePredicate<bldConstructionsGroup, bldConstruction> predicate_1 = new NameablePredicate<bldConstructionsGroup, bldConstruction>();
             predicate_1.Name = "Показать только из текущего проекта.";
             predicate_1.Predicate = cl => cl.Where(el => el.bldObject?.bldProject?.Id == SelectedBuildingObject?.bldProject?.Id).ToList();
@@ -260,7 +259,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                  {
                      if (result.Result == ButtonResult.Yes)
                      {
-                        foreach (bldConstruction construction in objects_for_add_collection)
+                         foreach (bldConstruction construction in objects_for_add_collection)
                          {
                              SelectedBuildingObject.AddConstruction(construction);
                          }
@@ -268,7 +267,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      }
                      if (result.Result == ButtonResult.No)
                      {
-                         
+
                      }
                  },
                 typeof(AddbldConstructionToCollectionDialogView).Name,
@@ -379,20 +378,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         SaveCommand.RaiseCanExecuteChanged();
                     }
                 }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", UnDoReDo);
-         }
+        }
         private void OnEditConstruction()
         {
-             CoreFunctions.EditElementDialog<bldConstruction>(SelectedConstruction, "Строительная конструкция",
-                (result) => 
-                {
-                    if (result.Result == ButtonResult.Yes)
-                    {
-                        UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
-                        UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
-                        SaveCommand.RaiseCanExecuteChanged();
-                    }
-                }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", UnDoReDo);
-         }
+            CoreFunctions.EditElementDialog<bldConstruction>(SelectedConstruction, "Строительная конструкция",
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                       UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                       SaveCommand.RaiseCanExecuteChanged();
+                   }
+               }, _dialogService, typeof(ConstructionDialogView).Name, "Редактировать", UnDoReDo);
+        }
         private void OnEditResponsibleEmployee()
         {
 
@@ -406,21 +405,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                           SaveCommand.RaiseCanExecuteChanged();
                       }
                   }, _dialogService, typeof(ResponsibleEmployeeDialogView).Name, "Редактировать", UnDoReDo);
- 
+
         }
         private void OnEditParticipant()
         {
-             CoreFunctions.EditElementDialog<bldParticipant>(SelectedParticipant, "Учасник строительства",
-                  (result) =>
-                  {
-                      if (result.Result == ButtonResult.Yes)
-                      {
-                          UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
-                          UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
-                          SaveCommand.RaiseCanExecuteChanged();
-                      }
-                  }, _dialogService, typeof(ParticipantDialogView).Name, "Редактировать", UnDoReDo);
-          
+            CoreFunctions.EditElementDialog<bldParticipant>(SelectedParticipant, "Учасник строительства",
+                 (result) =>
+                 {
+                     if (result.Result == ButtonResult.Yes)
+                     {
+                         UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
+                         UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                         SaveCommand.RaiseCanExecuteChanged();
+                     }
+                 }, _dialogService, typeof(ParticipantDialogView).Name, "Редактировать", UnDoReDo);
+
 
         }
 
@@ -436,12 +435,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                           SelectedChildBuildingObject = null;
                           SaveCommand.RaiseCanExecuteChanged();
                       }
-                 }, _dialogService, Id);
-       }
+                  }, _dialogService, Id);
+        }
         private void OnRemoveConstruction()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
-                  ( SelectedConstruction, "Строительную конструкцию",
+                  (SelectedConstruction, "Строительную конструкцию",
                   (result) =>
                   {
                       if (result.Result == ButtonResult.Yes)
@@ -450,7 +449,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                           SelectedConstruction = null;
                           SaveCommand.RaiseCanExecuteChanged();
                       }
-                 }, _dialogService, Id);
+                  }, _dialogService, Id);
         }
         private void OnRemoveResponsibleEmployee()
         {
@@ -467,7 +466,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnRemoveParticipant()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldParticipantsGroup, bldParticipant>
-                 ( SelectedParticipant, "Учасник строительства",
+                 (SelectedParticipant, "Учасник строительства",
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)
@@ -476,7 +475,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          SelectedParticipant = null;
                          SaveCommand.RaiseCanExecuteChanged();
                      }
-                }, _dialogService, Id);
+                 }, _dialogService, Id);
 
         }
 
@@ -500,7 +499,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public virtual void OnSave()
         {
             base.OnSave<bldObject>(SelectedBuildingObject);
-          
+
         }
         public virtual void OnClose(object obj)
         {
@@ -541,7 +540,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedBuildingObject = ResivedObject;
                 SelectedBuildingObject.ErrorsChanged += RaiseCanExecuteChanged;
                 Title = ResivedObject.Name;
-               UnDoReDo.Register(SelectedBuildingObject);
+                UnDoReDo.Register(SelectedBuildingObject);
                 Title = $"{SelectedBuildingObject.Code} {SelectedBuildingObject.ShortName}";
             }
         }

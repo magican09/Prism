@@ -9,7 +9,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Views
     {
         public ProjectManagerRibbonTabView_S()
         {
-           InitializeComponent();
+            InitializeComponent();
         }
     }
 }

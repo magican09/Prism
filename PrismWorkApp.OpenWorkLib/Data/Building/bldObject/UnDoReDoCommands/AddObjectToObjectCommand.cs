@@ -1,12 +1,9 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-   
+
     public class AddObjectToObjectCommand : IUnDoRedoCommand
     {
         private bldObject _CurrentObject;
@@ -14,7 +11,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         private bldProject _AddObjectLastParentProject;
         private bldObject _AddObjectLastParentObject;
-        
+
         public string Name { get; set; }
 
         public event EventHandler CanExecuteChanged;
@@ -37,8 +34,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public void UnExecute()
         {
-             _AddedObject.bldProject= _AddObjectLastParentProject;
-             _AddedObject.ParentObject= _AddObjectLastParentObject;
+            _AddedObject.bldProject = _AddObjectLastParentProject;
+            _AddedObject.ParentObject = _AddObjectLastParentObject;
             _AddedObject?.bldProject?.BuildingObjects.Add(_AddedObject);
             _AddedObject?.ParentObject?.BuildingObjects?.Add(_AddedObject);
 

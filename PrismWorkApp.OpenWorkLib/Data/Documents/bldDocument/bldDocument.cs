@@ -4,7 +4,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldDocument : BindableBase, IbldDocument
     {
-       
+
         private DateTime _date;
         public DateTime Date
         {

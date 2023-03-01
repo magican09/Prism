@@ -23,7 +23,7 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<Person> People { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<bldResponsibleEmployee> ResponsibleEmployees { get; set; }
-       
+
         public virtual DbSet<EmployeePosition> EmployeePositions { get; set; }
         #endregion
         #region Documentation
@@ -34,7 +34,7 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<bldPasportDocument> PasportDocuments { get; set; }
         public virtual DbSet<bldProjectDocument> ProjectDocuments { get; set; }
         public virtual DbSet<bldRegulationtDocument> RegulationtDocuments { get; set; }
-        public virtual DbSet<Picture>  Pictures { get; set; }
+        public virtual DbSet<Picture> Pictures { get; set; }
         #endregion
         #region Participants
         public virtual DbSet<bldCompany> Companies { get; set; }
@@ -48,7 +48,7 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<bldUnitOfMeasurement> UnitOfMeasurements { get; set; }
         #endregion
 
-   
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string Conectionstring = @"(localdb)\MSSQLLocalDB;Initial Catalog = master; Database=workappdb;Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
@@ -109,7 +109,7 @@ namespace PrismWorkApp.Services.Repositories
             modelBuilder.Entity<bldObject>()
                   .HasMany(ob => ob.Participants)
                   .WithMany(pr => pr.BuildingObjects);
-         
+
             modelBuilder.Entity<bldConstruction>()
                 .HasMany(cn => cn.Participants)
                 .WithMany(pr => pr.Constructions);
@@ -184,9 +184,9 @@ namespace PrismWorkApp.Services.Repositories
                 throw new NotImplementedException();
                 foreach (var entry in ex.Entries)
                 {
-  
+
                 }
-               
+
             }
             return save_result;
             /*foreach (var added in addedAuditedEntities)

@@ -4,15 +4,8 @@
 //
 //---------------------------------------------------------------------------
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Windows;
-using System.Windows.Threading;
-using MS.Internal;
 
 namespace bldCustomControlLibrary
 {
@@ -2536,17 +2529,17 @@ namespace bldCustomControlLibrary
 
         // #region Data
 
-         private BldTaskDataGrid _dataGridOwner;
-         private bool _isUpdatingDisplayIndex;     // true if we're in the middle of updating the display index of each column.
-     //   private List<int> _displayIndexMap;            // maps a DisplayIndex to an index in the _columns collection.
-        //private bool _displayIndexMapInitialized; // Flag is used to delay the validation of DisplayIndex until the first measure
-        //private bool _isClearingDisplayIndex; // Flag indicating that we're currently clearing the display index.  We should not coerce default display index's during this time.
-      //  private bool _columnWidthsComputationPending; // Flag indicating whether the columns width computaion operation is pending
-      //  private Dictionary<BldTaskDataGridColumn, BldTaskDataGridLength> _originalWidthsForResize; // Dictionary to hold the original widths of columns for resize operation
-        // private double? _averageColumnWidth = null;       // average width of all visible columns
-        // private List<RealizedColumnsBlock> _realizedColumnsBlockListForNonVirtualizedRows = null; // Realized columns for non-virtualized rows
-        // private List<RealizedColumnsBlock> _realizedColumnsBlockListForVirtualizedRows = null; // Realized columns for virtualized rows
-        // private bool _hasVisibleStarColumns = false;
+        private BldTaskDataGrid _dataGridOwner;
+        private bool _isUpdatingDisplayIndex;     // true if we're in the middle of updating the display index of each column.
+                                                  //   private List<int> _displayIndexMap;            // maps a DisplayIndex to an index in the _columns collection.
+                                                  //private bool _displayIndexMapInitialized; // Flag is used to delay the validation of DisplayIndex until the first measure
+                                                  //private bool _isClearingDisplayIndex; // Flag indicating that we're currently clearing the display index.  We should not coerce default display index's during this time.
+                                                  //  private bool _columnWidthsComputationPending; // Flag indicating whether the columns width computaion operation is pending
+                                                  //  private Dictionary<BldTaskDataGridColumn, BldTaskDataGridLength> _originalWidthsForResize; // Dictionary to hold the original widths of columns for resize operation
+                                                  // private double? _averageColumnWidth = null;       // average width of all visible columns
+                                                  // private List<RealizedColumnsBlock> _realizedColumnsBlockListForNonVirtualizedRows = null; // Realized columns for non-virtualized rows
+                                                  // private List<RealizedColumnsBlock> _realizedColumnsBlockListForVirtualizedRows = null; // Realized columns for virtualized rows
+                                                  // private bool _hasVisibleStarColumns = false;
 
         // #endregion
     }

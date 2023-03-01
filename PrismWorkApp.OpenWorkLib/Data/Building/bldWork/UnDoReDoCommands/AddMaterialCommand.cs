@@ -1,9 +1,7 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace PrismWorkApp.OpenWorkLib.Data 
+namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class AddMaterialCommand : IUnDoRedoCommand
     {
@@ -22,14 +20,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void Execute(object parameter = null)
         {
             _CurrentWork.Materials.Add(_AddedMaterial);
-            foreach(bldDocument document in _AddedMaterial.Documents)
+            foreach (bldDocument document in _AddedMaterial.Documents)
                 _CurrentWork.AOSRDocument.AttachedDocuments.Add(document);
         }
 
         public void UnExecute()
         {
             _CurrentWork.Materials.Remove(_AddedMaterial);
-            foreach(bldDocument document in _AddedMaterial.Documents)
+            foreach (bldDocument document in _AddedMaterial.Documents)
                 _CurrentWork.AOSRDocument.AttachedDocuments.Remove(document);
         }
         public AddMaterialCommand(bldWork work, bldMaterial material)

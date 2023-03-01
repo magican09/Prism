@@ -1,7 +1,5 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -11,7 +9,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private bldWork _RemovedPreviosWork;
         private bldConstruction _CurrentWorkConstruction;
         private bldConstruction _RemovedPreviosWorkConstruction;
-        public string Name { get ; set; }
+        public string Name { get; set; }
 
         public event EventHandler CanExecuteChanged;
 

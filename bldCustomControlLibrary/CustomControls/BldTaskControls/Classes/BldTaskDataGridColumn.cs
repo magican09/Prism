@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace bldCustomControlLibrary 
+namespace bldCustomControlLibrary
 {
     public abstract partial class BldTaskDataGridColumn : DataGridBoundColumn
     {
@@ -77,12 +75,12 @@ namespace bldCustomControlLibrary
         {
             Debug.Assert(itemProperty != null && itemProperty.PropertyType != null, "itemProperty and/or its PropertyType member cannot be null");
 
-           // DataGridColumn dataGridColumn = null;
+            // DataGridColumn dataGridColumn = null;
             BldTaskDataGridColumn dataGridColumn = null;
 
             DataGridComboBoxColumn comboBoxColumn = null;
             Type propertyType = itemProperty.PropertyType;
-            
+
             // determine the type of column to be created and create one
             //if (propertyType.IsEnum)
             //{
@@ -153,7 +151,7 @@ namespace bldCustomControlLibrary
                 }
             }
 
-            return  (BldTaskDataGridColumn)dataGridColumn ;
+            return (BldTaskDataGridColumn)dataGridColumn;
         }
         #endregion
         #region Data

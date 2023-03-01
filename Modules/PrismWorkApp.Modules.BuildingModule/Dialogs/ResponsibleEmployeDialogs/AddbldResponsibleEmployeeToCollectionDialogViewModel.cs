@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
     public class AddbldResponsibleEmployeeToCollectionDialogViewModel :
-      AddElementToCollectionDialogViewModel<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>
+      AddElementsToCollectionDialogFromListViewModel<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
     {
         public AddbldResponsibleEmployeeToCollectionDialogViewModel(IDialogService dialogService)
            : base(dialogService)

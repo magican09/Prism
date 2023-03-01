@@ -168,7 +168,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _parent; }
             set
             {
-               
+
                 SetProperty(ref _parent, value);
                 foreach (IBindableBase elm in Children)
                     elm.Parent = _parent;

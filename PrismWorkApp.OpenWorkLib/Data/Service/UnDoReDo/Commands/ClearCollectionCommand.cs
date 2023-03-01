@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
 
-    public class ClearCollectionCommand<TCollection,TEntity> : IUnDoRedoCommand
-        where TCollection:IList,IEnumerable
+    public class ClearCollectionCommand<TCollection, TEntity> : IUnDoRedoCommand
+        where TCollection : IList, IEnumerable
     {
         private TCollection _Collection;
 
         private Stack<TEntity> _RemovedEntities = new Stack<TEntity>();
         public string Name { get; set; }
-       
+
         public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
@@ -35,16 +34,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
         public void UnExecute()
         {
-           
-             while(_RemovedEntities.Count>0)
+
+            while (_RemovedEntities.Count > 0)
                 _Collection.Add(_RemovedEntities.Pop());
-            
+
 
         }
         public ClearCollectionCommand(TCollection collection)
         {
             _Collection = collection;
-            foreach(TEntity ent in _Collection)
+            foreach (TEntity ent in _Collection)
             {
                 _RemovedEntities.Push(ent);
             }

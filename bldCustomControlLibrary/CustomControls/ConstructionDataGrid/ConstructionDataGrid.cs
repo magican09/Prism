@@ -1,14 +1,7 @@
-﻿using PrismWorkApp.OpenWorkLib.Data;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace bldCustomControlLibrary
 {
@@ -27,7 +20,7 @@ namespace bldCustomControlLibrary
         public static readonly DependencyProperty SelectedItemProperty =
             DependencyProperty.Register("SelectedItem", typeof(object), typeof(ConstructionDataGrid),
                 new PropertyMetadata(new ValidateValueCallback(OnValidateValueCallback),
-                        new PropertyChangedCallback(OnPropertyChangedCallback),new CoerceValueCallback(OnCoerceValueCallback)));
+                        new PropertyChangedCallback(OnPropertyChangedCallback), new CoerceValueCallback(OnCoerceValueCallback)));
 
         private static object OnCoerceValueCallback(DependencyObject d, object baseValue)
         {
@@ -36,7 +29,7 @@ namespace bldCustomControlLibrary
 
         private static void OnPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-         
+
         }
 
         private static bool OnValidateValueCallback(object value)

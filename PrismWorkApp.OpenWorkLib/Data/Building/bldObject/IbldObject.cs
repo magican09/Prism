@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldObject : IRegisterable,INameable, ITemporal, IMeasurable, ILaborIntensiveable,
+    public interface IbldObject : IRegisterable, INameable, ITemporal, IMeasurable, ILaborIntensiveable,
                                  ICloneable, IEntityObject
     //IHierarchicable<IbldProject, INameableOservableCollection<KeyValue>>
     {

@@ -1,12 +1,10 @@
-﻿using Prism.Commands;
-using Prism.Regions;
+﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.ObjectModel;
@@ -62,7 +60,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
         private ObservableCollection<bldParticipantRole> _allParticipantRoles;
-        public ObservableCollection<bldParticipantRole>   AllParticipantRoles
+        public ObservableCollection<bldParticipantRole> AllParticipantRoles
         {
             get { return _allParticipantRoles; }
             set { SetProperty(ref _allParticipantRoles, value); }
@@ -97,7 +95,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public ParticipantViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
             IApplicationCommands applicationCommands, IUnDoReDoSystem unDoReDo)
         {
-             UnDoReDo = new UnDoReDoSystem();
+            UnDoReDo = new UnDoReDoSystem();
 
             SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedParticipant);
             CloseCommand = new NotifyCommand<object>(OnClose);
@@ -114,7 +112,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                              .ObservesProperty(() => SelectedResponsibleEmployee);
             CompanyChangedCommand = new NotifyCommand<bldCompany>(OnCompanyChanged);
 
-             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
             _buildingUnitsRepository = buildingUnitsRepository;
             _applicationCommands = applicationCommands;
             _dialogService = dialogService;
@@ -129,7 +127,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnCompanyChanged(bldCompany company)
         {
-           if(SelectedParticipant.ResponsibleEmployees.Count>0)
+            if (SelectedParticipant.ResponsibleEmployees.Count > 0)
                 SelectedParticipant.CleareResponsibleEmployees();
         }
 
@@ -137,8 +135,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldResponsibleEmployeesGroup All_ResponsibleEmployees = new bldResponsibleEmployeesGroup(
                     _buildingUnitsRepository.ResponsibleEmployees.GetAllResponsibleEmployees()
-                    .Where(re=>re.Employee?.Company.Id==SelectedParticipant.ConstructionCompany.Id &&
-                     !SelectedParticipant.ResponsibleEmployees.Contains(re) ).ToList());
+                    .Where(re => re.Employee?.Company.Id == SelectedParticipant.ConstructionCompany.Id &&
+                     !SelectedParticipant.ResponsibleEmployees.Contains(re)).ToList());
             NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_1 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
             NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_2 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
             NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee> predicate_3 = new NameablePredicate<ObservableCollection<bldResponsibleEmployee>, bldResponsibleEmployee>();
@@ -167,8 +165,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          SaveCommand.RaiseCanExecuteChanged();
                          foreach (bldResponsibleEmployee employee in collection_for_add)
                          {
-                                SelectedParticipant.AddResponsibleEmployee(employee);
-           
+                             SelectedParticipant.AddResponsibleEmployee(employee);
+
                          }
                      }
                  },
@@ -190,7 +188,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          SelectedResponsibleEmployee = null;
                          SaveCommand.RaiseCanExecuteChanged();
                      }
-                }, _dialogService, Id);
+                 }, _dialogService, Id);
 
         }
 
@@ -214,7 +212,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             if (obj == SelectedResponsibleEmployee)
             {
-            //    SelectedResponsibleEmployee = null;
+                //    SelectedResponsibleEmployee = null;
                 return;
             }
             if (obj == SelectedConstructionCompany)
@@ -224,7 +222,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             }
 
         }
-       
+
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             SaveCommand.RaiseCanExecuteChanged();

@@ -1,12 +1,10 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace PrismWorkApp.Services.Repositories
 {
-public class bldMaterialCertificatesRepository : Repository<bldMaterialCertificate>
+    public class bldMaterialCertificatesRepository : Repository<bldMaterialCertificate>
     {
         public bldMaterialCertificatesRepository(PlutoContext context) : base(context)
         {

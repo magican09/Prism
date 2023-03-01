@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.OpenWorkLib.Data
-{ 
-    public abstract class bldResource : BindableBase, IbldResource,IEntityObject
+﻿namespace PrismWorkApp.OpenWorkLib.Data
+{
+    public abstract class bldResource : BindableBase, IbldResource, IEntityObject
     {
         private string _name;
         public string Name
@@ -25,7 +21,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _fullName; }
             set { SetProperty(ref _fullName, value); }
         }
-      
+
         private decimal _unitPrice;
         public decimal UnitPrice
         {
@@ -52,6 +48,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _cost, value); }
         }//Общая стоимость
 
-      
+
     }
 }

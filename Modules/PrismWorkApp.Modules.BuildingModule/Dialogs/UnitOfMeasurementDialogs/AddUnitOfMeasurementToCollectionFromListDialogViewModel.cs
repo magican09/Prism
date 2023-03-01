@@ -1,5 +1,4 @@
 ﻿using Prism.Services.Dialogs;
-using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using System.Collections.ObjectModel;
 

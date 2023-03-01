@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
@@ -21,7 +18,7 @@ namespace bldCustomControlLibrary
                 {
                     child = GetVisualChild<T>(v);
                 }
-             
+
                 if (child != null)
                 {
                     break;
@@ -31,7 +28,7 @@ namespace bldCustomControlLibrary
         }
         public static DataGridRow GetSelectedRow(this DataGrid grid)
         {
-             return (DataGridRow)grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem);
+            return (DataGridRow)grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem);
         }
         public static DataGridRow GetRow(this DataGrid grid, int index)
         {

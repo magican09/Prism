@@ -1,31 +1,24 @@
-﻿using PrismWorkApp.OpenWorkLib.Data;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Media;
 
 namespace bldCustomControlLibrary
-{ 
-    public class BldTaskDataGridCellsPresenter: ItemsControl //DataGridCellsPresenter
+{
+    public class BldTaskDataGridCellsPresenter : ItemsControl //DataGridCellsPresenter
     {
-        static  BldTaskDataGridCellsPresenter()
+        static BldTaskDataGridCellsPresenter()
         {
-           DefaultStyleKeyProperty.OverrideMetadata(typeof(BldTaskDataGridCellsPresenter), new FrameworkPropertyMetadata(typeof(BldTaskDataGridCellsPresenter)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(BldTaskDataGridCellsPresenter), new FrameworkPropertyMetadata(typeof(BldTaskDataGridCellsPresenter)));
 
         }
-           
+
         public BldTaskDataGridCellsPresenter()
         {
-          
+
         }
-        
+
 
         public object Item
         {
@@ -44,7 +37,7 @@ namespace bldCustomControlLibrary
                 }
             }
         }
-        
+
         /// <summary>
         ///     Called when the value of the Item property changes.
         /// </summary>
@@ -84,7 +77,7 @@ namespace bldCustomControlLibrary
         }
 
         #region Row Communication
-       /// <summary>
+        /// <summary>
         ///     Tells the row owner about this element.
         /// </summary>
         public override void OnApplyTemplate()
@@ -206,7 +199,7 @@ namespace bldCustomControlLibrary
         }
         #endregion
         #region Cell Container Genertor
-      
+
         /// <summary>
         ///     Workaround for not being able to access the panel instance of
         ///     itemscontrol directly
@@ -256,7 +249,7 @@ namespace bldCustomControlLibrary
         }
         internal BldTaskDataGridRow DataGridRowOwner
         {
-            get { return DataGridHelper.FindParent<BldTaskDataGridRow>(this);  }
+            get { return DataGridHelper.FindParent<BldTaskDataGridRow>(this); }
         }
 
         private ObservableCollection<BldTaskDataGridColumn> Columns

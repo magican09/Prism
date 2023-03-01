@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace bldCustomControlLibrary
 {
@@ -14,8 +9,8 @@ namespace bldCustomControlLibrary
     {
         static BldTaskDataGridTextColumn()
         {
-          //  ElementStyleProperty.OverrideMetadata(typeof(DataGridTextColumn), new FrameworkPropertyMetadata(DefaultElementStyle));
-           // EditingElementStyleProperty.OverrideMetadata(typeof(DataGridTextColumn), new FrameworkPropertyMetadata(DefaultEditingElementStyle));
+            //  ElementStyleProperty.OverrideMetadata(typeof(DataGridTextColumn), new FrameworkPropertyMetadata(DefaultElementStyle));
+            // EditingElementStyleProperty.OverrideMetadata(typeof(DataGridTextColumn), new FrameworkPropertyMetadata(DefaultEditingElementStyle));
         }
 
         #region Styles
@@ -73,7 +68,7 @@ namespace bldCustomControlLibrary
         /// <summary>
         ///     Creates the visual tree for text based cells.
         /// </summary>
-        protected  override FrameworkElement GenerateElement(BldTaskDataGridCell cell, object dataItem)
+        protected override FrameworkElement GenerateElement(BldTaskDataGridCell cell, object dataItem)
         {
             TextBlock textBlock = new TextBlock();
 
@@ -86,7 +81,7 @@ namespace bldCustomControlLibrary
             //textBlock.Text = cell.Column.Header.ToString();
             return textBlock;
         }
-       
+
         /// <summary>
         ///     Creates the visual tree for text based cells.
         /// </summary>
@@ -115,7 +110,7 @@ namespace bldCustomControlLibrary
             //DataGridHelper.SyncColumnProperty(this, e, TextElement.ForegroundProperty, ForegroundProperty);
         }
 
-        protected internal  void RefreshCellContent(FrameworkElement element, string propertyName)
+        protected internal void RefreshCellContent(FrameworkElement element, string propertyName)
         {
             DataGridCell cell = element as DataGridCell;
 
@@ -123,27 +118,27 @@ namespace bldCustomControlLibrary
             {
                 FrameworkElement textElement = cell.Content as FrameworkElement;
 
-            //    if (textElement != null)
-            //    {
-            //        switch (propertyName)
-            //        {
-            //            case "FontFamily":
-            //                DataGridHelper.SyncColumnProperty(this, textElement, TextElement.FontFamilyProperty, FontFamilyProperty);
-            //                break;
-            //            case "FontSize":
-            //                DataGridHelper.SyncColumnProperty(this, textElement, TextElement.FontSizeProperty, FontSizeProperty);
-            //                break;
-            //            case "FontStyle":
-            //                DataGridHelper.SyncColumnProperty(this, textElement, TextElement.FontStyleProperty, FontStyleProperty);
-            //                break;
-            //            case "FontWeight":
-            //                DataGridHelper.SyncColumnProperty(this, textElement, TextElement.FontWeightProperty, FontWeightProperty);
-            //                break;
-            //            case "Foreground":
-            //                DataGridHelper.SyncColumnProperty(this, textElement, TextElement.ForegroundProperty, ForegroundProperty);
-            //                break;
-            //        }
-            //    }
+                //    if (textElement != null)
+                //    {
+                //        switch (propertyName)
+                //        {
+                //            case "FontFamily":
+                //                DataGridHelper.SyncColumnProperty(this, textElement, TextElement.FontFamilyProperty, FontFamilyProperty);
+                //                break;
+                //            case "FontSize":
+                //                DataGridHelper.SyncColumnProperty(this, textElement, TextElement.FontSizeProperty, FontSizeProperty);
+                //                break;
+                //            case "FontStyle":
+                //                DataGridHelper.SyncColumnProperty(this, textElement, TextElement.FontStyleProperty, FontStyleProperty);
+                //                break;
+                //            case "FontWeight":
+                //                DataGridHelper.SyncColumnProperty(this, textElement, TextElement.FontWeightProperty, FontWeightProperty);
+                //                break;
+                //            case "Foreground":
+                //                DataGridHelper.SyncColumnProperty(this, textElement, TextElement.ForegroundProperty, ForegroundProperty);
+                //                break;
+                //        }
+                //    }
             }
 
             base.RefreshCellContent(element, propertyName);
@@ -215,7 +210,7 @@ namespace bldCustomControlLibrary
         /// <param name="uneditedValue">The original, unedited value of the cell.</param>
         protected override void CancelCellEdit(FrameworkElement editingElement, object uneditedValue)
         {
-         //   DataGridHelper.CacheFlowDirection(editingElement, editingElement != null ? editingElement.Parent as DataGridCell : null);
+            //   DataGridHelper.CacheFlowDirection(editingElement, editingElement != null ? editingElement.Parent as DataGridCell : null);
 
             base.CancelCellEdit(editingElement, uneditedValue);
         }
@@ -227,7 +222,7 @@ namespace bldCustomControlLibrary
         /// <returns>false if there is a validation error. true otherwise.</returns>
         protected override bool CommitCellEdit(FrameworkElement editingElement)
         {
-          //  DataGridHelper.CacheFlowDirection(editingElement, editingElement != null ? editingElement.Parent as DataGridCell : null);
+            //  DataGridHelper.CacheFlowDirection(editingElement, editingElement != null ? editingElement.Parent as DataGridCell : null);
 
             return base.CommitCellEdit(editingElement);
         }
@@ -244,7 +239,7 @@ namespace bldCustomControlLibrary
             return false;
         }
 
-        internal  void OnInput(InputEventArgs e)
+        internal void OnInput(InputEventArgs e)
         {
             // Text input will start an edit.
             // Escape is meant to be for CancelEdit. But DataGrid

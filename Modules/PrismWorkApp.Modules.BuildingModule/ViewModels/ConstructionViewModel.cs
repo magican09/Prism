@@ -6,7 +6,6 @@ using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.ObjectModel;
@@ -92,7 +91,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
             SaveCommand = new NotifyCommand(OnSave, CanSave).ObservesProperty(() => SelectedConstruction);
             CloseCommand = new NotifyCommand<object>(OnClose);
-        
+
             UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
                                () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
@@ -114,9 +113,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             #endregion
             #region Edit Commands
 
-           EditConstructionCommand = new NotifyCommand(OnEditConstruction,
-                                        () => SelectedChildConstruction != null)
-                    .ObservesProperty(() => SelectedChildConstruction);
+            EditConstructionCommand = new NotifyCommand(OnEditConstruction,
+                                         () => SelectedChildConstruction != null)
+                     .ObservesProperty(() => SelectedChildConstruction);
             EditWorkCommand = new NotifyCommand(OnEditWork,
                                         () => SelectedWork != null)
                     .ObservesProperty(() => SelectedWork);
@@ -129,7 +128,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
-           
+
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
@@ -204,7 +203,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnAddConstruction()
         {
             bldConstructionsGroup Constructions =
-            new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync().Where(cn=>cn.Id!=SelectedConstruction.Id).ToList());
+            new bldConstructionsGroup(_buildingUnitsRepository.Constructions.GetbldConstructionsAsync().Where(cn => cn.Id != SelectedConstruction.Id).ToList());
             NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction> predicate_1 = new NameablePredicate<ObservableCollection<bldConstruction>, bldConstruction>();
             predicate_1.Name = "Показать только из текущего проекта.";
             predicate_1.Predicate = cl => cl.Where(el => el.bldObject?.bldProject?.Id == SelectedConstruction?.bldObject?.bldProject?.Id).ToList();
@@ -234,8 +233,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      {
                          foreach (bldConstruction construction in objects_for_add_collection)
                          {
-                              SelectedConstruction.AddConstruction(construction);
-                          }
+                             SelectedConstruction.AddConstruction(construction);
+                         }
                          SaveCommand.RaiseCanExecuteChanged();
                      }
                      if (result.Result == ButtonResult.No)
@@ -251,7 +250,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnEditWork()
         {
-           UnDoReDo.Register(SelectedWork);
+            UnDoReDo.Register(SelectedWork);
             CoreFunctions.EditElementDialog<bldWork>(SelectedWork, "Работа",
                     (result) =>
                     {
@@ -262,8 +261,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             SaveCommand.RaiseCanExecuteChanged();
                         }
                     }, _dialogService, typeof(WorkDialogView).Name, "Редактировать", UnDoReDo);
-           UnDoReDo.UnRegister(SelectedWork);
-        
+            UnDoReDo.UnRegister(SelectedWork);
+
         }
         private void OnEditConstruction()
         {
@@ -280,9 +279,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnRemoveWork()
         {
-      
+
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
-                  ( SelectedWork, "Работу",
+                  (SelectedWork, "Работу",
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)
@@ -296,7 +295,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnRemoveConstruction()
         {
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldConstructionsGroup, bldConstruction>
-                  ( SelectedChildConstruction, "Строительную конструкцию",
+                  (SelectedChildConstruction, "Строительную конструкцию",
                   (result) =>
                   {
                       if (result.Result == ButtonResult.Yes)
@@ -305,7 +304,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                           SelectedChildConstruction = null;
                           SaveCommand.RaiseCanExecuteChanged();
                       }
-                 }, _dialogService, Guid.Empty);
+                  }, _dialogService, Guid.Empty);
         }
         private bool CanSave()
         {

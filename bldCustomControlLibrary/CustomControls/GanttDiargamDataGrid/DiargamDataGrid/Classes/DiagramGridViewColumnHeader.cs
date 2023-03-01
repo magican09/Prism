@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+﻿using System.Windows.Controls;
 
-namespace bldCustomControlLibrary  
+namespace bldCustomControlLibrary
 {
-    public class DiagramDataGridColumnHeader: GridViewColumnHeader
+    public class DiagramDataGridColumnHeader : GridViewColumnHeader
     {
 
     }

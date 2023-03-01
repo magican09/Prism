@@ -1,7 +1,5 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -14,7 +12,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private bldConstruction _AddNextWorkConstruction;
 
 
-        public string Name { get ; set; }
+        public string Name { get; set; }
 
         public event EventHandler CanExecuteChanged;
 
@@ -26,16 +24,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void Execute(object parameter = null)
         {
 
-          //  _CurrentWork.bldConstruction = _AddNextWorkConstruction;
-          //  _AddNextWork.bldConstruction = _CurrentWorkConstruction;
+            //  _CurrentWork.bldConstruction = _AddNextWorkConstruction;
+            //  _AddNextWork.bldConstruction = _CurrentWorkConstruction;
             _AddNextWork.PreviousWorks.Add(_CurrentWork);
             _CurrentWork.NextWorks.Add(_AddNextWork);
         }
 
         public void UnExecute()
         {
-          //  _CurrentWork.bldConstruction = _CurrentWorkConstruction ;
-          //  _AddNextWork.bldConstruction = _AddNextWorkConstruction;
+            //  _CurrentWork.bldConstruction = _CurrentWorkConstruction ;
+            //  _AddNextWork.bldConstruction = _AddNextWorkConstruction;
             _AddNextWork.PreviousWorks.Remove(_CurrentWork);
             _CurrentWork.NextWorks.Remove(_AddNextWork);
         }
@@ -43,11 +41,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             _CurrentWork = work;
             _AddNextWork = next_work;
-          //  _CurrentWorkConstruction = _CurrentWork.bldConstruction;
-          //  _AddNextWorkConstruction = _AddNextWork.bldConstruction;
+            //  _CurrentWorkConstruction = _CurrentWork.bldConstruction;
+            //  _AddNextWorkConstruction = _AddNextWork.bldConstruction;
 
-        //    _CurrentWork.bldConstruction = _AddNextWorkConstruction;
-         //   _AddNextWork.bldConstruction = _CurrentWorkConstruction;
+            //    _CurrentWork.bldConstruction = _AddNextWorkConstruction;
+            //   _AddNextWork.bldConstruction = _CurrentWorkConstruction;
             _AddNextWork.PreviousWorks.Add(_CurrentWork);
             _CurrentWork.NextWorks.Add(_AddNextWork);
 

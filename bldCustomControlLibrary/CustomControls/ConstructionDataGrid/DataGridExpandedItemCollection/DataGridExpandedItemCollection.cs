@@ -1,15 +1,12 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace bldCustomControlLibrary
-{ 
+{
     public class DataGridExpandedItemCollection : ObservableCollection<DataGridExpandedItem>
     {
         public DataGridExpandedItemCollection()

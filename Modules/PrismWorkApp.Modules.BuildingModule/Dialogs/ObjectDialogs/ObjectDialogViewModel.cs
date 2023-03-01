@@ -5,7 +5,6 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 
@@ -49,18 +48,18 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                     "Не сохранять",
                    "Отмена", (result) =>
               {
-                   if (result.Result == ButtonResult.Yes)
-                   {
+                  if (result.Result == ButtonResult.Yes)
+                  {
                       DialogParameters param = new DialogParameters();
                       param.Add("undo_redo", UnDoReDo);
                       RequestClose?.Invoke(new DialogResult(ButtonResult.Yes, param));
-                   }
-                   else
-                   {
-                        RequestClose?.Invoke(new DialogResult(ButtonResult.No));
-                   }
+                  }
+                  else
+                  {
+                      RequestClose?.Invoke(new DialogResult(ButtonResult.No));
+                  }
 
-               }, _dialogService);
+              }, _dialogService);
             }
         }
         override public void OnClose(object obj)
@@ -73,7 +72,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
-             if (navigane_message != null)
+            if (navigane_message != null)
             {
                 ResivedObject = (bldObject)navigane_message.Object;
                 EditMode = navigane_message.EditMode;

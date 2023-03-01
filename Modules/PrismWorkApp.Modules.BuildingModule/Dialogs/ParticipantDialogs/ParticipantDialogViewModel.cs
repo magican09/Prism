@@ -5,7 +5,6 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 
@@ -63,7 +62,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             }
             else
             {
-            
+
             }
 
 
@@ -76,7 +75,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigate_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
-           if (navigate_message != null)
+            if (navigate_message != null)
             {
                 ResivedParticipant = (bldParticipant)navigate_message.Object;
                 EditMode = navigate_message.EditMode;

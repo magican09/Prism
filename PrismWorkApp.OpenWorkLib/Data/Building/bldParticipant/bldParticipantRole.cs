@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldParticipantRole :BindableBase,IKeyable, INameable
+    public class bldParticipantRole : BindableBase, IKeyable, INameable
     {
 
         private string _name;

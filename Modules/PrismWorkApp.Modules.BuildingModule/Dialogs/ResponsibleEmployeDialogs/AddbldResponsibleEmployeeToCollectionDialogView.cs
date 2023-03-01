@@ -1,6 +1,6 @@
 ﻿namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
-    public class AddbldResponsibleEmployeeToCollectionDialogView : AddElementToCollectionDialog
+    public class AddbldResponsibleEmployeeToCollectionDialogView : AddElementsToCollectionFromListDialogView
     {
         public AddbldResponsibleEmployeeToCollectionDialogView()
         {

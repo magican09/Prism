@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace bldCustomControlLibrary
 {
-    public class BldTaskDataGridCell:DataGridCell
+    public class BldTaskDataGridCell : DataGridCell
     {
         //public  DataGridColumn Column { get; }
         public BldTaskDataGridCell()
@@ -37,7 +34,7 @@ namespace bldCustomControlLibrary
                     //}
 
                     // Ask the column to build a visual tree
-                   // FrameworkElement newContent = column.BuildVisualTree(IsEditing, RowDataItem, this);
+                    // FrameworkElement newContent = column.BuildVisualTree(IsEditing, RowDataItem, this);
 
                     // Before discarding the old visual tree, disconnect all its
                     // bindings, as in ItemContainerGenerator.UnlinkContainerFromItem.
@@ -60,7 +57,7 @@ namespace bldCustomControlLibrary
                     //}
 
                     // hook the visual tree up through the Content property.
-                   // Content = newContent;
+                    // Content = newContent;
                 }
             }
         }
@@ -120,8 +117,8 @@ namespace bldCustomControlLibrary
                 }
 
                 // Update cell Selection
-              //  bool isSelected = dataGrid.SelectedCellsInternal.Contains(this);
-               // SyncIsSelected(isSelected);
+                //  bool isSelected = dataGrid.SelectedCellsInternal.Contains(this);
+                // SyncIsSelected(isSelected);
             }
 
             //DataGridHelper.TransferProperty(this, StyleProperty);
@@ -130,7 +127,7 @@ namespace bldCustomControlLibrary
         }
 
         #endregion
-        
+
         #region Column Information
         /// <summary>
         ///     The column that defines how this cell should appear.

@@ -1,8 +1,6 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -57,7 +55,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             _NextWorks.Clear();
             _contruction.Works.Add(_removedWork);
         }
-        public RemoveWorkCommand(bldConstruction construction,bldWork _work )
+        public RemoveWorkCommand(bldConstruction construction, bldWork _work)
         {
             _removedWork = _work;
             _contruction = construction;
@@ -68,7 +66,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 work.NextWorks.Remove(_removedWork);
             }
             _removedWork.PreviousWorks.Clear();
-         
+
             foreach (bldWork work in _removedWork.NextWorks)
             {
                 _NextWorks.Add(work);

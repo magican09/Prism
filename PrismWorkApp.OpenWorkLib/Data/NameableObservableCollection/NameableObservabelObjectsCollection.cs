@@ -14,7 +14,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public NameableObservabelObjectsCollection(IEnumerable<IEntityObject> entities) : base(entities)
         {
-           
+
         }
     }
 }

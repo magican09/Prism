@@ -85,7 +85,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     bldWork current_work = aOSRDocument.bldWork;
                     bldProject project = current_work.bldConstruction.bldObject.bldProject;
                     bldParticipantsGroup all_participants = current_work.Participants;
-                 //  AOSRDocument aOSRDocument = current_work.AOSRDocuments
+                    //  AOSRDocument aOSRDocument = current_work.AOSRDocuments
                     //  foreach (AOSRDocument aOSRDocument in current_work.AOSRDocuments)
                     {
                         //  aOSRDocument.AttachDocuments.Clear();
@@ -93,7 +93,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         string s_date = aOSRDocument.Date.ToString("d");
                         world_document.Bookmarks["Date_Sign"].Range.Text =
                                 ((DateTime)aOSRDocument.Date).ToString("d");// Дата акта
-                    
+
                         world_document.Bookmarks["Object_name"].Range.Text = project.FullName;//Наименованиа объекта
 
                         string developer_company_name = project.Participants.FirstOrDefault(p => p.Role.RoleCode == ParticipantRole.DEVELOPER)?.ConstructionCompany?.FullName;
@@ -166,10 +166,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             world_document.Tables[2].Rows[3].Range.Text = str_arr[str_arr.Count - ii];
                             i_table2_row_add_counter++;
                         }
-                        string disigner_company_name = all_participants.FirstOrDefault(p => p.Role.RoleCode== ParticipantRole.DISIGNER)?.Name;
+                        string disigner_company_name = all_participants.FirstOrDefault(p => p.Role.RoleCode == ParticipantRole.DISIGNER)?.Name;
 
-                        if(current_work.ProjectDocuments.Count>0)
-                             world_document.Bookmarks["project"].Range.Text = $"{current_work.ProjectDocuments[0]?.Name} {disigner_company_name}";  //Проектная документация
+                        if (current_work.ProjectDocuments.Count > 0)
+                            world_document.Bookmarks["project"].Range.Text = $"{current_work.ProjectDocuments[0]?.Name} {disigner_company_name}";  //Проектная документация
 
                         #region Вывод данных по используемым материалам
                         str = "";

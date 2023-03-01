@@ -1,5 +1,4 @@
 ﻿using Prism;
-using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,7 +23,7 @@ namespace PrismWorkApp.Core.Commands
         public NotifyCommand(Action executeMethod)
         {
             RegisterActiveAwareEventHandler(executeMethod);
-             _TargetExecuteMetod = executeMethod;
+            _TargetExecuteMetod = executeMethod;
         }
 
         private void RegisterActiveAwareEventHandler(Action executeMethod)
@@ -50,7 +49,7 @@ namespace PrismWorkApp.Core.Commands
             }
         }
 
-      
+
         #region ICommand members
         bool ICommand.CanExecute(object parameter)
         {
@@ -169,7 +168,7 @@ namespace PrismWorkApp.Core.Commands
             return CanExecute(parameter);
         }
 
-       
+
     }
 
     public class NotifyCommand<T> : NotifyCommandBase, ICommand, IActiveAware, INotifyCommand

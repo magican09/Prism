@@ -1,17 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PrismWorkApp.OpenWorkLib.Data;
-using System;
+﻿using PrismWorkApp.OpenWorkLib.Data;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace PrismWorkApp.Services.Repositories
 {
     public class bldResponsibleEmployeeRoleRepository : Repository<bldResponsibleEmployeeRole>
     {
-        public bldResponsibleEmployeeRoleRepository(PlutoContext context):base(context)
+        public bldResponsibleEmployeeRoleRepository(PlutoContext context) : base(context)
         {
-           
+
         }
         public void Dispose()
         {
@@ -19,7 +16,7 @@ namespace PrismWorkApp.Services.Repositories
         }
         public List<bldResponsibleEmployeeRole> GetAllResponsibleEmployeesRoles()//(Guid id)
         {
-          return PlutoContext.ResponsibleEmployeeRoles.ToList();//out_val;
+            return PlutoContext.ResponsibleEmployeeRoles.ToList();//out_val;
         }
 
         public PlutoContext PlutoContext { get { return Context as PlutoContext; } }

@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public  class bldResourcesGroup : NameableObservableCollection<bldResource>, IbldResourcesGroup, INotifyPropertyChanged, IEntityObject
+    public class bldResourcesGroup : NameableObservableCollection<bldResource>, IbldResourcesGroup, INotifyPropertyChanged, IEntityObject
     {
 
         public bldResourcesGroup()
@@ -26,7 +26,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private void CalcTotalCost()
         {
             decimal total_cost = 0;
-            foreach (bldResource  resource in this.Items)
+            foreach (bldResource resource in this.Items)
             {
                 total_cost += resource.Cost;
             }

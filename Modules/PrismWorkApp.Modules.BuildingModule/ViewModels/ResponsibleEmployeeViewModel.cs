@@ -1,11 +1,9 @@
-﻿using Prism.Commands;
-using Prism.Regions;
+﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.ObjectModel;
@@ -33,8 +31,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _resivedResposibleEmployee, value); }
         }
 
-      
-   
+
+
         private ObservableCollection<bldResponsibleEmployeeRole> _allResponsibleEmployeesRoles;
         public ObservableCollection<bldResponsibleEmployeeRole> AllResponsibleEmployeesRoles
         {
@@ -77,7 +75,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _applicationCommands, value); }
         }
         public ResponsibleEmployeeViewModel(IDialogService dialogService, IRegionManager regionManager,
-            IBuildingUnitsRepository buildingUnitsRepository,IApplicationCommands applicationCommands, 
+            IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands,
             IUnDoReDoSystem unDoReDo)
         {
             UnDoReDo = new UnDoReDoSystem();
@@ -97,7 +95,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-              
+
             AllResponsibleEmployeesRoles = new ObservableCollection<bldResponsibleEmployeeRole>(
                 _buildingUnitsRepository.ResponsibleEmployeeRoleRepository.GetAllResponsibleEmployeesRoles());
             AllParticipants = new ObservableCollection<bldParticipant>(
@@ -121,7 +119,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                }*/
 
         }
-     
+
         private bool CanSave()
         {
             if (SelectedResposibleEmployee != null)

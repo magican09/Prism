@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using PrismWorkApp.OpenWorkLib.Data.Service;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using PrismWorkApp.OpenWorkLib.Data.Service;
-using System.Reflection;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Reflection;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -152,7 +151,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bldAOSRDocument AOSRDocument
         {
             get { return _aOSRDocument; }
-            set { SetProperty(ref _aOSRDocument, value);  }
+            set { SetProperty(ref _aOSRDocument, value); }
         }
         private bldProjectDocumentsGroup _projectDocuments = new bldProjectDocumentsGroup("Рабочая документация");
         public bldProjectDocumentsGroup ProjectDocuments
@@ -172,7 +171,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get
             {
-                if(AOSRDocument!=null && !_executiveDocumentation.AOSRDocuments.Contains(AOSRDocument))
+                if (AOSRDocument != null && !_executiveDocumentation.AOSRDocuments.Contains(AOSRDocument))
                     _executiveDocumentation.AOSRDocuments.Add(AOSRDocument);
 
                 return _executiveDocumentation;
@@ -187,7 +186,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 if (_participants != null) return _participants;
                 if (this.bldConstruction != null)
                 {
-                 
+
                     return this.bldConstruction.Participants;
                 }
                 return null;
@@ -217,7 +216,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
             ExecutiveSchemes.CollectionChanged += OnAddExecutiveScheme;
             LaboratoryReports.CollectionChanged += OnAddLaboratoryReport;
-          //  Documentation.Add(LaboratoryReports);
+            //  Documentation.Add(LaboratoryReports);
 
             //AOSRDocument = new bldAOSRDocument();
             //WorkArea = new bldWorkArea();
@@ -290,7 +289,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _documentation, value); }
         }
 
-       
+
 
         public void SaveAOSRsToWord(string folderPath)
         {
@@ -378,6 +377,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 new RemoveExecutiveSchemeCommand(this, scheme);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
+
+        public void AddResponsibleEmployee(bldResponsibleEmployee res_emp)
+        {
+           AddResponsibleEmployeeCommand Command =
+                new AddResponsibleEmployeeCommand(this, _responsibleEmployees, res_emp);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void RemoveResponsibleEmployee(bldResponsibleEmployee res_emp)
+        {
+            RemoveResponsibleEmployeeCommand Command =
+                new RemoveResponsibleEmployeeCommand(this,_responsibleEmployees,res_emp);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+
         #endregion
 
 

@@ -1,7 +1,4 @@
-﻿using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
-using System;
-
-namespace PrismWorkApp.OpenWorkLib.Data.Service
+﻿namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public interface IJornalable : IKeyable//, ICuntextIdable
     {
@@ -9,7 +6,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void JornalingOn();
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged;
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
-   
+
     }
     public enum AdjustStatus
     {

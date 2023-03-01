@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldResponsibleEmployee :BindableBase,IbldResponsibleEmployee, IEntityObject
+    public class bldResponsibleEmployee : BindableBase, IbldResponsibleEmployee, IEntityObject
     {
         private string _name;
         [NotMapped]
         public string Name
         {
             get { return Role.Name; }
-            set {  }
+            set { }
         }
         private Employee _employee;
         public Employee Employee

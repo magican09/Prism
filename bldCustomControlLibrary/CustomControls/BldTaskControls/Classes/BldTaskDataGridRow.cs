@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 
 namespace bldCustomControlLibrary
 {
-    public class BldTaskDataGridRow: Control
+    public class BldTaskDataGridRow : Control
     {
-        static  BldTaskDataGridRow()
+        static BldTaskDataGridRow()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(BldTaskDataGridRow), new FrameworkPropertyMetadata(typeof(BldTaskDataGridRow)));
 
@@ -25,8 +20,8 @@ namespace bldCustomControlLibrary
         public override void OnApplyTemplate()
         {
             //      CellsPresenter = Template.FindName("PART_BldTaskDataGridCellsPresenter",this) as BldTaskDataGridCellsPresenter;
-          base.OnApplyTemplate();
-           
+            base.OnApplyTemplate();
+
         }
         #region Data Item
 
@@ -62,13 +57,13 @@ namespace bldCustomControlLibrary
                 {
                     OnItemChanged(e.OldValue, e.NewValue);
                 }
-               
+
             }
 
         }
         protected virtual void OnItemChanged(object oldItem, object newItem)
         {
-           BldTaskDataGridCellsPresenter cellsPresenter = CellsPresenter;
+            BldTaskDataGridCellsPresenter cellsPresenter = CellsPresenter;
             if (cellsPresenter != null)
             {
                 cellsPresenter.Item = newItem;
@@ -184,7 +179,7 @@ namespace bldCustomControlLibrary
                     forcePrepareCells = true;
                 }
 
-                
+
                 // Since we just changed _owner we need to invalidate all child properties that rely on a value supplied by the DataGrid.
                 // A common scenario is when a recycled Row was detached from the visual tree and has just been reattached (we always clear out the 
                 // owner when recycling a container).
@@ -246,12 +241,12 @@ namespace bldCustomControlLibrary
         }
         #endregion
         #region Template
-      
+
         protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
         {
             base.OnTemplateChanged(oldTemplate, newTemplate);
             CellsPresenter = null;
-         //   DetailsPresenter = null;
+            //   DetailsPresenter = null;
         }
         /// <summary>
         ///     A template that will generate the panel that arranges the cells in this row.

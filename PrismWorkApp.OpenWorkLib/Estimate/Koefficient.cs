@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.OpenWorkLib.Estimate
+﻿namespace PrismWorkApp.OpenWorkLib.Estimate
 {
     public class Koefficient //Коэффициенты 
     {

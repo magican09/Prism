@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldMaterialCertificate : bldDocument, IbldMaterialCertificate, IEntityObject,IDateable,ITemporal
+    public class bldMaterialCertificate : bldDocument, IbldMaterialCertificate, IEntityObject, IDateable, ITemporal
     {
         private string _materialName;
         public string MaterialName
@@ -10,7 +10,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _materialName; }
             set { SetProperty(ref _materialName, value); }
         }
-        
+
         private string _geometryParameters;
         public string GeometryParameters
         {

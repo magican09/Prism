@@ -5,7 +5,6 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 
@@ -14,7 +13,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
     public class ResponsibleEmployeeDialogViewModel : ResponsibleEmployeeViewModel, IDialogAware
     {
         public ResponsibleEmployeeDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,
-              IApplicationCommands applicationCommands,IUnDoReDoSystem unDoReDo)
+              IApplicationCommands applicationCommands, IUnDoReDoSystem unDoReDo)
         : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands, unDoReDo)
         {
             UnDoReDo = new UnDoReDoSystem();
@@ -55,7 +54,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                     }
                     else
                     {
-                           RequestClose?.Invoke(new DialogResult(ButtonResult.No));
+                        RequestClose?.Invoke(new DialogResult(ButtonResult.No));
                     }
 
                 }, _dialogService);
@@ -70,7 +69,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
-           // CurrentContextId = (Guid)parameters.GetValue<object>("current_context_id");
+            // CurrentContextId = (Guid)parameters.GetValue<object>("current_context_id");
             if (navigane_message != null)
             {
                 ResivedResposibleEmployee = (bldResponsibleEmployee)navigane_message.Object;

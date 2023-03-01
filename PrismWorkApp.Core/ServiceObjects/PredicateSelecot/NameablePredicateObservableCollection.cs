@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 namespace PrismWorkApp.Core
 {
     public class NameablePredicateObservableCollection<TSourse, TOut> : ObservableCollection<NameablePredicate<TSourse, TOut>>
-        where TOut: IEntityObject
+        where TOut : IEntityObject
     {
         public string Name { get; set; }
         public string Code { get; set; }

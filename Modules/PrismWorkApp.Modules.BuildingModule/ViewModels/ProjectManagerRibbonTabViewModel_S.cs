@@ -10,7 +10,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
     public class ProjectManagerRibbonTabViewModel_S : LocalBindableBase, INotifyPropertyChanged
     {
-       public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
         private const int CURRENT_MODULE_ID = 2;
         private readonly IEventAggregator _eventAggregator;
 

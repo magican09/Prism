@@ -47,7 +47,7 @@ namespace PrismWorkApp.Core.Commands
 
             foreach (ICommand command in RegisteredCommands)
             {
-                if (command is INotifyCommand notify_command && _monitorCommandActivity )
+                if (command is INotifyCommand notify_command && _monitorCommandActivity)
                 {
                     if (notify_command.IsActive)
                     {
@@ -60,7 +60,7 @@ namespace PrismWorkApp.Core.Commands
                     _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
                     if (_RegisteredCommandsCanExecuteVal == false) break;
                 }
-              
+
             }
 
             if (_LastCommand != null)

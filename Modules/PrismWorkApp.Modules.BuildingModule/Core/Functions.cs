@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
-using System.Xml.Schema;
 
 /*using AOSRDocument = PrismWorkApp.ProjectModel.Data.Models.AOSRDocument;
 using Document = PrismWorkApp.ProjectModel.Data.Models.Document;
@@ -404,33 +403,33 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 project.BuildingObjects.Add(new bldObject("Объект тестовый", "Объект тестовый"));
                 foreach (Chapter chapter in estimate.Chapters)
                 {
-                        bldConstruction construction = new bldConstruction(chapter.Caption, chapter.Caption);
-                        project.BuildingObjects[0].Constructions.Add(construction);
-                        foreach (Position position in chapter.Positions)
+                    bldConstruction construction = new bldConstruction(chapter.Caption, chapter.Caption);
+                    project.BuildingObjects[0].Constructions.Add(construction);
+                    foreach (Position position in chapter.Positions)
+                    {
+                        bldWork work = new bldWork();
+                        work.Name = position.Caption;
+                        work.Quantity = Convert.ToDecimal(position.Quantity);
+                        work.Laboriousness = Convert.ToDecimal(position.Labor);
+
+                        foreach (Resource resource in position.Resurсes)
                         {
-                            bldWork work = new bldWork();
-                            work.Name = position.Caption;
-                            work.Quantity = Convert.ToDecimal(position.Quantity);
-                            work.Laboriousness = Convert.ToDecimal(position.Labor);
-
-                            foreach (Resource resource in position.Resurсes)
+                            switch (resource.Type)
                             {
-                                switch (resource.Type)
-                                {
-                                    case ResurceType.MATERIAL:
-                                        {
-                                            bldMaterial material = new bldMaterial();
-                                            material.Name = resource.Name;
-                                            work.Materials.Add(material);
-                                            break;
-                                        }
+                                case ResurceType.MATERIAL:
+                                    {
+                                        bldMaterial material = new bldMaterial();
+                                        material.Name = resource.Name;
+                                        work.Materials.Add(material);
+                                        break;
+                                    }
 
 
-                                }
                             }
-                            if(position.Type==PositionType.TER)
-                                   construction.Works.Add(work);
                         }
+                        if (position.Type == PositionType.TER)
+                            construction.Works.Add(work);
+                    }
                 }
 
 
@@ -453,11 +452,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             if (result == true)
             {
                 filename = dlg.FileName;
-          
+
                 xmlDoc.Load(filename);
                 XmlTextReader xtr = new XmlTextReader(filename);
                 DataSet ds = new DataSet();
-             
+
                 ds.ReadXmlSchema(xtr);
 
                 estimate.LoadXMLData(xmlDoc);
@@ -501,24 +500,24 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
         }
         public static string GetFolderPath()
         {
-        //    var dialog = new Microsoft.Win32.OpenFileDialog();
-        //    dialog.FileName = "Document"; // Default file name
-        //    dialog.DefaultExt = ".XLS"; // Default file extension
-        //    dialog.Filter = "Text documents (.XLS)|*.XLSM"; // Filter files by extension
+            //    var dialog = new Microsoft.Win32.OpenFileDialog();
+            //    dialog.FileName = "Document"; // Default file name
+            //    dialog.DefaultExt = ".XLS"; // Default file extension
+            //    dialog.Filter = "Text documents (.XLS)|*.XLSM"; // Filter files by extension
 
-        //    // Show open file dialog box
-        //    bool? result = dialog.ShowDialog();
-        //    // Process open file dialog box results
-        //    if (result == true)
-        //    {
-        //        // Open document
-        //        string filename = dialog.FileName;
-        //        return filename;
-        //    }
+            //    // Show open file dialog box
+            //    bool? result = dialog.ShowDialog();
+            //    // Process open file dialog box results
+            //    if (result == true)
+            //    {
+            //        // Open document
+            //        string filename = dialog.FileName;
+            //        return filename;
+            //    }
 
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-             //  dialog.InitialDirectory = "C:\\Users";
-          dialog.IsFolderPicker = true;
+            //  dialog.InitialDirectory = "C:\\Users";
+            dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 return dialog.FileName;

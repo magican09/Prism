@@ -1,9 +1,7 @@
-﻿using Prism.Commands;
-using Prism.Services.Dialogs;
+﻿using Prism.Services.Dialogs;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +13,7 @@ namespace PrismWorkApp.Core.Dialogs
 {
     public abstract class AddElementsToCollectionDialogFromListViewModel<TConteiner, T> : LocalBindableBase, IDialogAware
         where TConteiner : ICollection<T>/*, INameable, INameableOservableCollection<T>*/, new()
-        where T :class, IEntityObject
+        where T : class, IEntityObject
     {
         private string _title = "Диалоговое окно сообщения";
         public string Title
@@ -152,7 +150,7 @@ namespace PrismWorkApp.Core.Dialogs
         {
             UnDoReDo = new UnDoReDoSystem();
             CloseDialogCommand = new NotifyCommand(CloseDialog);
-            ConfirmDialogCommand = new  NotifyCommand<object>(ConfirmDialog);
+            ConfirmDialogCommand = new NotifyCommand<object>(ConfirmDialog);
             CreateNewElementCommand = new NotifyCommand(OnCreateNewElement);
             CreateElementOnPatternInstanceCommand = new NotifyCommand(OnCreateElementOnPatternInstance, CanCreateElementOnPatternInstance)
                       .ObservesProperty(() => SelectedElement);
@@ -164,13 +162,13 @@ namespace PrismWorkApp.Core.Dialogs
             SortingCommand = new NotifyCommand(OnSortingCommand, CanSorting)
                 .ObservesProperty(() => SelectedPredicate);
             FilteredElementCommand = new NotifyCommand<object>(OnFilteredElement);
-         
+
             _dialogService = dialogService;
         }
 
         private void OnTreeViewSelectionChange(object obj)
         {
-           
+
         }
 
         private void OnFilteredElement(object obj)
@@ -211,7 +209,7 @@ namespace PrismWorkApp.Core.Dialogs
         {
             return CurrentCollection.Contains(SelectedElement);
         }
-              
+
 
 
         private bool CanCreateElementOnPatternInstance()
@@ -221,22 +219,22 @@ namespace PrismWorkApp.Core.Dialogs
 
         private void OnCreateElementOnPatternInstance()
         {
-          
+
         }
 
         private void OnCreateNewElement()
         {
-           
+
         }
 
         private void ConfirmDialog(object elements)
         {
-            
-        ObservableCollection<bldWork> selected_works = new ObservableCollection<bldWork>();
+
+            ObservableCollection<bldWork> selected_works = new ObservableCollection<bldWork>();
             foreach (DataGridCellInfo cell_info in (IList<DataGridCellInfo>)elements)
             {
-                 T element =  cell_info.Item as T;
-               if(!CurrentCollection.Contains(element)) CurrentCollection.Add(element);
+                T element = cell_info.Item as T;
+                if (!CurrentCollection.Contains(element)) CurrentCollection.Add(element);
                 if (!CommonCollection.Contains(element)) CommonCollection.Remove(element);
             }
             var result = ButtonResult.Yes;
@@ -286,8 +284,8 @@ namespace PrismWorkApp.Core.Dialogs
             SelectedPredicate.Resolve(CommonCollection as ICollection<IEntityObject>);
             foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
                 FilteredCommonCollection.Add(element);
-        
-            
+
+
             FilterEnable = false;
         }
     }

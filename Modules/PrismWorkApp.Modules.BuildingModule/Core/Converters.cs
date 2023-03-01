@@ -1,12 +1,9 @@
 ﻿using PrismWorkApp.Core;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -301,7 +298,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         //    docs_treeViewItem.Add(materials_docs);
 
                         //}
-                      //  collection.Add(docs_treeViewItem);
+                        //  collection.Add(docs_treeViewItem);
                         if (work.ExecutiveDocumentation != null) collection.Add(work.ExecutiveDocumentation);
                         break;
                     }

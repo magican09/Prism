@@ -2,7 +2,6 @@
 using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,13 +32,13 @@ namespace PrismWorkApp.Core
             }
             return null;
         }
-      
+
 
         public static void RemoveElementFromCollectionWhithDialog<TContainer, T>
                (T element, string element_type_name,
             Action<IDialogResult> elm_erase_action, IDialogService dialogService, Guid current_context_id)
            where TContainer : ICollection<T>
-           where T :  IEntityObject
+           where T : IEntityObject
         {
             var dialog_par = new DialogParameters();
             dialog_par.Add("massege",
@@ -59,7 +58,7 @@ namespace PrismWorkApp.Core
                        $"\"{element.Name}\" удален!");
                    elm_erase_action.Invoke(new DialogResult(ButtonResult.Yes));
                    dialogService.Show(typeof(MessageDialog).Name, p, (r) => { });
-                 }
+               }
                if (result.Result == ButtonResult.No)
                {
                    elm_erase_action.Invoke(new DialogResult(ButtonResult.No));
@@ -324,15 +323,15 @@ namespace PrismWorkApp.Core
        TContainer commonCollection_all,
         NameablePredicateObservableCollection<TContainer, T> predicate_collection,
         IDialogService dialogService, Action<IDialogResult> action,
-           string dialogViewName,          
+           string dialogViewName,
            string title = "",
            string message = "",
            string currentCollectionName = "",
            string commonCollectionName = "",
-           string confirmButtonContent= "Сохранить"
+           string confirmButtonContent = "Сохранить"
            )
        where TContainer : ICollection<T>, new()
-       where T : class,IEntityObject
+       where T : class, IEntityObject
         {
             TContainer current_collection = new TContainer();
             TContainer common_collection = new TContainer();
@@ -351,7 +350,7 @@ namespace PrismWorkApp.Core
 
             dialogService.ShowDialog(dialogViewName, dialog_par, action);
         }
-     
+
         public static void AddElementToCollectionWhithDialog_Test<TContainer, T>
            (TContainer currentCollection,
            TContainer commonCollection_all,
@@ -366,7 +365,7 @@ namespace PrismWorkApp.Core
                string commonCollectionName = ""
                )
            where TContainer : ICollection<T>/*, INameableOservableCollection<T>*/, new()
-           where T : class,IEntityObject
+           where T : class, IEntityObject
         {
             TContainer current_collection = new TContainer();
             TContainer common_collection = new TContainer();

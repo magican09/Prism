@@ -1,13 +1,8 @@
-﻿using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.OpenWorkLib.Data 
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldWorkExecutiveDocumentation : BindableBase, INameable, IbldWorkExecutiveDocumentation
     {
-        private string _name ="Исполнительная документация";
+        private string _name = "Исполнительная документация";
         public string Name
         {
             get { return _name; }

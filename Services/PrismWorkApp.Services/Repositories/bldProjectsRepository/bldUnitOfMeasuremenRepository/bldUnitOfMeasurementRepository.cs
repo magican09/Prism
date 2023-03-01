@@ -1,8 +1,5 @@
-﻿using System;
-using PrismWorkApp.OpenWorkLib.Data;
+﻿using PrismWorkApp.OpenWorkLib.Data;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories

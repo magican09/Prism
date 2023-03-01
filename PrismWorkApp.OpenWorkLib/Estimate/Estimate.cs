@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -295,92 +294,92 @@ namespace PrismWorkApp.OpenWorkLib.Estimate
 
             var ImplemActsXml = root.GetElementsByTagName("ImplemActs"); //Загружаем наборы текущих индесов 
             int iImplemActsCount = 0;
-           if(ImplemActsXml.Count>0)
-            foreach (XmlNode childnode_1 in ImplemActsXml[0])
-            {
-                ImplemActs.Add(new ImplemAct());
-                iImplemActsCount = ImplemActs.Count - 1;
-                foreach (XmlAttribute atr in childnode_1.Attributes)
+            if (ImplemActsXml.Count > 0)
+                foreach (XmlNode childnode_1 in ImplemActsXml[0])
                 {
-                    switch (atr.Name)
+                    ImplemActs.Add(new ImplemAct());
+                    iImplemActsCount = ImplemActs.Count - 1;
+                    foreach (XmlAttribute atr in childnode_1.Attributes)
                     {
-                        case "Caption":
-                            ImplemActs[iImplemActsCount].Caption = childnode_1.Attributes.GetNamedItem("Caption").Value;
-                            break;
-                        case "Number":
-                            ImplemActs[iImplemActsCount].Namber = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("Number").Value);
-                            break;
-                        case "MakingDate":
-                            ImplemActs[iImplemActsCount].MakingDate = Convert.ToDateTime(childnode_1.Attributes.GetNamedItem("MakingDate").Value);
-                            break;
-                        case "Year":
-                            ImplemActs[iImplemActsCount].Year = childnode_1.Attributes.GetNamedItem("Year").Value;
-                            break;
-                        case "Month":
-                            ImplemActs[iImplemActsCount].Month = childnode_1.Attributes.GetNamedItem("Month").Value;
-                            break;
-                        case "DayStart":
-                            ImplemActs[iImplemActsCount].DayStart = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("DayStart").Value);
-                            break;
-                        case "DayFinish":
-                            ImplemActs[iImplemActsCount].DayFinish = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("DayFinish").Value);
-                            break;
-                        case "ActIndex":
-                            ImplemActs[iImplemActsCount].ActIndex = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("ActIndex").Value);
-                            break;
+                        switch (atr.Name)
+                        {
+                            case "Caption":
+                                ImplemActs[iImplemActsCount].Caption = childnode_1.Attributes.GetNamedItem("Caption").Value;
+                                break;
+                            case "Number":
+                                ImplemActs[iImplemActsCount].Namber = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("Number").Value);
+                                break;
+                            case "MakingDate":
+                                ImplemActs[iImplemActsCount].MakingDate = Convert.ToDateTime(childnode_1.Attributes.GetNamedItem("MakingDate").Value);
+                                break;
+                            case "Year":
+                                ImplemActs[iImplemActsCount].Year = childnode_1.Attributes.GetNamedItem("Year").Value;
+                                break;
+                            case "Month":
+                                ImplemActs[iImplemActsCount].Month = childnode_1.Attributes.GetNamedItem("Month").Value;
+                                break;
+                            case "DayStart":
+                                ImplemActs[iImplemActsCount].DayStart = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("DayStart").Value);
+                                break;
+                            case "DayFinish":
+                                ImplemActs[iImplemActsCount].DayFinish = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("DayFinish").Value);
+                                break;
+                            case "ActIndex":
+                                ImplemActs[iImplemActsCount].ActIndex = Convert.ToInt32(childnode_1.Attributes.GetNamedItem("ActIndex").Value);
+                                break;
 
-                    }
+                        }
 
-                    foreach (XmlNode childnode_2 in childnode_1) //Пробегаем по внутренней структуре  ImplemActs
-                    {
-                        if (childnode_2.Name == "Indexes")
-                            foreach (XmlNode childnode_3 in childnode_2)
-                            {
-                                if (childnode_3.Name == "IndexesPos")
+                        foreach (XmlNode childnode_2 in childnode_1) //Пробегаем по внутренней структуре  ImplemActs
+                        {
+                            if (childnode_2.Name == "Indexes")
+                                foreach (XmlNode childnode_3 in childnode_2)
                                 {
-                                    foreach (XmlNode childnode_4 in childnode_3)
+                                    if (childnode_3.Name == "IndexesPos")
                                     {
-                                        ImplemActs[iImplemActsCount].Indexs.Add(new Index());
-                                        foreach (XmlAttribute ind_atr in childnode_4.Attributes)
+                                        foreach (XmlNode childnode_4 in childnode_3)
                                         {
-
-                                            int iIndexesCount = ImplemActs[iImplemActsCount].Indexs.Count - 1;
-                                            switch (ind_atr.Name)
+                                            ImplemActs[iImplemActsCount].Indexs.Add(new Index());
+                                            foreach (XmlAttribute ind_atr in childnode_4.Attributes)
                                             {
 
-                                                case "Caption":
-                                                    ImplemActs[iImplemActsCount].Indexs[iIndexesCount].Caption = (childnode_4.Attributes.GetNamedItem("Caption").Value);
-                                                    break;
-                                                case "Code":
-                                                    ImplemActs[iImplemActsCount].Indexs[iIndexesCount].Code = (childnode_4.Attributes.GetNamedItem("Code").Value);
-                                                    break;
-                                                case "OZ":
-                                                    ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_OZ = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("OZ").Value.Replace(",", "."));
-                                                    break;
-                                                case "EM":
-                                                    ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_EM = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("EM").Value.Replace(",", "."));
-                                                    break;
-                                                case "ZM":
-                                                    ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_ZM = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("ZM").Value.Replace(",", "."));
-                                                    break;
-                                                case "MT":
-                                                    ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_MT = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("MT").Value.Replace(",", "."));
-                                                    break;
+                                                int iIndexesCount = ImplemActs[iImplemActsCount].Indexs.Count - 1;
+                                                switch (ind_atr.Name)
+                                                {
+
+                                                    case "Caption":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].Caption = (childnode_4.Attributes.GetNamedItem("Caption").Value);
+                                                        break;
+                                                    case "Code":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].Code = (childnode_4.Attributes.GetNamedItem("Code").Value);
+                                                        break;
+                                                    case "OZ":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_OZ = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("OZ").Value.Replace(",", "."));
+                                                        break;
+                                                    case "EM":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_EM = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("EM").Value.Replace(",", "."));
+                                                        break;
+                                                    case "ZM":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_ZM = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("ZM").Value.Replace(",", "."));
+                                                        break;
+                                                    case "MT":
+                                                        ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_MT = Convert.ToDouble(childnode_4.Attributes.GetNamedItem("MT").Value.Replace(",", "."));
+                                                        break;
+                                                }
+                                                if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_OZ == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_OZ = 1;
+                                                if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_EM == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_EM = 1;
+                                                if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_ZM == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_ZM = 1;
+                                                if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_MT == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_MT = 1;
                                             }
-                                            if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_OZ == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_OZ = 1;
-                                            if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_EM == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_EM = 1;
-                                            if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_ZM == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_ZM = 1;
-                                            if (ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_MT == 0) ImplemActs[iImplemActsCount].Indexs[iIndexesCount].K_MT = 1;
                                         }
                                     }
                                 }
-                            }
 
 
 
+                        }
                     }
                 }
-            }
 
             foreach (Chapter chapter in Chapters)
             {

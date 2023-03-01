@@ -1,9 +1,6 @@
 ﻿using Prism;
 using PrismWorkApp.OpenWorkLib.Data;
-using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using BindableBase = Prism.Mvvm.BindableBase;
 
@@ -47,13 +44,13 @@ namespace PrismWorkApp.Core
             return base.SetProperty(ref member, val, propertyName);
         }
 
-     /*   private object _selectedObject;
-        public object SelectedObject
-        {
-            get { return _selectedObject; }
-            set { SetProperty(ref _selectedObject, value); }
-        }
-        */
+        /*   private object _selectedObject;
+           public object SelectedObject
+           {
+               get { return _selectedObject; }
+               set { SetProperty(ref _selectedObject, value); }
+           }
+           */
         private bool _editMode;
         public bool EditMode
         {
@@ -74,7 +71,7 @@ namespace PrismWorkApp.Core
             }
         }
 
-       
+
         public virtual void OnClose(object obj)
         {
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
@@ -12,10 +11,8 @@ using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Odbc;
@@ -216,7 +213,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         materialCertificate.Name = row["Сертификаты,_паспорта"].ToString();
                         materialCertificate.RegId = row["№_документа_о_качестве"].ToString();
                         string[] st_dates = row["Дата_документа"].ToString().Split('-');
-                        if ( row["Дата_документа"].ToString() != "")
+                        if (row["Дата_документа"].ToString() != "")
                         {
                             if (st_dates.Length > 1 && st_dates[0] != "")
                             {
@@ -236,7 +233,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         Picture picture = new Picture();
                         //  picture.FileName = Guid.NewGuid().ToString()+".pdf";
                         picture.FileName = ($"{materialCertificate.MaterialName} {materialCertificate.GeometryParameters}  №{materialCertificate.RegId} от {materialCertificate.Date.ToString("d")}  {file_count.ToString()}.pdf")
-                            .Replace("/", "_").Replace("(", "").Replace(")", "").Replace("*", " ").Replace("\n","").Replace(@"\", "_")
+                            .Replace("/", "_").Replace("(", "").Replace(")", "").Replace("*", " ").Replace("\n", "").Replace(@"\", "_")
                             .Replace("\r", "_");
 
                         //  picture.ImageFile = (byte[])row["files"];
@@ -270,7 +267,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     catch (Exception e)
                     {
                         MessageBox.Show("Обнаружено не обработанное исключение: " + e.Message, "Ошибка записи данных", MessageBoxButton.OK, MessageBoxImage.Error);
-                   //     break;
+                        //     break;
                     }
                     // System.Threading.Thread.Sleep(100);
                 }

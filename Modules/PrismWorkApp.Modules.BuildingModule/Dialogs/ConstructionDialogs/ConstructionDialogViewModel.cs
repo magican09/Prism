@@ -5,7 +5,6 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 
@@ -55,8 +54,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                         if (result.Result == ButtonResult.Yes)
                         {
                             DialogParameters param = new DialogParameters();
-                            param.Add("undo_redo",UnDoReDo);
-                            RequestClose?.Invoke(new DialogResult(ButtonResult.Yes,param));
+                            param.Add("undo_redo", UnDoReDo);
+                            RequestClose?.Invoke(new DialogResult(ButtonResult.Yes, param));
                         }
                         else
                         {

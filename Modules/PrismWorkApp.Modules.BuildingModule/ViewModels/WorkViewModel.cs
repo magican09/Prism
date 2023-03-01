@@ -6,7 +6,6 @@ using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
@@ -131,7 +130,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand AddNextWorkCommand { get; private set; }
         public NotifyCommand<object> AddCreatedFromTemplateWorkCommand { get; private set; }
         public NotifyCommand CreateNewWorkCommand { get; private set; }
-     
+
         public NotifyCommand AddMaterialsCommand { get; private set; }
         public NotifyCommand RemoveMaterialCommand { get; private set; }
 
@@ -141,6 +140,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand AddExecutiveSchemesCommand { get; private set; }
         public NotifyCommand RemoveExecutiveSchemeCommand { get; private set; }
         public NotifyCommand SaveAOSRsToWordCommand { get; private set; }
+
+        public NotifyCommand AddResponsibleEmployeeCommand { get; private set; }
+        public NotifyCommand RemoveResponsibleEmployeeCommand { get; private set; }
+
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private IApplicationCommands _applicationCommands;
         public IApplicationCommands ApplicationCommands
@@ -176,28 +179,85 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     .ObservesProperty(() => SelectedNextWork);
             AddPreviousWorkCommand = new NotifyCommand(OnAddPreviousWorks);
             AddNextWorkCommand = new NotifyCommand(OnAddNextWorks);
-            
+
             AddMaterialsCommand = new NotifyCommand(OnAddMaterials);
             AddMaterialsCommand.Name = "Добавить материалы";
-            RemoveMaterialCommand = new NotifyCommand(OnRemoveMaterial,()=> SelectedMaterial!=null).ObservesProperty(()=>SelectedMaterial);
+            RemoveMaterialCommand = new NotifyCommand(OnRemoveMaterial, () => SelectedMaterial != null).ObservesProperty(() => SelectedMaterial);
             RemoveMaterialCommand.Name = "Удалить материал";
 
             AddLaboratoryReportsCommand = new NotifyCommand(OnAddLaboratoryReports);
             AddLaboratoryReportsCommand.Name = "Добавить документ";
             RemoveLaboratoryReportCommand = new NotifyCommand(OnRemoveLaboratoryReport, () => SelecteLaboratoryReport != null).ObservesProperty(() => SelecteLaboratoryReport);
             RemoveLaboratoryReportCommand.Name = "Удалить документ";
-           
+
             AddExecutiveSchemesCommand = new NotifyCommand(OnAddExecutiveSchemes);
             AddExecutiveSchemesCommand.Name = "Добавить документ";
             RemoveExecutiveSchemeCommand = new NotifyCommand(OnRemoveExecutiveScheme, () => SelecteExecutiveScheme != null).ObservesProperty(() => SelecteExecutiveScheme);
             RemoveExecutiveSchemeCommand.Name = "Удалить документ";
+
+            AddResponsibleEmployeeCommand = new NotifyCommand(OnAddResponsibleEmployee);
+            RemoveResponsibleEmployeeCommand = new NotifyCommand(OnRemoveResponsibleEmployee, () => SelectedResponsibleEmployee != null).ObservesProperty(() => SelectedResponsibleEmployee);
 
             SaveAOSRsToWordCommand = new NotifyCommand(OnSaveAOSRsToWord);
 
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
- 
+
+        }
+
+        private void OnRemoveResponsibleEmployee()
+        {
+            bldResponsibleEmployee resp_empl = SelectedResponsibleEmployee;
+            if (resp_empl == null || SelectedResponsibleEmployee == null) return;
+            CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
+                (resp_empl, "Отвественный", result =>
+                 {
+                     if(result.Result == ButtonResult.Yes)
+                     {
+                         SelectedWork.RemoveResponsibleEmployee(resp_empl);
+                     }
+                 },_dialogService, Id);
+        }
+
+        private void OnAddResponsibleEmployee()
+        {
+            bldResponsibleEmployeesGroup All_ResponsibleEmployees = new bldResponsibleEmployeesGroup("Все ответственные");
+            foreach (bldResponsibleEmployee employee in _buildingUnitsRepository.ResponsibleEmployees.GetAllAsync().Where(el => !SelectedWork.ResponsibleEmployees.Contains(el)).ToList())
+                All_ResponsibleEmployees.Add(employee);
+
+            NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee> predicate_1 = new NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee>();
+            predicate_1.Name = "Показать всех ответственных работников";
+            predicate_1.Predicate = cl => cl;
+            NameablePredicateObservableCollection<bldResponsibleEmployeesGroup, bldResponsibleEmployee> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldResponsibleEmployeesGroup, bldResponsibleEmployee>();
+            nameablePredicatesCollection.Add(predicate_1);
+            bldResponsibleEmployeesGroup empl_for_add_collection = new bldResponsibleEmployeesGroup();
+
+            CoreFunctions.AddElementsToCollectionWhithDialogList<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
+                (empl_for_add_collection, All_ResponsibleEmployees,
+               nameablePredicatesCollection,
+              _dialogService,
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
+                       localUnDoReDo.Register(SelectedWork);
+                       UnDoReDo.UnRegister(SelectedWork);
+                       foreach (bldResponsibleEmployee empl in empl_for_add_collection)
+                           SelectedWork.AddResponsibleEmployee(empl);
+                       SaveCommand.RaiseCanExecuteChanged();
+                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                       UnDoReDo.Register(SelectedWork);
+                   }
+                   if (result.Result == ButtonResult.No)
+                   {
+                   }
+               },
+              typeof(AddbldResponsibleEmployeeToCollectionDialogView).Name,
+               "Добавить ответсвенного",
+               "Форма добавления отвественных работников.",
+               "Список ответветсвенных", "");
         }
 
         private void OnRemoveExecutiveScheme()
@@ -265,7 +325,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 {
                     if (result.Result == ButtonResult.Yes)
                     {
-                       SelectedWork.RemoveLaboratoryReport(removed_report);
+                        SelectedWork.RemoveLaboratoryReport(removed_report);
                     }
                 }, _dialogService, Id);
         }
@@ -317,7 +377,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SelectedWork.SaveAOSRsToWord(folder_path);
         }
 
-        
+
         private void OnAddNextWorks()
         {
             if (SelectedWork == null) return;
@@ -346,7 +406,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                    {
                        UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
                        localUnDoReDo.Register(SelectedWork);
-                       UnDoReDo.UnRegister(SelectedWork); 
+                       UnDoReDo.UnRegister(SelectedWork);
                        foreach (bldWork bld_work in works_for_add_collection)
                            SelectedWork.AddNextWork(bld_work);
                        SaveCommand.RaiseCanExecuteChanged();
@@ -465,7 +525,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnDataGridLostSocus(object obj)
         {
-        
+
             if (obj == SelectedPreviousWork)
             {
                 SelectedNextWork = null;
@@ -494,7 +554,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ObservableCollection<bldWork> works_for_remove_collection = new ObservableCollection<bldWork>();
 
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldWorksGroup, bldWork>
-                 ( SelectedPreviousWork, "Предыдущая работа",
+                 (SelectedPreviousWork, "Предыдущая работа",
                  (result) =>
                  {
                      if (result.Result == ButtonResult.Yes)
@@ -519,7 +579,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }, _dialogService, Id);
         }
 
-          
+
 
         private bool CanSave()
         {
@@ -563,15 +623,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (SelectedWork != null) SelectedWork.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedWork = ResivedWork;
                 SelectedWork.ErrorsChanged += RaiseCanExecuteChanged;
-        
+
                 AllDocuments.Clear();
-                if (SelectedWork.AOSRDocument!=null) AllDocuments.Add(SelectedWork.AOSRDocument.Id, SelectedWork.AOSRDocument);
+                if (SelectedWork.AOSRDocument != null) AllDocuments.Add(SelectedWork.AOSRDocument.Id, SelectedWork.AOSRDocument);
                 if (SelectedWork.LaboratoryReports.Count > 0) AllDocuments.Add(SelectedWork.LaboratoryReports.Id, SelectedWork.LaboratoryReports);
                 if (SelectedWork.ExecutiveSchemes.Count > 0) AllDocuments.Add(SelectedWork.ExecutiveSchemes.Id, SelectedWork.ExecutiveSchemes);
-            
+
                 UnDoReDo.Register(SelectedWork);
                 Title = $"{SelectedWork.Code} {SelectedWork.ShortName}";
-              
+
             }
         }
 

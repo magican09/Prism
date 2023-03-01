@@ -50,12 +50,12 @@ namespace PrismWorkApp.Services.Repositories
                        .ThenInclude(wr => wr.AttachedDocuments)
                     .Include(pr => pr.Participants)
                         .ThenInclude(cm => cm.ConstructionCompany)
-                      //  .ThenInclude(re => re.ResponsibleEmployees)
-                   //     .ThenInclude(re => re.DocConfirmingTheAthority)
+                //  .ThenInclude(re => re.ResponsibleEmployees)
+                //     .ThenInclude(re => re.DocConfirmingTheAthority)
                 .Include(pr => pr.Participants)
                         .ThenInclude(cm => cm.ConstructionCompany)
-                    //    .ThenInclude(re => re.ResponsibleEmployees)
-                       // .ThenInclude(re => re.Position)
+                 //    .ThenInclude(re => re.ResponsibleEmployees)
+                 // .ThenInclude(re => re.Position)
                  .Include(pr => pr.Participants)
                         .ThenInclude(cm => cm.ResponsibleEmployees)
                .Include(obj => obj.BuildingObjects)
@@ -111,25 +111,25 @@ namespace PrismWorkApp.Services.Repositories
 
             return all_pojects;
         }
-      
+
         public List<bldProject> GetAllAsync()//(Guid id)
         {
             List<bldProject> projects = PlutoContext.Projects.ToList();
             PlutoContext.Projects.Include(pr => pr.Participants)
-                .ThenInclude(pr=>pr.BuildingObjects)
-                .ThenInclude(b=>b.Constructions)
-                .ThenInclude(c=>c.Works)
-                .ThenInclude(w=>w.WorkArea)
-                .Include(w=>w.UnitOfMeasurement).ToList();
+                .ThenInclude(pr => pr.BuildingObjects)
+                .ThenInclude(b => b.Constructions)
+                .ThenInclude(c => c.Works)
+                .ThenInclude(w => w.WorkArea)
+                .Include(w => w.UnitOfMeasurement).ToList();
 
             PlutoContext.Objects.ToList();
             PlutoContext.Constructions.ToList();
             PlutoContext.Works
                .Include(el => el.NextWorks)
                .Include(el => el.PreviousWorks)
-               .Include(el=>el.ProjectDocuments)
+               .Include(el => el.ProjectDocuments)
                .Include(el => el.UnitOfMeasurement)
-               .Include(el=>el.WorkArea).ToList();
+               .Include(el => el.WorkArea).ToList();
             PlutoContext.Materials.ToList();
             PlutoContext.ProjectDocuments.ToList();
             PlutoContext.ExecutiveSchemes.ToList();
@@ -150,7 +150,7 @@ namespace PrismWorkApp.Services.Repositories
                 .Include(p => p.Participants)
                 .ThenInclude(pr => pr.ConstructionCompany)
                 .ThenInclude(c => c.SROIssuingCompany).ToList();
-      
+
 
             return projects;
         }

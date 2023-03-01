@@ -1,11 +1,9 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldObject : BindableBase, IbldObject, IEntityObject, IJornalable,INameable
+    public class bldObject : BindableBase, IbldObject, IEntityObject, IJornalable, INameable
     {
 
         private Guid _storedId;
@@ -122,7 +120,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
 
         }
-        public bldObject(string name,string short_name)
+        public bldObject(string name, string short_name)
         {
             Name = name;
             ShortName = short_name;
@@ -133,7 +131,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NavigateProperty]
         public virtual bldProject? bldProject
         {
-            get {
+            get
+            {
                 if (_bldProject != null) return _bldProject;
                 if (ParentObject != null) return ParentObject.bldProject;
                 return null;
@@ -167,11 +166,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             return val;
         }
         #endregion
-     
+
         private bldDocumentsGroup _documentation;
         public bldDocumentsGroup Documentation
         {
-            get {
+            get
+            {
                 if (_documentation != null) return _documentation;
                 if (this.bldProject != null) return this.bldProject.Documentation;
 
@@ -179,7 +179,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { SetProperty(ref _documentation, value); }
         }
-     
+
         private bldParticipantsGroup _participants;
         public bldParticipantsGroup Participants
         {
@@ -200,8 +200,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 if (_responsibleEmployees != null) return _responsibleEmployees;
                 if (this.bldProject != null) return bldProject.ResponsibleEmployees;
-                     
-                    return null;
+
+                return null;
             }
             set { SetProperty(ref _responsibleEmployees, value); }
         }

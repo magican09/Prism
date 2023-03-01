@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -43,7 +41,7 @@ namespace bldCustomControlLibrary
         private void ContentControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DataGridCell dg_cell = (DataGridCell)FindParentByType(sender, typeof(DataGridCell));
-           // dg_cell.MouseDoubleClick += cell_MouseDoubleClick;
+            // dg_cell.MouseDoubleClick += cell_MouseDoubleClick;
         }
         private void SetTextBlocksAndTextBoxs(object obj)
         {
@@ -146,4 +144,4 @@ namespace bldCustomControlLibrary
         }
     }
 }
-    
+

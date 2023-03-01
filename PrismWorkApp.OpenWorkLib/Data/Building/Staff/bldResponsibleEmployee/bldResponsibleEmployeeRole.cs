@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-   public  class bldResponsibleEmployeeRole : BindableBase, IKeyable, INameable
+    public class bldResponsibleEmployeeRole : BindableBase, IKeyable, INameable
     {
 
         private string _name;
@@ -28,7 +24,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { SetProperty(ref _shortName, value); }
         }
-        
+
         private RoleOfResponsible _roleCode;
         public RoleOfResponsible RoleCode
         {

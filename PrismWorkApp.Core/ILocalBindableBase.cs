@@ -5,7 +5,7 @@ namespace PrismWorkApp.Core
     public interface ILocalBindableBase
     {
         public Guid Id { get; set; }
-   //     public object SelectedObject { get; set; }
+        //     public object SelectedObject { get; set; }
         public bool EditMode { get; set; }
         //    public IDialogService _dialogService { get; set; }
         //    public  void RaiseCanExecuteChanged(object sender, EventArgs e);

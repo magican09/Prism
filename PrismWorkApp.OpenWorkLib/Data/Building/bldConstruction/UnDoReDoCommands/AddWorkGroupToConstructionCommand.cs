@@ -1,10 +1,7 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -69,7 +66,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 work.bldConstruction = _LastConstruction;
             }
         }
-      
+
 
 
         public AddWorkGroupToConstructionCommand(bldConstruction construction, ObservableCollection<bldWork> add_works_group)
@@ -109,7 +106,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 _CurrentConstruction.Works.Add(work);
                 _LastConstruction.Works.Remove(work);
-                 work.bldConstruction = _CurrentConstruction;
+                work.bldConstruction = _CurrentConstruction;
             }
         }
     }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
     public interface IRegisterable : INameable, IKeyable
     {

@@ -341,7 +341,7 @@
                             <ColumnDefinition Width="467*"/>
                             <ColumnDefinition  Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <DataGrid  x:Name="bldParticipantsDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedWork.ResponsibleEmployees}" 
+                        <DataGrid  x:Name="bldResponsibleEmployeesDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedWork.ResponsibleEmployees}" 
                                      SelectedItem="{Binding SelectedResponsibleEmployee}"
                                   Style="{StaticResource inlineDataGrid }" 
                                AutoGenerateColumns="False"  IsReadOnly="True" 
@@ -349,7 +349,7 @@
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="SelectedCellsChanged">
                                     <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
-                                           CommandParameter="{Binding   SelectedItem , ElementName=bldParticipantsDataGrid}" />
+                                           CommandParameter="{Binding   SelectedItem , ElementName=bldResponsibleEmployeesDataGrid}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <DataGrid.Columns>
@@ -368,8 +368,8 @@
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Column="2" Width="100" HorizontalAlignment="Center" >
-                            <Button  Command="{Binding AddResponsibleEmployeesCommand}" >Добавить</Button>
-                            <Button Command="{Binding RemoveResponsibleEmployeesCommand}" >Удалить</Button>
+                            <Button  Command="{Binding AddResponsibleEmployeeCommand}" >Добавить</Button>
+                            <Button Command="{Binding RemoveResponsibleEmployeeCommand}" >Удалить</Button>
                         </StackPanel>
                     </Grid>
                 </StackPanel>

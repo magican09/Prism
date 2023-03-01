@@ -1,10 +1,8 @@
-﻿using Prism.Commands;
-using Prism.Services.Dialogs;
+﻿using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -114,10 +112,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         public NameablePredicateObservableCollection<TConteiner, T> PredicateCollection
         {
             get { return _predicateCollection; }
-            set { SetProperty(ref _predicateCollection, value);  }
+            set { SetProperty(ref _predicateCollection, value); }
         }
 
-        private NameableObservabelObjectsCollection  _treeViewCollection = new NameableObservabelObjectsCollection();
+        private NameableObservabelObjectsCollection _treeViewCollection = new NameableObservabelObjectsCollection();
 
         public NameableObservabelObjectsCollection TreeViewCollection
         {
@@ -146,7 +144,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         public NotifyCommand<object> FilteredElementCommand { get; private set; }
         public NotifyCommand<object> TreeViewSelectionChangeCommand { get; private set; }
 
-        
+
         private bool _filterEnable;
 
         public bool FilterEnable
@@ -164,16 +162,16 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         {
             UnDoReDo = new UnDoReDoSystem();
             CloseDialogCommand = new NotifyCommand(CloseDialog);
-            ConfirmDialogCommand = new  NotifyCommand<object>(ConfirmDialog);
+            ConfirmDialogCommand = new NotifyCommand<object>(ConfirmDialog);
             CreateNewElementCommand = new NotifyCommand(OnCreateNewElement);
             CreateElementOnPatternInstanceCommand = new NotifyCommand(OnCreateElementOnPatternInstance, CanCreateElementOnPatternInstance)
                       .ObservesProperty(() => SelectedElement);
             TreeViewSelectionChangeCommand = new NotifyCommand<object>(OnTreeViewSelectionChange);
 
-                 SortingCommand = new NotifyCommand(OnSortingCommand, CanSorting)
-                .ObservesProperty(() => SelectedPredicate);
+            SortingCommand = new NotifyCommand(OnSortingCommand, CanSorting)
+           .ObservesProperty(() => SelectedPredicate);
             FilteredElementCommand = new NotifyCommand<object>(OnFilteredElement);
-         
+
             _dialogService = dialogService;
         }
 
@@ -229,7 +227,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         {
             return CurrentCollection.Contains(SelectedElement);
         }
-              
+
 
 
         private bool CanCreateElementOnPatternInstance()
@@ -309,12 +307,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 
         private void ConfirmDialog(object elements)
         {
-            
-        ObservableCollection<bldWork> selected_works = new ObservableCollection<bldWork>();
+
+            ObservableCollection<bldWork> selected_works = new ObservableCollection<bldWork>();
             foreach (DataGridCellInfo cell_info in (IList<DataGridCellInfo>)elements)
             {
-                 T element =  cell_info.Item as T;
-               if(!CurrentCollection.Contains(element)) CurrentCollection.Add(element);
+                T element = cell_info.Item as T;
+                if (!CurrentCollection.Contains(element)) CurrentCollection.Add(element);
                 if (!CommonCollection.Contains(element)) CommonCollection.Remove(element);
             }
             var result = ButtonResult.Yes;
@@ -361,17 +359,17 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             parameters.GetValue<NameablePredicateObservableCollection<TConteiner, T>>("predicate_collection");
 
             SelectedPredicate = PredicateCollection[0];
-            foreach (var  predicate in PredicateCollection)
+            foreach (var predicate in PredicateCollection)
             {
-               // var tree_view_root_item = new NameableObservableCollection<T>();  //Activator.CreateInstance(CommonCollection.GetType());
+                // var tree_view_root_item = new NameableObservableCollection<T>();  //Activator.CreateInstance(CommonCollection.GetType());
                 var tree_view_root_item = new NameableObservabelObjectsCollection();  //Activator.CreateInstance(CommonCollection.GetType());
 
                 foreach (T element in predicate.Predicate.Invoke(CommonCollection))
                     tree_view_root_item.Add(element);
                 ((INameable)tree_view_root_item).Name = predicate.Name;
-                    TreeViewCollection.Add(tree_view_root_item);
+                TreeViewCollection.Add(tree_view_root_item);
             }
-           
+
             foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
                 FilteredCommonCollection.Add(element);
             FilterEnable = false;

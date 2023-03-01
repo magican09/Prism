@@ -1,5 +1,4 @@
-﻿using Prism.Commands;
-using Prism.Services.Dialogs;
+﻿using Prism.Services.Dialogs;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;

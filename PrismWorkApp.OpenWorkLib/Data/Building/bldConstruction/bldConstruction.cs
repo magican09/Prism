@@ -1,9 +1,6 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -137,17 +134,19 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _bldObject, value); }
         }
         [NavigateProperty]
-         public  Guid? bldConstructionId { get; set; }
+        public Guid? bldConstructionId { get; set; }
         [NavigateProperty]
         public bldConstruction? ParentConstruction { get; set; }
         private bldProject? _bldProject;
         public bldProject? bldProject
         {
-            get { 
+            get
+            {
                 if (_bldProject != null) return _bldProject;
                 if (bldObject != null) return bldObject.bldProject;
                 if (ParentConstruction != null) return ParentConstruction.bldProject;
-                return null; }
+                return null;
+            }
             set { SetProperty(ref _bldProject, value); }
         }
         private bldDocumentsGroup _documentation;
@@ -155,11 +154,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get
             {
-                   if (_documentation != null) return _documentation;
-                    if (bldObject != null) return bldObject.Documentation;
-                    if (ParentConstruction != null) return ParentConstruction.Documentation;
-                    return null;
-             }
+                if (_documentation != null) return _documentation;
+                if (bldObject != null) return bldObject.Documentation;
+                if (ParentConstruction != null) return ParentConstruction.Documentation;
+                return null;
+            }
             set { SetProperty(ref _documentation, value); }
         }
         #region Constructions
@@ -171,8 +170,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public bldConstruction(string name, string short_name)
         {
-                Name = name;
-                ShortName = short_name;
+            Name = name;
+            ShortName = short_name;
         }
         #endregion
         public object Clone()
@@ -195,7 +194,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #region EditMethods
         public void AddWork(bldWork work)
         {
-               AddWorkToConstructionCommand Command = new AddWorkToConstructionCommand(this, work);
+            AddWorkToConstructionCommand Command = new AddWorkToConstructionCommand(this, work);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void AddWorkGroup(ObservableCollection<bldWork> work)

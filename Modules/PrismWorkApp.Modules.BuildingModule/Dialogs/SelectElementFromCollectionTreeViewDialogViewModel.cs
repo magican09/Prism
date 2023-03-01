@@ -1,18 +1,13 @@
-﻿using Prism.Mvvm;
-using Prism.Services.Dialogs;
+﻿using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using BindableBase = Prism.Mvvm.BindableBase;
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
-    public class SelectElementFromCollectionTreeViewDialogViewModel<TConteiner, T>: LocalBindableBase, IDialogAware
+    public class SelectElementFromCollectionTreeViewDialogViewModel<TConteiner, T> : LocalBindableBase, IDialogAware
          where TConteiner : ICollection<T>/*, INameable, INameableOservableCollection<T>*/
         where T : IEntityObject
     {
@@ -58,7 +53,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             CloseCommand = new NotifyCommand(DialogClosed);
             ConfirmCommand = new NotifyCommand(OnConfirm, () => SelectedElement != null &&
             SelectedElement.GetType() == ElementType &&
-            CurrentElementsCollection.Where(el=>el.Id== SelectedElement.Id).FirstOrDefault()==null
+            CurrentElementsCollection.Where(el => el.Id == SelectedElement.Id).FirstOrDefault() == null
             ).ObservesProperty(() => SelectedElement);
             SelectionChangeCommand = new NotifyCommand<object>(OnSelectionChange);
         }
@@ -78,7 +73,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             param.Add("selected_element", SelectedElement);
             RequestClose.Invoke(new DialogResult(ButtonResult.Yes, param));
         }
-        public void  DialogClosed()
+        public void DialogClosed()
         {
             RequestClose.Invoke(new DialogResult(ButtonResult.No));
         }
@@ -92,16 +87,16 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             return true;
         }
 
-       
+
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
             Title = parameters.GetValue<string>("title");
             CommonCollection = (TConteiner)parameters.GetValue<object>("common_collection");
             CurrentElement = (T)parameters.GetValue<object>("current_element");
-            CurrentElementsCollection = (TConteiner)parameters.GetValue<object>("current_element_collection"); 
+            CurrentElementsCollection = (TConteiner)parameters.GetValue<object>("current_element_collection");
             ElementType = parameters.GetValue<System.Type>("element_type");
-           
+
         }
     }
 }

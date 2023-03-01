@@ -23,9 +23,13 @@ namespace PrismWorkApp.Services.Repositories
             PlutoContext.ResponsibleEmployees
                     //  .Include(re => re.bldParticipant);
                     .Include(re => re.Employee)
-                    .ThenInclude(re=>re.Company);
+                    .ThenInclude(re => re.Company);
 
             return PlutoContext.ResponsibleEmployees.ToList();//out_val;
+        }
+        public List<bldResponsibleEmployee> GetAllAsync()
+        {
+            return PlutoContext.ResponsibleEmployees.ToList();
         }
 
         public PlutoContext PlutoContext { get { return Context as PlutoContext; } }

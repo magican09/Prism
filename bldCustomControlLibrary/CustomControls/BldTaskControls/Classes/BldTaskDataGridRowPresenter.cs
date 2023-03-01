@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace bldCustomControlLibrary
 {
-    public class BldTaskDataGridRowPresenter:ItemsControl
+    public class BldTaskDataGridRowPresenter : ItemsControl
     {
 
 

@@ -1,6 +1,4 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
-using PrismWorkApp.OpenWorkLib.Data.Service.UnDoReDo;
-using PrismWorkApp.OpenWorkLib.Services;
 using System;
 
 namespace PrismWorkApp.OpenWorkLib.Data
@@ -114,15 +112,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _participants, value); }
         }
 
-       private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup();
-       public bldResponsibleEmployeesGroup? ResponsibleEmployees
+        private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup();
+        public bldResponsibleEmployeesGroup? ResponsibleEmployees
         {
             get { return _responsibleEmployees; }
             set { SetProperty(ref _responsibleEmployees, value); }
         }
 
         private bldDocumentsGroup _documentation = new bldDocumentsGroup();
-        public bldDocumentsGroup  Documentation
+        public bldDocumentsGroup Documentation
         {
             get { return _documentation; }
             set { SetProperty(ref _documentation, value); }
@@ -132,7 +130,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public object Clone()
         {
             // return CloningService.Clone<bldProject>(this);
-             bldProject project = (bldProject)MemberwiseClone();
+            bldProject project = (bldProject)MemberwiseClone();
             //project.BuildingObjects = (bldObjectsGroup)BuildingObjects.Clone();
             //project.Participants = (bldParticipantsGroup)Participants.Clone();
             //project.ResponsibleEmployees = (bldResponsibleEmployeesGroup)ResponsibleEmployees.Clone();
@@ -158,7 +156,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void AddBuildindObject(bldObject obj)
         {
-         //   obj.bldProject = this;
+            //   obj.bldProject = this;
             AddToCollectionCommand<bldObjectsGroup, bldObject> Command =
                 new AddToCollectionCommand<bldObjectsGroup, bldObject>(BuildingObjects, obj);
             InvokeUnDoReDoCommandCreatedEvent(Command);
@@ -169,7 +167,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                  new AddToCollectionCommand<bldParticipantsGroup, bldParticipant>(Participants, participant);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-        
+
         #endregion
     }
 }

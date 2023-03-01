@@ -1,8 +1,5 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Text;
 using System.Windows;
 
 namespace bldCustomControlLibrary
@@ -27,7 +24,7 @@ namespace bldCustomControlLibrary
         {
             get
             {
-                return _isExpandable; 
+                return _isExpandable;
             }
             set
             {
@@ -38,9 +35,11 @@ namespace bldCustomControlLibrary
         private bool? _isExpanded;
         public bool? IsExpanded
         {
-            get {if (Children.Count == 0)
+            get
+            {
+                if (Children.Count == 0)
                     _isExpanded = null;
-                return _isExpanded; 
+                return _isExpanded;
             }
             set
             {
@@ -51,7 +50,7 @@ namespace bldCustomControlLibrary
                 SetProperty(ref _isExpanded, value);
             }
         }
-      
+
         private object _object;
         public object Object
         {
@@ -81,17 +80,17 @@ namespace bldCustomControlLibrary
             Object = obj;
             IsExpanded = is_expanded;
             Children.CollectionChanged += OnChildrenChaged;
-           
+
         }
 
         private void OnChildrenChaged(object sender, NotifyCollectionChangedEventArgs e)
         {
-             IsExpandable = Children.Count > 0; 
+            IsExpandable = Children.Count > 0;
         }
 
         private void CollapseChildrenItems(DataGridExpandedItem e_obj)
         {
-            foreach(DataGridExpandedItem expandedItem in e_obj.Children)
+            foreach (DataGridExpandedItem expandedItem in e_obj.Children)
             {
                 expandedItem.Visible = Visibility.Collapsed;
                 CollapseChildrenItems(expandedItem);

@@ -5,11 +5,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Reflection;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 
 namespace bldCustomControlLibrary
@@ -52,7 +49,7 @@ namespace bldCustomControlLibrary
         }
         #endregion
         #region Notification Propagation
-       
+
 
         #endregion
         #region Row Generation
@@ -116,7 +113,7 @@ namespace bldCustomControlLibrary
             //OnUnloadingRow(new DataGridRowEventArgs(row));
             //row.ClearRow(this);
         }
-     
+
         /// <summary>
         ///     Propagates the collection changed notification on Columns down to
         ///     each active DataGridRow.
@@ -142,7 +139,7 @@ namespace bldCustomControlLibrary
         #endregion
         #region Columns Notification
 
-       
+
 
         #endregion
         //#region Colomn Autogeneration
@@ -213,8 +210,8 @@ namespace bldCustomControlLibrary
             //    _selectedCells.RestoreOnlyFullRows(ranges);
             //}
 
-             //if (AutoGenerateColumns == true)
-             if(false)
+            //if (AutoGenerateColumns == true)
+            if (false)
             {
                 RegenerateAutoColumns();
             }
@@ -410,7 +407,7 @@ namespace bldCustomControlLibrary
 
                 case NotifyCollectionChangedAction.Reset:
                     // We can't clear column references on Reset: _columns has 0 items and e.OldItems is empty.
-                  //  _selectedCells.Clear();
+                    //  _selectedCells.Clear();
                     break;
             }
 
@@ -480,7 +477,7 @@ namespace bldCustomControlLibrary
         private bool _sortingStarted = false;                               // Flag used to track if Sorting ever started or not.
         private List<int> _groupingSortDescriptionIndices = null;           // List to hold the indices of SortDescriptions added for the sake of GroupDescriptions.
         private DataGridCell _currentCellContainer;                         // Reference to the cell container corresponding to CurrentCell (use CurrentCellContainer property instead)
-        private ObservableCollection<BldTaskDataGridColumn> _columns ;                          // Stores the columns
+        private ObservableCollection<BldTaskDataGridColumn> _columns;                          // Stores the columns
 
         private ContainerTracking<BldTaskDataGridRow> _rowTrackingRoot;            // Root of a linked list of active row containers
 

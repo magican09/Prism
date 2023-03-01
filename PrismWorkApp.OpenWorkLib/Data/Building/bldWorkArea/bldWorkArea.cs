@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldWorkArea : BindableBase, IbldWorkArea,IEntityObject
+    public class bldWorkArea : BindableBase, IbldWorkArea, IEntityObject
     {
         private string _levels;
         public string Levels
@@ -18,7 +18,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _axes, value); }
         } //Оси
 
-       
+
         private string _placeFullName;
         [NotMapped]
         [NotJornaling]
@@ -32,7 +32,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 if (Levels != null && Levels != "")
                     _placeFullName += $" {Levels}";
 
-                return _placeFullName; 
+                return _placeFullName;
             }
             set { SetProperty(ref _placeFullName, value); }
         } //Место работ полностью

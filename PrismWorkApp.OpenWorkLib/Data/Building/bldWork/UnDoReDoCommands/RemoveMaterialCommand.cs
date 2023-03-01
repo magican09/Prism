@@ -1,7 +1,5 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -37,7 +35,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             _CurrentWork = work;
             _RemovedMaterial = material;
             _CurrentWork.Materials.Remove(_RemovedMaterial);
-           foreach(bldDocument document in _RemovedMaterial.Documents)
+            foreach (bldDocument document in _RemovedMaterial.Documents)
                 _CurrentWork.AOSRDocument.AttachedDocuments.Remove(document);
         }
     }

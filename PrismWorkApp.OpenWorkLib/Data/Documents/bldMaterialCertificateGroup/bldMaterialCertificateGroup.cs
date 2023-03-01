@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldMaterialCertificateGroup : NameableObservableCollection<bldMaterialCertificate>,  IEntityObject
+    public class bldMaterialCertificateGroup : NameableObservableCollection<bldMaterialCertificate>, IEntityObject
     {
         public bldMaterialCertificateGroup()
         {

@@ -229,6 +229,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee> predicate_1 = new NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee>();
             predicate_1.Name = "Показать всех ответственных работников";
             predicate_1.Predicate = cl => cl;
+            predicate_1.CollectionSelectPredicate= col =>
+            {
+                ObservableCollection<NameableObjectPointer> out_coll = new ObservableCollection<NameableObjectPointer>();
+                foreach(bldResponsibleEmployee res_empl in col)
+                {
+                    NameableObjectPointer objectPointer = new NameableObjectPointer();
+                    objectPointer.Code = res_empl.Code; 
+                    objectPointer.Name = res_empl.Employee.Name;
+                    objectPointer.Annotation = $"{res_empl.bldParticipant.Name}: {res_empl.bldParticipant.ConstructionCompany.Name}  {res_empl.DocConfirmingTheAthority.Name}";
+                    objectPointer.ObjectPointer = res_empl;
+                    out_coll.Add(objectPointer);
+                }
+                return out_coll;
+             };
             NameablePredicateObservableCollection<bldResponsibleEmployeesGroup, bldResponsibleEmployee> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldResponsibleEmployeesGroup, bldResponsibleEmployee>();
             nameablePredicatesCollection.Add(predicate_1);
             bldResponsibleEmployeesGroup empl_for_add_collection = new bldResponsibleEmployeesGroup();

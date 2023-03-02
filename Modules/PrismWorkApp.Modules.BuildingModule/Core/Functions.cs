@@ -177,7 +177,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     Employee employee = new Employee();
                     employee.Position = new EmployeePosition(responsibleEmplDataWorksheet.Cells[rowIndex, 4].Value?.ToString());
                     employee.FullName = responsibleEmplDataWorksheet.Cells[rowIndex, 5].Value?.ToString();
-                    employee.Name = responsibleEmplDataWorksheet.Cells[rowIndex, 5].Value?.ToString();
+                    
+                    if (responsibleEmplDataWorksheet.Cells[rowIndex, 5].Value?.ToString()!="")
+                        employee.Name = responsibleEmplDataWorksheet.Cells[rowIndex, 5].Value?.ToString();
+                    else
+                        employee.Name = employee.FullName;
+
                     bld_employee.Employee = employee;
                     bld_employee.DocConfirmingTheAthority = new bldDocument(responsibleEmplDataWorksheet.Cells[rowIndex, 6].Value?.ToString());
 

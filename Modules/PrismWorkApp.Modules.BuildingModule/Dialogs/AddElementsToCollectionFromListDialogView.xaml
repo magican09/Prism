@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                  <ResourceDictionary  Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/ProjectTreeViewDefaultTheme.xaml"/>
+                <ResourceDictionary  Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/ProjectTreeViewDefaultTheme.xaml"/>
                 <!--<ResourceDictionary  Source="pack://application:,,,/PrismWorkApp;component/ResourceDictionaries/WorkResourceDictionary.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -41,7 +41,7 @@
         </Grid.ColumnDefinitions>
         <!--<Label Grid.Row="1" Margin="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" 
                Content="{Binding Message}" />-->
-        <Label Grid.Row="0" Grid.Column="0">Выберите ветку </Label>
+        <Label Grid.Row="0" Grid.Column="0">Выберите ветку</Label>
         <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" Grid.RowSpan="2" >
             <Label  Margin="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" 
                Content="{Binding CommonCollectionName}" />
@@ -58,7 +58,7 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="3">
-             
+
                 <ComboBox ItemsSource="{Binding PredicateCollection}" SelectedItem="{Binding SelectedPredicate}" 
                           DisplayMemberPath="Name"
                           SelectedValuePath="Name"  Width="300">
@@ -67,7 +67,7 @@
                 <Button Content="Показать из.."  HorizontalAlignment="Right" Command="{Binding SortingCommand}" 
                         CommandParameter="{Binding ElementName=FindStringTextBox,Path=Text}"/>
             </StackPanel>
-            <ScrollViewer Width="Auto">
+            <!--<ScrollViewer Width="Auto">
                 <DataGrid x:Name="worksDataGreed"   Margin="2"  ItemsSource="{Binding FilteredCommonCollection}"  Height="200"
                   SelectedItem="{Binding SelectedElement,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                    AutoGenerateColumns="False"  IsReadOnly="True" >
@@ -78,7 +78,23 @@
                                                      Binding = "{Binding Path=Name}" Width="Auto" />
                     </DataGrid.Columns>
                 </DataGrid>
+            </ScrollViewer>-->
+            <ScrollViewer Width="Auto">
+                <DataGrid x:Name="collectionForObjectsSelect"   Margin="2"  ItemsSource="{Binding FilteredCommonPointersCollection}"  Height="200"
+                   SelectedItem="{Binding SelectedElement,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                   AutoGenerateColumns="False"  IsReadOnly="True" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn  Header="Код"  
+                                                     Binding = "{Binding Path=Code}" />
+                        <DataGridTextColumn  Header="Наименование"  
+                                                     Binding = "{Binding Path=Name}" Width="Auto" />
+                        <DataGridTextColumn  Header="Примечание"  
+                                                     Binding = "{Binding Path=Annotation}" Width="Auto" />
+                        
+                    </DataGrid.Columns>
+                </DataGrid>
             </ScrollViewer>
+        
         </StackPanel>
         <TreeView  Grid.Row="1"  Grid.Column="0" Margin="2"  Grid.RowSpan="3" x:Name="selectionTreeView" ItemsSource="{Binding TreeViewCollection}"  >
             <!--<TreeView.Resources>
@@ -94,11 +110,13 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </TreeView>
-        
+
         <StackPanel Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Content="{Binding Refuse}" 
-                Command="{Binding ConfirmDialogCommand}" CommandParameter="{Binding ElementName=worksDataGreed,Path=SelectedCells}" />
-            <Button  Content="{Binding Confirm}"
+            <Button Content="{Binding Confirm }" 
+                Command="{Binding ConfirmDialogCommand}" CommandParameter="{Binding ElementName=collectionForObjectsSelect,Path=SelectedCells}" />
+            <!--<Button Content="{Binding Confirm }" 
+                Command="{Binding ConfirmDialogCommand}" CommandParameter="{Binding ElementName=worksDataGreed,Path=SelectedCells}" />-->
+            <Button  Content="{Binding Refuse}"
                 Command="{Binding CloseDialogCommand}"/>
         </StackPanel>
 

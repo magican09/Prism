@@ -80,6 +80,18 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             get { return _currentCollection; }
             set { SetProperty(ref _currentCollection, value); }
         }
+        private ObservableCollection<NameableObjectPointer> _filteredCommonPointersCollection = new ObservableCollection<NameableObjectPointer>();
+        public ObservableCollection<NameableObjectPointer> FilteredCommonPointersCollection
+        {
+            get { return _filteredCommonPointersCollection; }
+            set { SetProperty(ref _filteredCommonPointersCollection, value); }
+        }
+        private ObservableCollection<NameableObjectPointer> _sortedCommonPointersCollection = new ObservableCollection<NameableObjectPointer>();
+        public ObservableCollection<NameableObjectPointer> SortedCommonPointersCollection
+        {
+            get { return _sortedCommonPointersCollection; }
+            set { SetProperty(ref _sortedCommonPointersCollection, value); }
+        }
 
         private T _selectedElement;
 
@@ -135,6 +147,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 
 
         public NotifyCommand<object> ConfirmDialogCommand { get; private set; }
+        public NotifyCommand<object> TestConfirmDialogCommand { get; private set; }
         public NotifyCommand CloseDialogCommand { get; private set; }
         public NotifyCommand CreateNewElementCommand { get; private set; }
         public NotifyCommand CreateElementOnPatternInstanceCommand { get; private set; }
@@ -163,6 +176,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             UnDoReDo = new UnDoReDoSystem();
             CloseDialogCommand = new NotifyCommand(CloseDialog);
             ConfirmDialogCommand = new NotifyCommand<object>(ConfirmDialog);
+            TestConfirmDialogCommand = new NotifyCommand<object>(OnTestConfirmDialog);
             CreateNewElementCommand = new NotifyCommand(OnCreateNewElement);
             CreateElementOnPatternInstanceCommand = new NotifyCommand(OnCreateElementOnPatternInstance, CanCreateElementOnPatternInstance)
                       .ObservesProperty(() => SelectedElement);
@@ -171,7 +185,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             SortingCommand = new NotifyCommand(OnSortingCommand, CanSorting)
            .ObservesProperty(() => SelectedPredicate);
             FilteredElementCommand = new NotifyCommand<object>(OnFilteredElement);
-
+          
             _dialogService = dialogService;
         }
 
@@ -179,13 +193,21 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         {
             if (selected_collection != null && selected_collection.GetType() == CommonCollection.GetType())
             {
-                FilteredCommonCollection.Clear();
-                SortedCommonCollection.Clear();
-                foreach (T element in selected_collection as ICollection<T>)
+                //FilteredCommonCollection.Clear();
+                //SortedCommonCollection.Clear();
+                //foreach (T element in selected_collection as ICollection<T>)
+                //{
+                //    SortedCommonCollection.Add(element);
+                //    FilteredCommonCollection.Add(element);
+                //}
+                FilteredCommonPointersCollection.Clear();
+                SortedCommonPointersCollection.Clear();
+                foreach (NameableObjectPointer element in selected_collection as ICollection<NameableObjectPointer>)
                 {
-                    SortedCommonCollection.Add(element);
-                    FilteredCommonCollection.Add(element);
+                    SortedCommonPointersCollection.Add(element);
+                    FilteredCommonPointersCollection.Add(element);
                 }
+
             }
         }
 
@@ -201,9 +223,15 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             if (!FilterEnable) return;
             TextBox textBox = obj as TextBox;
             string text_box_text = textBox.Text;
-            FilteredCommonCollection.Clear();
-            foreach (T elemtnt in SortedCommonCollection.Where(el => el.Name.Contains(text_box_text)))
-                FilteredCommonCollection.Add(elemtnt);
+            //FilteredCommonCollection.Clear();
+            //foreach (T elemtnt in SortedCommonCollection.Where(el => el.Name.Contains(text_box_text)))
+            //    FilteredCommonCollection.Add(elemtnt);
+
+            FilteredCommonPointersCollection.Clear();
+            foreach (NameableObjectPointer elemtnt in SortedCommonPointersCollection.Where(el => el.Name.Contains(text_box_text)))
+                FilteredCommonPointersCollection.Add(elemtnt);
+
+
         }
 
         private bool CanSorting()
@@ -213,14 +241,20 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 
         private void OnSortingCommand()
         {
-            SortedCommonCollection.Clear();
-            FilteredCommonCollection.Clear();
-            foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
+            //SortedCommonCollection.Clear();
+            //FilteredCommonCollection.Clear();
+            // foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
+            //{
+            //    SortedCommonCollection.Add(element);
+            //    FilteredCommonCollection.Add(element);
+            // }
+            SortedCommonPointersCollection.Clear();
+            FilteredCommonPointersCollection.Clear();
+            foreach (NameableObjectPointer element in SelectedPredicate.CollectionSelectPredicate.Invoke(CommonCollection))
             {
-                SortedCommonCollection.Add(element);
-                FilteredCommonCollection.Add(element);
+                SortedCommonPointersCollection.Add(element);
+                FilteredCommonPointersCollection.Add(element);
             }
-
         }
 
         private bool CanRemoveFromCollection()
@@ -308,12 +342,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         private void ConfirmDialog(object elements)
         {
 
-            ObservableCollection<bldWork> selected_works = new ObservableCollection<bldWork>();
+            //ObservableCollection<bldWork> selected_works = new ObservableCollection<bldWork>();
             foreach (DataGridCellInfo cell_info in (IList<DataGridCellInfo>)elements)
             {
-                T element = cell_info.Item as T;
-                if (!CurrentCollection.Contains(element)) CurrentCollection.Add(element);
-                if (!CommonCollection.Contains(element)) CommonCollection.Remove(element);
+                NameableObjectPointer element = cell_info.Item as NameableObjectPointer;
+                if (!CurrentCollection.Contains(element.ObjectPointer)) CurrentCollection.Add(element.ObjectPointer as T);
+                if (!CommonCollection.Contains(element.ObjectPointer)) CommonCollection.Remove(element.ObjectPointer as T);
             }
             var result = ButtonResult.Yes;
             var param = new DialogParameters();
@@ -324,6 +358,25 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             RequestClose.Invoke(new DialogResult(result, param));
 
         }
+        //private void OnTestConfirmDialog(object elements)
+        //{
+
+        //    //ObservableCollection<bldWork> selected_works = new ObservableCollection<bldWork>();
+        //    foreach (DataGridCellInfo cell_info in (IList<DataGridCellInfo>)elements)
+        //    {
+        //        T element = cell_info.Item as T;
+        //        if (!CurrentCollection.Contains(element)) CurrentCollection.Add(element);
+        //        if (!CommonCollection.Contains(element)) CommonCollection.Remove(element);
+        //    }
+        //    var result = ButtonResult.Yes;
+        //    var param = new DialogParameters();
+        //    param.Add("confirm_dialog_param", "Подтверждено пользователем!");
+        //    param.Add("refuse_dialog_param", "Отменено пользователем!");
+        //    param.Add("common_collection", CommonCollection);
+        //    param.Add("current_collection", CurrentCollection);
+        //    RequestClose.Invoke(new DialogResult(result, param));
+
+        //}
         private void CloseDialog()
         {
             var result = ButtonResult.No;
@@ -352,8 +405,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             CurrentCollectionName = parameters.GetValue<string>("current_collection_name");
             CommonCollection = (TConteiner)parameters.GetValue<object>("common_collection");
             CurrentCollection = (TConteiner)parameters.GetValue<object>("current_collection");
-            Refuse = parameters.GetValue<string>("confirm_button_content");
-            Confirm = parameters.GetValue<string>("refuse_button_content");
+            Refuse = parameters.GetValue<string>("refuse_button_content"); 
+             Confirm = parameters.GetValue<string>("confirm_button_content");
             NewObjectDialogName = parameters.GetValue<string>("new_object_dialog_name");
             PredicateCollection =
             parameters.GetValue<NameablePredicateObservableCollection<TConteiner, T>>("predicate_collection");
@@ -370,9 +423,32 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 TreeViewCollection.Add(tree_view_root_item);
             }
 
-            foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
-                FilteredCommonCollection.Add(element);
+            //foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
+            //    FilteredCommonCollection.Add(element);
+            if (SelectedPredicate.CollectionSelectPredicate == null)
+            {
+                SelectedPredicate.CollectionSelectPredicate  = (col) =>
+                {
+                    ObservableCollection<NameableObjectPointer> out_coll = new ObservableCollection<NameableObjectPointer>();
+                    foreach (IEntityObject elm in col)
+                    {
+                        NameableObjectPointer objectPointer = new NameableObjectPointer();
+                        objectPointer.Name = elm.Name;
+                        objectPointer.Code = elm.Code;
+                        objectPointer.ObjectPointer = elm;
+                        out_coll.Add(objectPointer);
+                    }
+                    return out_coll;
+                };
+            }
+              
+            foreach (NameableObjectPointer elm in SelectedPredicate.CollectionSelectPredicate.Invoke(CommonCollection))
+                    FilteredCommonPointersCollection.Add(elm);
+          
+               
+
             FilterEnable = false;
         }
+        
     }
 }

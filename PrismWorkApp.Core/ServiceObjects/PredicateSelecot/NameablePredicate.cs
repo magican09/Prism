@@ -1,6 +1,7 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace PrismWorkApp.Core
 {
@@ -20,5 +21,6 @@ namespace PrismWorkApp.Core
         {
             //   ResultCollection= new NameableObservableCollection<IEntityObject>( Predicate.Invoke((TSourse)in_collection));
         }
+        public Func<ICollection<T>, ObservableCollection<NameableObjectPointer>> CollectionSelectPredicate {get;set;}
     }
 }

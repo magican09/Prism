@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="PrismWorkApp.Modules.BuildingModule.Views.ParticipantsGroupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views"
+            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+              mc:Ignorable="d" 
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             d:DesignHeight="950" d:DesignWidth="1150">
+    <Grid   ShowGridLines="False">
+        <Grid.Resources>
+
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.05*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.05*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.05*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="0.1*" />
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="mainStakPanel" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="2" Orientation="Vertical" >
+            <TextBlock
+                Margin="10,5,10,0"
+                HorizontalAlignment="Center"
+                Style="{StaticResource titleText}">Форма для заполнения учасников проекта работы.</TextBlock>
+
+            <StackPanel Orientation="Horizontal" x:Name="bldProjectGroupStackPanel"  >
+                <Grid Width="{Binding ActualWidth, ElementName=mainStakPanel}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.8*" x:Name="DataGridLeftCulumn"/>
+                        <ColumnDefinition  Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid Visibility="Visible" x:Name="bldParticipantsGroupDataGrid" Grid.Column="0" ItemsSource="{Binding SelectedParticipantsGroup}"   
+                                                  SelectedItem="{Binding SelectedWork}"  
+                                                  Style="{StaticResource inlineDataGrid}"  
+                               AutoGenerateColumns="False"  IsReadOnly="False"  
+                                   HorizontalContentAlignment="Stretch"  CanUserAddRows="False" 
+                                  CanUserDeleteRows="False">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectedCellsChanged">
+                                <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
+                                           CommandParameter="{Binding SelectedItem, ElementName=bldParticipantsGroupDataGrid}" />
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="SelectedCellsChanged">
+                                <prism:InvokeCommandAction Command="{Binding DataGridSelectionChangedCommand}"
+                                                               CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="LostFocus">
+                                <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Роль" Width="Auto" Binding="{Binding Role.Name}"/>
+                            <DataGridTextColumn Header="Наименование ЮЛ (ФЛ)" Binding="{Binding ConstructionCompany.Name}"/>
+                            <DataGridTextColumn Header="ОГРН (ОГРНИП)" Binding="{Binding ConstructionCompany.OGRN}"/>
+                            <DataGridTextColumn Header="ИНН" Binding="{Binding ConstructionCompany.INN}"/>
+                            <DataGridTextColumn Header="Место нахождения юрлица, Адрес места жительства для ИП" Binding="{Binding ConstructionCompany.Address}"/>
+                            <DataGridTextColumn Header="Тел/Факс" Binding="{Binding ConstructionCompany.Contacts}"/>
+                            <DataGridTextColumn Header="Организация, выдавшая СРО" Binding="{Binding ConstructionCompany.SROIssuingCompany.Name}"/>
+                            <DataGridTextColumn Header="ОГРН организации, выдавшей СРО" Binding="{Binding ConstructionCompany.SROIssuingCompany.OGRN}"/>
+                            <DataGridTextColumn Header="ИНН организации, выдавшей СРО" Binding="{Binding ConstructionCompany.SROIssuingCompany.INN}"/>
+
+
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10">
+            <!--<Button  Content="Сохранить ИД в Word" Width="Auto" Command="{Binding SaveAOSRsToWordCommand}" />-->
+            <Button  Content="Сохранить" Width="Auto" Command="{Binding SaveCommand}" />
+            <Button  Content="Закрыть"  Width="Auto" Command="{Binding CloseCommand}"
+                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                                                     AncestorType={x:Type UserControl}}}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

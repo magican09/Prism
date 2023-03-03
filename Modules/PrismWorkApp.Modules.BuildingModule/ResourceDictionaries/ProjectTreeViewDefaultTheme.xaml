@@ -132,14 +132,17 @@
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
             <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
             <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+
         </StackPanel>
     </HierarchicalDataTemplate>
     <DataTemplate  DataType="{x:Type  bld:bldResponsibleEmployee}">
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
-            <StackPanel>
-                <TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>
-                <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <!--<TextBlock Text="{Binding Code}" VerticalAlignment="Center" Margin="2"/>-->
+                <!--<TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>-->
+                <TextBlock Text="{Binding Employee.Name}" VerticalAlignment="Center" Margin="2"/>
+                <!--<TextBlock Text="{Binding Path= Role.FullName}" VerticalAlignment="Center" Margin="2"/>-->
                 <TextBlock Text="{Binding Company.Name}" VerticalAlignment="Center"/>
             </StackPanel>
         </StackPanel>

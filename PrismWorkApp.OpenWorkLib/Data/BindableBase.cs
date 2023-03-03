@@ -170,8 +170,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
 
                 SetProperty(ref _parent, value);
-                foreach (IBindableBase elm in Children)
-                    elm.Parent = _parent;
+                if (_parent!=null && !_parent.Children.Contains(_parent)) _parent.Children.Add(this);
+                //foreach (IBindableBase elm in Children)
+                //    if(!Children.Contains(_parent)) elm.Parent = _parent;
+                  
             }
         }
         private ObservableCollection<IBindableBase> _children = new ObservableCollection<IBindableBase>();

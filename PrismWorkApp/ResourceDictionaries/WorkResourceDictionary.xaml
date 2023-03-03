@@ -61,6 +61,20 @@
     <Style x:Key="inlineDataGrid" TargetType="{x:Type DataGrid}">
         <Setter Property="Margin" Value="5,10,5,10"/>
     </Style>
+    <DataTemplate x:Key="HeaderTemplate">
+        <TextBlock Text="{Binding}" TextWrapping="Wrap"  TextAlignment="Center"/>
+        <!--Обозначаем наличие привязки в ячеке(шапке?) таблицы, выравниванием текст в ячейках по центру и задаем перенос текста-->
+    </DataTemplate>
+    <Style TargetType="DataGridColumnHeader">
+        <!--Ограничиваем применение стиля (только для шапки DataGridColumnHeader)-->
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <!--Задаем выравнивание по центру ячейки-->
+        <Setter Property="Padding" Value="2"/>
+        <!--Задаем отступ в ячейке-->
+        <Setter Property="ContentTemplate" Value="{StaticResource HeaderTemplate}"/>
+        <!--Применяем в стиле шаблон отображения текстовых данных HeaderTemplate-->
+    </Style>
+    
     <Style TargetType="{x:Type CheckBox }">
         <Setter Property="Margin" Value="2 6 2 2"/>
     </Style>

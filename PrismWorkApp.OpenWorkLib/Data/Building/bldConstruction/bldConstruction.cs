@@ -164,7 +164,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #region Constructions
         public bldConstruction()
         {
-            Works.ParentObject = this;
+           // Works.ParentObject = this;
             Works.Parent = this;
 
         }

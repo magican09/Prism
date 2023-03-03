@@ -139,6 +139,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public bldProject()
         {
+            BuildingObjects.Parent = this;
+            Participants.Parent = this;
         }
 
         #region EditMethods

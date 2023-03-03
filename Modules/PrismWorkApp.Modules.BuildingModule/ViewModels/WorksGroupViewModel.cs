@@ -51,6 +51,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
 
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
+        public NotifyCommand<object> DataGridSelectionChangedCommand { get; private set; }
         public NotifyCommand UnDoCommand { get; protected set; }
         public NotifyCommand ReDoCommand { get; protected set; }
         public NotifyCommand SaveCommand { get; protected set; }
@@ -90,10 +91,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand DeleteWorkCommand { get; private set; }
         public NotifyCommand SaveWorksExecutiveDocumentationCommand { get; private set; }
 
-        public NotifyCommand<object> DataGridSelectionChangedCommand { get; private set; }
-
-
-
+      
         public NotifyCommand RemoveWorkCommand { get; private set; }
         // public NotifyCommand RemoveWorkCommand { get; private set; }
 

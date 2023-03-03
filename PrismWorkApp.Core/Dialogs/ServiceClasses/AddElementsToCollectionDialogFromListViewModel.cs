@@ -176,7 +176,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             UnDoReDo = new UnDoReDoSystem();
             CloseDialogCommand = new NotifyCommand(CloseDialog);
             ConfirmDialogCommand = new NotifyCommand<object>(ConfirmDialog);
-            TestConfirmDialogCommand = new NotifyCommand<object>(OnTestConfirmDialog);
+          
             CreateNewElementCommand = new NotifyCommand(OnCreateNewElement);
             CreateElementOnPatternInstanceCommand = new NotifyCommand(OnCreateElementOnPatternInstance, CanCreateElementOnPatternInstance)
                       .ObservesProperty(() => SelectedElement);

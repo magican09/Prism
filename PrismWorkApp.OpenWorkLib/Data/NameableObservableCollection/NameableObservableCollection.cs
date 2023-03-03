@@ -152,7 +152,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
         }
         //    public ObservableCollection<IJornalable> ParentObjects { get; set; }
-        public object ParentObject { get; set; }
+       // public object Parent{ get; set; }
         public ObservableCollection<IJornalable> ChildObjects { get; set; }
         public AdjustStatus AdjustedStatus { get; set; } = AdjustStatus.UNADJUSTED;
         public void JornalingOff()

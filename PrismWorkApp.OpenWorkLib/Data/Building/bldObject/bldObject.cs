@@ -118,12 +118,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #region Construcctions 
         public bldObject()
         {
-
+            BuildingObjects.Parent = this;
+            Constructions.Parent = this;
         }
         public bldObject(string name, string short_name)
         {
             Name = name;
             ShortName = short_name;
+            BuildingObjects.Parent = this;
+            Constructions.Parent = this;
         }
         #endregion
 

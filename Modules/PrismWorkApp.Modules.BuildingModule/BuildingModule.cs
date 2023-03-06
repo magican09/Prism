@@ -203,6 +203,7 @@ namespace PrismWorkApp.Modules.BuildingModule
 
             containerRegistry.RegisterDialog<SelectDocumentFromTreeViewDialog, SelectDocumentFromTreeViewDialogViewModel>();
 
+            containerRegistry.RegisterDialog<AddConstructionCompaniesToCollectionFromListDialogView, AddConstructionCompaniesToCollectionFromListDialogViewModel>();
             //  containerRegistry.RegisterForNavigation<ToolBarRibbonTabView, ToolBarRibbonTabViewModel>();
             //   containerRegistry.RegisterDialog<ConfirmCreateDialogViewModel, ConfirmCreateDialogViewModel>();
 

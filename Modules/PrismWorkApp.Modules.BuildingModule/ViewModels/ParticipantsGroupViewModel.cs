@@ -3,6 +3,7 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
+using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
@@ -11,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
@@ -64,9 +66,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand SaveCommand { get; protected set; }
         public NotifyCommand<object> CloseCommand { get; protected set; }
 
+        public ObservableCollection<INotifyCommand> ParticipantsContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
+        public NotifyCommand CreateNewParticipantCommand { get; private set; }
+        public NotifyCommand ChangeParticipantsListCommand { get; private set; }
+        public NotifyCommand AddParticipantsListCommand { get; private set; }
+        public NotifyCommand<object> AddCreatedFromTemplateParticipantCommand { get; private set; }
         public NotifyCommand RemoveParticipantCommand { get; private set; }
-        public NotifyCommand AddParticipantCommand { get; private set; }
-
+       
+       
         public ParticipantsGroupViewModel(IDialogService dialogService,
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
@@ -83,10 +90,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             #region Commands Init
             _applicationCommands = applicationCommands;
-
-
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
+
+            CreateNewParticipantCommand = new NotifyCommand(OnCreateNewParticipant);
+            CreateNewParticipantCommand.Name = "Создать нового участника";
+            ChangeParticipantsListCommand = new NotifyCommand(OnChangeParticipantsListCommand);
+            ChangeParticipantsListCommand.Name = "Изменить состав учасников";
+            AddParticipantsListCommand = new NotifyCommand(OnAddParticipantsListCommand);
+            AddParticipantsListCommand.Name = "Добавить участников";
+
+            ParticipantsContextMenuCommands.Add(CreateNewParticipantCommand);
+            ParticipantsContextMenuCommands.Add(ChangeParticipantsListCommand);
+            ParticipantsContextMenuCommands.Add(AddParticipantsListCommand);
+
 
             #endregion
 
@@ -95,8 +112,90 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _regionManager = regionManager;
             IsActiveChanged += OnActiveChanged;
         }
-       
 
+        private void OnAddParticipantsListCommand()
+        {
+            bldConstructionCompanyGroup All_companies = new bldConstructionCompanyGroup(_buildingUnitsRepository.ConstructionCompanies.GetAllAsync());
+
+            NameablePredicate<bldConstructionCompanyGroup, bldConstructionCompany> predicate_1 = new NameablePredicate<bldConstructionCompanyGroup, bldConstructionCompany>();
+            predicate_1.Name = "Показать все компании";
+            predicate_1.Predicate = cl => cl;
+            predicate_1.CollectionSelectPredicate = col =>
+            {
+                ObservableCollection<NameableObjectPointer> out_coll = new ObservableCollection<NameableObjectPointer>();
+                foreach (bldConstructionCompany company in col)
+                {
+                    NameableObjectPointer objectPointer = new NameableObjectPointer();
+                    objectPointer.Code = company.Code;
+                    objectPointer.Name = company.Name;
+                    objectPointer.Annotation = $"{company.INN}, {company.Address}";
+                    objectPointer.ObjectPointer = company;
+                    out_coll.Add(objectPointer);
+                }
+                return out_coll;
+            };
+            NameablePredicateObservableCollection<bldConstructionCompanyGroup, bldConstructionCompany> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldConstructionCompanyGroup, bldConstructionCompany>();
+            nameablePredicatesCollection.Add(predicate_1);
+            bldConstructionCompanyGroup empl_for_add_collection = new bldConstructionCompanyGroup();
+
+            CoreFunctions.AddElementsToCollectionWhithDialogList<bldConstructionCompanyGroup, bldConstructionCompany>
+                (empl_for_add_collection, All_companies,
+               nameablePredicatesCollection,
+              _dialogService,
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes)
+                   {
+                       //UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
+                       //localUnDoReDo.Register(SelectedProject);
+                       //UnDoReDo.UnRegister(SelectedWork);
+                       foreach (bldConstructionCompany company in empl_for_add_collection)
+                       {
+                           bldParticipant participant = new bldParticipant();
+                           participant.ConstructionCompany = company;
+                           bldParticipantRole role  = _buildingUnitsRepository.ParticipantRolesRepository.GetAllAsync().Where(rl => rl.RoleCode == ParticipantRole.NONE).FirstOrDefault();
+                          if(role==null)
+                           {
+                               role = new bldParticipantRole(ParticipantRole.NONE);
+                               role.Name = "Не определено";
+                               role.FullName = "Не определено";
+                               _buildingUnitsRepository.ParticipantRolesRepository.Add(role);
+                            
+                           }
+                           participant.Role = role;
+                           UnDoReDo.Register(participant);
+                           SelectedProject.AddParticipant(participant);
+                       }
+                       SaveCommand.RaiseCanExecuteChanged();
+                       //UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                       //UnDoReDo.Register(SelectedWork);
+                   }
+                   if (result.Result == ButtonResult.No)
+                   {
+                   }
+               },
+              typeof(AddConstructionCompaniesToCollectionFromListDialogView).Name,
+               "Добавить компанию в качестве участника",
+               "Форма добавления участников проекта.",
+               "Список компаний", "");
+        }
+
+        private void OnChangeParticipantsListCommand()
+        {
+           
+        }
+        #region Commands methods
+
+
+        private void OnCreateNewParticipant()
+        {
+         
+            //   
+        }
+
+        #endregion
+
+        #region Window operate methods
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             SaveCommand.RaiseCanExecuteChanged();
@@ -108,7 +207,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             else
                 return false;
         }
-        
         public virtual void OnSave()
         {
             base.OnSave<bldProject>(SelectedProject);
@@ -117,18 +215,31 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             base.OnClose<bldProject>(obj, SelectedProject);
         }
-        #region  INavigationAware realization
-
+        public override void OnWindowClose()
+        {
+            _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+            _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
+        }
         #endregion
 
+
+        #region  INavigationAware realization
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            throw new NotImplementedException();
+            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_project"];
+            if (((bldProject)navigane_message.Object).Id != SelectedProject.Id)
+            {
+
+                return false;
+            }
+            else
+                return true;
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            throw new NotImplementedException();
+
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -142,13 +253,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedProject.ErrorsChanged += RaiseCanExecuteChanged;
                 SelectedParticipantsGroup = SelectedProject.Participants;
                 UnDoReDo.Register(SelectedProject);
-                foreach (bldParticipant  participant in SelectedProject.Participants)
+                foreach (bldParticipant participant in SelectedProject.Participants)
                     UnDoReDo.Register(participant);
                 Title = $"{SelectedProject.Code} {SelectedProject.ShortName}";
 
 
             }
         }
+        #endregion
+
         #region DataGrid events
         private void OnDataGridSelectionChanged(object participants)
         {
@@ -168,7 +281,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 RegisterAplicationCommands();
             else
                 UnRegisterAplicationCommands();
-
         }
         private void RegisterAplicationCommands()
         {

@@ -43,7 +43,10 @@ namespace PrismWorkApp.Services.Repositories
         {
             return Context.Set<TEntity>().ToList();
         }
-
+        public IEnumerable<TEntity> GetAllAsync()
+        {
+            return Context.Set<TEntity>().ToList();
+        }
         public void Remove(TEntity entity)
         {
             Context.Set<TEntity>().Remove(entity);

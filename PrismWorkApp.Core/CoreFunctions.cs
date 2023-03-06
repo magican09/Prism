@@ -33,7 +33,7 @@ namespace PrismWorkApp.Core
             return null;
         }
 
-
+        #region Remove from Collections
         public static void RemoveElementFromCollectionWhithDialog<TContainer, T>
                (T element, string element_type_name,
             Action<IDialogResult> elm_erase_action, IDialogService dialogService, Guid current_context_id)
@@ -67,7 +67,6 @@ namespace PrismWorkApp.Core
 
         }
 
-
         public static void RemoveElementWhithDialog<TContainer, T>
              (T element, string element_type_name,
           Action elm_erase_action, IDialogService dialogService)
@@ -98,40 +97,9 @@ namespace PrismWorkApp.Core
             });
 
         }
+        #endregion
 
-        /* public static void AddElementToCollectionWhithDialog<TContainer, T>
-                (TContainer collection, T element, Action elm_add_action, IDialogService dialogService,
-             string element_type_name = "")
-            where TContainer : ICollection<T>
-            where T : INameable, IRegisterable
-         {
-             var dialog_par = new DialogParameters();
-             dialog_par.Add("massege",
-                $"Вы действительно хотите добавить {element_type_name} \"{element.Name }\" ?!");
-             dialog_par.Add("confirm_button_content", "Удалить");
-             dialog_par.Add("refuse_button_content", "Закрыть");
-             string element_name = element.Name;
-
-             dialogService.Show(typeof(ConfirmActionDialog).Name, dialog_par, result =>
-             {
-                 if (result.Result == ButtonResult.Yes)
-                 {
-                     collection.Add(element);
-                     var res_massage = result.Parameters.GetValue<string>("confirm_dialog_param");
-                     var p = new DialogParameters();
-                     p.Add("message", $"{element_type_name.ToUpper()} " +
-                         $"\"{element.Name}\" добавлен!");
-                     dialogService.Show(typeof(MessageDialog).Name, p, (r) => { });
-                     elm_add_action.Invoke();
-                 }
-                 if (result.Result == ButtonResult.No)
-                 {
-                     elm_add_action.Invoke();
-                 }
-             });
-
-         }
-         */
+        #region Confirm actions  
         public static void ConfirmActionOnElementDialog<T>
               (T element, string action_name, string element_type_name,
             string confirm_action_name,
@@ -228,7 +196,9 @@ namespace PrismWorkApp.Core
             });
 
         }
+        #endregion
 
+        #region Element edit fuctions
         public static void EditElementDialog<T>
                    (T element, string element_type_name,
                  Action<IDialogResult> elm_save_action, IDialogService dialogService,
@@ -262,6 +232,9 @@ namespace PrismWorkApp.Core
             });
 
         }
+        #endregion
+
+        #region Add elements to collections
         /// <summary>
         /// Функция для добавления в текущую коллекцию нового объекта или объекта из другой 
         /// коллекции с помощью диалогового окна.
@@ -290,14 +263,10 @@ namespace PrismWorkApp.Core
         {
             TContainer current_collection = new TContainer();
             TContainer common_collection = new TContainer();
-            //CopyObjectReflectionNewInstances(currentCollection, current_collection);
-            //CopyObjectReflectionNewInstances(commonCollection, common_collection);
             current_collection = currentCollection;
-
             common_collection = GetCollectionElementsList<TContainer, T>(commonCollection);
 
-
-            foreach (T elm in current_collection) //Удаляем извременной общей коллекции объекты которые уже есть  редактируемой коллекции
+            foreach (T elm in current_collection) //Удаляем из временной общей коллекции объекты которые уже есть  редактируемой коллекции
             {
                 var obj = common_collection.Where(el => ((IEntityObject)el).Id == ((IEntityObject)elm).Id).FirstOrDefault();
                 if (obj == null)
@@ -306,6 +275,7 @@ namespace PrismWorkApp.Core
                     common_collection.Remove(obj);
             }
             var dialog_par = new DialogParameters();
+
             dialog_par.Add("title", title);
             dialog_par.Add("message", message);
             dialog_par.Add("current_collection_name", currentCollectionName);
@@ -316,38 +286,6 @@ namespace PrismWorkApp.Core
             dialog_par.Add("refuse_button_content", "Закрыть");
             dialog_par.Add("new_object_dialog_name", newObjectDialogName);
             dialog_par.Add("current_context_id", current_context_id);
-            dialogService.ShowDialog(dialogViewName, dialog_par, action);
-        }
-        public static void AddElementsToCollectionWhithDialogList<TContainer, T>
-       (TContainer currentCollection,
-       TContainer commonCollection_all,
-        NameablePredicateObservableCollection<TContainer, T> predicate_collection,
-        IDialogService dialogService, Action<IDialogResult> action,
-           string dialogViewName,
-           string title = "",
-           string message = "",
-           string currentCollectionName = "",
-           string commonCollectionName = "",
-           string confirmButtonContent = "Сохранить"
-           )
-       where TContainer : ICollection<T>, new()
-       where T : class, IEntityObject
-        {
-            TContainer current_collection = new TContainer();
-            TContainer common_collection = new TContainer();
-            current_collection = currentCollection;
-            common_collection = commonCollection_all;
-            var dialog_par = new DialogParameters();
-            dialog_par.Add("title", title);
-            dialog_par.Add("message", message);
-            dialog_par.Add("current_collection_name", currentCollectionName);
-            dialog_par.Add("common_collection_name", commonCollectionName);
-            dialog_par.Add("common_collection", common_collection);
-            dialog_par.Add("current_collection", current_collection);
-            dialog_par.Add("confirm_button_content", confirmButtonContent);
-            dialog_par.Add("refuse_button_content", "Закрыть");
-            dialog_par.Add("predicate_collection", predicate_collection);
-
             dialogService.ShowDialog(dialogViewName, dialog_par, action);
         }
 
@@ -386,15 +324,92 @@ namespace PrismWorkApp.Core
 
             dialogService.ShowDialog(dialogViewName, dialog_par, action);
         }
+        /// <summary>
+        /// Функция для добавления в текущую коллекцию спика объектов или объекта из другой 
+        /// коллекции с помощью диалогового окна.
+        /// </summary>
+        /// <typeparam name="TContainer"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="currentCollection"></param>
+        /// <param name="commonCollection_all"></param>
+        /// <param name="predicate_collection"></param>
+        /// <param name="dialogService"></param>
+        /// <param name="action"></param>
+        /// <param name="dialogViewName"></param>
+        /// <param name="title"></param>
+        /// <param name="message"></param>
+        /// <param name="currentCollectionName"></param>
+        /// <param name="commonCollectionName"></param>
+        /// <param name="confirmButtonContent"></param>
+        public static void AddElementsToCollectionWhithDialogList<TContainer, T>
+       (TContainer currentCollection,
+       TContainer commonCollection_all,
+        NameablePredicateObservableCollection<TContainer, T> predicate_collection,
+        IDialogService dialogService, Action<IDialogResult> action,
+           string dialogViewName,
+           string title = "",
+           string message = "",
+           string currentCollectionName = "",
+           string commonCollectionName = "",
+           string confirmButtonContent = "Сохранить"
+           )
+       where TContainer : ICollection<T>, new()
+       where T : class, IEntityObject
+        {
+            TContainer current_collection = new TContainer();
+            TContainer common_collection = new TContainer();
+            current_collection = currentCollection;
+            common_collection = commonCollection_all;
+            var dialog_par = new DialogParameters();
+            dialog_par.Add("title", title);
+            dialog_par.Add("message", message);
+            dialog_par.Add("current_collection_name", currentCollectionName);
+            dialog_par.Add("common_collection_name", commonCollectionName);
+            dialog_par.Add("common_collection", common_collection);
+            dialog_par.Add("current_collection", current_collection);
+            dialog_par.Add("confirm_button_content", confirmButtonContent);
+            dialog_par.Add("refuse_button_content", "Закрыть");
+            dialog_par.Add("predicate_collection", predicate_collection);
+
+            dialogService.ShowDialog(dialogViewName, dialog_par, action);
+        }
+
         public static TContainer GetCollectionElementsList<TContainer, T>(TContainer input_collection)
-            where TContainer : ICollection<T>, new()
-            where T : INameable
+       where TContainer : ICollection<T>, new()
+       where T : INameable
         {
             TContainer output_collection = new TContainer();
             foreach (T elm in input_collection) //Создаем временную коллекцию для хранения списка элементов общей коллекции 
                 output_collection.Add(elm);
             return output_collection;
         }
+        #endregion
+
+        #region Select elements from collection
+        public static void SelectElementFromCollectionWhithDialog<TContainer, T>(TContainer collection,
+               IDialogService dialogService, Action<IDialogResult> action,
+               string dialogViewName,
+               string title = "",
+               string message = "",
+               string collectionName = "")
+           where TContainer : ICollection<T>
+           where T : class, new()
+        {
+
+            var dialog_par = new DialogParameters();
+            dialog_par.Add("title", title);
+            dialog_par.Add("message", message);
+            dialog_par.Add("current_collection", collection);
+            dialog_par.Add("current_collection_name", collectionName);
+            dialog_par.Add("confirm_button_content", "Добавить");
+            dialog_par.Add("refuse_button_content", "Закрыть");
+            dialogService.ShowDialog(dialogViewName, dialog_par, action);
+
+        }
+        #endregion
+
+        #region Reflection copying functions 
+
         /*  public static void CopyObjectReflectionNewInstances_backup(object sourse, object target, bool objectsTreeCatalogReset = true)
          {
 
@@ -680,7 +695,6 @@ namespace PrismWorkApp.Core
         public static int NavigateParametrDepth { get; set; } = 0;//Глубина навигационного свойства
         public static int InitialRecursive_depth { get; set; } = 0;
         public static int Cicling_recursive_depth { get; set; } = 0;//Глубина рекурсии
-
         public static void SetCiclingObjectsCatalog(object sourse, bool objectsTreeCatalogReset = true)
         {
             if (sourse == null) { return; } //Если источник не инециализирован - выходим
@@ -1761,7 +1775,6 @@ namespace PrismWorkApp.Core
 
             return ParsingId;
         }
-
         public static void GetObjectsCatalog(object obj, Dictionary<Guid, object> catalog) //Добаляет в  каталог дерево всех объектов  внутри объекта 
         {
             var all_props = obj.GetType().GetProperties() //Выбираем все не идексные свойства
@@ -1784,7 +1797,6 @@ namespace PrismWorkApp.Core
             // return result;
         }
         static int recursive_level = 0;
-
         //public static void SetStructureLevels(object obj,ref  StructureLevel up_structure_level , bool reset = true) //Устанваливает все свойства LevelInStructure объектов 
         //{
         //    var all_props = obj.GetType().GetProperties() //Выбираем все не идексные свойства
@@ -2055,33 +2067,6 @@ namespace PrismWorkApp.Core
                 NavigateParametrDepth = 0;
             }
         }
-
-        public static void SelectElementFromCollectionWhithDialog<TContainer, T>(TContainer collection,
-                IDialogService dialogService, Action<IDialogResult> action,
-                string dialogViewName,
-                string title = "",
-                string message = "",
-                string collectionName = "")
-            where TContainer : ICollection<T>
-            where T : class, new()
-        {
-
-            var dialog_par = new DialogParameters();
-            dialog_par.Add("title", title);
-            dialog_par.Add("message", message);
-            dialog_par.Add("current_collection", collection);
-            dialog_par.Add("current_collection_name", collectionName);
-            dialog_par.Add("confirm_button_content", "Добавить");
-            dialog_par.Add("refuse_button_content", "Закрыть");
-            dialogService.ShowDialog(dialogViewName, dialog_par, action);
-
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-
         public static void GetObjectsFullCatalog(object sourse, object target, Dictionary<Guid, TreeObjectInfo> catalog, bool reset = true)
         {
             if (reset) { catalog.Clear(); tree_level = 0; }
@@ -2246,6 +2231,9 @@ namespace PrismWorkApp.Core
 
             }
         }
+        #endregion
+
+
 
     }
 

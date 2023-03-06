@@ -9,7 +9,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Name = "Участники строительства";
         }
-
+        public bldParticipantsGroup(string name)
+        {
+            Name = name;
+        }
         public object Clone()
         {
             return (bldParticipantsGroup)MemberwiseClone();

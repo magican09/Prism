@@ -10,7 +10,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NotMapped]
         public string Name
         {
-            get { return Role.Name; }
+            get {
+                if (Role != null)
+                    return Role.Name;
+                else
+                    return "Не определено";
+            }
             set { }
         }
         private DateTime _startTime;

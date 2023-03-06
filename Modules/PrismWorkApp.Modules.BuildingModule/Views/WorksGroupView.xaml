@@ -74,7 +74,6 @@
                                     <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-
                             <DataGrid.ContextMenu>
                                 <ContextMenu ItemsSource="{Binding Data.WorksContextMenuCommands, Source={StaticResource Proxy}}">
                                     <ContextMenu.ItemTemplate>
@@ -84,6 +83,7 @@
                                         </DataTemplate>
                                     </ContextMenu.ItemTemplate>
                                 </ContextMenu>
+                                
                             </DataGrid.ContextMenu>
                             <DataGrid.Columns>
                                 <DataGridTextColumn  Header="Код"   Width="Auto"

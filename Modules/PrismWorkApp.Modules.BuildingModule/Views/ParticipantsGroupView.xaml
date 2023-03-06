@@ -4,14 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views"
-            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-              mc:Ignorable="d" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d" 
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="950" d:DesignWidth="1150">
     <Grid   ShowGridLines="False">
         <Grid.Resources>
-
+            <loc_core:BindingProxy x:Key="Proxy" Data="{Binding}" />
+            
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.05*"/>
@@ -57,16 +59,29 @@
                                 <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu ItemsSource="{Binding Data.ParticipantsContextMenuCommands, Source={StaticResource Proxy}}">
+                                <ContextMenu.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type MenuItem}">
+                                        <MenuItem Header="{Binding Name}" Command="{Binding}"
+                                                                      CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
+                                    </DataTemplate>
+                                </ContextMenu.ItemTemplate>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Роль" Width="Auto" Binding="{Binding Role.Name}"/>
-                            <DataGridTextColumn Header="Наименование ЮЛ (ФЛ)" Binding="{Binding ConstructionCompany.Name}"/>
-                            <DataGridTextColumn Header="ОГРН (ОГРНИП)" Binding="{Binding ConstructionCompany.OGRN}"/>
-                            <DataGridTextColumn Header="ИНН" Binding="{Binding ConstructionCompany.INN}"/>
-                            <DataGridTextColumn Header="Место нахождения юрлица, Адрес места жительства для ИП" Binding="{Binding ConstructionCompany.Address}"/>
-                            <DataGridTextColumn Header="Тел/Факс" Binding="{Binding ConstructionCompany.Contacts}"/>
-                            <DataGridTextColumn Header="Организация, выдавшая СРО" Binding="{Binding ConstructionCompany.SROIssuingCompany.Name}"/>
-                            <DataGridTextColumn Header="ОГРН организации, выдавшей СРО" Binding="{Binding ConstructionCompany.SROIssuingCompany.OGRN}"/>
-                            <DataGridTextColumn Header="ИНН организации, выдавшей СРО" Binding="{Binding ConstructionCompany.SROIssuingCompany.INN}"/>
+                            <DataGridTextColumn Header="Роль" Width="Auto" Binding="{Binding Role.Name}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Начало" Binding="{Binding Path=StartTime,Mode=TwoWay, StringFormat=d,ConverterCulture=ru}"/>
+                            <DataGridTextColumn Header="Окончание" Binding="{Binding EndTime}"/>
+                            <DataGridTextColumn Header="Наименование ЮЛ (ФЛ)" Binding="{Binding ConstructionCompany.Name}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="ОГРН (ОГРНИП)" Binding="{Binding ConstructionCompany.OGRN}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="ИНН" Binding="{Binding ConstructionCompany.INN}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Место нахождения юрлица, Адрес места жительства для ИП" Binding="{Binding ConstructionCompany.Address}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Тел/Факс" Binding="{Binding ConstructionCompany.Contacts}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Организация, выдавшая СРО" Binding="{Binding ConstructionCompany.SROIssuingCompany.Name}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="ОГРН организации, выдавшей СРО" Binding="{Binding ConstructionCompany.SROIssuingCompany.OGRN}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="ИНН организации, выдавшей СРО" Binding="{Binding ConstructionCompany.SROIssuingCompany.INN}" IsReadOnly="True"/>
 
 
 

@@ -3,11 +3,12 @@
 
     public enum ParticipantRole
     {
-        DEVELOPER = 0,
+        NONE = 0,
+        DEVELOPER,
         GENERAL_CONTRACTOR,
         DISIGNER,
         BUILDER,
-        NONE
+       
     }
     public enum RoleOfResponsible
     {

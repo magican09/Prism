@@ -98,12 +98,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
-        private IApplicationCommands _applicationCommands;
-        public IApplicationCommands ApplicationCommands
-        {
-            get { return _applicationCommands; }
-            set { SetProperty(ref _applicationCommands, value); }
-        }
+       
         //ObservableCollection<GanttChartItem> items = new ObservableCollection<GanttChartItem>
         //{
         //    new GanttChartItem { Content = "Task 1" },
@@ -121,6 +116,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             UnDoReDo = new UnDoReDoSystem();
             // DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
+            ApplicationCommands = applicationCommands;
+
+
+            #region Commands Init
+            DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
 
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedConstruction);
@@ -129,13 +130,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                      () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-            #region Commands Init
-            _applicationCommands = applicationCommands;
-
-
-            DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
-            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
-
+            
             RemoveNextWorkCommand = new NotifyCommand<object>(OnRemoveNextWork);
             RemoveNextWorkCommand.Name = "Удалить";
             AddNextWorkCommand = new NotifyCommand<object>(OnAddNextWork);
@@ -176,6 +171,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveExecutiveSchemeCommand.Name = "Удалить исполнительную схему";
             ExecutiveSchemesContextMenuCommands.Add(AddExecutiveSchemesCommand);
             ExecutiveSchemesContextMenuCommands.Add(RemoveExecutiveSchemeCommand);
+         
             #region Work Context Menu
             CreateNewWorkCommand = new NotifyCommand(OnAddNewWork);
             CreateNewWorkCommand.Name = "Создать новую работу";
@@ -183,7 +179,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             AddCreatedFromTemplateWorkCommand.Name = "Создать на основании";
             DeleteWorkCommand = new NotifyCommand(OnDeleteWork, () => SelectedWorks.Count > 0).ObservesPropertyChangedEvent(SelectedWorks);
             DeleteWorkCommand.Name = "Удалить";
-            MoveWorksToAnotherConatructionCommand = new NotifyCommand(OnMoveWorksToAnotherConatruction, () => { return SelectedWorks.Count > 0; }).ObservesProperty(() => SelectedWorks);
+
+            MoveWorksToAnotherConatructionCommand = new NotifyCommand(OnMoveWorksToAnotherConatruction, () =>  SelectedWorks.Count > 0).ObservesPropertyChangedEvent(SelectedWorks);
             MoveWorksToAnotherConatructionCommand.Name = "Переместить в другую консрукцию";
             AddWorksFromAnotherConatructionCommand = new NotifyCommand(OnAddWorksFromAnotherConatruction);
             AddWorksFromAnotherConatructionCommand.Name = "Добавить из другой консрукции";
@@ -196,7 +193,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             WorksContextMenuCommands.Add(AddWorksFromAnotherConatructionCommand);
             WorksContextMenuCommands.Add(DeleteWorkCommand);
             #endregion
+
             #endregion
+       
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
@@ -204,8 +203,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             #region Ribbon Init
 
             #endregion
-            IsActiveChanged += OnActiveChanged;
 
+            ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+            ApplicationCommands.MoveWorkCommand.RegisterCommand(MoveWorksToAnotherConatructionCommand);
+            ApplicationCommands.SaveExecutiveDocumentsCommand.RegisterCommand(SaveWorksExecutiveDocumentationCommand);
+            ApplicationCommands.AddWorkCommand.RegisterCommand(AddWorksFromAnotherConatructionCommand);
+            ApplicationCommands.DeleteWorkCommand.RegisterCommand(DeleteWorkCommand);
+            ApplicationCommands.CreateWorkFromTemplateCommand.RegisterCommand(AddCreatedFromTemplateWorkCommand);
+            ApplicationCommands.CreateWorkCommand.RegisterCommand(CreateNewWorkCommand);
 
         }
 
@@ -826,15 +833,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public override void OnWindowClose()
         {
-            _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
-            _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
-            _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
-            _applicationCommands.CreateWorkCommand.UnregisterCommand(CreateNewWorkCommand);
-            _applicationCommands.CreateWorkFromTemplateCommand.UnregisterCommand(AddCreatedFromTemplateWorkCommand);
-            _applicationCommands.AddWorkCommand.UnregisterCommand(AddWorksFromAnotherConatructionCommand);
-            _applicationCommands.DeleteWorkCommand.UnregisterCommand(DeleteWorkCommand);
-            _applicationCommands.MoveWorkCommand.UnregisterCommand(MoveWorksToAnotherConatructionCommand);
-            _applicationCommands.SaveExecutiveDocumentsCommand.UnregisterCommand(SaveWorksExecutiveDocumentationCommand);
+            ApplicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+            ApplicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
+            ApplicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
+            ApplicationCommands.CreateWorkCommand.UnregisterCommand(CreateNewWorkCommand);
+            ApplicationCommands.CreateWorkFromTemplateCommand.UnregisterCommand(AddCreatedFromTemplateWorkCommand);
+            ApplicationCommands.AddWorkCommand.UnregisterCommand(AddWorksFromAnotherConatructionCommand);
+            ApplicationCommands.DeleteWorkCommand.UnregisterCommand(DeleteWorkCommand);
+            ApplicationCommands.MoveWorkCommand.UnregisterCommand(MoveWorksToAnotherConatructionCommand);
+            ApplicationCommands.SaveExecutiveDocumentsCommand.UnregisterCommand(SaveWorksExecutiveDocumentationCommand);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -871,39 +878,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-        #region on Activate event  
-        private void OnActiveChanged(object sender, EventArgs e)
-        {
-            if (IsActive)
-                RegisterAplicationCommands();
-            else
-                UnRegisterAplicationCommands();
-
-        }
-        private void RegisterAplicationCommands()
-        {
-            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
-            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
-            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-            _applicationCommands.MoveWorkCommand.RegisterCommand(MoveWorksToAnotherConatructionCommand);
-            _applicationCommands.SaveExecutiveDocumentsCommand.RegisterCommand(SaveWorksExecutiveDocumentationCommand);
-            _applicationCommands.AddWorkCommand.RegisterCommand(AddWorksFromAnotherConatructionCommand);
-            _applicationCommands.DeleteWorkCommand.RegisterCommand(DeleteWorkCommand);
-            _applicationCommands.CreateWorkFromTemplateCommand.RegisterCommand(AddCreatedFromTemplateWorkCommand);
-            _applicationCommands.CreateWorkCommand.RegisterCommand(CreateNewWorkCommand);
-        }
-        private void UnRegisterAplicationCommands()
-        {
-            _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
-            _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
-            _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
-            _applicationCommands.CreateWorkCommand.UnregisterCommand(CreateNewWorkCommand);
-            _applicationCommands.CreateWorkFromTemplateCommand.UnregisterCommand(AddCreatedFromTemplateWorkCommand);
-            _applicationCommands.AddWorkCommand.UnregisterCommand(AddWorksFromAnotherConatructionCommand);
-            _applicationCommands.DeleteWorkCommand.UnregisterCommand(DeleteWorkCommand);
-            _applicationCommands.MoveWorkCommand.UnregisterCommand(MoveWorksToAnotherConatructionCommand);
-            _applicationCommands.SaveExecutiveDocumentsCommand.UnregisterCommand(SaveWorksExecutiveDocumentationCommand);
-        }
-        #endregion
+        
     }
 }

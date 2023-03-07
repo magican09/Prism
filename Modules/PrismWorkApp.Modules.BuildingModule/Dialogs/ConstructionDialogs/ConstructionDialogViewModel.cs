@@ -79,7 +79,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         public void OnDialogOpened(IDialogParameters parameters)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
-            CommonUnDoReDo = (UnDoReDoSystem)parameters.GetValue<object>("undo_redo");
+         //   CommonUnDoReDo = (UnDoReDoSystem)parameters.GetValue<object>("undo_redo");
             if (navigane_message != null)
             {
                 ResivedConstruction = (bldConstruction)navigane_message.Object;

@@ -1,4 +1,5 @@
 ﻿using Prism;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
 using System.Runtime.CompilerServices;
@@ -70,7 +71,7 @@ namespace PrismWorkApp.Core
                 OnIsActiveChanged();
             }
         }
-
+       
 
         public virtual void OnClose(object obj)
         {
@@ -81,12 +82,13 @@ namespace PrismWorkApp.Core
         {
             //UpdateCommand.IsActive = IsActive; //set the command as active
             IsActiveChanged?.Invoke(this, new EventArgs()); //invoke the event for all listeners
+          
         }
         public virtual void OnSave()
         {
 
         }
-
+       
         //public virtual void RaiseCanExecuteChanged(object sender, EventArgs e)
         //{
 

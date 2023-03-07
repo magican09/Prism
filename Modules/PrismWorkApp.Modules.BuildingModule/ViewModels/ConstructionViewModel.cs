@@ -85,7 +85,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
               IUnDoReDoSystem unDoReDo)
         {
             _applicationCommands = applicationCommands;
-            CommonUnDoReDo = unDoReDo as UnDoReDoSystem;
+            //CommonUnDoReDo = unDoReDo as UnDoReDoSystem;
             UnDoReDo = new UnDoReDoSystem();
 
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);

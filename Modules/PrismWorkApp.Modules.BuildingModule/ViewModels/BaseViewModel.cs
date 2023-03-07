@@ -1,9 +1,14 @@
-﻿using Prism.Regions;
+﻿using Prism;
+using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -19,13 +24,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _keepAlive; }
             set { _keepAlive = value; }
         }
-        protected IUnDoReDoSystem _commonUnDoReDo;
-        public IUnDoReDoSystem CommonUnDoReDo
-        {
-            get { return _commonUnDoReDo; }
-            set { SetProperty(ref _commonUnDoReDo, value); }
-        }
+        //protected IUnDoReDoSystem _commonUnDoReDo;
+        //public IUnDoReDoSystem CommonUnDoReDo
+        //{
+        //    get { return _commonUnDoReDo; }
+        //    set { SetProperty(ref _commonUnDoReDo, value); }
+        //}
 
+        private IApplicationCommands _applicationCommands;
+        public IApplicationCommands ApplicationCommands
+        {
+            get { return _applicationCommands; }
+            set { SetProperty(ref _applicationCommands, value); }
+        }
         protected IUnDoReDoSystem _unDoReDo;
         public IUnDoReDoSystem UnDoReDo
         {
@@ -34,7 +45,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public BaseViewModel()
         {
-
+           // IsActiveChanged += OnActiveChanged;
 
         }
 
@@ -173,5 +184,37 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
           }
           */
+        #region on Activate event  
+        //private void OnActiveChanged(object sender, EventArgs e)
+        //{
+        //    if (IsActive)
+        //        RegisterAplicationCommands();
+        //    else
+        //        UnRegisterAplicationCommands();
+
+        //}
+        //public virtual void RegisterAplicationCommands()
+        //{
+        //    //ObservableCollection<INotifyCommand> undo_redo_collection =  GetUnDoReDoCommandObjects(_applicationCommands);
+
+        //}
+        //public virtual  void UnRegisterAplicationCommands()
+        //{
+
+        //}
+        //private ObservableCollection<INotifyCommand> GetUnDoReDoCommandObjects(object common_command_object)
+        //{
+        //    ObservableCollection < INotifyCommand >  undo_redo_collection = new ObservableCollection<INotifyCommand>();
+
+        //   // var file_infos = common_command_object.GetType().GetProperties();
+
+        //  //  foreach(PropertyInfo prop_info in file_infos)
+        //    {
+              
+        //    }
+
+        //    return undo_redo_collection;
+        //}
+        #endregion
     }
 }

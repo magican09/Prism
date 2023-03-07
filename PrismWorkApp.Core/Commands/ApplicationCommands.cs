@@ -20,27 +20,27 @@
         {
             get { return _saveAllCommand; }
         }
-        private NotifyCompositeCommand _unDoCommand = new NotifyCompositeCommand();
+        private NotifyCompositeCommand _unDoCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand UnDoCommand
         {
             get { return _unDoCommand; }
         }
-        private NotifyCompositeCommand _reDoCommand = new NotifyCompositeCommand();
+        private NotifyCompositeCommand _reDoCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand ReDoCommand
         {
             get { return _reDoCommand; }
         }
-        private NotifyCompositeCommand _createWorkCommand = new NotifyCompositeCommand();
+        private NotifyCompositeCommand _createWorkCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand CreateWorkCommand
         {
             get { return _createWorkCommand; }
         }
-        private NotifyCompositeCommand _createWorkFromTemplateCommand = new NotifyCompositeCommand();
+        private NotifyCompositeCommand _createWorkFromTemplateCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand CreateWorkFromTemplateCommand
         {
             get { return _createWorkFromTemplateCommand; }
         }
-        private NotifyCompositeCommand _deleteWorkCommand = new NotifyCompositeCommand();
+        private NotifyCompositeCommand _deleteWorkCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand DeleteWorkCommand
         {
             get { return _deleteWorkCommand; }
@@ -50,12 +50,12 @@
         //{
         //    get { return _saveExecutionDocumentationCommand; }
         //}
-        private NotifyCompositeCommand _moveWorkCommand = new NotifyCompositeCommand();
+        private NotifyCompositeCommand _moveWorkCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand MoveWorkCommand
         {
             get { return _moveWorkCommand; }
         }
-        private NotifyCompositeCommand _addWorkCommand = new NotifyCompositeCommand();
+        private NotifyCompositeCommand _addWorkCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand AddWorkCommand
         {
             get { return _addWorkCommand; }
@@ -65,7 +65,7 @@
         {
             get { return _saveExecutiveDocumentsCommand; }
         }
-        private NotifyCompositeCommand _loadMaterialsFromAccessCommand = new NotifyCompositeCommand();
+        private NotifyCompositeCommand _loadMaterialsFromAccessCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand LoadMaterialsFromAccessCommand
         {
             get { return _loadMaterialsFromAccessCommand; }

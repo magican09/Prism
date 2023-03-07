@@ -145,20 +145,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand RemoveResponsibleEmployeeCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
-        private IApplicationCommands _applicationCommands;
-        public IApplicationCommands ApplicationCommands
-        {
-            get { return _applicationCommands; }
-            set { SetProperty(ref _applicationCommands, value); }
-        }
+     
 
 
         public WorkViewModel(IDialogService dialogService,
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
             UnDoReDo = new UnDoReDoSystem();
+
+            _dialogService = dialogService;
+            _buildingUnitsRepository = buildingUnitsRepository;
+            _regionManager = regionManager;
+            
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
-            _applicationCommands = applicationCommands;
+            ApplicationCommands = applicationCommands;
 
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                  .ObservesProperty(() => SelectedConstruction);
@@ -167,9 +167,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                      () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
-            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
-            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+   
 
             RemovePreviousWorkCommand = new NotifyCommand(OnRemovePreviousWork,
                                         () => SelectedPreviousWork != null)
@@ -200,10 +198,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             SaveAOSRsToWordCommand = new NotifyCommand(OnSaveAOSRsToWord);
 
-            _dialogService = dialogService;
-            _buildingUnitsRepository = buildingUnitsRepository;
-            _regionManager = regionManager;
-
+           
+            ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
         }
 
         private void OnRemoveResponsibleEmployee()
@@ -593,8 +591,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }, _dialogService, Id);
         }
 
-
-
         private bool CanSave()
         {
             if (SelectedWork != null)
@@ -617,9 +613,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public override void OnWindowClose()
         {
-            _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
-            _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
-            _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
+            ApplicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+            ApplicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
+            ApplicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -664,7 +660,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
+        //#region RegisterAplicationCommands and UnRegisterAplicationCommands
+        //public override void RegisterAplicationCommands()
+        //{
 
+        //    base.RegisterAplicationCommands();
+        //}
+        //public override void UnRegisterAplicationCommands()
+        //{
+        //    base.UnRegisterAplicationCommands();
+        //}
+        //#endregion
 
     }
 }

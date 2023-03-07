@@ -163,6 +163,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         private IBindableBase _parent;
         [NotMapped]
+        [NavigateProperty]
         public IBindableBase Parent
         {
             get { return _parent; }
@@ -178,6 +179,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         private ObservableCollection<IBindableBase> _children = new ObservableCollection<IBindableBase>();
         [NotMapped]
+        [NavigateProperty]
         public ObservableCollection<IBindableBase> Children
         {
             get { return _children; }

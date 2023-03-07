@@ -249,6 +249,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             bldWork new_work = (bldWork)this.MemberwiseClone();
             new_work.Id = Guid.Empty;
             var prop_infoes = new_work.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+         
             foreach (PropertyInfo prop_info in prop_infoes)
             {
                 if (!prop_info.PropertyType.FullName.Contains("System"))
@@ -289,8 +290,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _documentation, value); }
         }
 
-
-
         public void SaveAOSRsToWord(string folderPath)
         {
             //if (AOSRDocuments.Count > 1)
@@ -305,7 +304,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             //}
             if (AOSRDocument != null) AOSRDocument.SaveAOSRToWord(folderPath);
         }
-
 
         #region EditMethods
         public void RemovePreviousWork(bldWork work)

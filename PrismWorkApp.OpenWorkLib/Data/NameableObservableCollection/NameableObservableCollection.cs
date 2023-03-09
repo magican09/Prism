@@ -7,12 +7,13 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
 
-    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableOservableCollection<TEntity> where TEntity : IEntityObject
+    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableOservableCollection<TEntity>,ICloneable where TEntity : IEntityObject
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
@@ -69,12 +70,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #endregion
         private Guid _id = Guid.NewGuid();
+        [CreateNewWhenCopy]
         public Guid Id
         {
             get { return _id; }
             set { SetProperty(ref _id, value); }
         }
         private Guid _storedId;
+        [CreateNewWhenCopy]
         public Guid StoredId
         {
             get { return _storedId; }
@@ -196,6 +199,59 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
             return obj_prop_val;
         }
+
+        public object Clone()
+        {
+           IList new_collection =(IList) Activator.CreateInstance(this.GetType());
+         //  new_collection = (NameableObservableCollection<TEntity>)this.MemberwiseClone();
+           
+            var prop_infoes = new_collection.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            foreach (PropertyInfo prop_info in prop_infoes)
+            {
+                var prop_val = prop_info.GetValue(new_collection);
+                var member_info = this.GetType().GetMember(prop_info.Name);
+                object[] no_copy__attributes = member_info[0].GetCustomAttributes(typeof(CreateNewWhenCopyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
+                object[] navigate__attributes = member_info[0].GetCustomAttributes(typeof(NavigatePropertyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
+
+                if (!prop_info.PropertyType.FullName.Contains("System"))
+                {
+                    if (prop_val != null)
+                    {
+                                      if (no_copy__attributes.Length == 0 && navigate__attributes.Length == 0) //Если объяет свойство не навигационный и без запрета накопирование  
+                        {
+                            if (prop_val is ICloneable clonable_prop_val)
+                                prop_info.SetValue(new_collection, clonable_prop_val.Clone());
+                            else
+                                prop_info.SetValue(new_collection, prop_val);
+
+                        }
+                        if (no_copy__attributes.Length > 0 && navigate__attributes.Length == 0) //Если стоит атрибут "создать новый при копировании"
+                        {
+                            prop_val = null;
+                            prop_val = Activator.CreateInstance(prop_info.PropertyType);
+                            prop_info.SetValue(new_collection, prop_val);
+                        }
+                        if (navigate__attributes.Length > 0) //Если свойство навигационное 
+                        {
+                            prop_val = null;
+                            prop_info.SetValue(new_collection, prop_val);
+                        }
+                    }
+                    else   
+                        if (no_copy__attributes.Length == 0)
+                            prop_info.SetValue(new_collection, prop_val);
+                    
+                }
+            }
+
+            foreach(TEntity element in this)
+            {
+                new_collection.Add(element);
+            }
+             ((IKeyable)new_collection).Id = Guid.Empty;
+            return new_collection;
+        }
+
         private bool _isVisible;
         public bool IsVisible
         {

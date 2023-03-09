@@ -7,12 +7,13 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public abstract class BindableBase : IBindableBase, IEntityObject
+    public abstract class BindableBase : IBindableBase, IEntityObject, ICloneable
     {
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -27,12 +28,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
             UnDoReDoCommandCreated.Invoke(this, new UnDoReDoCommandCreateEventsArgs(command));
         }
         private Guid _id;
+        [CreateNewWhenCopy]
         public Guid Id
         {
             get { return _id; }
             set { SetProperty(ref _id, value); }
         }
         private Guid _storedId;
+        [CreateNewWhenCopy]
         public Guid StoredId
         {
             get { return _storedId; }
@@ -89,6 +92,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             else
                 return null;
         }
+        [CreateNewWhenCopy]
         public bool HasErrors
         {
             get { return _errors.Count > 0; }
@@ -171,10 +175,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
 
                 SetProperty(ref _parent, value);
-                if (_parent!=null && !_parent.Children.Contains(_parent)) _parent.Children.Add(this);
+                if (_parent != null && !_parent.Children.Contains(_parent)) _parent.Children.Add(this);
                 //foreach (IBindableBase elm in Children)
                 //    if(!Children.Contains(_parent)) elm.Parent = _parent;
-                  
+
             }
         }
         private ObservableCollection<IBindableBase> _children = new ObservableCollection<IBindableBase>();
@@ -186,6 +190,51 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { _children = value; }
         }
 
+        public virtual object Clone()
+        {
+            BindableBase new_object = (BindableBase)Activator.CreateInstance(this.GetType());
+           // new_object =(BindableBase) this.MemberwiseClone();
+            new_object.Id = Guid.Empty;
+            var prop_infoes = new_object.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            foreach (PropertyInfo prop_info in prop_infoes)
+            {
+                var prop_val = prop_info.GetValue(this);
+                var member_info = this.GetType().GetMember(prop_info.Name);
+                object[] no_copy__attributes = member_info[0].GetCustomAttributes(typeof(CreateNewWhenCopyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
+                object[] navigate__attributes = member_info[0].GetCustomAttributes(typeof(NavigatePropertyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
+
+                if (!prop_info.PropertyType.FullName.Contains("System"))
+                {
+                    if (prop_val != null)
+                    {
+                        if (no_copy__attributes.Length == 0 && navigate__attributes.Length == 0) //Если объяет свойство не навигационный и без запрета накопирование  
+                        {
+                            if (prop_val is ICloneable clonable_prop_val)
+                                prop_info.SetValue(new_object, clonable_prop_val.Clone());
+                            else
+                                prop_info.SetValue(new_object, prop_val);
+                        }
+                        if (no_copy__attributes.Length > 0 && navigate__attributes.Length == 0) //Если стоит атрибут "создать новый при копировании"
+                        {
+                            prop_val = null;
+                            prop_val = Activator.CreateInstance(prop_info.PropertyType);
+                            prop_info.SetValue(new_object, prop_val);
+                        }
+                        if (navigate__attributes.Length > 0) //Если свойство навигационное 
+                        {
+                            prop_val = null;
+                            prop_info.SetValue(new_object, prop_val);
+                        }
+                    }
+                }
+                else
+                    if (no_copy__attributes.Length == 0)
+                          prop_info.SetValue(new_object, prop_val);
+
+
+            }
+            return new_object;
+        }
     }
 
 

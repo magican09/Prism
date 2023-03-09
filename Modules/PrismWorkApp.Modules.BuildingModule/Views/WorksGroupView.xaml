@@ -92,6 +92,10 @@
                                                      Binding = "{Binding StartTime, ConverterCulture=ru, StringFormat=d}" IsReadOnly="False" />
                                 <DataGridTextColumn  Header="Дата завершения"   Width="Auto"
                                                      Binding = "{Binding EndTime, ConverterCulture=ru, StringFormat=d}" IsReadOnly="False"/>
+                                <DataGridTextColumn  Header="№АОСР"   Width="Auto"
+                                                     Binding = "{Binding Code}" />
+                                <DataGridTextColumn  Header="Дата АОСР"   Width="Auto"
+                                                     Binding = "{Binding AOSRDocument.RegId}" IsReadOnly="False"/>
                                 <DataGridTextColumn  Header="Наименование работы"   Width="Auto"
                                                      Binding = "{Binding Name}" IsReadOnly="False" />
                                 <DataGridTextColumn  Header="Отметки"   Width="Auto"

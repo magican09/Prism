@@ -1859,24 +1859,7 @@ namespace PrismWorkApp.Core
         //    recursive_level--;
 
         //}
-        public static ObservableCollection<PropertyInfo> GetNavigateProperties(object obj)//Возращает всспиок навигационных свойств объекта 
-        {
-            var target_props = obj.GetType().GetProperties() //Выбираем все не идексные свойства
-                   .Where(p => p.GetIndexParameters().Length == 0);
-            ObservableCollection<PropertyInfo> result = new ObservableCollection<PropertyInfo>();
-            foreach (PropertyInfo prop_info in target_props)
-            {
-                var results = new List<ValidationResult>();
-                var context_obj = new ValidationContext(obj);
-                bool obj_validate_result = false;
-                if (!Validator.TryValidateObject(obj, context_obj, results, true))
-                    obj_validate_result = results?[0]?.MemberNames?.FirstOrDefault() == prop_info?.Name;
-
-                if (obj_validate_result) result.Add(prop_info);
-            }
-            return result;
-        }
-
+  
         private static Dictionary<Guid, object> SetNavigatePropsToNullInTreeObjectsTreeMetaData { get; set; } = new Dictionary<Guid, object>();
         public static void SetNavigatePropsToNullInTree(object obj, string navigatePropName, bool catalogTreeReset = true)
         {
@@ -2156,6 +2139,24 @@ namespace PrismWorkApp.Core
                 //  catalog.Clear();
             }
         }
+        #region Navigate property functions
+        public static ObservableCollection<PropertyInfo> GetNavigateProperties(object obj)//Возращает всспиок навигационных свойств объекта 
+        {
+            var target_props = obj.GetType().GetProperties() //Выбираем все не идексные свойства
+                   .Where(p => p.GetIndexParameters().Length == 0);
+            ObservableCollection<PropertyInfo> result = new ObservableCollection<PropertyInfo>();
+            foreach (PropertyInfo prop_info in target_props)
+            {
+                var results = new List<ValidationResult>();
+                var context_obj = new ValidationContext(obj);
+                bool obj_validate_result = false;
+                if (!Validator.TryValidateObject(obj, context_obj, results, true))
+                    obj_validate_result = results?[0]?.MemberNames?.FirstOrDefault() == prop_info?.Name;
+
+                if (obj_validate_result) result.Add(prop_info);
+            }
+            return result;
+        }
         public static void GetNavigatePropertyUpTree(object obj, Dictionary<Guid, TreeObjectInfo> result_ctalog, bool reset = true) //Возращает дерево навигационных свойсв объекта
         {
             // int tree_level = 0;
@@ -2231,6 +2232,7 @@ namespace PrismWorkApp.Core
 
             }
         }
+        #endregion
         #endregion
 
 

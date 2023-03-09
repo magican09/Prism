@@ -1,6 +1,7 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -17,12 +18,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get { return _date; }
             set { SetProperty(ref _date, value); }
-        }
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-            set { SetProperty(ref _name, value); }
         }
         private string _shortName;
         public string ShortName
@@ -118,12 +113,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _isDone, value); }
         }
         private bldWorksGroup _previousWorks = new bldWorksGroup("Предыдущие работы");
+        [CreateNewWhenCopy]
         public bldWorksGroup PreviousWorks
         {
             get { return _previousWorks; }
             set { SetProperty(ref _previousWorks, value); }
         }
         private bldWorksGroup _nextWorks = new bldWorksGroup("Последующие работы");
+        [CreateNewWhenCopy]
         public bldWorksGroup NextWorks
         {
             get { return _nextWorks; }
@@ -148,10 +145,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
         //    set { SetProperty(ref _aOSRDocuments, value); }
         //}
         private bldAOSRDocument _aOSRDocument;
+
+        [CreateNewWhenCopy]
         public bldAOSRDocument AOSRDocument
         {
             get { return _aOSRDocument; }
-            set { SetProperty(ref _aOSRDocument, value); }
+            set { SetProperty(ref _aOSRDocument, value); 
+                if(!ExecutiveDocumentation.AOSRDocuments.Contains(AOSRDocument))
+                    ExecutiveDocumentation.AOSRDocuments.Add(AOSRDocument); }
         }
         private bldProjectDocumentsGroup _projectDocuments = new bldProjectDocumentsGroup("Рабочая документация");
         public bldProjectDocumentsGroup ProjectDocuments
@@ -167,6 +168,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
         private bldWorkExecutiveDocumentation _executiveDocumentation = new bldWorkExecutiveDocumentation();
+          [CreateNewWhenCopy]
         public bldWorkExecutiveDocumentation? ExecutiveDocumentation
         {
             get
@@ -243,29 +245,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 foreach (bldDocument document in e.OldItems)
                     ExecutiveDocumentation.LaboratoryReports.Remove(document as bldLaboratoryReport);
         }
-
-        public object Clone()
-        {
-            bldWork new_work = (bldWork)this.MemberwiseClone();
-            new_work.Id = Guid.Empty;
-            var prop_infoes = new_work.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
-         
-            foreach (PropertyInfo prop_info in prop_infoes)
-            {
-                if (!prop_info.PropertyType.FullName.Contains("System"))
-                {
-                    var prop_val = prop_info.GetValue(new_work);
-
-                    if (prop_val != null)
-                    {
-                        prop_val = null;
-                        prop_val = Activator.CreateInstance(prop_info.PropertyType);
-                        prop_info.SetValue(new_work, prop_val);
-                    }
-                }
-            }
-            return new_work;
-        }
+       
+        //public static T GetAttribute<T>(object value, string memberName="") where T : Attribute
+        //{
+        //    var type = value.GetType();
+        //    var memberInfo = type.GetMember(memberName);
+        //    var attributes = memberInfo[0].GetCustomAttributes(typeof(T), false);
+        //    return (T)attributes.FirstOrDefault();
+        //}
         //private bldDocument _documentation = new bldDocument();
         //[NotMapped]
         //public bldDocument Documentation

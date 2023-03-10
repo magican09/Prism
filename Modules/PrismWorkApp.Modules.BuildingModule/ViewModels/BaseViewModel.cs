@@ -1,14 +1,10 @@
-﻿using Prism;
-using Prism.Regions;
+﻿using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reflection;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -45,7 +41,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public BaseViewModel()
         {
-           // IsActiveChanged += OnActiveChanged;
+            // IsActiveChanged += OnActiveChanged;
 
         }
 
@@ -210,7 +206,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         //  //  foreach(PropertyInfo prop_info in file_infos)
         //    {
-              
+
         //    }
 
         //    return undo_redo_collection;

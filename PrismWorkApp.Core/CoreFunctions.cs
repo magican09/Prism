@@ -1859,7 +1859,7 @@ namespace PrismWorkApp.Core
         //    recursive_level--;
 
         //}
-  
+
         private static Dictionary<Guid, object> SetNavigatePropsToNullInTreeObjectsTreeMetaData { get; set; } = new Dictionary<Guid, object>();
         public static void SetNavigatePropsToNullInTree(object obj, string navigatePropName, bool catalogTreeReset = true)
         {

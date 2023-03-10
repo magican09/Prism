@@ -176,7 +176,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             UnDoReDo = new UnDoReDoSystem();
             CloseDialogCommand = new NotifyCommand(CloseDialog);
             ConfirmDialogCommand = new NotifyCommand<object>(ConfirmDialog);
-          
+
             CreateNewElementCommand = new NotifyCommand(OnCreateNewElement);
             CreateElementOnPatternInstanceCommand = new NotifyCommand(OnCreateElementOnPatternInstance, CanCreateElementOnPatternInstance)
                       .ObservesProperty(() => SelectedElement);
@@ -185,7 +185,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             SortingCommand = new NotifyCommand(OnSortingCommand, CanSorting)
            .ObservesProperty(() => SelectedPredicate);
             FilteredElementCommand = new NotifyCommand<object>(OnFilteredElement);
-          
+
             _dialogService = dialogService;
         }
 
@@ -405,8 +405,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             CurrentCollectionName = parameters.GetValue<string>("current_collection_name");
             CommonCollection = (TConteiner)parameters.GetValue<object>("common_collection");
             CurrentCollection = (TConteiner)parameters.GetValue<object>("current_collection");
-            Refuse = parameters.GetValue<string>("refuse_button_content"); 
-             Confirm = parameters.GetValue<string>("confirm_button_content");
+            Refuse = parameters.GetValue<string>("refuse_button_content");
+            Confirm = parameters.GetValue<string>("confirm_button_content");
             NewObjectDialogName = parameters.GetValue<string>("new_object_dialog_name");
             PredicateCollection =
             parameters.GetValue<NameablePredicateObservableCollection<TConteiner, T>>("predicate_collection");
@@ -427,28 +427,28 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             //    FilteredCommonCollection.Add(element);
             if (SelectedPredicate.CollectionSelectPredicate == null)
             {
-                SelectedPredicate.CollectionSelectPredicate  = (col) =>
-                {
-                    ObservableCollection<NameableObjectPointer> out_coll = new ObservableCollection<NameableObjectPointer>();
-                    foreach (IEntityObject elm in col)
-                    {
-                        NameableObjectPointer objectPointer = new NameableObjectPointer();
-                        objectPointer.Name = elm.Name;
-                        objectPointer.Code = elm.Code;
-                        objectPointer.ObjectPointer = elm;
-                        out_coll.Add(objectPointer);
-                    }
-                    return out_coll;
-                };
+                SelectedPredicate.CollectionSelectPredicate = (col) =>
+               {
+                   ObservableCollection<NameableObjectPointer> out_coll = new ObservableCollection<NameableObjectPointer>();
+                   foreach (IEntityObject elm in col)
+                   {
+                       NameableObjectPointer objectPointer = new NameableObjectPointer();
+                       objectPointer.Name = elm.Name;
+                       objectPointer.Code = elm.Code;
+                       objectPointer.ObjectPointer = elm;
+                       out_coll.Add(objectPointer);
+                   }
+                   return out_coll;
+               };
             }
-              
+
             foreach (NameableObjectPointer elm in SelectedPredicate.CollectionSelectPredicate.Invoke(CommonCollection))
-                    FilteredCommonPointersCollection.Add(elm);
-          
-               
+                FilteredCommonPointersCollection.Add(elm);
+
+
 
             FilterEnable = false;
         }
-        
+
     }
 }

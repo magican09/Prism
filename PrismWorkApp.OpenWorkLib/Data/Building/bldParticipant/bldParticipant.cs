@@ -10,7 +10,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NotMapped]
         public string Name
         {
-            get {
+            get
+            {
                 if (Role != null)
                     return Role.Name;
                 else

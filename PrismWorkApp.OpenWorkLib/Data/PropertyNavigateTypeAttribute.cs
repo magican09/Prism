@@ -32,7 +32,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         }
 
-       
+
     }
     [AttributeUsage(AttributeTargets.Property)]
     public class CreateNewWhenCopyAttribute : Attribute

@@ -8,7 +8,7 @@
         GENERAL_CONTRACTOR,
         DISIGNER,
         BUILDER,
-       
+
     }
     public enum RoleOfResponsible
     {

@@ -21,6 +21,6 @@ namespace PrismWorkApp.Core
         {
             //   ResultCollection= new NameableObservableCollection<IEntityObject>( Predicate.Invoke((TSourse)in_collection));
         }
-        public Func<ICollection<T>, ObservableCollection<NameableObjectPointer>> CollectionSelectPredicate {get;set;}
+        public Func<ICollection<T>, ObservableCollection<NameableObjectPointer>> CollectionSelectPredicate { get; set; }
     }
 }

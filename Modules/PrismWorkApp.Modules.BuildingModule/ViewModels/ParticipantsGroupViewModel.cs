@@ -9,11 +9,9 @@ using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -45,7 +43,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
 
         private ObservableCollection<bldParticipant> _selectedbldParticipantsList = new ObservableCollection<bldParticipant>();
-        public ObservableCollection<bldParticipant>  SelectedbldParticipantsList
+        public ObservableCollection<bldParticipant> SelectedbldParticipantsList
         {
             get { return _selectedbldParticipantsList; }
             set { SetProperty(ref _selectedbldParticipantsList, value); }
@@ -72,14 +70,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand AddParticipantsListCommand { get; private set; }
         public NotifyCommand<object> AddCreatedFromTemplateParticipantCommand { get; private set; }
         public NotifyCommand RemoveParticipantCommand { get; private set; }
-       
-       
+
+
         public ParticipantsGroupViewModel(IDialogService dialogService,
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
 
             UnDoReDo = new UnDoReDoSystem();
-     
+
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedProject);
             CloseCommand = new NotifyCommand<object>(OnClose);
@@ -153,14 +151,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                        {
                            bldParticipant participant = new bldParticipant();
                            participant.ConstructionCompany = company;
-                           bldParticipantRole role  = _buildingUnitsRepository.ParticipantRolesRepository.GetAllAsync().Where(rl => rl.RoleCode == ParticipantRole.NONE).FirstOrDefault();
-                          if(role==null)
+                           bldParticipantRole role = _buildingUnitsRepository.ParticipantRolesRepository.GetAllAsync().Where(rl => rl.RoleCode == ParticipantRole.NONE).FirstOrDefault();
+                           if (role == null)
                            {
                                role = new bldParticipantRole(ParticipantRole.NONE);
                                role.Name = "Не определено";
                                role.FullName = "Не определено";
                                _buildingUnitsRepository.ParticipantRolesRepository.Add(role);
-                            
+
                            }
                            participant.Role = role;
                            UnDoReDo.Register(participant);
@@ -182,14 +180,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnChangeParticipantsListCommand()
         {
-           
+
         }
         #region Commands methods
 
 
         private void OnCreateNewParticipant()
         {
-         
+
             //   
         }
 
@@ -287,13 +285,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-         }
+        }
         private void UnRegisterAplicationCommands()
         {
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
             _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
-            
+
         }
         #endregion
     }

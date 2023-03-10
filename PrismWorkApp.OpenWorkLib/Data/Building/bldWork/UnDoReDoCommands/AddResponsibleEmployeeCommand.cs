@@ -43,7 +43,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
 
             _CurrentWork.ResponsibleEmployees.Add(_RemovedResp_Empl);
-            
+
 
 
         }

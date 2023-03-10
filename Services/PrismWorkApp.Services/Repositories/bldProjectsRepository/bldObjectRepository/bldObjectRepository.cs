@@ -45,6 +45,6 @@ namespace PrismWorkApp.Services.Repositories
             return PlutoContext.Objects.ToList();
         }
 
-       
+
     }
 }

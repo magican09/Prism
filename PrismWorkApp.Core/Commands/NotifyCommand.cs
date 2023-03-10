@@ -115,7 +115,7 @@ namespace PrismWorkApp.Core.Commands
         /// <typeparam name="T"></typeparam>
         /// <param name="propertyExpression"></param>
         /// <returns></returns>
-        public NotifyCommand ObservesProperty<T>(Expression<Func<T>> propertyExpression) 
+        public NotifyCommand ObservesProperty<T>(Expression<Func<T>> propertyExpression)
         {
 
             var body = (MemberExpression)propertyExpression.Body;

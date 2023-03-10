@@ -87,28 +87,28 @@
                             </DataGrid.ContextMenu>
                             <DataGrid.Columns>
                                 <DataGridTextColumn  Header="Код"   Width="Auto"
-                                                     Binding = "{Binding Code}" />
+                                                     Binding = "{Binding Path=Code}" />
                                 <DataGridTextColumn  Header="Дата начала"   Width="Auto"
-                                                     Binding = "{Binding StartTime, ConverterCulture=ru, StringFormat=d}" IsReadOnly="False" />
+                                                     Binding = "{Binding  Path=StartTime, ConverterCulture=ru, StringFormat=d}" IsReadOnly="False" />
                                 <DataGridTextColumn  Header="Дата завершения"   Width="Auto"
-                                                     Binding = "{Binding EndTime, ConverterCulture=ru, StringFormat=d}" IsReadOnly="False"/>
+                                                     Binding = "{Binding  Path=EndTime, ConverterCulture=ru, StringFormat=d}" IsReadOnly="False"/>
                                 <DataGridTextColumn  Header="№АОСР"   Width="Auto"
-                                                     Binding = "{Binding Code}" />
+                                                     Binding = "{Binding   Path=AOSRDocument.RegId,Mode=TwoWay}" />
                                 <DataGridTextColumn  Header="Дата АОСР"   Width="Auto"
-                                                     Binding = "{Binding AOSRDocument.RegId}" IsReadOnly="False"/>
+                                                     Binding = "{Binding  Path=AOSRDocument.Date,Mode=TwoWay, ConverterCulture=ru, StringFormat=d}" IsReadOnly="False"/>
                                 <DataGridTextColumn  Header="Наименование работы"   Width="Auto"
-                                                     Binding = "{Binding Name}" IsReadOnly="False" />
+                                                     Binding = "{Binding  Path=Name}" IsReadOnly="False" />
                                 <DataGridTextColumn  Header="Отметки"   Width="Auto"
-                                                     Binding = "{Binding WorkArea.Levels}" />
+                                                     Binding = "{Binding  Path=WorkArea.Levels}" />
                                 <DataGridTextColumn  Header="Оси"   Width="Auto"
-                                                     Binding = "{Binding WorkArea.Axes}" />
+                                                     Binding = "{Binding  Path=WorkArea.Axes}" />
                                 <DataGridTextColumn  Header="Объем"   Width="Auto"
                                                      Binding = "{Binding Quantity}" />
 
                                 <DataGridTemplateColumn Header="Ед.изм">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding UnitOfMeasurement.Name, Mode=OneWay}">
+                                            <TextBlock Text="{Binding  Path=UnitOfMeasurement.Name, Mode=OneWay}">
                                                 <TextBlock.ContextMenu>
                                                     <ContextMenu ItemsSource="{Binding Data.UnitsOfMeasurementContextMenuCommands, Source={StaticResource Proxy}}">
                                                         <ContextMenu.ItemTemplate>
@@ -194,7 +194,7 @@
                                 <DataGridTemplateColumn Header="Материалы">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <ListView ItemsSource="{Binding Materials}">
+                                            <ListView ItemsSource="{Binding Materials}" SelectedItem="{Binding SelectedMaterial}">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal" >

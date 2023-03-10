@@ -11,12 +11,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _date; }
             set { SetProperty(ref _date, value); }
         }
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-            set { SetProperty(ref _name, value); }
-        }
         private string _fullName;
         public string FullName
         {
@@ -26,11 +20,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private string _shortName;
         public virtual string ShortName
         {
-            get
-            {
-
-                return _shortName;
-            }
+            get {return _shortName;}
             set { SetProperty(ref _shortName, value); }
         }
         private bldDocumentsGroup _attachedDocuments = new bldDocumentsGroup("Приложения");
@@ -51,19 +41,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _regId; }
             set { SetProperty(ref _regId, value); }
         }
-        /* private object _parent;
-         public object Parent
-         {
-             get { return _parent; }
-             set { SetProperty(ref _parent, value); }
-         }
-         private IbldDocumentsGroup _children;
-         public IbldDocumentsGroup  Children
-         {
-             get { return _children; }
-             set { SetProperty(ref _children, value); }
-         }
-         */
         public bldDocument(string name) : this()
         {
             Name = name;
@@ -79,5 +56,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _imageFile; }
             set { SetProperty(ref _imageFile, value); }
         }
+       
     }
 }

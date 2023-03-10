@@ -52,7 +52,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _code, value); }
         }//Код
         private string _name;
-        public string Name
+        public virtual string Name
         {
             get { return _name; }
             set { SetProperty(ref _name, value); }
@@ -193,15 +193,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public virtual object Clone()
         {
             BindableBase new_object = (BindableBase)Activator.CreateInstance(this.GetType());
-           // new_object =(BindableBase) this.MemberwiseClone();
+            // new_object =(BindableBase) this.MemberwiseClone();
             new_object.Id = Guid.Empty;
             var prop_infoes = new_object.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
             foreach (PropertyInfo prop_info in prop_infoes)
             {
                 var prop_val = prop_info.GetValue(this);
+                var new_object_prop_val = prop_info.GetValue(new_object);
                 var member_info = this.GetType().GetMember(prop_info.Name);
                 object[] no_copy__attributes = member_info[0].GetCustomAttributes(typeof(CreateNewWhenCopyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
                 object[] navigate__attributes = member_info[0].GetCustomAttributes(typeof(NavigatePropertyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
+
 
                 if (!prop_info.PropertyType.FullName.Contains("System"))
                 {
@@ -209,32 +211,94 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     {
                         if (no_copy__attributes.Length == 0 && navigate__attributes.Length == 0) //Если объяет свойство не навигационный и без запрета накопирование  
                         {
-                            if (prop_val is ICloneable clonable_prop_val)
+                            if (prop_val is ICloneable clonable_prop_val && prop_info.SetMethod != null)
                                 prop_info.SetValue(new_object, clonable_prop_val.Clone());
+                            else if (prop_val is IList prop_val_list)
+                            {
+                                foreach (object element in prop_val_list)
+                                {
+                                    (new_object_prop_val as IList).Add(element);
+                                }
+                            }
                             else
-                                prop_info.SetValue(new_object, prop_val);
+                               if (prop_info.SetMethod != null) prop_info.SetValue(new_object, prop_val);
+
                         }
-                        if (no_copy__attributes.Length > 0 && navigate__attributes.Length == 0) //Если стоит атрибут "создать новый при копировании"
+                        if (no_copy__attributes.Length != 0 && navigate__attributes.Length == 0 && prop_info.SetMethod != null) //Если стоит атрибут "создать новый при копировании"
                         {
-                            prop_val = null;
                             prop_val = Activator.CreateInstance(prop_info.PropertyType);
                             prop_info.SetValue(new_object, prop_val);
                         }
-                        if (navigate__attributes.Length > 0) //Если свойство навигационное 
+                        if (navigate__attributes.Length != 0 && prop_info.SetMethod != null) //Если свойство навигационное 
                         {
-                            prop_val = null;
-                            prop_info.SetValue(new_object, prop_val);
+                            prop_info.SetValue(new_object, null);
                         }
                     }
                 }
                 else
-                    if (no_copy__attributes.Length == 0)
-                          prop_info.SetValue(new_object, prop_val);
+                    if (no_copy__attributes.Length == 0 && prop_info.SetMethod != null)
+                    prop_info.SetValue(new_object, prop_val);
 
 
             }
             return new_object;
         }
+        //public virtual object Clone()
+        //{
+        //    BindableBase new_object = (BindableBase)Activator.CreateInstance(this.GetType());
+        //    // new_object =(BindableBase) this.MemberwiseClone();
+        //    new_object.Id = Guid.Empty;
+        //    var prop_infoes = new_object.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+        //    ObservableCollection<PropertyInfo> CreateNewWhenCopyProps = new ObservableCollection<PropertyInfo>();
+        //    ObservableCollection<PropertyInfo> OtherProps = new ObservableCollection<PropertyInfo>();
+        //    foreach (PropertyInfo prop_info in prop_infoes)
+        //    {
+        //        var prop_val = prop_info.GetValue(this);
+        //        var member_info = this.GetType().GetMember(prop_info.Name);
+        //        object[] no_copy__attributes = member_info[0].GetCustomAttributes(typeof(CreateNewWhenCopyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
+        //        if (no_copy__attributes.Length != 0)
+        //        {
+        //            CreateNewWhenCopyProps.Add(prop_info);
+        //            prop_val = Activator.CreateInstance(prop_info.PropertyType);
+        //            if (prop_info.SetMethod != null)
+        //                prop_info.SetValue(new_object, prop_val);
+        //            if (prop_val is IList)
+        //            {
+
+        //            }
+
+        //        }
+        //        else
+        //            OtherProps.Add(prop_info);
+        //    }
+
+        //    foreach (PropertyInfo prop_info in prop_infoes)
+        //    {
+        //        var prop_val = prop_info.GetValue(this);
+        //        var member_info = this.GetType().GetMember(prop_info.Name);
+        //        object[] navigate__attributes = member_info[0].GetCustomAttributes(typeof(NavigatePropertyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
+
+        //        if (prop_val != null && !prop_info.PropertyType.FullName.Contains("System"))
+        //        {
+        //            if (navigate__attributes.Length == 0) //Если объяет свойство не навигационный и без запрета накопирование  
+        //            {
+        //                if (prop_val is ICloneable clonable_prop_val)
+        //                    prop_info.SetValue(new_object, clonable_prop_val.Clone());
+        //                else
+        //                    prop_info.SetValue(new_object, prop_val);
+        //            }
+        //            else  //Если свойство навигационное 
+        //            {
+        //                prop_val = null;
+        //                prop_info.SetValue(new_object, prop_val);
+        //            }
+
+        //        }
+        //        else
+        //            if (prop_info.SetMethod != null) prop_info.SetValue(new_object, prop_val);
+        //    }
+        //    return new_object;
+        //}
     }
 
 

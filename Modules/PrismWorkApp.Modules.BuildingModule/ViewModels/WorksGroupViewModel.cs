@@ -30,6 +30,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedWork; }
             set { SetProperty(ref _selectedWork, value); }
         }
+        //private bldMaterial _selectedMaterial;
+        //public bldMaterial SelectedMaterial
+        //{
+        //    get { return _selectedMaterial; }
+        //    set { SetProperty(ref _selectedMaterial, value); }
+        //}   
         private bldWorksGroup _selectedWorksGroup;
         public bldWorksGroup SelectedWorksGroup
         {
@@ -70,6 +76,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public ObservableCollection<INotifyCommand> MaterialsContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> AddMaterialsCommand { get; private set; }
         public NotifyCommand<object> RemoveMaterialCommand { get; private set; }
+        public NotifyCommand<object> AddCreatedFromTemplateMaterialCommand { get; private set; }
 
         public ObservableCollection<INotifyCommand> ProjectDocumentationContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> AddProjectsDocumentCommand { get; private set; }
@@ -91,14 +98,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand DeleteWorkCommand { get; private set; }
         public NotifyCommand SaveWorksExecutiveDocumentationCommand { get; private set; }
 
-      
+
         public NotifyCommand RemoveWorkCommand { get; private set; }
         // public NotifyCommand RemoveWorkCommand { get; private set; }
 
 
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
-       
+
         //ObservableCollection<GanttChartItem> items = new ObservableCollection<GanttChartItem>
         //{
         //    new GanttChartItem { Content = "Task 1" },
@@ -130,7 +137,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                      () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-            
+
             RemoveNextWorkCommand = new NotifyCommand<object>(OnRemoveNextWork);
             RemoveNextWorkCommand.Name = "Удалить";
             AddNextWorkCommand = new NotifyCommand<object>(OnAddNextWork);
@@ -144,12 +151,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveUnitOfMeasurementCommand.Name = "Удалить";
             UnitsOfMeasurementContextMenuCommands.Add(SelectUnitOfMeasurementCommand);
             UnitsOfMeasurementContextMenuCommands.Add(RemoveUnitOfMeasurementCommand);
+          
             AddMaterialsCommand = new NotifyCommand<object>(OnAddMaterials);
             AddMaterialsCommand.Name = "Добавить материалы";
             RemoveMaterialCommand = new NotifyCommand<object>(OnRemoveMaterial);
             RemoveMaterialCommand.Name = "Удалить материал";
+            AddCreatedFromTemplateMaterialCommand = new NotifyCommand<object>(OnAddCreatedFromTemplateMaterial);
+            AddCreatedFromTemplateMaterialCommand.Name = "Создать на основании материал";
             MaterialsContextMenuCommands.Add(AddMaterialsCommand);
             MaterialsContextMenuCommands.Add(RemoveMaterialCommand);
+            MaterialsContextMenuCommands.Add(AddCreatedFromTemplateMaterialCommand);
 
             AddProjectsDocumentCommand = new NotifyCommand<object>(OnAddProjectsDocuments);
             AddProjectsDocumentCommand.Name = "Добавить документацию";
@@ -171,7 +182,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveExecutiveSchemeCommand.Name = "Удалить исполнительную схему";
             ExecutiveSchemesContextMenuCommands.Add(AddExecutiveSchemesCommand);
             ExecutiveSchemesContextMenuCommands.Add(RemoveExecutiveSchemeCommand);
-         
+
             #region Work Context Menu
             CreateNewWorkCommand = new NotifyCommand(OnAddNewWork);
             CreateNewWorkCommand.Name = "Создать новую работу";
@@ -180,7 +191,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             DeleteWorkCommand = new NotifyCommand(OnDeleteWork, () => SelectedWorks.Count > 0).ObservesPropertyChangedEvent(SelectedWorks);
             DeleteWorkCommand.Name = "Удалить";
 
-            MoveWorksToAnotherConatructionCommand = new NotifyCommand(OnMoveWorksToAnotherConatruction, () =>  SelectedWorks.Count > 0).ObservesPropertyChangedEvent(SelectedWorks);
+            MoveWorksToAnotherConatructionCommand = new NotifyCommand(OnMoveWorksToAnotherConatruction, () => SelectedWorks.Count > 0).ObservesPropertyChangedEvent(SelectedWorks);
             MoveWorksToAnotherConatructionCommand.Name = "Переместить в другую консрукцию";
             AddWorksFromAnotherConatructionCommand = new NotifyCommand(OnAddWorksFromAnotherConatruction);
             AddWorksFromAnotherConatructionCommand.Name = "Добавить из другой консрукции";
@@ -195,7 +206,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             #endregion
 
             #endregion
-       
+
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
@@ -216,7 +227,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-
+       
 
         private void OnAddWorksFromAnotherConatruction()
         {
@@ -404,8 +415,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldWork selected_work = SelectedWork;
             bldWork new_work = selected_work.Clone() as bldWork;
-            new_work.UnitOfMeasurement = selected_work.UnitOfMeasurement;
+            new_work.AOSRDocument = new bldAOSRDocument();
+            new_work.AOSRDocument.RegId = selected_work.Code;
+            new_work.AOSRDocument.Date =(DateTime) selected_work.EndTime;
             UnDoReDo.Register(new_work);
+            UnDoReDo.Register(new_work.AOSRDocument);
             SelectedConstruction.AddWork(new_work);
 
         }
@@ -583,6 +597,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 });
 
         }
+        #region Material methods
         private void OnRemoveMaterial(object obj)
         {
             bldMaterial removed_material = ((Tuple<object, object>)obj).Item1 as bldMaterial;
@@ -639,7 +654,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                "Форма добавления материалов.",
                "Список материалов", "");
         }
+        private void OnAddCreatedFromTemplateMaterial(object obj)
+        {
+            bldMaterial selected_material = ((Tuple<object, object>)obj).Item1 as bldMaterial;
+            if (selected_material != null)
+            {
+                bldMaterial new_material = selected_material.Clone() as bldMaterial;
+                _buildingUnitsRepository.Materials.Add(new_material);
 
+            }
+        }
+        #endregion
         private void OnUnitOfMeasurement(object obj)
         {
             bldWork selected_work = obj as bldWork;
@@ -855,7 +880,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedWorksGroup = SelectedConstruction.Works;
                 UnDoReDo.Register(SelectedConstruction);
                 foreach (bldWork work in SelectedConstruction.Works)
+                {
                     UnDoReDo.Register(work);
+                    if (work.AOSRDocument == null) 
+                        work.AOSRDocument = new bldAOSRDocument();
+                         UnDoReDo.Register(work.AOSRDocument);
+                }
                 Title = $"{SelectedConstruction.Code} {SelectedConstruction.ShortName}";
 
 
@@ -878,6 +908,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-        
+
     }
 }

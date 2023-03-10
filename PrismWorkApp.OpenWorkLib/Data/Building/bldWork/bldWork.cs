@@ -1,11 +1,8 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Reflection;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
@@ -96,7 +93,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public virtual bldMaterialsGroup Materials
         {
             get { return _materials; }
-            set { SetProperty(ref _materials, value); }
+            //     set { SetProperty(ref _materials, value); }
         }//Используемые материала
 
 
@@ -117,26 +114,26 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bldWorksGroup PreviousWorks
         {
             get { return _previousWorks; }
-            set { SetProperty(ref _previousWorks, value); }
+            //        set { SetProperty(ref _previousWorks, value); }
         }
         private bldWorksGroup _nextWorks = new bldWorksGroup("Последующие работы");
         [CreateNewWhenCopy]
         public bldWorksGroup NextWorks
         {
             get { return _nextWorks; }
-            set { SetProperty(ref _nextWorks, value); }
+            //       set { SetProperty(ref _nextWorks, value); }
         }
         private bldLaboratoryReportsGroup _laboratoryReports = new bldLaboratoryReportsGroup("Лабораторные испытания");
         public bldLaboratoryReportsGroup LaboratoryReports
         {
             get { return _laboratoryReports; }
-            set { SetProperty(ref _laboratoryReports, value); }
+            //  set { SetProperty(ref _laboratoryReports, value); }
         }
         private bldExecutiveSchemesGroup _executiveSchemes = new bldExecutiveSchemesGroup("Исполнительные схемы");
         public bldExecutiveSchemesGroup ExecutiveSchemes
         {
             get { return _executiveSchemes; }
-            set { SetProperty(ref _executiveSchemes, value); }
+            //  set { SetProperty(ref _executiveSchemes, value); }
         }
         //private bldAOSRDocumentsGroup _aOSRDocuments = new bldAOSRDocumentsGroup("Акты АОСР");
         //public bldAOSRDocumentsGroup AOSRDocuments
@@ -145,14 +142,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
         //    set { SetProperty(ref _aOSRDocuments, value); }
         //}
         private bldAOSRDocument _aOSRDocument;
-
         [CreateNewWhenCopy]
         public bldAOSRDocument AOSRDocument
         {
             get { return _aOSRDocument; }
-            set { SetProperty(ref _aOSRDocument, value); 
-                if(!ExecutiveDocumentation.AOSRDocuments.Contains(AOSRDocument))
-                    ExecutiveDocumentation.AOSRDocuments.Add(AOSRDocument); }
+            set
+            {
+                SetProperty(ref _aOSRDocument, value);
+                if (!ExecutiveDocumentation.AOSRDocuments.Contains(AOSRDocument))
+                    ExecutiveDocumentation.AOSRDocuments.Add(AOSRDocument);
+            }
         }
         private bldProjectDocumentsGroup _projectDocuments = new bldProjectDocumentsGroup("Рабочая документация");
         public bldProjectDocumentsGroup ProjectDocuments
@@ -168,7 +167,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
         private bldWorkExecutiveDocumentation _executiveDocumentation = new bldWorkExecutiveDocumentation();
-          [CreateNewWhenCopy]
         public bldWorkExecutiveDocumentation? ExecutiveDocumentation
         {
             get
@@ -178,7 +176,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
                 return _executiveDocumentation;
             }
-            set { SetProperty(ref _executiveDocumentation, value); }
+            // set { SetProperty(ref _executiveDocumentation, value); }
         }
         private bldParticipantsGroup? _participants;
         public bldParticipantsGroup? Participants
@@ -245,7 +243,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 foreach (bldDocument document in e.OldItems)
                     ExecutiveDocumentation.LaboratoryReports.Remove(document as bldLaboratoryReport);
         }
-       
+
         //public static T GetAttribute<T>(object value, string memberName="") where T : Attribute
         //{
         //    var type = value.GetType();
@@ -276,7 +274,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { SetProperty(ref _documentation, value); }
         }
+        public override object Clone()
+        {
+            bldWork work_clone =(bldWork) base.Clone();
+            //work_clone.AOSRDocument.Name = Name;
 
+            return work_clone;
+        }
         public void SaveAOSRsToWord(string folderPath)
         {
             //if (AOSRDocuments.Count > 1)
@@ -365,14 +369,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public void AddResponsibleEmployee(bldResponsibleEmployee res_emp)
         {
-           AddResponsibleEmployeeCommand Command =
-                new AddResponsibleEmployeeCommand(this, _responsibleEmployees, res_emp);
+            AddResponsibleEmployeeCommand Command =
+                 new AddResponsibleEmployeeCommand(this, _responsibleEmployees, res_emp);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
         public void RemoveResponsibleEmployee(bldResponsibleEmployee res_emp)
         {
             RemoveResponsibleEmployeeCommand Command =
-                new RemoveResponsibleEmployeeCommand(this,_responsibleEmployees,res_emp);
+                new RemoveResponsibleEmployeeCommand(this, _responsibleEmployees, res_emp);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
 

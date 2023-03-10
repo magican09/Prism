@@ -83,6 +83,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         }
         public void Register(IJornalable obj)
         {
+            if (obj == null) { throw new Exception("Попытка регистрации в системе UnDoReDo объекта со значением null");  }
             if (_RegistedModels.Contains(obj))
                 return;
             else

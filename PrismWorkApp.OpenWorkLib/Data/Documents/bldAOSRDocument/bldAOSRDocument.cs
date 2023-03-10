@@ -29,6 +29,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { }
         }
+        public override string Name 
+        { get {
+                if (base.Name==null)
+                {
+                    return ShortName;
+                }
+                return base.Name;
+               }
+          set => base.Name = value;
+        }
         private DateTime _startTime;
         public DateTime StartTime
         {
@@ -205,15 +215,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             attach_doc.RegId = i_doc_att_num.ToString();
                             docs_for_word_attach.Add(attach_doc);
 
-                            DateTime material_last_date = current_work.Materials.OrderBy(m => m.Date).FirstOrDefault().Date;
+                            DateTime? material_last_date = current_work.Materials.OrderBy(m => m.Date).FirstOrDefault().Date;
                             if (material_last_date < aOSRDocument.Date) material_last_date = aOSRDocument.Date;
                             Microsoft.Office.Interop.Word.Table attached_table = world_attached_doc_table.Tables[1];
                             attach_doc.FullName = attach_doc.Name + " №" + aOSRDocument.RegId
-                              + " от " + material_last_date.ToString("d")
+                              + " от " + material_last_date?.ToString("d")
                                + " на " + (Math.Ceiling((double)attach_doc.PagesNumber / 2)).ToString() + " листе (ах). ";
 
                             attached_table.Cell(1, 1).Range.Text = attach_doc.Name + " №" + aOSRDocument.RegId
-                              + " от " + material_last_date.ToString("d") + ".";
+                              + " от " + material_last_date?.ToString("d") + ".";
 
                             int material_number = 1;
                             //   for (int ii = 0; ii < current_work.Materials.Count - 1; ii++)
@@ -338,14 +348,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             attach_doc.RegId = i_doc_att_num.ToString();
                             docs_for_word_attach.Add(attach_doc);
 
-                            DateTime attach_last_date = current_work.LaboratoryReports.OrderBy(r => r.Date).FirstOrDefault().Date;
+                            DateTime? attach_last_date = current_work.LaboratoryReports.OrderBy(r => r.Date).FirstOrDefault().Date;
                             Microsoft.Office.Interop.Word.Table attached_table = world_attached_doc_table.Tables[1];
                             attach_doc.FullName = attach_doc.Name + " №" + aOSRDocument.RegId
-                              + " от " + attach_last_date.ToString("d")
+                              + " от " + attach_last_date?.ToString("d")
                                + " на " + (Math.Ceiling((double)attach_doc.PagesNumber / 2)).ToString() + " листе (ах). ";
 
                             attached_table.Cell(1, 1).Range.Text = attach_doc.Name + " №" + aOSRDocument.RegId
-                              + " от " + attach_last_date.ToString("d") + ".";
+                              + " от " + attach_last_date?.ToString("d") + ".";
 
                             int _number = 1;
                             for (int ii = 0; ii < current_work.ExecutiveSchemes.Count - 1 + current_work.LaboratoryReports.Count; ii++)

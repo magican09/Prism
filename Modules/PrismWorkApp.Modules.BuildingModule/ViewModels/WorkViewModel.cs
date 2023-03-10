@@ -145,7 +145,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand RemoveResponsibleEmployeeCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
-     
+
 
 
         public WorkViewModel(IDialogService dialogService,
@@ -156,7 +156,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
-            
+
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
             ApplicationCommands = applicationCommands;
 
@@ -167,7 +167,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                      () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-   
+
 
             RemovePreviousWorkCommand = new NotifyCommand(OnRemovePreviousWork,
                                         () => SelectedPreviousWork != null)
@@ -198,7 +198,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             SaveAOSRsToWordCommand = new NotifyCommand(OnSaveAOSRsToWord);
 
-           
+
             ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
@@ -211,11 +211,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CoreFunctions.RemoveElementFromCollectionWhithDialog<bldResponsibleEmployeesGroup, bldResponsibleEmployee>
                 (resp_empl, "Отвественный", result =>
                  {
-                     if(result.Result == ButtonResult.Yes)
+                     if (result.Result == ButtonResult.Yes)
                      {
                          SelectedWork.RemoveResponsibleEmployee(resp_empl);
                      }
-                 },_dialogService, Id);
+                 }, _dialogService, Id);
         }
 
         private void OnAddResponsibleEmployee()
@@ -227,19 +227,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee> predicate_1 = new NameablePredicate<bldResponsibleEmployeesGroup, bldResponsibleEmployee>();
             predicate_1.Name = "Показать всех ответственных работников";
             predicate_1.Predicate = cl => cl;
-            predicate_1.CollectionSelectPredicate= col =>
-            {
-                ObservableCollection<NameableObjectPointer> out_coll = new ObservableCollection<NameableObjectPointer>();
-                foreach(bldResponsibleEmployee res_empl in col)
-                {
-                    NameableObjectPointer objectPointer = new NameableObjectPointer();
-                    objectPointer.Code = res_empl.Code; 
-                    objectPointer.Name = res_empl.Employee.Name;
-                    objectPointer.Annotation = $"{res_empl.bldParticipant.Name}: {res_empl.bldParticipant.ConstructionCompany.Name}  {res_empl.DocConfirmingTheAthority.Name}";
-                    objectPointer.ObjectPointer = res_empl;
-                    out_coll.Add(objectPointer);
-                }
-                return out_coll;
+            predicate_1.CollectionSelectPredicate = col =>
+             {
+                 ObservableCollection<NameableObjectPointer> out_coll = new ObservableCollection<NameableObjectPointer>();
+                 foreach (bldResponsibleEmployee res_empl in col)
+                 {
+                     NameableObjectPointer objectPointer = new NameableObjectPointer();
+                     objectPointer.Code = res_empl.Code;
+                     objectPointer.Name = res_empl.Employee.Name;
+                     objectPointer.Annotation = $"{res_empl.bldParticipant.Name}: {res_empl.bldParticipant.ConstructionCompany.Name}  {res_empl.DocConfirmingTheAthority.Name}";
+                     objectPointer.ObjectPointer = res_empl;
+                     out_coll.Add(objectPointer);
+                 }
+                 return out_coll;
              };
             NameablePredicateObservableCollection<bldResponsibleEmployeesGroup, bldResponsibleEmployee> nameablePredicatesCollection = new NameablePredicateObservableCollection<bldResponsibleEmployeesGroup, bldResponsibleEmployee>();
             nameablePredicatesCollection.Add(predicate_1);

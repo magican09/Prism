@@ -13,7 +13,7 @@ using System.Runtime.CompilerServices;
 namespace PrismWorkApp.OpenWorkLib.Data
 {
 
-    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableOservableCollection<TEntity>,ICloneable where TEntity : IEntityObject
+    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableOservableCollection<TEntity>, ICloneable where TEntity : IEntityObject
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
@@ -155,7 +155,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
         }
         //    public ObservableCollection<IJornalable> ParentObjects { get; set; }
-       // public object Parent{ get; set; }
+        // public object Parent{ get; set; }
         public ObservableCollection<IJornalable> ChildObjects { get; set; }
         public AdjustStatus AdjustedStatus { get; set; } = AdjustStatus.UNADJUSTED;
         public void JornalingOff()
@@ -202,9 +202,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public object Clone()
         {
-           IList new_collection =(IList) Activator.CreateInstance(this.GetType());
-         //  new_collection = (NameableObservableCollection<TEntity>)this.MemberwiseClone();
-           
+            IList new_collection = (IList)Activator.CreateInstance(this.GetType());
+            //  new_collection = (NameableObservableCollection<TEntity>)this.MemberwiseClone();
+
             var prop_infoes = new_collection.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
             foreach (PropertyInfo prop_info in prop_infoes)
             {
@@ -213,11 +213,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 object[] no_copy__attributes = member_info[0].GetCustomAttributes(typeof(CreateNewWhenCopyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
                 object[] navigate__attributes = member_info[0].GetCustomAttributes(typeof(NavigatePropertyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
 
-                if (!prop_info.PropertyType.FullName.Contains("System"))
+                if (!prop_info.PropertyType.FullName.Contains("System") && prop_info.SetMethod != null)
                 {
                     if (prop_val != null)
                     {
-                                      if (no_copy__attributes.Length == 0 && navigate__attributes.Length == 0) //Если объяет свойство не навигационный и без запрета накопирование  
+                        if (no_copy__attributes.Length == 0 && navigate__attributes.Length == 0) //Если объяет свойство не навигационный и без запрета накопирование  
                         {
                             if (prop_val is ICloneable clonable_prop_val)
                                 prop_info.SetValue(new_collection, clonable_prop_val.Clone());
@@ -237,14 +237,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             prop_info.SetValue(new_collection, prop_val);
                         }
                     }
-                    else   
+                    else
                         if (no_copy__attributes.Length == 0)
-                            prop_info.SetValue(new_collection, prop_val);
-                    
+                        prop_info.SetValue(new_collection, prop_val);
+
                 }
             }
 
-            foreach(TEntity element in this)
+            foreach (TEntity element in this)
             {
                 new_collection.Add(element);
             }

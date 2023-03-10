@@ -123,6 +123,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             NavigationParameters navParam = new NavigationParameters();
             switch (node_value_type?.Name)
             {
+                case (nameof(bldMaterial)):
+                    {
+                        navParam.Add("bld_material", (new ConveyanceObject((bldMaterial)clicked_node, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                        _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialView).Name, navParam);
+                        break;
+                    }
                 case (nameof(bldWork)):
                     {
                         navParam.Add("bld_work", (new ConveyanceObject((bldWork)clicked_node, ConveyanceObjectModes.EditMode.FOR_EDIT)));

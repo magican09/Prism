@@ -152,11 +152,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
             UnDoReDo = new UnDoReDoSystem();
-
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
-
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostSocus);
             ApplicationCommands = applicationCommands;
 
@@ -535,31 +533,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     }
                 }, _dialogService, Id);
         }
-        private void OnDataGridLostSocus(object obj)
-        {
-
-            if (obj == SelectedPreviousWork)
-            {
-                SelectedNextWork = null;
-                return;
-            }
-            if (obj == SelectedNextWork)
-            {
-
-                SelectedPreviousWork = null;
-                return;
-            }
-            if (obj == SelectedMaterial)
-            {
-                SelectedMaterial = null;
-                return;
-            }
-            if (obj == SelecteLaboratoryReport)
-            {
-                SelecteLaboratoryReport = null;
-                return;
-            }
-        }
+      
         private void OnRemovePreviousWork()
         {
 
@@ -591,6 +565,32 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }, _dialogService, Id);
         }
 
+
+          private void OnDataGridLostSocus(object obj)
+        {
+
+            if (obj == SelectedPreviousWork)
+            {
+                SelectedNextWork = null;
+                return;
+            }
+            if (obj == SelectedNextWork)
+            {
+
+                SelectedPreviousWork = null;
+                return;
+            }
+            if (obj == SelectedMaterial)
+            {
+                SelectedMaterial = null;
+                return;
+            }
+            if (obj == SelecteLaboratoryReport)
+            {
+                SelecteLaboratoryReport = null;
+                return;
+            }
+        }
         private bool CanSave()
         {
             if (SelectedWork != null)

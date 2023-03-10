@@ -9,7 +9,7 @@ using System;
 
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
-    public class WorkDialogViewModel : WorkViewModel, IDialogAware
+    public class MaterialDialogViewModel: MaterialViewModel, IDialogAware
     {
         private Guid _currentContextId;
 
@@ -18,7 +18,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             get { return _currentContextId; }
             set { _currentContextId = value; }
         }
-        public WorkDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
+        public MaterialDialogViewModel(IDialogService dialogService, IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
             : base(dialogService, regionManager, buildingUnitsRepository, applicationCommands)
         {
 
@@ -38,8 +38,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
         {
             if (EditMode == ConveyanceObjectModes.EditMode.FOR_EDIT)
             {
-                CoreFunctions.ConfirmActionOnElementDialog<bldWork>(SelectedWork,
-                    "Сохранить", "работа",
+                CoreFunctions.ConfirmActionOnElementDialog<bldMaterial>(SelectedMaterial,
+                    "Сохранить", "материал",
                     "Сохранить",
                      "Не сохранять",
                     "Отмена", (result) =>
@@ -71,14 +71,14 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             ConveyanceObject navigane_message = (ConveyanceObject)parameters.GetValue<object>("selected_element_conveyance_object");
             if (navigane_message != null)
             {
-                ResivedWork = (bldWork)navigane_message.Object;
+                bldMaterial ResivedMaterial = (bldMaterial)navigane_message.Object;
                 EditMode = navigane_message.EditMode;
                 if (!EditMode)
                     Id = CurrentContextId;
-                if (SelectedWork != null) SelectedWork.ErrorsChanged -= RaiseCanExecuteChanged;
-                SelectedWork = ResivedWork;
-                SelectedWork.ErrorsChanged += RaiseCanExecuteChanged;
-                UnDoReDo.Register(SelectedWork);
+                if (SelectedMaterial != null) SelectedMaterial.ErrorsChanged -= RaiseCanExecuteChanged;
+                SelectedMaterial = ResivedMaterial;
+                SelectedMaterial.ErrorsChanged += RaiseCanExecuteChanged;
+               // UnDoReDo.Register(SelectedMaterial);
             }
         }
     }

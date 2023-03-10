@@ -164,6 +164,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterForNavigation<WorksTableView>();
             containerRegistry.RegisterForNavigation<ProjectExplorerView>();
             containerRegistry.RegisterForNavigation<AOSRDocumentsTableView>();
+            containerRegistry.RegisterForNavigation<MaterialView>();
             containerRegistry.RegisterForNavigation<WorkView>();
             containerRegistry.RegisterForNavigation<ProjectView>();
             containerRegistry.RegisterForNavigation<ParticipantView>();

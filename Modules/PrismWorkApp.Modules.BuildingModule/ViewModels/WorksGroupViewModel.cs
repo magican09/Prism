@@ -3,6 +3,7 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
+using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
@@ -10,6 +11,7 @@ using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -30,12 +32,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedWork; }
             set { SetProperty(ref _selectedWork, value); }
         }
+        private List<bldMaterial> _materialsBuffer;
+        
         //private bldMaterial _selectedMaterial;
         //public bldMaterial SelectedMaterial
         //{
         //    get { return _selectedMaterial; }
         //    set { SetProperty(ref _selectedMaterial, value); }
-        //}   
+        //}
         private bldWorksGroup _selectedWorksGroup;
         public bldWorksGroup SelectedWorksGroup
         {
@@ -77,6 +81,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> AddMaterialsCommand { get; private set; }
         public NotifyCommand<object> RemoveMaterialCommand { get; private set; }
         public NotifyCommand<object> AddCreatedFromTemplateMaterialCommand { get; private set; }
+        public NotifyCommand<object> CutMaterialsCommand { get; private set; }
+        public NotifyCommand<object> PasteMaterialsCommand { get; private set; }
+
 
         public ObservableCollection<INotifyCommand> ProjectDocumentationContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> AddProjectsDocumentCommand { get; private set; }
@@ -158,6 +165,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveMaterialCommand.Name = "Удалить материал";
             AddCreatedFromTemplateMaterialCommand = new NotifyCommand<object>(OnAddCreatedFromTemplateMaterial);
             AddCreatedFromTemplateMaterialCommand.Name = "Создать на основании материал";
+            CutMaterialsCommand = new NotifyCommand<object>(OnCutMaterial);
+            PasteMaterialsCommand = new NotifyCommand<object>(OnPasteMaterials,(ob)=> _materialsBuffer.Count > 0);
             MaterialsContextMenuCommands.Add(AddMaterialsCommand);
             MaterialsContextMenuCommands.Add(RemoveMaterialCommand);
             MaterialsContextMenuCommands.Add(AddCreatedFromTemplateMaterialCommand);
@@ -227,7 +236,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-       
+        private void OnPasteMaterials(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnCutMaterial(object obj)
+        {
+            bldMaterial removed_material = ((Tuple<object, object>)obj).Item1 as bldMaterial;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork; _materialsBuffer.Clear();
+
+        }
 
         private void OnAddWorksFromAnotherConatruction()
         {
@@ -657,10 +676,43 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnAddCreatedFromTemplateMaterial(object obj)
         {
             bldMaterial selected_material = ((Tuple<object, object>)obj).Item1 as bldMaterial;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             if (selected_material != null)
             {
                 bldMaterial new_material = selected_material.Clone() as bldMaterial;
-                _buildingUnitsRepository.Materials.Add(new_material);
+                ConveyanceObject conveyanceObject = new ConveyanceObject(new_material, ConveyanceObjectModes.EditMode.FOR_EDIT);
+                var dialog_params = new DialogParameters();
+                dialog_params.Add("selected_element_conveyance_object", conveyanceObject);
+
+                _dialogService.ShowDialog(nameof(MaterialDialogView), dialog_params,(result)=>
+                {
+                    if(result.Result== ButtonResult.Yes)
+                    {
+                        _buildingUnitsRepository.Materials.Add(new_material);
+                        var confirm_dialog_params = new DialogParameters();
+                        confirm_dialog_params.Add("massege", "Добавить в текущую работу?");
+                        confirm_dialog_params.Add("confirm_button_content", "Добавить");
+                        confirm_dialog_params.Add("refuse_button_content", "Отмена");
+                        confirm_dialog_params.Add("cancel_button_content", "Закрыть");
+                      
+                        _dialogService.ShowDialog(nameof(ConfirmActionDialog), confirm_dialog_params, (result_dialog) =>
+                        {
+                            if(result_dialog.Result== ButtonResult.Yes)
+                            {
+                                selected_work.AddMaterial(new_material);
+                            }
+                        });
+                       
+
+                    }
+                    if (result.Result== ButtonResult.No)
+                    {
+
+                    }
+                }  );
+
+
+              
 
             }
         }

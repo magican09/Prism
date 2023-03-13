@@ -88,6 +88,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 return;
             else
                 _RegistedModels.Add(obj);
+
             obj.PropertyBeforeChanged += OnModelPropertyBeforeChanged;
             obj.UnDoReDoCommandCreated += OnObservedCommandCreated;
         }

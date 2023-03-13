@@ -11,5 +11,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Views
         {
             InitializeComponent();
         }
+
+        private void DataGrid_IsEnabledChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+
+        }
     }
 }

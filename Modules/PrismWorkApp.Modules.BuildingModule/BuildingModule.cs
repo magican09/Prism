@@ -186,8 +186,12 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<AddbldWorkToCollectionDialogView, AddbldWorkToCollectionViewModel>();
             containerRegistry.RegisterDialog<AddWorksToCollectionFromListDialogView, AddWorksToCollectionFromListDialogViewModel>();
             containerRegistry.RegisterDialog<WorkDialogView, WorkDialogViewModel>();
+
             containerRegistry.RegisterDialog<AddUnitOfMeasurementToCollectionFromListDialogView, AddUnitOfMeasurementToCollectionFromListDialogViewModel>();
+           
             containerRegistry.RegisterDialog<AddMaterialToCollectionFromListDialogView, AddMaterialToCollectionFromListDialogViewModel>();
+            containerRegistry.RegisterDialog<MaterialDialogView, MaterialDialogViewModel>();
+
             containerRegistry.RegisterDialog<AddProjectDocumentToCollectionFromListDialogView, AddProjectDocumentToCollectionFromListDialogViewModel>();
             containerRegistry.RegisterDialog<AddLaboratoryReportToCollectionFromListDialogView, AddLaboratoryReportToCollectionFromListDialogViewModel>();
             containerRegistry.RegisterDialog<AddExecutiveSchemeToCollectionFromListDialogView, AddExecutiveSchemeToCollectionFromListDialogViewModel>();

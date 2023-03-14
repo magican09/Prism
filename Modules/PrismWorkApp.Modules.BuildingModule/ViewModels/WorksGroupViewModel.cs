@@ -32,7 +32,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedWork; }
             set { SetProperty(ref _selectedWork, value); }
         }
-        private List<bldMaterial> _materialsBuffer;
+       
         
         //private bldMaterial _selectedMaterial;
         //public bldMaterial SelectedMaterial
@@ -81,9 +81,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> AddMaterialsCommand { get; private set; }
         public NotifyCommand<object> RemoveMaterialCommand { get; private set; }
         public NotifyCommand<object> AddCreatedFromTemplateMaterialCommand { get; private set; }
+        public NotifyCommand<object> CopyMaterialsCommand { get; private set; }
         public NotifyCommand<object> CutMaterialsCommand { get; private set; }
         public NotifyCommand<object> PasteMaterialsCommand { get; private set; }
-
+        public CopyCutPasteCommands<BindableBase> CopyCutPasteCommand { get; private set; }
+        private ObservableCollection< CopiedCutedObject>  _materialsBuffer = new ObservableCollection<CopiedCutedObject>();
 
         public ObservableCollection<INotifyCommand> ProjectDocumentationContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> AddProjectsDocumentCommand { get; private set; }
@@ -165,11 +167,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveMaterialCommand.Name = "Удалить материал";
             AddCreatedFromTemplateMaterialCommand = new NotifyCommand<object>(OnAddCreatedFromTemplateMaterial);
             AddCreatedFromTemplateMaterialCommand.Name = "Создать на основании материал";
-            CutMaterialsCommand = new NotifyCommand<object>(OnCutMaterial);
-            PasteMaterialsCommand = new NotifyCommand<object>(OnPasteMaterials,(ob)=> _materialsBuffer.Count > 0);
+            CopyMaterialsCommand = new NotifyCommand<object>(OnCopyMaterials);
+            CopyMaterialsCommand.Name = "Копировать материал";
+            CutMaterialsCommand = new NotifyCommand<object>(OnCutMaterials);
+            CutMaterialsCommand.Name = "Вырезать материал";
+            PasteMaterialsCommand = new NotifyCommand<object>(OnPasteMaterials,(ob)=> _materialsBuffer.Count > 0).ObservesPropertyChangedEvent(_materialsBuffer);
+            PasteMaterialsCommand.Name = "Вставить материал";
+         //   CopyCutPasteCommand = new CopyCutPasteCommands<BindableBase>(OnCopyMaterial,OnCutMaterial,OnPasteMaterial);
             MaterialsContextMenuCommands.Add(AddMaterialsCommand);
             MaterialsContextMenuCommands.Add(RemoveMaterialCommand);
             MaterialsContextMenuCommands.Add(AddCreatedFromTemplateMaterialCommand);
+            MaterialsContextMenuCommands.Add(CopyMaterialsCommand);
+            MaterialsContextMenuCommands.Add(CutMaterialsCommand);
+            MaterialsContextMenuCommands.Add(PasteMaterialsCommand);
 
             AddProjectsDocumentCommand = new NotifyCommand<object>(OnAddProjectsDocuments);
             AddProjectsDocumentCommand.Name = "Добавить документацию";
@@ -236,17 +246,58 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
+        private void OnCopyMaterials(object obj)
+        {
+            if (obj == null) return;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork; 
+            _materialsBuffer.Clear();
+            foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
+                _materialsBuffer.Add(new CopiedCutedObject(selected_work,tpl_obj,CopyCutPaste.COPIED));
+      
+        }
+        private void OnCutMaterials(object obj)
+        {
+            if (obj == null) return;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork; 
+            _materialsBuffer.Clear();
+            foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
+                _materialsBuffer.Add(new CopiedCutedObject(selected_work, tpl_obj, CopyCutPaste.CUTED));
+        }
+
+
         private void OnPasteMaterials(object obj)
         {
-            throw new NotImplementedException();
+            if (obj == null) return;
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+            UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
+            UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDo);
+            localUnDoReDo.Register(selected_work);
+            if (_materialsBuffer.Count == 0)
+                ;
+            foreach (CopiedCutedObject copy_cut_obj in _materialsBuffer)
+            {
+                if(copy_cut_obj.ActionType==  CopyCutPaste.COPIED)
+                {
+                    bldMaterial new_material = (copy_cut_obj.Element as bldMaterial).Clone() as bldMaterial;
+                    selected_work.AddMaterial(new_material);
+                }
+                if (copy_cut_obj.ActionType == CopyCutPaste.CUTED)
+                {
+                    bldWork from_work = copy_cut_obj.FromObject as bldWork;
+                    localUnDoReDo.Register(from_work);
+                    (copy_cut_obj.FromObject as bldWork).RemoveMaterial(copy_cut_obj.Element as bldMaterial);
+                    selected_work.AddMaterial(copy_cut_obj.Element as bldMaterial);
+                }
+               
+            }
+            _materialsBuffer.Clear();
+            UnDoReDo.AddUnDoReDo(localUnDoReDo);
+            UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDo);
+            SaveCommand.RaiseCanExecuteChanged();
+         
         }
 
-        private void OnCutMaterial(object obj)
-        {
-            bldMaterial removed_material = ((Tuple<object, object>)obj).Item1 as bldMaterial;
-            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork; _materialsBuffer.Clear();
-
-        }
+      
 
         private void OnAddWorksFromAnotherConatruction()
         {

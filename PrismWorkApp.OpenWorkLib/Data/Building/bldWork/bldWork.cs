@@ -319,6 +319,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 new AddNextWorkCommand(this, work);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
+    
         public void AddMaterial(bldMaterial material)
         {
             AddMaterialCommand Command = new AddMaterialCommand(this, material);
@@ -329,6 +330,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             RemoveMaterialCommand Command = new RemoveMaterialCommand(this, material);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
+  
         public void AddProjectDocument(bldProjectDocument document)
         {
             AddToCollectionCommand<ICollection<bldProjectDocument>, bldProjectDocument> Command =

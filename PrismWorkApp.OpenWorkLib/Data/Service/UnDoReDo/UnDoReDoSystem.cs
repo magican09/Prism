@@ -10,14 +10,15 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         private Stack<IUnDoRedoCommand> _UnDoCommands = new Stack<IUnDoRedoCommand>();
         private int _UnDoCounter = 0;
         private Stack<IUnDoRedoCommand> _ReDoCommands = new Stack<IUnDoRedoCommand>();
-        private ObservableCollection<IJornalable> _RegistedModels = new ObservableCollection<IJornalable>();
+        public ObservableCollection<IJornalable> _RegistedModels { get; set; } = new ObservableCollection<IJornalable>();
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event EventHandler CanExecuteChanged;
 
         public Guid Id { get; set; }
         public string Name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
+        public IUnDoReDoSystem ParentUnDoReDo { get; set; }
+        public ObservableCollection<IUnDoReDoSystem> ChildrenSystems = new ObservableCollection<IUnDoReDoSystem>();
         public bool UnDo(int levels)
         {
             for (int ii = 0; ii < levels; ii++)
@@ -81,16 +82,39 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             return _ReDoCommands.Count > 0;
         }
+        public void SetChildrenUnDoReDoSystem(IUnDoReDoSystem children_system)
+        {
+            //Если в системе регистриуюется дочерняя система, то объекты которые зарегирированы в дочерней системе
+            //удаляем и родительской системы, что бы не дублировались комады undo_redo
+            children_system.ParentUnDoReDo = this;
+            ChildrenSystems.Add(children_system);
+            foreach (IJornalable reg_obj in children_system._RegistedModels)
+                if (_RegistedModels.Contains(reg_obj)) this.UnRegister(reg_obj);
+        }
+        public void UnSetChildrenUnDoReDoSystem(IUnDoReDoSystem children_system)
+        {
+            //Если в системе регистриуюется дочерняя система, то объекты которые зарегирированы в дочерней системе
+            //удаляем и родительской системы, что бы не дублировались комады undo_redo
+            children_system.ParentUnDoReDo = null;
+           if(ChildrenSystems.Contains(children_system))
+                ChildrenSystems.Remove(children_system);
+            foreach (IJornalable reg_obj in children_system._RegistedModels)
+                 this.Register(reg_obj);
+        }
         public void Register(IJornalable obj)
         {
-            if (obj == null) { throw new Exception("Попытка регистрации в системе UnDoReDo объекта со значением null");  }
+            if (obj == null) { throw new Exception("Попытка регистрации в системе UnDoReDo объекта со значением null"); }
             if (_RegistedModels.Contains(obj))
                 return;
             else
+            {
                 _RegistedModels.Add(obj);
-
+                if (ParentUnDoReDo != null && ParentUnDoReDo._RegistedModels.Contains(obj)) //Если регистрируем объект, которые уже был зарегистирован в родительсокй системе
+                    ParentUnDoReDo.UnRegister(obj);//то удаляем его из родительской системы
+            }
             obj.PropertyBeforeChanged += OnModelPropertyBeforeChanged;
             obj.UnDoReDoCommandCreated += OnObservedCommandCreated;
+
         }
         public void UnRegister(IJornalable obj)
         {
@@ -99,6 +123,15 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 obj.PropertyBeforeChanged -= OnModelPropertyBeforeChanged;
                 obj.UnDoReDoCommandCreated -= OnObservedCommandCreated;
                 _RegistedModels.Remove(obj);
+
+                if (obj is IUnDoReDoSystem child_system) //Если в системе регистриуюется дочерняя система, то объекты которые зарегирированы в дочерней системе
+                {//регистриуем в родительской   системе
+                    child_system.ParentUnDoReDo = null;
+                    foreach (IJornalable reg_obj in child_system._RegistedModels)
+                    {
+                        if (!_RegistedModels.Contains(reg_obj)) this.Register(reg_obj);
+                    }
+                }
             }
         }
         public void AddUnDoReDo(IUnDoReDoSystem unDoReDo)

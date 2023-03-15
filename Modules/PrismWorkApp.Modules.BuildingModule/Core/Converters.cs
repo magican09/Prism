@@ -553,6 +553,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             throw new NotImplementedException();
         }
     }
+  
     public class ObjectsPairMultiConverter : IMultiValueConverter
     {
 

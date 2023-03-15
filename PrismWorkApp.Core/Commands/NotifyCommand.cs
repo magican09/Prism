@@ -174,7 +174,7 @@ namespace PrismWorkApp.Core.Commands
 
     public class NotifyCommand<T> : NotifyCommandBase, ICommand, IActiveAware, INotifyCommand
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = "Имя команды не определено!!!";
         public bool IsActive { get; set; }
         public event EventHandler IsActiveChanged = delegate { };
         public event EventHandler CanExecuteChanged = delegate { };

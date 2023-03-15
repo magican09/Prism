@@ -32,8 +32,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedWork; }
             set { SetProperty(ref _selectedWork, value); }
         }
-       
-        
+
+
         //private bldMaterial _selectedMaterial;
         //public bldMaterial SelectedMaterial
         //{
@@ -91,7 +91,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> CutMaterialsCommand { get; private set; }
         public NotifyCommand<object> PasteMaterialsCommand { get; private set; }
         public CopyCutPasteCommands<BindableBase> CopyCutPasteCommand { get; private set; }
-       
+
         public ObservableCollection<INotifyCommand> ProjectDocumentationContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> AddProjectsDocumentCommand { get; private set; }
         public NotifyCommand<object> RemoveProjectDocumentCommand { get; private set; }
@@ -163,7 +163,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CopyCommand.Name = "Копировать";
             CutCommand = new NotifyCommand<object>(OnCut);
             CutCommand.Name = "Вырезать";
-            PasteCommand = new NotifyCommand<object>(OnPaste,(ob)=> _objectsBuffer.Count > 0).ObservesPropertyChangedEvent(_objectsBuffer);
+            PasteCommand = new NotifyCommand<object>(OnPaste, (ob) => _objectsBuffer.Count > 0).ObservesPropertyChangedEvent(_objectsBuffer);
             PasteCommand.Name = "Вставить";
 
 
@@ -173,7 +173,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveUnitOfMeasurementCommand.Name = "Удалить";
             UnitsOfMeasurementContextMenuCommands.Add(SelectUnitOfMeasurementCommand);
             UnitsOfMeasurementContextMenuCommands.Add(RemoveUnitOfMeasurementCommand);
-          
+
             AddMaterialsCommand = new NotifyCommand<object>(OnAddMaterials);
             AddMaterialsCommand.Name = "Добавить материалы";
             RemoveMaterialCommand = new NotifyCommand<object>(OnRemoveMaterial);
@@ -186,7 +186,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             MaterialsContextMenuCommands.Add(CopyCommand);
             MaterialsContextMenuCommands.Add(CutCommand);
             MaterialsContextMenuCommands.Add(PasteCommand);
-          
+
 
             AddProjectsDocumentCommand = new NotifyCommand<object>(OnAddProjectsDocuments);
             AddProjectsDocumentCommand.Name = "Добавить документацию";
@@ -253,7 +253,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.DeleteWorkCommand.RegisterCommand(DeleteWorkCommand);
             ApplicationCommands.CreateWorkFromTemplateCommand.RegisterCommand(AddCreatedFromTemplateWorkCommand);
             ApplicationCommands.CreateWorkCommand.RegisterCommand(CreateNewWorkCommand);
-
         }
 
         private void OnCopy(object obj)
@@ -262,8 +261,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             _objectsBuffer.Clear();
             foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
-                  _objectsBuffer.Add(new CopiedCutedObject(selected_work, tpl_obj, CopyCutPaste.COPIED));
-
+                _objectsBuffer.Add(new CopiedCutedObject(selected_work, tpl_obj, CopyCutPaste.COPIED));
         }
         private void OnCut(object obj)
         {
@@ -271,8 +269,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             _objectsBuffer.Clear();
             foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
-              _objectsBuffer.Add(new CopiedCutedObject(selected_work, tpl_obj, CopyCutPaste.CUTED));
-
+                _objectsBuffer.Add(new CopiedCutedObject(selected_work, tpl_obj, CopyCutPaste.CUTED));
         }
         private void OnPaste(object obj)
         {
@@ -281,7 +278,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
             UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDo);
             localUnDoReDo.Register(selected_work);
-           
             foreach (CopiedCutedObject copy_cut_obj in _objectsBuffer)
             {
                 switch (copy_cut_obj.Element?.GetType()?.Name)
@@ -318,7 +314,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             }
 
-            
+
 
             _objectsBuffer.Clear();
             UnDoReDo.AddUnDoReDo(localUnDoReDo);
@@ -326,23 +322,23 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SaveCommand.RaiseCanExecuteChanged();
         }
 
-       
 
-        
+
+
 
         private void OnCopyMaterials(object obj)
         {
             if (obj == null) return;
-            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork; 
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             _objectsBuffer.Clear();
             foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
-                if(tpl_obj is  bldMaterial material)_objectsBuffer.Add(new CopiedCutedObject(selected_work, material, CopyCutPaste.COPIED));
-      
+                if (tpl_obj is bldMaterial material) _objectsBuffer.Add(new CopiedCutedObject(selected_work, material, CopyCutPaste.COPIED));
+
         }
         private void OnCutMaterials(object obj)
         {
             if (obj == null) return;
-            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork; 
+            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             _objectsBuffer.Clear();
             foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
                 if (tpl_obj is bldMaterial material) _objectsBuffer.Add(new CopiedCutedObject(selected_work, material, CopyCutPaste.CUTED));
@@ -360,7 +356,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 ;
             foreach (CopiedCutedObject copy_cut_obj in _objectsBuffer)
             {
-                if(copy_cut_obj.ActionType==  CopyCutPaste.COPIED)
+                if (copy_cut_obj.ActionType == CopyCutPaste.COPIED)
                 {
                     bldMaterial new_material = (copy_cut_obj.Element as bldMaterial).Clone() as bldMaterial;
                     selected_work.AddMaterial(new_material);
@@ -372,16 +368,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     (copy_cut_obj.FromObject as bldWork).RemoveMaterial(copy_cut_obj.Element as bldMaterial);
                     selected_work.AddMaterial(copy_cut_obj.Element as bldMaterial);
                 }
-               
+
             }
             _objectsBuffer.Clear();
             UnDoReDo.AddUnDoReDo(localUnDoReDo);
             UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDo);
             SaveCommand.RaiseCanExecuteChanged();
-         
+
         }
 
-      
+
 
         private void OnAddWorksFromAnotherConatruction()
         {
@@ -571,7 +567,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldWork new_work = selected_work.Clone() as bldWork;
             new_work.AOSRDocument = new bldAOSRDocument();
             new_work.AOSRDocument.RegId = selected_work.Code;
-            new_work.AOSRDocument.Date =(DateTime) selected_work.EndTime;
+            new_work.AOSRDocument.Date = (DateTime)selected_work.EndTime;
             UnDoReDo.Register(new_work);
             UnDoReDo.Register(new_work.AOSRDocument);
             SelectedConstruction.AddWork(new_work);
@@ -819,35 +815,35 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 var dialog_params = new DialogParameters();
                 dialog_params.Add("selected_element_conveyance_object", conveyanceObject);
 
-                _dialogService.ShowDialog(nameof(MaterialDialogView), dialog_params,(result)=>
-                {
-                    if(result.Result== ButtonResult.Yes)
-                    {
-                        _buildingUnitsRepository.Materials.Add(new_material);
-                        var confirm_dialog_params = new DialogParameters();
-                        confirm_dialog_params.Add("massege", "Добавить в текущую работу?");
-                        confirm_dialog_params.Add("confirm_button_content", "Добавить");
-                        confirm_dialog_params.Add("refuse_button_content", "Отмена");
-                        confirm_dialog_params.Add("cancel_button_content", "Закрыть");
-                      
-                        _dialogService.ShowDialog(nameof(ConfirmActionDialog), confirm_dialog_params, (result_dialog) =>
-                        {
-                            if(result_dialog.Result== ButtonResult.Yes)
-                            {
-                                selected_work.AddMaterial(new_material);
-                            }
-                        });
-                       
+                _dialogService.ShowDialog(nameof(MaterialDialogView), dialog_params, (result) =>
+                 {
+                     if (result.Result == ButtonResult.Yes)
+                     {
+                         _buildingUnitsRepository.Materials.Add(new_material);
+                         var confirm_dialog_params = new DialogParameters();
+                         confirm_dialog_params.Add("massege", "Добавить в текущую работу?");
+                         confirm_dialog_params.Add("confirm_button_content", "Добавить");
+                         confirm_dialog_params.Add("refuse_button_content", "Отмена");
+                         confirm_dialog_params.Add("cancel_button_content", "Закрыть");
 
-                    }
-                    if (result.Result== ButtonResult.No)
-                    {
-
-                    }
-                }  );
+                         _dialogService.ShowDialog(nameof(ConfirmActionDialog), confirm_dialog_params, (result_dialog) =>
+                         {
+                             if (result_dialog.Result == ButtonResult.Yes)
+                             {
+                                 selected_work.AddMaterial(new_material);
+                             }
+                         });
 
 
-              
+                     }
+                     if (result.Result == ButtonResult.No)
+                     {
+
+                     }
+                 });
+
+
+
 
             }
         }
@@ -1069,9 +1065,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 foreach (bldWork work in SelectedConstruction.Works)
                 {
                     UnDoReDo.Register(work);
-                    if (work.AOSRDocument == null) 
+                    if (work.AOSRDocument == null)
                         work.AOSRDocument = new bldAOSRDocument();
-                         UnDoReDo.Register(work.AOSRDocument);
+                    UnDoReDo.Register(work.AOSRDocument);
                 }
                 Title = $"{SelectedConstruction.Code} {SelectedConstruction.ShortName}";
 

@@ -215,7 +215,7 @@
                                                     </ContextMenu>
                                                 </DataGrid.ContextMenu>
                                                 <DataGrid.Columns>
-                                                    <DataGridTextColumn  Header="Наименование материала"   Width="300" 
+                                                    <DataGridTextColumn  Header="Наименование"   Width="300" 
                                                      Binding = "{Binding  Path=Name}" IsReadOnly="True" />
 
                                                 </DataGrid.Columns>
@@ -260,32 +260,33 @@
                                 <DataGridTemplateColumn Header="Испольнительная схема">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <ListView ItemsSource="{Binding ExecutiveSchemes}">
-                                                <ListView.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Style="{StaticResource codeTextBoxStyle}" Text="{Binding Code}" />
-                                                            <TextBlock Text="{Binding Name}" />
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </ListView.ItemTemplate>
-                                                <ListView.ContextMenu>
-                                                    <ContextMenu  ItemsSource="{Binding Data.ExecutiveSchemesContextMenuCommands, Source={StaticResource Proxy}}">
+                                            <DataGrid ItemsSource="{Binding ExecutiveSchemes}" AutoGenerateColumns="False" 
+                                                  IsReadOnly="True"  
+                                                  HorizontalContentAlignment="Left"  CanUserAddRows="False" 
+                                                  CanUserDeleteRows="False"  ColumnWidth="*" HeadersVisibility="None" >
+                                                <DataGrid.ContextMenu>
+                                                    <ContextMenu ItemsSource="{Binding Data.ExecutiveSchemesContextMenuCommands, Source={StaticResource Proxy}}">
                                                         <ContextMenu.ItemTemplate>
                                                             <DataTemplate DataType="{x:Type MenuItem}">
-                                                                <MenuItem Header="{Binding Name}" Command="{Binding}">
+                                                                <MenuItem Header="{Binding Name}" Command="{Binding}" >
                                                                     <MenuItem.CommandParameter>
                                                                         <MultiBinding Converter="{StaticResource NextPreviousWorkMultiConverter}">
-                                                                            <Binding RelativeSource="{RelativeSource AncestorType={x:Type ContextMenu}, Mode=FindAncestor}" Path="PlacementTarget.SelectedItem"/>
-                                                                            <Binding RelativeSource="{RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}" Path="DataContext"/>
+                                                                            <Binding RelativeSource="{RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}" Path="SelectedItems"/>
+                                                                            <Binding RelativeSource="{RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}" Path="DataContext"/>
                                                                         </MultiBinding>
                                                                     </MenuItem.CommandParameter>
                                                                 </MenuItem>
                                                             </DataTemplate>
                                                         </ContextMenu.ItemTemplate>
                                                     </ContextMenu>
-                                                </ListView.ContextMenu>
-                                            </ListView>
+                                                </DataGrid.ContextMenu>
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn  Header="Наименование"   Width="300" 
+                                                     Binding = "{Binding  Path=Name}" IsReadOnly="True" />
+
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>

@@ -32,6 +32,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public RemoveMaterialCommand(bldWork work, bldMaterial material)
         {
+           if(material==null) { throw new Exception("Материал не может быть равен null"); return; }
             _CurrentWork = work;
             _RemovedMaterial = material;
             _CurrentWork.Materials.Remove(_RemovedMaterial);

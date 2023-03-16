@@ -201,6 +201,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveLaboratoryReportCommand.Name = "Удалить документацию";
             LaboratoryReportsContextMenuCommands.Add(AddLaboratoryReportsCommand);
             LaboratoryReportsContextMenuCommands.Add(RemoveLaboratoryReportCommand);
+            LaboratoryReportsContextMenuCommands.Add(CopyCommand);
+            LaboratoryReportsContextMenuCommands.Add(CutCommand);
+            LaboratoryReportsContextMenuCommands.Add(PasteCommand);
 
             AddExecutiveSchemesCommand = new NotifyCommand<object>(OnAddExecutiveSchemes);
             AddExecutiveSchemesCommand.Name = "Добавить исполнительные схемы";
@@ -261,15 +264,22 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             _objectsBuffer.Clear();
             foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
+            {
+                if (!(tpl_obj is IEntityObject)) break;
                 _objectsBuffer.Add(new CopiedCutedObject(selected_work, tpl_obj, CopyCutPaste.COPIED));
+            }
         }
         private void OnCut(object obj)
         {
             if (obj == null) return;
+           
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             _objectsBuffer.Clear();
             foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
+            {
+                if (!(tpl_obj is IEntityObject)) break;
                 _objectsBuffer.Add(new CopiedCutedObject(selected_work, tpl_obj, CopyCutPaste.CUTED));
+             }
         }
         private void OnPaste(object obj)
         {
@@ -294,6 +304,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             localUnDoReDo.Register(from_work);
                             (copy_cut_obj.FromObject as bldWork).RemoveMaterial(copy_cut_obj.Element as bldMaterial);
                             selected_work.AddMaterial(copy_cut_obj.Element as bldMaterial);
+                        }
+                        break;
+                    case (nameof(bldLaboratoryReport)):
+                        if (copy_cut_obj.ActionType == CopyCutPaste.COPIED)
+                        {
+                            bldLaboratoryReport new_obj = (copy_cut_obj.Element as bldLaboratoryReport).Clone() as bldLaboratoryReport;
+                            selected_work.AddLaboratoryReport(new_obj);
+                        }
+                        if (copy_cut_obj.ActionType == CopyCutPaste.CUTED)
+                        {
+                            bldWork from_work = copy_cut_obj.FromObject as bldWork;
+                            localUnDoReDo.Register(from_work);
+                            (copy_cut_obj.FromObject as bldWork).RemoveLaboratoryReport(copy_cut_obj.Element as bldLaboratoryReport);
+                            selected_work.AddLaboratoryReport(copy_cut_obj.Element as bldLaboratoryReport);
                         }
                         break;
                     case (nameof(bldExecutiveScheme)):

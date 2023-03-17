@@ -35,8 +35,9 @@ namespace PrismWorkApp.Modules.BuildingModule
         }
         private IApplicationCommands _applicationCommands;
         private IBuildingUnitsRepository _buildingUnitsRepository;
+        public IbldMaterialsUnitsRepository _bldMaterialsUnitsRepository;
         private IDialogService _dialogService;
-        public BuildingModule(IRegionManager regionManager, IEventAggregator eventAggregator, IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
+        public BuildingModule(IRegionManager regionManager, IEventAggregator eventAggregator, IBuildingUnitsRepository buildingUnitsRepository, IbldMaterialsUnitsRepository bldMaterialsUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
         {
 
             ModuleId = 2;
@@ -45,6 +46,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             _applicationCommands = applicationCommands;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
+            _bldMaterialsUnitsRepository = bldMaterialsUnitsRepository;
 
         }
 
@@ -55,30 +57,28 @@ namespace PrismWorkApp.Modules.BuildingModule
             //    _regionManager.RequestNavigate(RegionNames.ContentRegion, "ProjectExplorerView");
             //  _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, "ConvertersView");
             _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new ProjectExplorerView());
-            var projectManagerRibbonTab = new ProjectManagerRibbonTabView();
-            var dataImportRibbonGroup = new DataImportRibbonGroupView();
-            var currentProjectRibbonGroup = new CurentProjectRibbonGroupView();
-
+             var projectManagerRibbonTab = new ProjectManagerRibbonTabView();
+             var dataImportRibbonGroup = new DataImportRibbonGroupView();
+             var currentProjectRibbonGroup = new CurentProjectRibbonGroupView();
             projectManagerRibbonTab.DataContext = new ProjectManagerRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands);
-
             projectManagerRibbonTab.Items.Add(dataImportRibbonGroup);//
-            projectManagerRibbonTab.Items.Add(currentProjectRibbonGroup);//Созадем группу панели инструметов с конвекторами
+           // projectManagerRibbonTab.Items.Add(currentProjectRibbonGroup);//Созадем группу панели инструметов с конвекторами
             _regionManager.Regions[RegionNames.RibbonRegion].Add(projectManagerRibbonTab);
 
             var toolBarRibbonTab = new ToolBarRibbonTabView();
-
             var toolBarRibbonTabDataContext = new ToolBarRibbonTabViewModel(_applicationCommands);
-
             toolBarRibbonTab.DataContext = toolBarRibbonTabDataContext;
-
-
-
-            // toolBarRibbonTab.Items.Add(dataImportRibbonGroup);
-
             var toolBarRibbonGroup = new WorksGroupToolBarRibbonGroupView();
             toolBarRibbonTab.Items.Add(toolBarRibbonGroup);//Созадем группу панели инструметов с конвекторами
-
             _regionManager.Regions[RegionNames.RibbonRegion].Add(toolBarRibbonTab);
+
+            var materialsRibbonTab = new MaterialsRibbonTabView();
+            materialsRibbonTab.DataContext = new MaterialsRibbonTabViewModel(_regionManager, _eventAggregator, _bldMaterialsUnitsRepository, _dialogService, _applicationCommands);
+            var materialsRibbonGroup = new MaterialsRibbonGroupView();
+            materialsRibbonTab.Items.Add(materialsRibbonGroup);
+            _regionManager.Regions[RegionNames.RibbonRegion].Add(materialsRibbonTab);
+
+
 
 
             var quickAccessTollBar = new QuickAccessToolBarView();
@@ -173,6 +173,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterForNavigation<ConstructionView>();
             containerRegistry.RegisterForNavigation<AOSRDocumentView>();
             containerRegistry.RegisterForNavigation<WorksGroupView>();
+            containerRegistry.RegisterForNavigation<MaterialsGroupView>();
             containerRegistry.RegisterForNavigation<ParticipantsGroupView>();
 
             containerRegistry.RegisterDialog<AddbldObjectToCollectionDialogView, AddbldObjectToCollectionViewModel>();

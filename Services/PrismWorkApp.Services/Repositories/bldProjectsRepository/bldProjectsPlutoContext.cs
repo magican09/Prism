@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class PlutoContext : DbContext
+    public class bldProjectsPlutoContext : DbContext
     {
-        public PlutoContext() : base()
+        public bldProjectsPlutoContext() : base()
         {
             //Database.EnsureDeleted();
             //Database.EnsureCreated();

@@ -12,15 +12,15 @@
         public bldParticipantRolesRepository ParticipantRolesRepository { get; }
         public bldResponsibleEmployeeRoleRepository ResponsibleEmployeeRoleRepository { get; }
         public bldConstructionCompaniesRepository ConstructionCompanies { get; }
-        public bldUnitOfMeasurementRepository UnitOfMeasurementRepository { get; }
+        public bldProjectUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
         public bldProjectDocumentsRepository ProjectDocuments { get; }
-        public bldMaterialsRepository Materials { get; }
+        public bldProjectMaterialsRepository Materials { get; }
         public bldLaboratoryReportsRepository LaboratoryReports { get; }
         public bldExecutiveSchemesRepository ExecutiveSchemes { get; }
-        public bldMaterialCertificatesRepository MaterialCertificates { get; }
-        private readonly PlutoContext _context;
+        public bldProjectMaterialCertificatesRepository MaterialCertificates { get; }
+        private readonly bldProjectsPlutoContext _context;
 
-        public BuildingUnitsRepository(PlutoContext context)
+        public BuildingUnitsRepository(bldProjectsPlutoContext context)
         {
             _context = context;
             Projects = new bldProjectRepository(_context);
@@ -32,12 +32,12 @@
             ParticipantRolesRepository = new bldParticipantRolesRepository(_context);
             ConstructionCompanies = new bldConstructionCompaniesRepository(_context);
             ResponsibleEmployeeRoleRepository = new bldResponsibleEmployeeRoleRepository(_context);
-            UnitOfMeasurementRepository = new bldUnitOfMeasurementRepository(_context);
-            Materials = new bldMaterialsRepository(_context);
+            UnitOfMeasurementRepository = new bldProjectUnitOfMeasuremenRepository(_context);
+            Materials = new bldProjectMaterialsRepository(_context);
             ProjectDocuments = new bldProjectDocumentsRepository(_context);
             LaboratoryReports = new bldLaboratoryReportsRepository(_context);
             ExecutiveSchemes = new bldExecutiveSchemesRepository(_context);
-            MaterialCertificates = new bldMaterialCertificatesRepository(_context);
+            MaterialCertificates = new bldProjectMaterialCertificatesRepository(_context);
         }
         public int Complete()
         {

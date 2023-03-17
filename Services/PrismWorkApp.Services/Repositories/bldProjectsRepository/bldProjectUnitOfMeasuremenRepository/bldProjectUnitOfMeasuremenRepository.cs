@@ -5,29 +5,21 @@ using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class bldPacticipantsRepository : Repository<bldParticipant>
-
+    public class bldProjectUnitOfMeasuremenRepository : Repository<bldUnitOfMeasurement>
     {
-        public bldPacticipantsRepository(bldProjectsPlutoContext context) : base(context)
+        public bldProjectUnitOfMeasuremenRepository(DbContext context) : base(context)
         {
 
         }
-
         public void Dispose()
         {
             this.Dispose();
         }
-
-
-        public List<bldParticipant> GetAllParticipants()//(Guid id)
+        public List<bldUnitOfMeasurement> GetAllUnits()//(Guid id)
         {
-            PlutoContext.Participants
-                    .Include(pr => pr.ResponsibleEmployees);
-
-            return PlutoContext.Participants.ToList();//out_val;
+            return PlutoContext.UnitOfMeasurements.ToList();//out_val;
         }
 
         public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }
-
     }
 }

@@ -39,6 +39,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> CloseCommand { get; protected set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
+        public IbldMaterialsUnitsRepository _bldMaterialsUnitsRepository { get; }
 
         public MaterialViewModel(IDialogService dialogService,
             IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)

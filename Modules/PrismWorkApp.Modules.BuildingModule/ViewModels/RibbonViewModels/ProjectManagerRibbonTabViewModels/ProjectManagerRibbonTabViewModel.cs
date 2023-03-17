@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Prism;
 using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
@@ -13,6 +14,7 @@ using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Odbc;
@@ -25,7 +27,7 @@ using System.Windows;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class ProjectManagerRibbonTabViewModel : LocalBindableBase, INotifyPropertyChanged
+    public class ProjectManagerRibbonTabViewModel : LocalBindableBase, INotifyPropertyChanged, IActiveAware
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public NotifyCommand LoadProjectFromExcelCommand { get; private set; }
@@ -130,8 +132,29 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             AllChangesIsDone = true;
             ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
             LoadMaterialsFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
-            ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
+           
+           // ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
+            IsActiveChanged += OnActiveChanged;
+        }
 
+        private void OnActiveChanged(object sender, EventArgs e)
+        {
+            if (IsActive)
+            {
+                ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
+
+            }
+            else
+            {
+                ApplicationCommands.LoadMaterialsFromAccessCommand.UnregisterCommand(LoadMaterialsFromAccessCommand);
+
+            }
+        }
+
+        private void OnLoadMaterialsFromAccess()
+        {
+            ObservableCollection<bldMaterial> materials = new  ObservableCollection<bldMaterial>();
+            Functions.OnLoadMaterialsFromAccess(materials);
         }
 
         private void LoadProjectFromXML()
@@ -165,117 +188,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-        private void OnLoadMaterialsFromAccess()
-        {
-            string access_file_name;
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
-                access_file_name = openFileDialog.FileName;
-
-
-            string ConnectionString = @"Driver={Microsoft Access Driver (*.mdb, *.accdb)}; Dbq=" +
-                 openFileDialog.FileName + "; Uid = Admin; Pwd =; ";
-            string table_name = "Таблица_1";
-            string query = $"SELECT * FROM {table_name}";
-
-            string BD_FilesDir = Directory.GetCurrentDirectory();
-            BD_FilesDir = Path.Combine(BD_FilesDir, table_name);
-            Directory.CreateDirectory(BD_FilesDir);
-
-            MemoryStream memoryStream = new MemoryStream();
-
-            using (OdbcConnection connection = new OdbcConnection(ConnectionString))
-            {
-                //OdbcDataAdapter dataAdapter = new OdbcDataAdapter
-                //         (query, connection);
-                //DataSet dataSet = new DataSet();
-                string stmt = "SELECT COUNT(*) FROM " + table_name;
-                OdbcCommand command = connection.CreateCommand();
-                command.CommandText = query;
-                connection.Open();
-                //dataAdapter.Fill(dataSet,0,10, table_name);
-                //DataTable dataTable = dataSet.Tables[0];
-                OdbcDataReader row = command.ExecuteReader();
-                int file_count = 0;
-                //foreach (DataRow row in dataTable.Rows)
-                while (row.Read())
-                {
-                    file_count++;
-                    try
-                    {
-
-                        bldMaterialCertificate materialCertificate = new bldMaterialCertificate();
-                        materialCertificate.MaterialName = row["Наименование _материала"].ToString();
-                        materialCertificate.GeometryParameters = row["Геометрические_параметры"].ToString();
-                        if (row["Кол-во"].ToString() != "-" && row["Кол-во"].ToString() != "")
-                            materialCertificate.MaterialQuantity = Convert.ToDecimal(row["Кол-во"].ToString().Replace(',', '.'));
-                        materialCertificate.UnitsOfMeasure = row["Ед_изм"].ToString();
-                        materialCertificate.Name = row["Сертификаты,_паспорта"].ToString();
-                        materialCertificate.RegId = row["№_документа_о_качестве"].ToString();
-                        string[] st_dates = row["Дата_документа"].ToString().Split('-');
-                        if (row["Дата_документа"].ToString() != "")
-                        {
-                            if (st_dates.Length > 1 && st_dates[0] != "")
-                            {
-                                materialCertificate.Date = Convert.ToDateTime(st_dates[0]?.ToString());
-                                materialCertificate.StartTime = materialCertificate.Date;
-                                materialCertificate.EndTime = Convert.ToDateTime(st_dates[1]?.ToString());
-                            }
-                            else if (st_dates.Length == 1 && st_dates[0] != "")
-                            {
-                                materialCertificate.Date = Convert.ToDateTime(row["Дата_документа"]?.ToString());
-                                materialCertificate.StartTime = materialCertificate.Date;
-                            }
-                        }
-
-                        materialCertificate.ControlingParament = row["Контрольный_параметр"].ToString();
-                        materialCertificate.RegulationDocumentsName = row["ГОСТ,_ТУ"].ToString();
-                        Picture picture = new Picture();
-                        //  picture.FileName = Guid.NewGuid().ToString()+".pdf";
-                        picture.FileName = ($"{materialCertificate.MaterialName} {materialCertificate.GeometryParameters}  №{materialCertificate.RegId} от {materialCertificate.Date.ToString("d")}  {file_count.ToString()}.pdf")
-                            .Replace("/", "_").Replace("(", "").Replace(")", "").Replace("*", " ").Replace("\n", "").Replace(@"\", "_")
-                            .Replace("\r", "_");
-
-                        //  picture.ImageFile = (byte[])row["files"];
-                        byte[] bytes = (byte[])row["files"];
-                        materialCertificate.ImageFile = picture;
-                        bldMaterial material = new bldMaterial();
-                        material.Name = materialCertificate.MaterialName;
-                        material.Quantity = materialCertificate.MaterialQuantity;
-                        material.UnitOfMeasurement = new bldUnitOfMeasurement(materialCertificate.UnitsOfMeasure);
-                        material.Documents.Add(materialCertificate);
-                        _buildingUnitsRepository.MaterialCertificates.Add(materialCertificate);
-                        _buildingUnitsRepository.Materials.Add(material);
-                        //  byte[] bytes = picture.ImageFile;
-                        if (bytes != null)
-                        {
-                            string byte_string = Encoding.GetEncoding(1251).GetString(bytes);
-                            Regex regex_1 = new Regex($"%PDF-");
-                            MatchCollection matches_1 = regex_1.Matches(byte_string);
-                            int fist_byte = matches_1[0].Index;
-                            Regex regex_2 = new Regex(@"%%EOF");
-                            MatchCollection matches_2 = regex_2.Matches(byte_string);
-                            int last_byte = matches_2[matches_2.Count - 1].Index + 6;
-
-                            using (System.IO.FileStream fs = new System.IO.FileStream($"{BD_FilesDir }\\{picture.FileName}", FileMode.OpenOrCreate))
-                            {
-                                fs.Write(bytes, fist_byte, last_byte - fist_byte);
-
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show("Обнаружено не обработанное исключение: " + e.Message, "Ошибка записи данных", MessageBoxButton.OK, MessageBoxImage.Error);
-                        //     break;
-                    }
-                    // System.Threading.Thread.Sleep(100);
-                }
-                row.Close();
-                _buildingUnitsRepository.Complete();
-
-            }
-        }
+       
         //private void OnLoadMaterialsFromAccess_1()
         //{
         //   // string sMyDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);

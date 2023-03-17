@@ -34,6 +34,7 @@ namespace PrismWorkApp
             containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
             containerRegistry.RegisterSingleton<IModulesContext, ModulesContext>();
             containerRegistry.RegisterSingleton<IBuildingUnitsRepository, BuildingUnitsRepository>();
+            containerRegistry.RegisterSingleton<IbldMaterialsUnitsRepository, bldMaterialsUnitsRepository>();
             containerRegistry.RegisterSingleton<IUnDoReDoSystem, UnDoReDoSystem>();
 
             containerRegistry.RegisterDialog<MessageDialog, MessageDialogViewModel>();

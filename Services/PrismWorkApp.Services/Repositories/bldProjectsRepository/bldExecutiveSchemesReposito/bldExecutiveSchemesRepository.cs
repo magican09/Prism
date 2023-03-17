@@ -6,7 +6,7 @@ namespace PrismWorkApp.Services.Repositories
 {
     public class bldExecutiveSchemesRepository : Repository<bldExecutiveScheme>
     {
-        public bldExecutiveSchemesRepository(PlutoContext context) : base(context)
+        public bldExecutiveSchemesRepository(bldProjectsPlutoContext context) : base(context)
         {
 
         }
@@ -19,6 +19,6 @@ namespace PrismWorkApp.Services.Repositories
             return PlutoContext.ExecutiveSchemes.ToList();
         }
 
-        public PlutoContext PlutoContext { get { return Context as PlutoContext; } }
+        public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }
     }
 }

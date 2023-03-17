@@ -6,9 +6,9 @@ namespace PrismWorkApp.Services.Repositories
 {
     public class bldConstructionCompaniesRepository : Repository<bldConstructionCompany>
     {
-        public PlutoContext PlutoContext { get { return Context as PlutoContext; } }
+        public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }
 
-        public bldConstructionCompaniesRepository(PlutoContext context) : base(context)
+        public bldConstructionCompaniesRepository(bldProjectsPlutoContext context) : base(context)
         {
 
         }

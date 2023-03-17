@@ -9,7 +9,7 @@ namespace PrismWorkApp.Services.Repositories
     public class bldProjectRepository : Repository<bldProject>, IbldProjectRepository
 
     {
-        public bldProjectRepository(PlutoContext context) : base(context)
+        public bldProjectRepository(bldProjectsPlutoContext context) : base(context)
         {
 
         }
@@ -155,7 +155,7 @@ namespace PrismWorkApp.Services.Repositories
             return projects;
         }
 
-        public PlutoContext PlutoContext { get { return Context as PlutoContext; } }
+        public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }
 
     }
 }

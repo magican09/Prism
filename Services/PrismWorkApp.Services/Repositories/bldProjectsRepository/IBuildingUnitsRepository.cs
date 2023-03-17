@@ -14,12 +14,12 @@ namespace PrismWorkApp.Services.Repositories
 
         public bldParticipantRolesRepository ParticipantRolesRepository { get; }
         public bldResponsibleEmployeeRoleRepository ResponsibleEmployeeRoleRepository { get; }
-        public bldUnitOfMeasurementRepository UnitOfMeasurementRepository { get; }
-        public bldMaterialsRepository Materials { get; }
+        public bldProjectUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
+        public bldProjectMaterialsRepository Materials { get; }
         public bldProjectDocumentsRepository ProjectDocuments { get; }
         public bldLaboratoryReportsRepository LaboratoryReports { get; }
         public bldExecutiveSchemesRepository ExecutiveSchemes { get; }
-        public bldMaterialCertificatesRepository MaterialCertificates { get; }
+        public bldProjectMaterialCertificatesRepository MaterialCertificates { get; }
         public int Complete();
     }
 }

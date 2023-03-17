@@ -1,12 +1,13 @@
-﻿using PrismWorkApp.OpenWorkLib.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PrismWorkApp.OpenWorkLib.Data;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class bldUnitOfMeasurementRepository : Repository<bldUnitOfMeasurement>
+    public class bldUnitOfMeasuremenRepository : Repository<bldUnitOfMeasurement>
     {
-        public bldUnitOfMeasurementRepository(PlutoContext context) : base(context)
+        public bldUnitOfMeasuremenRepository(DbContext context) : base(context)
         {
 
         }
@@ -19,6 +20,6 @@ namespace PrismWorkApp.Services.Repositories
             return PlutoContext.UnitOfMeasurements.ToList();//out_val;
         }
 
-        public PlutoContext PlutoContext { get { return Context as PlutoContext; } }
+        public bldMaterialsPlutoContext PlutoContext { get { return Context as bldMaterialsPlutoContext; } }
     }
 }

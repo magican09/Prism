@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class bldMaterialCertificatesRepository : Repository<bldMaterialCertificate>
+    public class bldProjectMaterialCertificatesRepository : Repository<bldMaterialCertificate>
     {
-        public bldMaterialCertificatesRepository(PlutoContext context) : base(context)
+        public bldProjectMaterialCertificatesRepository(bldProjectsPlutoContext context) : base(context)
         {
 
         }
@@ -19,6 +19,6 @@ namespace PrismWorkApp.Services.Repositories
             return PlutoContext.MaterialCertificates.ToList();
         }
 
-        public PlutoContext PlutoContext { get { return Context as PlutoContext; } }
+        public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }
     }
 }

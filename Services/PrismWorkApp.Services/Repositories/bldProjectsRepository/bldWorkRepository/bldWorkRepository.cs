@@ -8,9 +8,9 @@ namespace PrismWorkApp.Services.Repositories
 {
     public class bldWorkRepository : Repository<bldWork>, IbldWorkRepository
     {
-        public PlutoContext PlutoContext { get { return Context as PlutoContext; } }
+        public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }
 
-        public bldWorkRepository(PlutoContext context) : base(context)
+        public bldWorkRepository(bldProjectsPlutoContext context) : base(context)
         {
 
         }

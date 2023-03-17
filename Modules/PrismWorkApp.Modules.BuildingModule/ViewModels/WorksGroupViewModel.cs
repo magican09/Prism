@@ -34,12 +34,18 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
 
 
-        //private bldMaterial _selectedMaterial;
-        //public bldMaterial SelectedMaterial
-        //{
-        //    get { return _selectedMaterial; }
-        //    set { SetProperty(ref _selectedMaterial, value); }
-        //}
+        private bldMaterial _selectedMaterial;
+        public bldMaterial SelectedMaterial
+        {
+            get { return _selectedMaterial; }
+            set { SetProperty(ref _selectedMaterial, value); }
+        }
+        private bldExecutiveScheme _selectedExecutiveScheme;
+        public bldExecutiveScheme SelectedExecutiveScheme
+        {
+            get { return _selectedExecutiveScheme; }
+            set { SetProperty(ref _selectedExecutiveScheme, value); }
+        }
         private bldWorksGroup _selectedWorksGroup;
         public bldWorksGroup SelectedWorksGroup
         {
@@ -76,7 +82,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> CopyCommand { get; private set; }
         public NotifyCommand<object> CutCommand { get; private set; }
         public NotifyCommand<object> PasteCommand { get; private set; }
-        private ObservableCollection<CopiedCutedObject> _objectsBuffer = new ObservableCollection<CopiedCutedObject>();
+        private ObservableCollection<CopiedCutedObject<object>> _objectsBuffer = new ObservableCollection<CopiedCutedObject<object>>();
 
 
         public ObservableCollection<INotifyCommand> UnitsOfMeasurementContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
@@ -90,7 +96,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> CopyMaterialsCommand { get; private set; }
         public NotifyCommand<object> CutMaterialsCommand { get; private set; }
         public NotifyCommand<object> PasteMaterialsCommand { get; private set; }
-        public CopyCutPasteCommands<BindableBase> CopyCutPasteCommand { get; private set; }
+        public CopyCutPasteCommands<bldMaterial> CopyCutPasteMaterials { get; private set; }
+
 
         public ObservableCollection<INotifyCommand> ProjectDocumentationContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> AddProjectsDocumentCommand { get; private set; }
@@ -99,10 +106,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public ObservableCollection<INotifyCommand> LaboratoryReportsContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> AddLaboratoryReportsCommand { get; private set; }
         public NotifyCommand<object> RemoveLaboratoryReportCommand { get; private set; }
-
+        public CopyCutPasteCommands<bldLaboratoryReport> CopyCutPasteLaboratoryReports { get; private set; }
+        
         public ObservableCollection<INotifyCommand> ExecutiveSchemesContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> AddExecutiveSchemesCommand { get; private set; }
         public NotifyCommand<object> RemoveExecutiveSchemeCommand { get; private set; }
+        public CopyCutPasteCommands<bldExecutiveScheme> CopyCutPasteExecutiveScheme { get; private set; }
 
         public ObservableCollection<INotifyCommand> WorksContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand CreateNewWorkCommand { get; private set; }
@@ -159,12 +168,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             NextWorksContextMenuCommands.Add(AddNextWorkCommand);
             NextWorksContextMenuCommands.Add(RemoveNextWorkCommand);
 
-            CopyCommand = new NotifyCommand<object>(OnCopy);
-            CopyCommand.Name = "Копировать";
-            CutCommand = new NotifyCommand<object>(OnCut);
-            CutCommand.Name = "Вырезать";
-            PasteCommand = new NotifyCommand<object>(OnPaste, (ob) => _objectsBuffer.Count > 0).ObservesPropertyChangedEvent(_objectsBuffer);
-            PasteCommand.Name = "Вставить";
+            //CopyCommand = new NotifyCommand<object>(OnCopy);
+            //CopyCommand.Name = "Копировать";
+            //CutCommand = new NotifyCommand<object>(OnCut);
+            //CutCommand.Name = "Вырезать";
+            //PasteCommand = new NotifyCommand<object>(OnPaste, (ob) => _objectsBuffer.Count > 0).ObservesPropertyChangedEvent(_objectsBuffer);
+            //PasteCommand.Name = "Вставить";
 
 
             SelectUnitOfMeasurementCommand = new NotifyCommand<object>(OnSelectUnitOfMeasurement);
@@ -180,12 +189,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveMaterialCommand.Name = "Удалить материал";
             AddCreatedFromTemplateMaterialCommand = new NotifyCommand<object>(OnAddCreatedFromTemplateMaterial);
             AddCreatedFromTemplateMaterialCommand.Name = "Создать на основании материал";
+            CopyCutPasteMaterials = new CopyCutPasteCommands<bldMaterial>(
+               (ob) => SelectedMaterial != null,
+               (ob) => SelectedMaterial != null,
+               UnDoReDo as UnDoReDoSystem);
             MaterialsContextMenuCommands.Add(AddMaterialsCommand);
             MaterialsContextMenuCommands.Add(RemoveMaterialCommand);
             MaterialsContextMenuCommands.Add(AddCreatedFromTemplateMaterialCommand);
-            MaterialsContextMenuCommands.Add(CopyCommand);
-            MaterialsContextMenuCommands.Add(CutCommand);
-            MaterialsContextMenuCommands.Add(PasteCommand);
+            MaterialsContextMenuCommands.Add(CopyCutPasteMaterials.CopyCommand);
+            MaterialsContextMenuCommands.Add(CopyCutPasteMaterials.CutCommand);
+            MaterialsContextMenuCommands.Add(CopyCutPasteMaterials.PasteCommand);
 
 
             AddProjectsDocumentCommand = new NotifyCommand<object>(OnAddProjectsDocuments);
@@ -201,19 +214,27 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveLaboratoryReportCommand.Name = "Удалить документацию";
             LaboratoryReportsContextMenuCommands.Add(AddLaboratoryReportsCommand);
             LaboratoryReportsContextMenuCommands.Add(RemoveLaboratoryReportCommand);
-            LaboratoryReportsContextMenuCommands.Add(CopyCommand);
-            LaboratoryReportsContextMenuCommands.Add(CutCommand);
-            LaboratoryReportsContextMenuCommands.Add(PasteCommand);
+            CopyCutPasteLaboratoryReports = new CopyCutPasteCommands<bldLaboratoryReport>(
+              (ob) => { return true; },
+              (ob) => { return true; },
+              UnDoReDo as UnDoReDoSystem);
+            LaboratoryReportsContextMenuCommands.Add(CopyCutPasteLaboratoryReports.CopyCommand);
+            LaboratoryReportsContextMenuCommands.Add(CopyCutPasteLaboratoryReports.CutCommand);
+            LaboratoryReportsContextMenuCommands.Add(CopyCutPasteLaboratoryReports.PasteCommand);
 
             AddExecutiveSchemesCommand = new NotifyCommand<object>(OnAddExecutiveSchemes);
             AddExecutiveSchemesCommand.Name = "Добавить исполнительные схемы";
             RemoveExecutiveSchemeCommand = new NotifyCommand<object>(OnRemoveExecutiveScheme);
             RemoveExecutiveSchemeCommand.Name = "Удалить исполнительную схему";
+            CopyCutPasteExecutiveScheme = new CopyCutPasteCommands<bldExecutiveScheme>(
+                (ob) => SelectedExecutiveScheme != null, 
+                (ob) => SelectedExecutiveScheme != null,
+                UnDoReDo as UnDoReDoSystem);
             ExecutiveSchemesContextMenuCommands.Add(AddExecutiveSchemesCommand);
             ExecutiveSchemesContextMenuCommands.Add(RemoveExecutiveSchemeCommand);
-            ExecutiveSchemesContextMenuCommands.Add(CopyCommand);
-            ExecutiveSchemesContextMenuCommands.Add(CutCommand);
-            ExecutiveSchemesContextMenuCommands.Add(PasteCommand);
+            ExecutiveSchemesContextMenuCommands.Add(CopyCutPasteExecutiveScheme.CopyCommand);
+            ExecutiveSchemesContextMenuCommands.Add(CopyCutPasteExecutiveScheme.CutCommand);
+            ExecutiveSchemesContextMenuCommands.Add(CopyCutPasteExecutiveScheme.PasteCommand);
 
             #region Work Context Menu
             CreateNewWorkCommand = new NotifyCommand(OnAddNewWork);
@@ -258,93 +279,93 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.CreateWorkCommand.RegisterCommand(CreateNewWorkCommand);
         }
 
-        private void OnCopy(object obj)
-        {
-            if (obj == null) return;
-            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
-            _objectsBuffer.Clear();
-            foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
-            {
-                if (!(tpl_obj is IEntityObject)) break;
-                _objectsBuffer.Add(new CopiedCutedObject(selected_work, tpl_obj, CopyCutPaste.COPIED));
-            }
-        }
-        private void OnCut(object obj)
-        {
-            if (obj == null) return;
+        //private void OnCopy(object obj)
+        //{
+        //    if (obj == null) return;
+        //    bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+        //    _objectsBuffer.Clear();
+        //    foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
+        //    {
+        //        if (!(tpl_obj is IEntityObject)) break;
+        //        _objectsBuffer.Add(new CopiedCutedObject<object>(selected_work, tpl_obj, CopyCutPaste.COPIED));
+        //    }
+        //}
+        //private void OnCut(object obj)
+        //{
+        //    if (obj == null) return;
            
-            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
-            _objectsBuffer.Clear();
-            foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
-            {
-                if (!(tpl_obj is IEntityObject)) break;
-                _objectsBuffer.Add(new CopiedCutedObject(selected_work, tpl_obj, CopyCutPaste.CUTED));
-             }
-        }
-        private void OnPaste(object obj)
-        {
-            if (obj == null) return;
-            bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
-            UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
-            UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDo);
-            localUnDoReDo.Register(selected_work);
-            foreach (CopiedCutedObject copy_cut_obj in _objectsBuffer)
-            {
-                switch (copy_cut_obj.Element?.GetType()?.Name)
-                {
-                    case (nameof(bldMaterial)):
-                        if (copy_cut_obj.ActionType == CopyCutPaste.COPIED)
-                        {
-                            bldMaterial new_obj = (copy_cut_obj.Element as bldMaterial).Clone() as bldMaterial;
-                            selected_work.AddMaterial(new_obj);
-                        }
-                        if (copy_cut_obj.ActionType == CopyCutPaste.CUTED)
-                        {
-                            bldWork from_work = copy_cut_obj.FromObject as bldWork;
-                            localUnDoReDo.Register(from_work);
-                            (copy_cut_obj.FromObject as bldWork).RemoveMaterial(copy_cut_obj.Element as bldMaterial);
-                            selected_work.AddMaterial(copy_cut_obj.Element as bldMaterial);
-                        }
-                        break;
-                    case (nameof(bldLaboratoryReport)):
-                        if (copy_cut_obj.ActionType == CopyCutPaste.COPIED)
-                        {
-                            bldLaboratoryReport new_obj = (copy_cut_obj.Element as bldLaboratoryReport).Clone() as bldLaboratoryReport;
-                            selected_work.AddLaboratoryReport(new_obj);
-                        }
-                        if (copy_cut_obj.ActionType == CopyCutPaste.CUTED)
-                        {
-                            bldWork from_work = copy_cut_obj.FromObject as bldWork;
-                            localUnDoReDo.Register(from_work);
-                            (copy_cut_obj.FromObject as bldWork).RemoveLaboratoryReport(copy_cut_obj.Element as bldLaboratoryReport);
-                            selected_work.AddLaboratoryReport(copy_cut_obj.Element as bldLaboratoryReport);
-                        }
-                        break;
-                    case (nameof(bldExecutiveScheme)):
-                        if (copy_cut_obj.ActionType == CopyCutPaste.COPIED)
-                        {
-                            bldExecutiveScheme new_obj = (copy_cut_obj.Element as bldExecutiveScheme).Clone() as bldExecutiveScheme;
-                            selected_work.AddExecutiveScheme(new_obj);
-                        }
-                        if (copy_cut_obj.ActionType == CopyCutPaste.CUTED)
-                        {
-                            bldWork from_work = copy_cut_obj.FromObject as bldWork;
-                            localUnDoReDo.Register(from_work);
-                            (copy_cut_obj.FromObject as bldWork).RemoveExecutiveScheme(copy_cut_obj.Element as bldExecutiveScheme);
-                            selected_work.AddExecutiveScheme(copy_cut_obj.Element as bldExecutiveScheme);
-                        }
-                        break;
-                }
+        //    bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+        //    _objectsBuffer.Clear();
+        //    foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
+        //    {
+        //        if (!(tpl_obj is IEntityObject)) break;
+        //        _objectsBuffer.Add(new CopiedCutedObject<object>(selected_work, tpl_obj, CopyCutPaste.CUTED));
+        //     }
+        //}
+        //private void OnPaste(object obj)
+        //{
+        //    if (obj == null) return;
+        //    bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
+        //    UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
+        //    UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDo);
+        //    localUnDoReDo.Register(selected_work);
+        //    foreach (CopiedCutedObject<object> copy_cut_obj in _objectsBuffer)
+        //    {
+        //        switch (copy_cut_obj.Element?.GetType()?.Name)
+        //        {
+        //            case (nameof(bldMaterial)):
+        //                if (copy_cut_obj.ActionType == CopyCutPaste.COPIED)
+        //                {
+        //                    bldMaterial new_obj = (copy_cut_obj.Element as bldMaterial).Clone() as bldMaterial;
+        //                    selected_work.AddMaterial(new_obj);
+        //                }
+        //                if (copy_cut_obj.ActionType == CopyCutPaste.CUTED)
+        //                {
+        //                    bldWork from_work = copy_cut_obj.FromObject as bldWork;
+        //                    localUnDoReDo.Register(from_work);
+        //                    (copy_cut_obj.FromObject as bldWork).RemoveMaterial(copy_cut_obj.Element as bldMaterial);
+        //                    selected_work.AddMaterial(copy_cut_obj.Element as bldMaterial);
+        //                }
+        //                break;
+        //            case (nameof(bldLaboratoryReport)):
+        //                if (copy_cut_obj.ActionType == CopyCutPaste.COPIED)
+        //                {
+        //                    bldLaboratoryReport new_obj = (copy_cut_obj.Element as bldLaboratoryReport).Clone() as bldLaboratoryReport;
+        //                    selected_work.AddLaboratoryReport(new_obj);
+        //                }
+        //                if (copy_cut_obj.ActionType == CopyCutPaste.CUTED)
+        //                {
+        //                    bldWork from_work = copy_cut_obj.FromObject as bldWork;
+        //                    localUnDoReDo.Register(from_work);
+        //                    (copy_cut_obj.FromObject as bldWork).RemoveLaboratoryReport(copy_cut_obj.Element as bldLaboratoryReport);
+        //                    selected_work.AddLaboratoryReport(copy_cut_obj.Element as bldLaboratoryReport);
+        //                }
+        //                break;
+        //            case (nameof(bldExecutiveScheme)):
+        //                if (copy_cut_obj.ActionType == CopyCutPaste.COPIED)
+        //                {
+        //                    bldExecutiveScheme new_obj = (copy_cut_obj.Element as bldExecutiveScheme).Clone() as bldExecutiveScheme;
+        //                    selected_work.AddExecutiveScheme(new_obj);
+        //                }
+        //                if (copy_cut_obj.ActionType == CopyCutPaste.CUTED)
+        //                {
+        //                    bldWork from_work = copy_cut_obj.FromObject as bldWork;
+        //                    localUnDoReDo.Register(from_work);
+        //                    (copy_cut_obj.FromObject as bldWork).RemoveExecutiveScheme(copy_cut_obj.Element as bldExecutiveScheme);
+        //                    selected_work.AddExecutiveScheme(copy_cut_obj.Element as bldExecutiveScheme);
+        //                }
+        //                break;
+        //        }
 
-            }
+        //    }
 
 
 
-            _objectsBuffer.Clear();
-            UnDoReDo.AddUnDoReDo(localUnDoReDo);
-            UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDo);
-            SaveCommand.RaiseCanExecuteChanged();
-        }
+        //    _objectsBuffer.Clear();
+        //    UnDoReDo.AddUnDoReDo(localUnDoReDo);
+        //    UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDo);
+        //    SaveCommand.RaiseCanExecuteChanged();
+        //}
 
 
 
@@ -356,7 +377,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             _objectsBuffer.Clear();
             foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
-                if (tpl_obj is bldMaterial material) _objectsBuffer.Add(new CopiedCutedObject(selected_work, material, CopyCutPaste.COPIED));
+                if (tpl_obj is bldMaterial material) _objectsBuffer.Add(new CopiedCutedObject<object>(selected_work, material, CopyCutPaste.COPIED));
 
         }
         private void OnCutMaterials(object obj)
@@ -365,7 +386,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             _objectsBuffer.Clear();
             foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
-                if (tpl_obj is bldMaterial material) _objectsBuffer.Add(new CopiedCutedObject(selected_work, material, CopyCutPaste.CUTED));
+                if (tpl_obj is bldMaterial material) _objectsBuffer.Add(new CopiedCutedObject<object>(selected_work, material, CopyCutPaste.CUTED));
         }
 
 
@@ -378,7 +399,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             localUnDoReDo.Register(selected_work);
             if (_objectsBuffer.Count == 0)
                 ;
-            foreach (CopiedCutedObject copy_cut_obj in _objectsBuffer)
+            foreach (CopiedCutedObject<object> copy_cut_obj in _objectsBuffer)
             {
                 if (copy_cut_obj.ActionType == CopyCutPaste.COPIED)
                 {
@@ -487,6 +508,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnDataGridLostFocus(object obj)
         {
             SelectedWorks.Clear();
+           
         }
 
         private void OnDataGridSelectionChanged(object works)
@@ -494,6 +516,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SelectedWorks.Clear();
             foreach (bldWork work in (IList)works)
                 SelectedWorks.Add(work);
+          //  SelectedExecutiveScheme = null;
+           // SelectedMaterial = null;
         }
 
         private void OnDeleteWork()

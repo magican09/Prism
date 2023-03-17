@@ -6,7 +6,7 @@ namespace PrismWorkApp.Services.Repositories
 {
     public class bldResponsibleEmployeeRoleRepository : Repository<bldResponsibleEmployeeRole>
     {
-        public bldResponsibleEmployeeRoleRepository(PlutoContext context) : base(context)
+        public bldResponsibleEmployeeRoleRepository(bldProjectsPlutoContext context) : base(context)
         {
 
         }
@@ -19,6 +19,6 @@ namespace PrismWorkApp.Services.Repositories
             return PlutoContext.ResponsibleEmployeeRoles.ToList();//out_val;
         }
 
-        public PlutoContext PlutoContext { get { return Context as PlutoContext; } }
+        public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }
     }
 }

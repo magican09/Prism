@@ -2234,7 +2234,30 @@ namespace PrismWorkApp.Core
         }
         #endregion
         #endregion
+        #region Collections func 
+        public static TCollection FindElementInCollection<TEntity,TCollection>(TCollection collection,string prop_name,object finding_val) 
+            where TCollection:IList,ICollection<TEntity>,new()
+            where TEntity:class
+        {
+            TCollection out_collection = new TCollection();
+            var prop_info = collection[0].GetType().GetProperty(prop_name);
+            if (prop_info == null) return out_collection;
+            foreach(TEntity entity in collection)
+            {
+                var prop_val = prop_info.GetValue(entity);
 
+                //if (prop_val is string && finding_val is string &&  prop_val.ToString().Contains(finding_val.ToString()))
+                if (prop_val!=null && prop_val.ToString().Contains(finding_val.ToString()))
+                    out_collection.Add(entity);
+                //else
+                //if(prop_val == finding_val)
+                //{
+                //    out_collection.Add(entity);
+                //}
+            }
+            return out_collection;
+        }
+        #endregion
 
 
     }

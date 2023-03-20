@@ -26,6 +26,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedMaterial; }
             set { SetProperty(ref _selectedMaterial, value); }
         }
+       
         //private bldWork _selectedWork;
         //public bldWork SelectedWork
         //{

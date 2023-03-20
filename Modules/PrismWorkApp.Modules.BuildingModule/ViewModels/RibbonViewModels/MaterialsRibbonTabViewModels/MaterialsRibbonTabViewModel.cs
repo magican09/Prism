@@ -13,6 +13,7 @@ using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
@@ -56,6 +57,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             _regionManager = regionManager;
             _bldMaterialsUnitsRepository = bldMaterialsUnitsRepository;
+           
             _applicationCommands = applicationCommands;
             IsActiveChanged += OnActiveChanged;
             LoadMaterialsFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
@@ -68,8 +70,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
          bldMaterialsGroup materials = new bldMaterialsGroup();
             Functions.OnLoadMaterialsFromAccess(materials);
             NavigationParameters navParam = new NavigationParameters();
+            bldResourseCategory category = new bldResourseCategory();
+            category.Name = "Загруженные";
+            category.Resources =new ObservableCollection<bldResource>(materials);
+            materials.Parent = category;
+            _bldMaterialsUnitsRepository.ResourseCategories.Add(category);
             navParam.Add("bld_materials", new ConveyanceObject(materials, ConveyanceObjectModes.EditMode.FOR_EDIT));
             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialsGroupView).Name, navParam);
+
+            //foreach (bldMaterial matr in materials)
+            //{
+            //    category.Resources.Add(matr);
+            //    matr.Category = category;
+            //}
+            //_bldMaterialsUnitsRepository.Complete();
+
 
         }
 

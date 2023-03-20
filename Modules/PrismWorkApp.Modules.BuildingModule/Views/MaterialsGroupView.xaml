@@ -45,17 +45,45 @@
         <StackPanel x:Name="mainStakPanel" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Grid.RowSpan="2" Orientation="Vertical" >
             <StackPanel  >
                 <TextBlock Style="{StaticResource inlineText}"><Run Text="Список материалов"/></TextBlock>
+                <StackPanel Orientation="Horizontal" Margin="3">
+                    <ComboBox ItemsSource="{Binding MaterialsCategories}" SelectedItem="{Binding SelectedMaterialCategory}" 
+                          DisplayMemberPath="Name"
+                          SelectedValuePath="Name"  Width="300"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="3">
+                    <ComboBox ItemsSource="{Binding  ElementName=bldMaterialsDataGrid,Path=Columns}" SelectedItem="{Binding SelectedGridColumn}" 
+                          DisplayMemberPath="Header"
+                          SelectedValuePath="Header"  Width="300"/>
+                    <TextBox Name="findTextBox" Width="250" />
+                    <Button  Content="Найти" Command="{Binding FindMaterialCommand}" >
+                        <!--CommandParameter="{Binding ElementName=findTextBox,Path=Text}">-->
+                        <Button.CommandParameter>
+                            <MultiBinding Converter="{StaticResource ObjectsPairMultiConverter}">
+                                <Binding ElementName="bldMaterialsDataGrid" />
+                                <Binding  ElementName="findTextBox" Path="Text"/>
+                            </MultiBinding>
+                        </Button.CommandParameter>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="3">
+                    <TextBox Name="filterTextBox" Width="250" IsEnabled="{Binding ElementName=filterEnableCheckBox, Path=IsChecked}" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="KeyUp">
+                                <prism:InvokeCommandAction Command="{Binding FilteredElementCommand}" 
+                                                           CommandParameter="{Binding ElementName=filterTextBox}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
+                    <CheckBox x:Name="filterEnableCheckBox" IsChecked="{Binding FilterEnable}" Content="Использовать фильтр" />
+                </StackPanel>
                 <StackPanel Orientation="Horizontal" x:Name="bldObjectStackPanel"  >
-
-
-
                     <Grid Width="{Binding ActualWidth, ElementName=mainStakPanel}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*" x:Name="DataGridLeftCulumn"/>
                             <ColumnDefinition  Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <DataGrid Visibility="Visible" x:Name="bldWorks" Grid.Column="0" ItemsSource="{Binding SelectedMaterialsGroup}"   
+                        <DataGrid  Visibility="Visible" x:Name="bldMaterialsDataGrid" Grid.Column="0" ItemsSource="{Binding FilteredCommonPointersCollection}"   
                                  SelectedItem="{Binding SelectedMaterial}"  
                                 Style="{StaticResource inlineDataGrid}"  
                                  AutoGenerateColumns="False"  IsReadOnly="False"  
@@ -97,7 +125,7 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn  Header="Код"   Width="Auto"
                                                      Binding = "{Binding Path=Code}" />
-                               <DataGridTextColumn  Header="Наименование"   Width="Auto"
+                                <DataGridTextColumn  Header="Наименование"   Width="Auto"
                                                      Binding = "{Binding  Path=Name}" IsReadOnly="False" />
                                 <DataGridTemplateColumn Header="Ед.изм">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -160,12 +188,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <!--<сc:ConstructionDataGrid DataContext="{Binding SelectedConstruction}"  SelectedItem="{Binding SelectedWork, Mode=TwoWay}" />
-            <сc:GanttDiargamDataGrid x:Name="ganttDataGrid" ItemsSource="{Binding SelectedWorksGroup}"
-                                     SelectedItem="{Binding SelectedWork,Mode=TwoWay}"
-                                     Height="100">
-                
-            </сc:GanttDiargamDataGrid>-->
+
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10" >
 

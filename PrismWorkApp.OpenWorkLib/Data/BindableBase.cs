@@ -165,26 +165,24 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NotMapped]
         public bool CopingEnable { get; set; } = true;
 
-        private IBindableBase _parent;
+        private BindableBase _parent;
         [NotMapped]
         [NavigateProperty]
-        public IBindableBase Parent
+        public BindableBase Parent
         {
             get { return _parent; }
             set
             {
-
                 SetProperty(ref _parent, value);
-                if (_parent != null && !_parent.Children.Contains(_parent)) _parent.Children.Add(this);
+             ///   if (_parent != null && !_parent.Children.Contains(_parent)) _parent.Children.Add(this);
                 //foreach (IBindableBase elm in Children)
                 //    if(!Children.Contains(_parent)) elm.Parent = _parent;
-
             }
         }
-        private ObservableCollection<IBindableBase> _children = new ObservableCollection<IBindableBase>();
+        private ObservableCollection<BindableBase> _children = new ObservableCollection<BindableBase>();
         [NotMapped]
         [NavigateProperty]
-        public ObservableCollection<IBindableBase> Children
+        public ObservableCollection<BindableBase> Children
         {
             get { return _children; }
             set { _children = value; }

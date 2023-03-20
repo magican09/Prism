@@ -262,14 +262,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bool IsPointerContainer { get; set; }
         public bool CopingEnable { get; set; } = true;
 
-        private IBindableBase _parent;
-        public IBindableBase Parent
+        private BindableBase _parent;
+        public BindableBase Parent
         {
             get { return _parent; }
             set { _parent = value; }
         }
-        private ObservableCollection<IBindableBase> _children;
-        public ObservableCollection<IBindableBase> Children
+        private ObservableCollection<BindableBase> _children;
+        public ObservableCollection<BindableBase> Children
         {
             get { return _children; }
             set { _children = value; }

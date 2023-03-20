@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
@@ -14,7 +17,11 @@ namespace PrismWorkApp.Services.Repositories
         }
 
         #region Resources 
+      
+        public virtual DbSet<bldResourseCategory>   ResourseCategories { get; set; }
         public virtual DbSet<bldMaterial> Materials { get; set; }
+        public virtual DbSet<bldResource> Resources { get; set; }
+
         public virtual DbSet<bldUnitOfMeasurement> UnitOfMeasurements { get; set; }
         public virtual DbSet<bldMaterialCertificate> MaterialCertificates { get; set; }
 
@@ -31,7 +38,42 @@ namespace PrismWorkApp.Services.Repositories
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-    
+
+            //modelBuilder.Entity<ObjectsCategory>()
+            //    .HasMany(oc => oc.Children)
+            //    .WithOne(ch => ch.Parent);
+            //modelBuilder.Entity<bldMaterial>()
+            //  .HasBaseType<bldResource>();
+            //modelBuilder.Entity<bldResourseCategory>()
+            //  .HasBaseType<BindableBase>();
+
+            modelBuilder.Entity<bldResourseCategory>()
+                .HasMany(rc => rc.Resources)
+                .WithOne(r => r.Category);
+            modelBuilder.Entity<bldResource>()
+                .HasOne(m => m.Category)
+                .WithMany(c => c.Resources);
+            //modelBuilder.Entity<bldResourseCategory>()
+            //    .HasMany(rc => rc.Children)
+            //    .WithOne(rc => rc.Parent);
+
+            var converter = new ValueConverter<IBindableBase, bldResourseCategory>(
+                v => v as bldResourseCategory,
+                v => v as IBindableBase);
+
+            //modelBuilder.Entity<bldResourseCategory>()
+            //    .Property(pr => pr.Parent)
+            //    .HasConversion(
+            //    v=>v as bldResourseCategory,
+            //    v=>v as BindableBase);
+            //modelBuilder.Entity<bldResourseCategory>()
+            //    .Property(pr => pr.Children)
+            //    .HasConversion(
+            //    v => v as ICollection<bldResourseCategory>,
+            //    v => v as ObservableCollection<BindableBase>);
+          
+
+            
             modelBuilder.Entity<bldMaterialCertificate>().ToTable("MaterialCertificates");
             modelBuilder.Entity<bldPasportDocument>().ToTable("PasportDocuments");
             base.OnModelCreating(modelBuilder);

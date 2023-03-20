@@ -7,6 +7,7 @@ namespace PrismWorkApp.Services.Repositories
         public bldUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
         public bldMaterialsRepository Materials { get; }
         public bldMaterialsCertificatesRepository MaterialCertificates { get; }
+        public bldResourseCategoriesRepository ResourseCategories { get; }
         public int Complete();
     }
 }

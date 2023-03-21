@@ -507,7 +507,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
 
             return project;
         }
-        public static void OnLoadMaterialsFromAccess(IList<bldMaterial> materials, string pictures_out_dir = "")
+        public static void OnLoadMaterialCertificatesFromAccess(IList<bldMaterialCertificate>  certificates, string pictures_out_dir = "")
         {
             string access_file_name;
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -523,7 +523,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             if (pictures_out_dir != "") BD_FilesDir = pictures_out_dir;
             
             BD_FilesDir = Path.Combine(BD_FilesDir, "MaterialsBDFiles");
-            BD_FilesDir = Path.Combine(BD_FilesDir, table_name);
+          //  BD_FilesDir = Path.Combine(BD_FilesDir, table_name);
             Directory.CreateDirectory(BD_FilesDir);
 
             MemoryStream memoryStream = new MemoryStream();
@@ -555,8 +555,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             materialCertificate.MaterialName = row["Наименование _материала"].ToString();
                             materialCertificate.GeometryParameters = row["Геометрические_параметры"].ToString();
                             if (row["Кол-во"].ToString() != "-" && row["Кол-во"].ToString() != "")
-                                materialCertificate.MaterialQuantity = Convert.ToDecimal(row["Кол-во"].ToString().Replace(',', '.'));
-                            materialCertificate.UnitsOfMeasure = row["Ед_изм"].ToString();
+                                materialCertificate.Quantity = Convert.ToDecimal(row["Кол-во"].ToString().Replace(',', '.'));
+                            materialCertificate.UnitOfMeasurement=  new bldUnitOfMeasurement(row["Ед_изм"].ToString());
                             materialCertificate.Name = row["Сертификаты,_паспорта"].ToString();
                             materialCertificate.RegId = row["№_документа_о_качестве"].ToString();
                             string[] st_dates = row["Дата_документа"].ToString().Split('-');
@@ -578,20 +578,16 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             materialCertificate.ControlingParament = row["Контрольный_параметр"].ToString();
                             materialCertificate.RegulationDocumentsName = row["ГОСТ,_ТУ"].ToString();
                             Picture picture = new Picture();
+                            picture.Id = Guid.NewGuid();
                             //  picture.FileName = Guid.NewGuid().ToString()+".pdf";
-                            picture.FileName = ($"{materialCertificate.MaterialName} {materialCertificate.GeometryParameters}  №{materialCertificate.RegId} от {materialCertificate.Date.ToString("d")}  {file_count.ToString()}.pdf")
+                            picture.FileName = ($"{materialCertificate.MaterialName} {materialCertificate.GeometryParameters}  №{materialCertificate.RegId} от {materialCertificate.Date.ToString("d")} Id{picture.Id.ToString()}.pdf")
                                 .Replace("/", "_").Replace("(", "").Replace(")", "").Replace("*", " ").Replace("\n", "").Replace(@"\", "_")
                                 .Replace("\r", "_");
 
                             //  picture.ImageFile = (byte[])row["files"];
                             byte[] bytes = (byte[])row["files"];
                             materialCertificate.ImageFile = picture;
-                            bldMaterial material = new bldMaterial();
-                            material.Name = materialCertificate.MaterialName;
-                            material.Quantity = materialCertificate.MaterialQuantity;
-                            material.UnitOfMeasurement = new bldUnitOfMeasurement(materialCertificate.UnitsOfMeasure);
-                            material.Documents.Add(materialCertificate);
-                            materials.Add(material);
+                            certificates.Add(materialCertificate);                       
                             //_buildingUnitsRepository.MaterialCertificates.Add(materialCertificate);
                             //_buildingUnitsRepository.Materials.Add(material);
                             //  byte[] bytes = picture.ImageFile;

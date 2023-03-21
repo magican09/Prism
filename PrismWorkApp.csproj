@@ -6,6 +6,7 @@
     <AssemblyName>PrismWorkApp</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="FreeSpire.PDF" Version="8.6.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -2,18 +2,18 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldMaterialCertificateGroup : NameableObservableCollection<bldMaterialCertificate>, IEntityObject
+    public class bldMaterialCertificatesGroup : NameableObservableCollection<bldMaterialCertificate>, IEntityObject
     {
-        public bldMaterialCertificateGroup()
+        public bldMaterialCertificatesGroup()
         {
             Name = "Документация на материалы";
         }
 
-        public bldMaterialCertificateGroup(string name)
+        public bldMaterialCertificatesGroup(string name)
         {
             Name = name;
         }
-        public bldMaterialCertificateGroup(List<bldMaterialCertificate> _list) : base(_list)
+        public bldMaterialCertificatesGroup(List<bldMaterialCertificate> _list) : base(_list)
         {
             Name = "Документация на материалы";
         }

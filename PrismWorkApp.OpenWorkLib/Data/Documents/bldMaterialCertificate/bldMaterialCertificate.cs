@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldMaterialCertificate : bldDocument, IbldMaterialCertificate, IEntityObject, IDateable, ITemporal
+    public class bldMaterialCertificate : bldDocument, IbldMaterialCertificate, IEntityObject, IDateable, ITemporal, IMeasurable
     {
         private string _materialName;
         public string MaterialName
@@ -10,25 +10,24 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _materialName; }
             set { SetProperty(ref _materialName, value); }
         }
-
         private string _geometryParameters;
         public string GeometryParameters
         {
             get { return _geometryParameters; }
             set { SetProperty(ref _geometryParameters, value); }
         }
-        private decimal _materialQuantity;
-        public decimal MaterialQuantity
+        private decimal _quantity;
+        public decimal Quantity
         {
-            get { return _materialQuantity; }
-            set { SetProperty(ref _materialQuantity, value); }
+            get { return _quantity; }
+            set { SetProperty(ref _quantity, value); }
         }//Количесво 
-        private string _unitsOfMeasure;
-        public string UnitsOfMeasure
+        private bldUnitOfMeasurement _unitOfMeasurement;
+        public virtual bldUnitOfMeasurement UnitOfMeasurement
         {
-            get { return _unitsOfMeasure; }
-            set { SetProperty(ref _unitsOfMeasure, value); }
-        }
+            get { return _unitOfMeasurement; }
+            set { SetProperty(ref _unitOfMeasurement, value); }
+        }//Ед. изм
         private string _controlingParament;
         public string ControlingParament
         {
@@ -59,5 +58,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _netExecutionTime; }
             set { SetProperty(ref _netExecutionTime, value); }
         }//Чистое время выполнения
+
     }
 }

@@ -73,13 +73,10 @@ namespace PrismWorkApp.Modules.BuildingModule
             _regionManager.Regions[RegionNames.RibbonRegion].Add(toolBarRibbonTab);
 
             var materialsRibbonTab = new MaterialsRibbonTabView();
-            materialsRibbonTab.DataContext = new MaterialsRibbonTabViewModel(_regionManager, _eventAggregator, _bldMaterialsUnitsRepository, _dialogService, _applicationCommands);
+            materialsRibbonTab.DataContext = new MaterialsRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands);
             var materialsRibbonGroup = new MaterialsRibbonGroupView();
             materialsRibbonTab.Items.Add(materialsRibbonGroup);
             _regionManager.Regions[RegionNames.RibbonRegion].Add(materialsRibbonTab);
-
-
-
 
             var quickAccessTollBar = new QuickAccessToolBarView();
             quickAccessTollBar.Items.Add(new QuickAccessToolBar());
@@ -175,6 +172,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterForNavigation<WorksGroupView>();
             containerRegistry.RegisterForNavigation<MaterialsGroupView>();
             containerRegistry.RegisterForNavigation<ParticipantsGroupView>();
+            containerRegistry.RegisterForNavigation<DocumentsGroupView>();
+            containerRegistry.RegisterForNavigation<MaterialCertificatesGroupView>();
 
             containerRegistry.RegisterDialog<AddbldObjectToCollectionDialogView, AddbldObjectToCollectionViewModel>();
             containerRegistry.RegisterDialog<ObjectDialogView, ObjectDialogViewModel>();

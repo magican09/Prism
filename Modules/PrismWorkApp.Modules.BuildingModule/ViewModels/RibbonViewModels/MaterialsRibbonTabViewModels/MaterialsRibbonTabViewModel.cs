@@ -43,8 +43,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-        public IbldMaterialsUnitsRepository _bldMaterialsUnitsRepository;
-      
+
+        public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private IApplicationCommands _applicationCommands;
         public IApplicationCommands ApplicationCommands
         {
@@ -53,11 +53,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private readonly IRegionManager _regionManager;
         public MaterialsRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
-                                            IbldMaterialsUnitsRepository  bldMaterialsUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
+                                           IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
         {
             _regionManager = regionManager;
-            _bldMaterialsUnitsRepository = bldMaterialsUnitsRepository;
-           
+            _buildingUnitsRepository = buildingUnitsRepository;
+
             _applicationCommands = applicationCommands;
             IsActiveChanged += OnActiveChanged;
             LoadMaterialsFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
@@ -67,16 +67,28 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnLoadMaterialsFromAccess()
         {
-         bldMaterialsGroup materials = new bldMaterialsGroup();
-            Functions.OnLoadMaterialsFromAccess(materials);
+         bldMaterialCertificatesGroup  certificates    = new bldMaterialCertificatesGroup();
+            Functions.OnLoadMaterialCertificatesFromAccess(certificates);
             NavigationParameters navParam = new NavigationParameters();
-            bldResourseCategory category = new bldResourseCategory();
-            category.Name = "Загруженные";
-            category.Resources =new ObservableCollection<bldResource>(materials);
-            materials.Parent = category;
-            _bldMaterialsUnitsRepository.ResourseCategories.Add(category);
-            navParam.Add("bld_materials", new ConveyanceObject(materials, ConveyanceObjectModes.EditMode.FOR_EDIT));
-            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialsGroupView).Name, navParam);
+            bldDocument chapter = new bldDocument("Загруженные");
+            foreach (bldDocument document in certificates)
+                chapter.AttachedDocuments.Add(document);
+            ObservableCollection<bldUnitOfMeasurement> units = new ObservableCollection<bldUnitOfMeasurement>();
+            foreach (bldMaterialCertificate  certificate in certificates)
+            {
+                bldUnitOfMeasurement measurement = units.Where(el => el.Name == certificate.UnitOfMeasurement.Name).FirstOrDefault();
+                if (measurement == null)
+                {
+                    units.Add(certificate.UnitOfMeasurement);
+                }
+                else
+                    certificate.UnitOfMeasurement = measurement;
+            }
+                //  _buildingUnitsRepository.MaterialCertificates.Add(certificates);
+
+                navParam.Add("bld_documents", new ConveyanceObject(certificates, ConveyanceObjectModes.EditMode.FOR_EDIT));
+            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificatesGroupView).Name, navParam);
+
 
             //foreach (bldMaterial matr in materials)
             //{

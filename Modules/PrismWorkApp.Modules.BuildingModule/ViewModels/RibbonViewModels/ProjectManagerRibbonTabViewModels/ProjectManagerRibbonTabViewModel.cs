@@ -153,8 +153,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnLoadMaterialsFromAccess()
         {
-            ObservableCollection<bldMaterial> materials = new  ObservableCollection<bldMaterial>();
-            Functions.OnLoadMaterialsFromAccess(materials);
+            //ObservableCollection<bldMaterial> materials = new  ObservableCollection<bldMaterial>();
+            //Functions.OnLoadMaterialCertificatesFromAccess(materials);
         }
 
         private void LoadProjectFromXML()

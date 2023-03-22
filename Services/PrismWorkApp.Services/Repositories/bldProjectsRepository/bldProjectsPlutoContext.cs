@@ -9,8 +9,8 @@ namespace PrismWorkApp.Services.Repositories
     {
         public bldProjectsPlutoContext() : base()
         {
-            //Database.EnsureDeleted();
-            //Database.EnsureCreated();
+          //  Database.EnsureDeleted();
+        //    Database.EnsureCreated();
         }
         #region Building Construction
         public virtual DbSet<bldProject> Projects { get; set; }
@@ -51,9 +51,12 @@ namespace PrismWorkApp.Services.Repositories
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string Conectionstring = @"(localdb)\MSSQLLocalDB;Initial Catalog = master; Database=workappdb;Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;;Database=workappdb;Trusted_Connection=True;");
+           // string Conectionstring = @"(localdb)\MSSQLLocalDB;Initial Catalog = master; Database=workappdb;Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            //string new_con_str = @"Data Source=(localdb)\ProjectsV13;Initial Catalog=master;Database=work_bd;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            string new_con_str = @"Data Source=M-RUK-04\TEW_SQLEXPRESS_5;Initial Catalog=master;Database=work_bd;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            
+            // optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;;Database=workappdb;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(new_con_str);
             optionsBuilder.EnableSensitiveDataLogging();
             // optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
@@ -124,10 +127,21 @@ namespace PrismWorkApp.Services.Repositories
             //    .HasForeignKey<bldAOSRDocument>(d => d.bldWorkId);
 
             modelBuilder.Entity<bldWork>()
-         .HasOne(wr => wr.AOSRDocument)
-         .WithOne(d => d.bldWork)
-         .HasForeignKey<bldAOSRDocument>(d => d.bldWorkId);
+          .HasOne(wr => wr.AOSRDocument)
+          .WithOne(d => d.bldWork)
+          .HasForeignKey<bldAOSRDocument>(d => d.bldWorkId);
 
+            //modelBuilder.Entity<Picture>()
+            //     .Ignore(p => p.ImageFile);
+            modelBuilder.Entity<Picture>()
+                .Property(p => p.ImageFile)
+                .HasColumnType("VARBINARY(MAX) FILESTREAM");
+            modelBuilder.Entity<Picture>()
+            .Property(m => m.PictureId)
+            .HasColumnType("UNIQUEIDENTIFIER ROWGUIDCOL")
+            .IsRequired();
+            modelBuilder.Entity<Picture>()
+                  .HasAlternateKey(m => m.PictureId);
 
             modelBuilder.Entity<bldConstruction>()
                 .HasOne(cn => cn.ParentConstruction)

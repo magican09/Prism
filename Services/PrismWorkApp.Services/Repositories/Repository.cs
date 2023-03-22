@@ -31,7 +31,7 @@ namespace PrismWorkApp.Services.Repositories
             return Context.Set<TEntity>().Where(predicate);
         }
 
-        public TEntity Get(int id)
+        public TEntity Get(Guid id)
         {
             // Here we are working with a DbContext, not PlutoContext. So we don't have DbSets 
             // such as Courses or Authors, and we need to use the generic Set() method to access them.

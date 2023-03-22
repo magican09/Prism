@@ -83,12 +83,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                 else
                     certificate.UnitOfMeasurement = measurement;
+                _buildingUnitsRepository.MaterialCertificates.Add(certificate);
             }
                 //  _buildingUnitsRepository.MaterialCertificates.Add(certificates);
 
                 navParam.Add("bld_documents", new ConveyanceObject(certificates, ConveyanceObjectModes.EditMode.FOR_EDIT));
             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificatesGroupView).Name, navParam);
-
+            _buildingUnitsRepository.Complete();
 
             //foreach (bldMaterial matr in materials)
             //{

@@ -20,6 +20,7 @@ namespace PrismWorkApp.Services.Repositories
         public bldLaboratoryReportsRepository LaboratoryReports { get; }
         public bldExecutiveSchemesRepository ExecutiveSchemes { get; }
         public bldProjectMaterialCertificatesRepository MaterialCertificates { get; }
+        public PictureRepository PictureRepository { get; }
         public int Complete();
     }
 }

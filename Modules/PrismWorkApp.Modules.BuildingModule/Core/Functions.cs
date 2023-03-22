@@ -586,7 +586,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
 
                             //  picture.ImageFile = (byte[])row["files"];
                             byte[] bytes = (byte[])row["files"];
-                            materialCertificate.ImageFile = picture;
+                            picture.ImageFile = bytes;
+                           materialCertificate.ImageFile = picture;
                             certificates.Add(materialCertificate);                       
                             //_buildingUnitsRepository.MaterialCertificates.Add(materialCertificate);
                             //_buildingUnitsRepository.Materials.Add(material);
@@ -603,6 +604,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                                 using (System.IO.FileStream fs = new System.IO.FileStream($"{BD_FilesDir}\\{picture.FileName}", FileMode.OpenOrCreate))
                                 {
                                     fs.Write(bytes, fist_byte, last_byte - fist_byte);
+                                 
                                 }
                             }
                         }

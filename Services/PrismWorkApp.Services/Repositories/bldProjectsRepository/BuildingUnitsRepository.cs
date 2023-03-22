@@ -18,6 +18,8 @@
         public bldLaboratoryReportsRepository LaboratoryReports { get; }
         public bldExecutiveSchemesRepository ExecutiveSchemes { get; }
         public bldProjectMaterialCertificatesRepository MaterialCertificates { get; }
+        public PictureRepository PictureRepository { get; }
+       
         private readonly bldProjectsPlutoContext _context;
 
         public BuildingUnitsRepository(bldProjectsPlutoContext context)
@@ -38,6 +40,7 @@
             LaboratoryReports = new bldLaboratoryReportsRepository(_context);
             ExecutiveSchemes = new bldExecutiveSchemesRepository(_context);
             MaterialCertificates = new bldProjectMaterialCertificatesRepository(_context);
+            PictureRepository = new PictureRepository(_context);
         }
         public int Complete()
         {

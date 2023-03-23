@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="PrismWorkApp.Modules.BuildingModule.Dialogs.UserParametersDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Dialogs"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+              mc:Ignorable="d" 
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             d:DesignHeight="750" d:DesignWidth="1150">
+    <Grid    ShowGridLines="False">
+        <Grid.Resources>
+
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.05*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.05*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.05*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="0.1*" />
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="mainStakPanel" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="2" Orientation="Vertical" >
+            <TextBlock
+                Margin="10,5,10,0"
+                HorizontalAlignment="Center"
+                Style="{StaticResource titleText}">Форма для заполнения настроект пользователя.</TextBlock>
+
+            <StackPanel Orientation="Horizontal"  >
+                <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label  Style="{StaticResource inlineLabel}">Источник данных</Label>
+                    <TextBox Grid.Column="1"  Text="{Binding SelectedAppSettingsSystem.AppSettings.DataSource}" MinWidth="200" HorizontalAlignment="Left"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"  >
+                <Grid Width="{Binding ElementName=mainStakPanel,Path=ActualWidth}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label  Style="{StaticResource inlineLabel}" >Наименование БД</Label>
+                    <TextBox Grid.Column="1"  Text="{Binding SelectedAppSettingsSystem.AppSettings.Database}" MinWidth="200" HorizontalAlignment="Left"/>
+                </Grid>
+            </StackPanel>
+            
+
+
+        </StackPanel>
+        <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10">
+            <!--<Button  Content="Сохранить ИД в Word" Width="Auto" Command="{Binding SaveAOSRsToWordCommand}" />-->
+            <Button  Content="Сохранить" Width="Auto" Command="{Binding SaveCommand}" />
+            <Button  Content="Закрыть"  Width="Auto" Command="{Binding CloseCommand}"
+                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                                                     AncestorType={x:Type UserControl}}}"/>
+        </StackPanel>
+
+
+
+    </Grid>
+</UserControl>

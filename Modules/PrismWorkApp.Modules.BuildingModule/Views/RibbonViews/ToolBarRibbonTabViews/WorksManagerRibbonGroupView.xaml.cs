@@ -5,9 +5,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Views.RibbonViews
     /// <summary>
     /// Interaction logic for ToolBarRibbonGroupView.xaml
     /// </summary>
-    public partial class WorksGroupToolBarRibbonGroupView : RibbonGroup
+    public partial class WorksManagerRibbonGroupView : RibbonGroup
     {
-        public WorksGroupToolBarRibbonGroupView()
+        public WorksManagerRibbonGroupView()
         {
             InitializeComponent();
         }

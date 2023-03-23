@@ -116,7 +116,7 @@ namespace PrismWorkApp.Core
             dialog_par.Add("cancel_button_content", cencel_action_name);
 
             string element_name = element.Name;
-
+            if (dialogService == null) new Exception("_dialogService is Null!!");
             dialogService.ShowDialog(typeof(ConfirmActionDialog).Name, dialog_par, result =>
             {
                 if (result.Result == ButtonResult.Yes)

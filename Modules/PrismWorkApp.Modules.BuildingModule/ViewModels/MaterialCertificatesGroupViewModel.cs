@@ -18,6 +18,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Controls;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
@@ -157,13 +158,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnOpenImageFile()
         {
             string BD_FilesDir = Directory.GetCurrentDirectory();
-            BD_FilesDir = Path.Combine(BD_FilesDir, "MaterialsBDFiles");
+            BD_FilesDir = Path.Combine(BD_FilesDir, "Temp");
+            if (!Directory.Exists(BD_FilesDir))
+                Directory.CreateDirectory(BD_FilesDir);
             string s = Path.Combine(BD_FilesDir,SelectedDocument.ImageFile.FileName);
+           
+            using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
+            {
+                     fs.Write(SelectedDocument.ImageFile.Data);
+            }
             ProcessStartInfo info = new ProcessStartInfo(s);
             info.UseShellExecute = true;
-            using (var proc = Process.Start(info)) { } 
-                                                                                     //Process.Start(s);
-         }
+            using (var proc = Process.Start(info)) { }
+            Thread.Sleep(500);
+            File.Delete(s);                                                                      //Process.Start(s);
+        }
 
         private void OnAddCreatedFromTemplateMaterialCertificate(object obj)
         {

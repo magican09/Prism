@@ -64,7 +64,7 @@ namespace PrismWorkApp.Core.Dialogs
         {
             var result = ButtonResult.No;
             var param = new DialogParameters();
-            param.Add("confirm_dialog_param", "Отменено пользователем!");
+            param.Add("cancel_dialog_param", "Отменено пользователем!");
             RequestClose.Invoke(new DialogResult(result, param));
         }
         private void CancelDialog()

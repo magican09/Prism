@@ -12,6 +12,9 @@
         NotifyCompositeCommand AddWorkCommand { get; }
         NotifyCompositeCommand SaveExecutiveDocumentsCommand { get; }
         NotifyCompositeCommand LoadMaterialsFromAccessCommand { get; }
+        NotifyCompositeCommand OpenAppSettingsDialogCommand { get; }
+
+
     }
     public class ApplicationCommands : IApplicationCommands
     {
@@ -70,7 +73,13 @@
         {
             get { return _loadMaterialsFromAccessCommand; }
         }
+        private NotifyCompositeCommand _openAppSettingsDialogCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand OpenAppSettingsDialogCommand
+        {
+            get { return _openAppSettingsDialogCommand; }
+        }
 
+        
     }
 
 

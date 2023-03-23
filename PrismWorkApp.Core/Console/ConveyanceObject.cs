@@ -1,4 +1,6 @@
-﻿namespace PrismWorkApp.Core
+﻿using Prism.Mvvm;
+
+namespace PrismWorkApp.Core
 {
     public class ConveyanceObject
     {

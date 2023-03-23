@@ -4,6 +4,7 @@ namespace PrismWorkApp.Services.Repositories
 {
     public interface IBuildingUnitsRepository : IDisposable
     {
+        public string ConnectionString { get; set; }
         public bldProjectRepository Projects { get; }
         public bldObjectRepository Objects { get; }
         public bldPacticipantsRepository Pacticipants { get; }

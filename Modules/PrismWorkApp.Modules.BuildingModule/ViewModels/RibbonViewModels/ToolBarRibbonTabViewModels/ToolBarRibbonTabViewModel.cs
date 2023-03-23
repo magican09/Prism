@@ -1,29 +1,54 @@
 ﻿using Prism;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
+using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using System;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels.RibbonViewModels
 {
     public class ToolBarRibbonTabViewModel : LocalBindableBase, IActiveAware
     {
-        //private string _title = "Производство";
-        //public string Title
-        //{
-        //    get { return _title; }
-        //    set { SetProperty(ref _title, value); }
-        //}
         private IApplicationCommands _applicationCommands;
         public IApplicationCommands ApplicationCommands
         {
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
-        public ToolBarRibbonTabViewModel(IApplicationCommands applicationCommands)
+        private IAppSettingsSystem _appSettings;
+        private IDialogService _dialogService;
+        public NotifyCommand OpenAppSetingsCommand { get; private set; }
+        public ToolBarRibbonTabViewModel(IDialogService dialogService,IApplicationCommands applicationCommands,IAppSettingsSystem appSettings)
         {
             ApplicationCommands = applicationCommands;
+            _appSettings = appSettings;
+            _dialogService = dialogService;
+            OpenAppSetingsCommand = new NotifyCommand(OnOpenAppSetings);
+            _applicationCommands.OpenAppSettingsDialogCommand.RegisterCommand(OpenAppSetingsCommand);
+
         }
+
+        private void OnOpenAppSetings()
+        {
+            DialogParameters param = new DialogParameters();
+            param.Add("selected_app_settings_system",new ConveyanceObject(_appSettings,false));
+            _dialogService.ShowDialog(nameof(UserParametersDialogView), param,
+                (result) =>
+                {
+                    if(result.Result== ButtonResult.Yes)
+                    {
+
+                    }
+                    if (result.Result == ButtonResult.No)
+                    {
+
+                    }
+
+                });
+
+        }
+
         private void OnActiveChanged(object sender, EventArgs e)
         {
             if (IsActive)

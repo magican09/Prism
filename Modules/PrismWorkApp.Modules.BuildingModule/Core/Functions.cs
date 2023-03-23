@@ -586,8 +586,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
 
                             //  picture.ImageFile = (byte[])row["files"];
                             byte[] bytes = (byte[])row["files"];
-                            picture.ImageFile = bytes;
-                           materialCertificate.ImageFile = picture;
+                          
+                            materialCertificate.ImageFile = picture;
                             certificates.Add(materialCertificate);                       
                             //_buildingUnitsRepository.MaterialCertificates.Add(materialCertificate);
                             //_buildingUnitsRepository.Materials.Add(material);
@@ -603,9 +603,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                                 int last_byte = matches_2[matches_2.Count - 1].Index + 6;
                                 using (System.IO.FileStream fs = new System.IO.FileStream($"{BD_FilesDir}\\{picture.FileName}", FileMode.OpenOrCreate))
                                 {
-                                    fs.Write(bytes, fist_byte, last_byte - fist_byte);
-                                 
+                                     //     fs.Write(bytes, fist_byte, last_byte - fist_byte);
                                 }
+                                picture.Data = bytes[fist_byte..last_byte];
                             }
                         }
                     }

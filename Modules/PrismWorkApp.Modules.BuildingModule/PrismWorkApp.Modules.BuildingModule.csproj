@@ -50,6 +50,7 @@
         <None Remove="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\48x48\32.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+        <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\app_settings.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
@@ -123,6 +124,7 @@
     <Resource Include="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\48x48\32.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+    <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\app_settings.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />

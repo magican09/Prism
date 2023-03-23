@@ -1,8 +1,10 @@
-﻿namespace PrismWorkApp.Services.Repositories
+﻿using PrismWorkApp.Core;
+
+namespace PrismWorkApp.Services.Repositories
 {
     public class BuildingUnitsRepository : IBuildingUnitsRepository
     {
-
+        public string ConnectionString { get; set; } 
         public bldProjectRepository Projects { get; }
         public bldObjectRepository Objects { get; }
         public bldPacticipantsRepository Pacticipants { get; }
@@ -22,9 +24,9 @@
        
         private readonly bldProjectsPlutoContext _context;
 
-        public BuildingUnitsRepository(bldProjectsPlutoContext context)
+        public BuildingUnitsRepository(IAppSettingsSystem settings)
         {
-            _context = context;
+            _context = new bldProjectsPlutoContext(settings.AppSettings.ProjectBDConnectionString); // context;
             Projects = new bldProjectRepository(_context);
             Objects = new bldObjectRepository(_context);
             Pacticipants = new bldPacticipantsRepository(_context);

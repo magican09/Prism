@@ -1,6 +1,7 @@
 ﻿using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
+using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Console;
 using PrismWorkApp.Core.Dialogs;
@@ -33,10 +34,13 @@ namespace PrismWorkApp
             //   containerRegistry.RegisterSingleton<IProjectRepository, ProjectRepository>();
             containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
             containerRegistry.RegisterSingleton<IModulesContext, ModulesContext>();
+            
+            containerRegistry.RegisterSingleton<IAppSettingsSystem, AppSettingsSystem>();
+          
             containerRegistry.RegisterSingleton<IBuildingUnitsRepository, BuildingUnitsRepository>();
-            containerRegistry.RegisterSingleton<IbldMaterialsUnitsRepository, bldMaterialsUnitsRepository>();
+         //   containerRegistry.RegisterSingleton<IbldMaterialsUnitsRepository, bldMaterialsUnitsRepository>();
             containerRegistry.RegisterSingleton<IUnDoReDoSystem, UnDoReDoSystem>();
-
+            
             containerRegistry.RegisterDialog<MessageDialog, MessageDialogViewModel>();
             containerRegistry.RegisterDialog<ConfirmActionDialog, ConfirmActionDialogViewModel>();
             containerRegistry.RegisterDialog<ConfirmActionWhithoutCancelDialog, ConfirmActionWhithoutCancelDialogViewModel>();

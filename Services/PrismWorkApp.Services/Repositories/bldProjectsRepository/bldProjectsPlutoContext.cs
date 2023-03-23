@@ -7,10 +7,12 @@ namespace PrismWorkApp.Services.Repositories
 {
     public class bldProjectsPlutoContext : DbContext
     {
-        public bldProjectsPlutoContext() : base()
+        private string _connectionString;
+        public bldProjectsPlutoContext(string connectionString) : base()
         {
+            _connectionString = connectionString;
           //  Database.EnsureDeleted();
-        //    Database.EnsureCreated();
+             Database.EnsureCreated();
         }
         #region Building Construction
         public virtual DbSet<bldProject> Projects { get; set; }
@@ -53,10 +55,10 @@ namespace PrismWorkApp.Services.Repositories
         {
            // string Conectionstring = @"(localdb)\MSSQLLocalDB;Initial Catalog = master; Database=workappdb;Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             //string new_con_str = @"Data Source=(localdb)\ProjectsV13;Initial Catalog=master;Database=work_bd;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            string new_con_str = @"Data Source=M-RUK-04\TEW_SQLEXPRESS_5;Initial Catalog=master;Database=work_bd;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+          //  string new_con_str = @"Data Source=M-RUK-04\TEW_SQLEXPRESS_5;Initial Catalog=master;Database=work_bd;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             
             // optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;;Database=workappdb;Trusted_Connection=True;");
-            optionsBuilder.UseSqlServer(new_con_str);
+            optionsBuilder.UseSqlServer(_connectionString);
             optionsBuilder.EnableSensitiveDataLogging();
             // optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
@@ -120,6 +122,9 @@ namespace PrismWorkApp.Services.Repositories
             modelBuilder.Entity<bldWork>()
                 .HasMany(wr => wr.Participants)
                 .WithMany(pr => pr.Works);
+            //modelBuilder.Entity<EntityCategory>()
+            //    .HasMany(en => en.Entities)
+            //    .WithOne(c => c.Category);
 
             //modelBuilder.Entity<bldWork>()
             //    .HasOne(wr => wr.AOSRDocument)
@@ -131,17 +136,15 @@ namespace PrismWorkApp.Services.Repositories
           .WithOne(d => d.bldWork)
           .HasForeignKey<bldAOSRDocument>(d => d.bldWorkId);
 
-            //modelBuilder.Entity<Picture>()
-            //     .Ignore(p => p.ImageFile);
             modelBuilder.Entity<Picture>()
-                .Property(p => p.ImageFile)
+                .Property(p => p.Data)
                 .HasColumnType("VARBINARY(MAX) FILESTREAM");
             modelBuilder.Entity<Picture>()
-            .Property(m => m.PictureId)
+            .Property(m => m.DataId)
             .HasColumnType("UNIQUEIDENTIFIER ROWGUIDCOL")
             .IsRequired();
             modelBuilder.Entity<Picture>()
-                  .HasAlternateKey(m => m.PictureId);
+                  .HasAlternateKey(m => m.DataId);
 
             modelBuilder.Entity<bldConstruction>()
                 .HasOne(cn => cn.ParentConstruction)
@@ -166,9 +169,26 @@ namespace PrismWorkApp.Services.Repositories
             modelBuilder.Entity<bldPasportDocument>().ToTable("PasportDocuments");
             modelBuilder.Entity<bldProjectDocument>().ToTable("ProjectDocuments");
             modelBuilder.Entity<bldRegulationtDocument>().ToTable("RegulationtDocuments");
+            modelBuilder.Entity<EmployeePosition>().ToTable("EmployeePositions");
+            modelBuilder.Entity<Person>().ToTable("Persons");
+            modelBuilder.Entity<Picture>().ToTable("Pictures");
+            modelBuilder.Entity<bldCompany>().ToTable("bldCompanies");
+            modelBuilder.Entity<bldConstruction>().ToTable("bldConstructions");
+            modelBuilder.Entity<bldObject>().ToTable("bldObjects");
+            modelBuilder.Entity<bldProject>().ToTable("bldProjects");
+            modelBuilder.Entity<bldResponsibleEmployee>().ToTable("bldResponsibleEmployees");
+            modelBuilder.Entity<bldResponsibleEmployeeRole>().ToTable("bldResponsibleEmployeeRoles");
+            modelBuilder.Entity<bldParticipant>().ToTable("bldParticipants");
+            modelBuilder.Entity<bldDocument>().ToTable("bldDocuments");
+            modelBuilder.Entity<bldParticipantRole>().ToTable("bldParticipantRoles");
+            modelBuilder.Entity<bldResource>().ToTable("bldResources");
+            modelBuilder.Entity<bldResourseCategory>().ToTable("bldResourseCategories");
+            modelBuilder.Entity<bldUnitOfMeasurement>().ToTable("bldUnitOfMeasurements");
+            modelBuilder.Entity<bldWorkArea>().ToTable("bldWorkAreas");
+            modelBuilder.Entity<bldWork>().ToTable("bldWorks");
+            modelBuilder.Entity<bldMaterial>().ToTable("bldMaterials");
 
-
-
+            
             base.OnModelCreating(modelBuilder);
         }
         public override int SaveChanges()

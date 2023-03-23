@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\PrismWorkApp.Core\PrismWorkApp.Core.csproj" />
-    <ProjectReference Include="..\..\PrismWorkApp.ProjectModel\PrismWorkApp.ProjectModel.csproj" />
   </ItemGroup>
 
   <ItemGroup>

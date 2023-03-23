@@ -6,7 +6,6 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
-using PrismWorkApp.ProjectModel.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,7 +33,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
 
         private string _title = "Менеджер проектов";
-        private Work _selectedWork;
+        //private Work _selectedWork;
         public string Title
         {
             get { return _title; }
@@ -49,9 +48,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private readonly IEventAggregator _eventAggregator;
         private readonly IRegionManager _regionManager;
 
-        private ObservableCollection<Project> _projects;
-        public ObservableCollection<Project> Projects
-        { get { return _projects; } set { _projects = value; OnPropertyChanged("Projects"); } }
+        //private ObservableCollection<Project> _projects;
+        //public ObservableCollection<Project> Projects
+        //{ get { return _projects; } set { _projects = value; OnPropertyChanged("Projects"); } }
         private bldProjectsGroup _bldprojects = new bldProjectsGroup();
         public bldProjectsGroup bld_Projects
         {
@@ -59,25 +58,25 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _bldprojects, value); }
         }
 
-        public oldNode _rootnode;
-        public oldNode RootNode { get { return _rootnode; } set { _rootnode = value; OnPropertyChanged("RootNode"); } }
-        public Work _testWork;
-        public Work TestWork { get { return _testWork; } set { _testWork = value; OnPropertyChanged("TestWork"); } }
+        //public oldNode _rootnode;
+        //public oldNode RootNode { get { return _rootnode; } set { _rootnode = value; OnPropertyChanged("RootNode"); } }
+        //public Work _testWork;
+        //public Work TestWork { get { return _testWork; } set { _testWork = value; OnPropertyChanged("TestWork"); } }
 
         public ObservableCollection<Node> _nodes;
         public ObservableCollection<Node> Nodes { get { return _nodes; } set { _nodes = value; OnPropertyChanged("Nodes"); } }
 
-        private Project _selectedProject;
-        public Project SelectedProject { get { return _selectedProject; } set { _selectedProject = value; SentProjectCommand.RaiseCanExecuteChanged(); OnPropertyChanged("SelectedProject"); } }
-        private IDialogService _dialogService;
+        //private Project _selectedProject;
+        //public Project SelectedProject { get { return _selectedProject; } set { _selectedProject = value; SentProjectCommand.RaiseCanExecuteChanged(); OnPropertyChanged("SelectedProject"); } }
+      private IDialogService _dialogService;
 
         public ProjectExplorerViewModel(IEventAggregator eventAggregator, IRegionManager regionManager, IDialogService dialogService)
         {
-            Projects = new ObservableCollection<Project>(); ;
+          //  Projects = new ObservableCollection<Project>(); ;
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;
             _dialogService = dialogService;
-            SentProjectCommand = new NotifyCommand(SentProject, CanSentProject);
+          //  SentProjectCommand = new NotifyCommand(SentProject, CanSentProject);
             TreeViewItemSelectedCommand = new NotifyCommand<object>(OnTreeViewItemSelected);
             TreeViewItemExpandedCommand = new NotifyCommand<object>(onTreeViewItemExpanded);
             _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
@@ -207,19 +206,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //      throw new NotImplementedException();
         }
 
-        private bool CanSentProject()
-        {
-            return SelectedProject != null;
-        }
+        //private bool CanSentProject()
+        //{
+        //    return SelectedProject != null;
+        //}
 
         public NotifyCommand SentProjectCommand { get; private set; }
         //   public NotifyCommand LoadProjectCommand { get; private set; }
         public NotifyCommand<object> TreeViewItemSelectedCommand { get; private set; }
         public NotifyCommand<object> TreeViewItemExpandedCommand { get; private set; }
-        private void SentProject()
-        {
-            _eventAggregator.GetEvent<ProjectSentEvent>().Publish(SelectedProject);
-        }
+        //private void SentProject()
+        //{
+        //    _eventAggregator.GetEvent<ProjectSentEvent>().Publish(SelectedProject);
+        //}
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {

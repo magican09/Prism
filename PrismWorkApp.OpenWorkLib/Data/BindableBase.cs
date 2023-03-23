@@ -64,14 +64,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         protected virtual bool BaseSetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = "")
         {
-
             if (object.Equals(val, member)) return false;
             if (b_jornal_recording_flag)
             {
                 PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
             }
             member = val;
-            //Type tp = Children[Children.Count - 1].GetType();
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
         }
@@ -165,10 +163,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NotMapped]
         public bool CopingEnable { get; set; } = true;
 
-        private BindableBase _parent;
-        [NotMapped]
+        public Guid? ParentId { get;set;}
+        private BindableBase? _parent;
+       // [NotMapped]
         [NavigateProperty]
-        public BindableBase Parent
+        public BindableBase? Parent
         {
             get { return _parent; }
             set
@@ -180,7 +179,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
         }
         private ObservableCollection<BindableBase> _children = new ObservableCollection<BindableBase>();
-        [NotMapped]
+       // [NotMapped]
         [NavigateProperty]
         public ObservableCollection<BindableBase> Children
         {
@@ -297,6 +296,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         //    }
         //    return new_object;
         //}
+       // public Guid? CategoryId { get; set; }
+      //  public EntityCategory? Category { get; set; }
     }
 
 

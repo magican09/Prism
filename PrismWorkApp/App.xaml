@@ -12,7 +12,5 @@
                 <ResourceDictionary Source ="pack://application:,,,/bldCustomControlLibrary;Component/Themes/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-         <!-- <ResourceDictionary Source="/resourcedictionaries/defaulttheme.xaml"/>-->
-
-    </Application.Resources>
+       </Application.Resources>
 </prism:PrismApplication>

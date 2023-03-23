@@ -8,7 +8,7 @@ namespace PrismWorkApp.Services.Repositories
 {
     public class bldWorkRepository : Repository<bldWork>, IbldWorkRepository
     {
-        public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }
+        public bldProjectsPlutoContext ProjectsPlutoContext { get { return Context as bldProjectsPlutoContext; } }
 
         public bldWorkRepository(bldProjectsPlutoContext context) : base(context)
         {
@@ -20,15 +20,15 @@ namespace PrismWorkApp.Services.Repositories
         }
         public List<bldWork> GetbldWorks(Guid work_id)
         {
-            PlutoContext.Works
+            ProjectsPlutoContext.Works
                     .Include(ob => ob.PreviousWorks)
                     .ThenInclude(ob => ob.NextWorks);
 
-            return PlutoContext.Works.Where(ob => ob.Id == work_id).ToList();
+            return ProjectsPlutoContext.Works.Where(ob => ob.Id == work_id).ToList();
         }
         public List<bldWork> GetAllBldWorks()
         {
-            List<bldWork> works = PlutoContext.Works
+            List<bldWork> works = ProjectsPlutoContext.Works
                       .Include(ob => ob.PreviousWorks)
                       .ThenInclude(ob => ob.NextWorks).ToList();
 
@@ -38,7 +38,7 @@ namespace PrismWorkApp.Services.Repositories
 
         public List<bldWork> GetbldWorksAsync()
         {
-            List<bldWork> works = PlutoContext.Works
+            List<bldWork> works = ProjectsPlutoContext.Works
                       .Include(ob => ob.PreviousWorks)
                       .ThenInclude(ob => ob.NextWorks).ToList();
 

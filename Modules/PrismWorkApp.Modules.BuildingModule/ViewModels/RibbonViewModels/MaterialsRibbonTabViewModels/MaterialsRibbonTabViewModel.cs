@@ -74,6 +74,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             foreach (bldDocument document in certificates)
                 chapter.AttachedDocuments.Add(document);
             ObservableCollection<bldUnitOfMeasurement> units = new ObservableCollection<bldUnitOfMeasurement>();
+            EntityCategory category = new EntityCategory();
             foreach (bldMaterialCertificate  certificate in certificates)
             {
                 bldUnitOfMeasurement measurement = units.Where(el => el.Name == certificate.UnitOfMeasurement.Name).FirstOrDefault();
@@ -83,6 +84,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                 else
                     certificate.UnitOfMeasurement = measurement;
+              //  category.Children.Add((EntityCategory)certificate);
                 _buildingUnitsRepository.MaterialCertificates.Add(certificate);
             }
                 //  _buildingUnitsRepository.MaterialCertificates.Add(certificates);

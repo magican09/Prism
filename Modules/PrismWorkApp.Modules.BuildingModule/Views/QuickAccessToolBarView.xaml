@@ -24,5 +24,8 @@
         <RibbonButton   VerticalAlignment="Center"
                         SmallImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/QuickAccwssTollBar/save_as.png"
                         Command="{Binding   ApplicationCommands.SaveAllCommand}"/>
+        <RibbonButton   VerticalAlignment="Center"
+                        SmallImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/QuickAccwssTollBar/app_settings.png"
+                        Command="{Binding   ApplicationCommands.OpenAppSettingsDialogCommand}"/>
     </StackPanel>
 </RibbonQuickAccessToolBar>

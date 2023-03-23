@@ -37,7 +37,9 @@ namespace PrismWorkApp.Modules.BuildingModule
         private IBuildingUnitsRepository _buildingUnitsRepository;
         public IbldMaterialsUnitsRepository _bldMaterialsUnitsRepository;
         private IDialogService _dialogService;
-        public BuildingModule(IRegionManager regionManager, IEventAggregator eventAggregator, IBuildingUnitsRepository buildingUnitsRepository, IbldMaterialsUnitsRepository bldMaterialsUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
+        private IAppSettingsSystem _appSettings;
+        public BuildingModule(IRegionManager regionManager, IEventAggregator eventAggregator, IBuildingUnitsRepository buildingUnitsRepository/*, IbldMaterialsUnitsRepository bldMaterialsUnitsRepository*/, 
+            IDialogService dialogService, IApplicationCommands applicationCommands,IAppSettingsSystem appSettings)
         {
 
             ModuleId = 2;
@@ -46,7 +48,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             _applicationCommands = applicationCommands;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
-            _bldMaterialsUnitsRepository = bldMaterialsUnitsRepository;
+            _appSettings = appSettings;
+         //   _bldMaterialsUnitsRepository = bldMaterialsUnitsRepository;
 
         }
 
@@ -62,14 +65,14 @@ namespace PrismWorkApp.Modules.BuildingModule
              var currentProjectRibbonGroup = new CurentProjectRibbonGroupView();
             projectManagerRibbonTab.DataContext = new ProjectManagerRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands);
             projectManagerRibbonTab.Items.Add(dataImportRibbonGroup);//
-           // projectManagerRibbonTab.Items.Add(currentProjectRibbonGroup);//Созадем группу панели инструметов с конвекторами
+            projectManagerRibbonTab.Items.Add(currentProjectRibbonGroup);//Созадем группу панели инструметов с конвекторами
             _regionManager.Regions[RegionNames.RibbonRegion].Add(projectManagerRibbonTab);
 
             var toolBarRibbonTab = new ToolBarRibbonTabView();
-            var toolBarRibbonTabDataContext = new ToolBarRibbonTabViewModel(_applicationCommands);
+            var toolBarRibbonTabDataContext = new ToolBarRibbonTabViewModel(_dialogService,_applicationCommands,_appSettings);
             toolBarRibbonTab.DataContext = toolBarRibbonTabDataContext;
-            var toolBarRibbonGroup = new WorksGroupToolBarRibbonGroupView();
-            toolBarRibbonTab.Items.Add(toolBarRibbonGroup);//Созадем группу панели инструметов с конвекторами
+            var toolBarRibbonGroup = new WorksManagerRibbonGroupView();
+            toolBarRibbonTab.Items.Add(toolBarRibbonGroup);//
             _regionManager.Regions[RegionNames.RibbonRegion].Add(toolBarRibbonTab);
 
             var materialsRibbonTab = new MaterialsRibbonTabView();
@@ -174,7 +177,9 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterForNavigation<ParticipantsGroupView>();
             containerRegistry.RegisterForNavigation<DocumentsGroupView>();
             containerRegistry.RegisterForNavigation<MaterialCertificatesGroupView>();
-
+           
+            containerRegistry.RegisterDialog<UserParametersDialogView, UserParametersDialogViewModel>();
+            
             containerRegistry.RegisterDialog<AddbldObjectToCollectionDialogView, AddbldObjectToCollectionViewModel>();
             containerRegistry.RegisterDialog<ObjectDialogView, ObjectDialogViewModel>();
 

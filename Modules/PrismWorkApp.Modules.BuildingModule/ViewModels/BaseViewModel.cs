@@ -4,15 +4,16 @@ using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using System;
 using System.ComponentModel;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class BaseViewModel<TEntity> : LocalBindableBase, INotifyPropertyChanged where TEntity : class
+    public class BaseViewModel<TEntity> : LocalBindableBase, INotifyPropertyChanged  where TEntity : class
     {
         protected IDialogService _dialogService;
         protected IRegionManager _regionManager;
-
+        public event Action<IDialogResult> RequestClose;
 
         private bool _keepAlive = true;
         public bool KeepAlive
@@ -34,11 +35,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _applicationCommands, value); }
         }
         protected IUnDoReDoSystem _unDoReDo;
+
+     
+
         public IUnDoReDoSystem UnDoReDo
         {
             get { return _unDoReDo; }
             set { SetProperty(ref _unDoReDo, value); }
         }
+
+        public string Title => throw new NotImplementedException();
+
         public BaseViewModel()
         {
             // IsActiveChanged += OnActiveChanged;
@@ -82,6 +89,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
                                 _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
                             }
+                            else if(RequestClose!=null)
+                            {
+                                var _result = ButtonResult.Yes;
+                                var param = new DialogParameters();
+                                param.Add("confirm_dialog_param", "Подтверждено пользователем!");
+                                RequestClose.Invoke(new DialogResult(_result, param));
+                            }
                             OnWindowClose();
                         }
                         else if (result.Result == ButtonResult.No)
@@ -93,11 +107,25 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
                                 _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
                             }
+                            else if (RequestClose != null)
+                            {
+                                var _result = ButtonResult.No;
+                                var param = new DialogParameters();
+                                param.Add("cancel_dialog_param", "Отменено пользователем!");
+                                RequestClose.Invoke(new DialogResult(_result, param));
+                            }
                             OnWindowClose();
                         }
                         else if (result.Result == ButtonResult.Cancel)
                         {
-
+                            if (RequestClose != null)
+                            {
+                                var _result = ButtonResult.Cancel;
+                                var param = new DialogParameters();
+                                param.Add("cancel_dialog_param", "Отменено пользователем!");
+                                RequestClose.Invoke(new DialogResult(_result, param));
+                            }
+                            OnWindowClose();
                         }
                     }
                 }, _dialogService);
@@ -110,10 +138,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
                     _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
                 }
+                else
+                    if (RequestClose != null)
+                {
+                    var _result = ButtonResult.No;
+                    var param = new DialogParameters();
+                    param.Add("cancel_dialog_param", "Отменено пользователем!");
+                    RequestClose.Invoke(new DialogResult(_result, param));
+                }
                 OnWindowClose();
             }
 
         }
+
+  
 
         /* 
          *    public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase

@@ -4,7 +4,7 @@ using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.OpenWorkLib.Data;
-using PrismWorkApp.ProjectModel.Data.Models;
+//using PrismWorkApp.ProjectModel.Data.Models;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.ComponentModel;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class AOSRDocumentViewModel : BaseViewModel<AOSRDocument>, INotifyPropertyChanged, INavigationAware
+    public class AOSRDocumentViewModel : BaseViewModel<bldAOSRDocument>, INotifyPropertyChanged, INavigationAware
     {
         private string _title = "АОСР";
         public string Title

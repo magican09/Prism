@@ -157,21 +157,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnOpenImageFile()
         {
-            string BD_FilesDir = Directory.GetCurrentDirectory();
-            BD_FilesDir = Path.Combine(BD_FilesDir, "Temp");
+            string BD_FilesDir =  Path.GetTempPath();
+
             if (!Directory.Exists(BD_FilesDir))
                 Directory.CreateDirectory(BD_FilesDir);
             string s = Path.Combine(BD_FilesDir,SelectedDocument.ImageFile.FileName);
            
             using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
             {
-                     fs.Write(SelectedDocument.ImageFile.Data);
+                     fs.Write(Functions.FormatPDFFromAccess(SelectedDocument.ImageFile.Data));
             }
             ProcessStartInfo info = new ProcessStartInfo(s);
             info.UseShellExecute = true;
             using (var proc = Process.Start(info)) { }
-            Thread.Sleep(500);
-            File.Delete(s);                                                                      //Process.Start(s);
+                                                                        //Process.Start(s);
         }
 
         private void OnAddCreatedFromTemplateMaterialCertificate(object obj)

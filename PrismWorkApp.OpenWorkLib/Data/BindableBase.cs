@@ -165,7 +165,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public Guid? ParentId { get;set;}
         private BindableBase? _parent;
-       // [NotMapped]
+        [NotMapped]
         [NavigateProperty]
         public BindableBase? Parent
         {
@@ -179,7 +179,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
         }
         private ObservableCollection<BindableBase> _children = new ObservableCollection<BindableBase>();
-       // [NotMapped]
+        [NotMapped]
         [NavigateProperty]
         public ObservableCollection<BindableBase> Children
         {

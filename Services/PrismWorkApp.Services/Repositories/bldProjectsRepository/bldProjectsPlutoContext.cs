@@ -11,7 +11,7 @@ namespace PrismWorkApp.Services.Repositories
         public bldProjectsPlutoContext(string connectionString) : base()
         {
             _connectionString = connectionString;
-          //  Database.EnsureDeleted();
+        //     Database.EnsureDeleted();
              Database.EnsureCreated();
         }
         #region Building Construction
@@ -169,24 +169,24 @@ namespace PrismWorkApp.Services.Repositories
             modelBuilder.Entity<bldPasportDocument>().ToTable("PasportDocuments");
             modelBuilder.Entity<bldProjectDocument>().ToTable("ProjectDocuments");
             modelBuilder.Entity<bldRegulationtDocument>().ToTable("RegulationtDocuments");
-            modelBuilder.Entity<EmployeePosition>().ToTable("EmployeePositions");
-            modelBuilder.Entity<Person>().ToTable("Persons");
-            modelBuilder.Entity<Picture>().ToTable("Pictures");
-            modelBuilder.Entity<bldCompany>().ToTable("bldCompanies");
-            modelBuilder.Entity<bldConstruction>().ToTable("bldConstructions");
-            modelBuilder.Entity<bldObject>().ToTable("bldObjects");
-            modelBuilder.Entity<bldProject>().ToTable("bldProjects");
-            modelBuilder.Entity<bldResponsibleEmployee>().ToTable("bldResponsibleEmployees");
-            modelBuilder.Entity<bldResponsibleEmployeeRole>().ToTable("bldResponsibleEmployeeRoles");
-            modelBuilder.Entity<bldParticipant>().ToTable("bldParticipants");
-            modelBuilder.Entity<bldDocument>().ToTable("bldDocuments");
-            modelBuilder.Entity<bldParticipantRole>().ToTable("bldParticipantRoles");
-            modelBuilder.Entity<bldResource>().ToTable("bldResources");
-            modelBuilder.Entity<bldResourseCategory>().ToTable("bldResourseCategories");
-            modelBuilder.Entity<bldUnitOfMeasurement>().ToTable("bldUnitOfMeasurements");
-            modelBuilder.Entity<bldWorkArea>().ToTable("bldWorkAreas");
-            modelBuilder.Entity<bldWork>().ToTable("bldWorks");
-            modelBuilder.Entity<bldMaterial>().ToTable("bldMaterials");
+            //modelBuilder.Entity<EmployeePosition>().ToTable("EmployeePositions");
+            //modelBuilder.Entity<Person>().ToTable("Persons");
+            //modelBuilder.Entity<Picture>().ToTable("Pictures");
+            //modelBuilder.Entity<bldCompany>().ToTable("bldCompanies");
+            //modelBuilder.Entity<bldConstruction>().ToTable("bldConstructions");
+            //modelBuilder.Entity<bldObject>().ToTable("bldObjects");
+            //modelBuilder.Entity<bldProject>().ToTable("bldProjects");
+            //modelBuilder.Entity<bldResponsibleEmployee>().ToTable("bldResponsibleEmployees");
+            //modelBuilder.Entity<bldResponsibleEmployeeRole>().ToTable("bldResponsibleEmployeeRoles");
+            //modelBuilder.Entity<bldParticipant>().ToTable("bldParticipants");
+            //modelBuilder.Entity<bldDocument>().ToTable("bldDocuments");
+            //modelBuilder.Entity<bldParticipantRole>().ToTable("bldParticipantRoles");
+            //modelBuilder.Entity<bldResource>().ToTable("bldResources");
+            //modelBuilder.Entity<bldResourseCategory>().ToTable("bldResourseCategories");
+            //modelBuilder.Entity<bldUnitOfMeasurement>().ToTable("bldUnitOfMeasurements");
+            //modelBuilder.Entity<bldWorkArea>().ToTable("bldWorkAreas");
+            //modelBuilder.Entity<bldWork>().ToTable("bldWorks");
+            //modelBuilder.Entity<bldMaterial>().ToTable("bldMaterials");
 
             
             base.OnModelCreating(modelBuilder);

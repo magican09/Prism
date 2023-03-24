@@ -71,8 +71,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             Functions.OnLoadMaterialCertificatesFromAccess(certificates);
             NavigationParameters navParam = new NavigationParameters();
             bldDocument chapter = new bldDocument("Загруженные");
-            foreach (bldDocument document in certificates)
-                chapter.AttachedDocuments.Add(document);
+
             ObservableCollection<bldUnitOfMeasurement> units = new ObservableCollection<bldUnitOfMeasurement>();
             EntityCategory category = new EntityCategory();
             foreach (bldMaterialCertificate  certificate in certificates)
@@ -84,8 +83,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                 else
                     certificate.UnitOfMeasurement = measurement;
-              //  category.Children.Add((EntityCategory)certificate);
-                _buildingUnitsRepository.MaterialCertificates.Add(certificate);
+
+              if (!_buildingUnitsRepository.MaterialCertificates.Find(mc=>mc.RegId==certificate.RegId).Any())
+                    _buildingUnitsRepository.MaterialCertificates.Add(certificate);
             }
                 //  _buildingUnitsRepository.MaterialCertificates.Add(certificates);
 

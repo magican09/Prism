@@ -507,7 +507,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
 
             return project;
         }
-        public static void OnLoadMaterialCertificatesFromAccess(IList<bldMaterialCertificate>  certificates, string pictures_out_dir = "")
+        public static void OnLoadMaterialCertificatesFromAccess(IList<bldMaterialCertificate> certificates)
         {
             string access_file_name;
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -520,10 +520,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             string query = $"SELECT * FROM {table_name}";
 
             string BD_FilesDir = Directory.GetCurrentDirectory();
-            if (pictures_out_dir != "") BD_FilesDir = pictures_out_dir;
-            
+
             BD_FilesDir = Path.Combine(BD_FilesDir, "MaterialsBDFiles");
-          //  BD_FilesDir = Path.Combine(BD_FilesDir, table_name);
+            //  BD_FilesDir = Path.Combine(BD_FilesDir, table_name);
             Directory.CreateDirectory(BD_FilesDir);
 
             MemoryStream memoryStream = new MemoryStream();
@@ -556,7 +555,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             materialCertificate.GeometryParameters = row["Геометрические_параметры"].ToString();
                             if (row["Кол-во"].ToString() != "-" && row["Кол-во"].ToString() != "")
                                 materialCertificate.Quantity = Convert.ToDecimal(row["Кол-во"].ToString().Replace(',', '.'));
-                            materialCertificate.UnitOfMeasurement=  new bldUnitOfMeasurement(row["Ед_изм"].ToString());
+                            materialCertificate.UnitOfMeasurement = new bldUnitOfMeasurement(row["Ед_изм"].ToString());
                             materialCertificate.Name = row["Сертификаты,_паспорта"].ToString();
                             materialCertificate.RegId = row["№_документа_о_качестве"].ToString();
                             string[] st_dates = row["Дата_документа"].ToString().Split('-');
@@ -585,28 +584,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                                 .Replace("\r", "_");
 
                             //  picture.ImageFile = (byte[])row["files"];
-                            byte[] bytes = (byte[])row["files"];
-                          
+                            if ((byte[])row["files"]!=null) 
+                                    picture.Data = (byte[])row["files"];
+
                             materialCertificate.ImageFile = picture;
-                            certificates.Add(materialCertificate);                       
-                            //_buildingUnitsRepository.MaterialCertificates.Add(materialCertificate);
-                            //_buildingUnitsRepository.Materials.Add(material);
-                            //  byte[] bytes = picture.ImageFile;
-                            if (bytes != null)
-                            {
-                                string byte_string = Encoding.GetEncoding(1251).GetString(bytes);
-                                Regex regex_1 = new Regex($"%PDF-");
-                                MatchCollection matches_1 = regex_1.Matches(byte_string);
-                                int fist_byte = matches_1[0].Index;
-                                Regex regex_2 = new Regex(@"%%EOF");
-                                MatchCollection matches_2 = regex_2.Matches(byte_string);
-                                int last_byte = matches_2[matches_2.Count - 1].Index + 6;
-                                using (System.IO.FileStream fs = new System.IO.FileStream($"{BD_FilesDir}\\{picture.FileName}", FileMode.OpenOrCreate))
-                                {
-                                     //     fs.Write(bytes, fist_byte, last_byte - fist_byte);
-                                }
-                                picture.Data = bytes[fist_byte..last_byte];
-                            }
+                            certificates.Add(materialCertificate);
                         }
                     }
                     catch (Exception e)
@@ -620,6 +602,19 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 //_buildingUnitsRepository.Complete();
 
             }
+        }
+
+        public static byte[] FormatPDFFromAccess(byte[] bytes)
+        {
+            if (bytes == null) return null;
+            string byte_string = Encoding.GetEncoding(1251).GetString(bytes);
+            Regex regex_1 = new Regex($"%PDF-");
+            MatchCollection matches_1 = regex_1.Matches(byte_string);
+            int fist_byte = matches_1[0].Index;
+            Regex regex_2 = new Regex(@"%%EOF");
+            MatchCollection matches_2 = regex_2.Matches(byte_string);
+            int last_byte = matches_2[matches_2.Count - 1].Index + 6;
+            return bytes[fist_byte..last_byte];
         }
         public static string GetFolderPath()
         {

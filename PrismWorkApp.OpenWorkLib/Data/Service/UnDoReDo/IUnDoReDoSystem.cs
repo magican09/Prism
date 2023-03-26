@@ -12,10 +12,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public bool IsSatcksEmpty();
         bool CanReDoExecute();
         bool CanUnDoExecute();
-        bool ReDo(int levels);
         void UnRegister(IJornalable obj);
         void Register(IJornalable obj);
-        bool UnDo(int levels);
+        bool UnDo(int levels, bool without_redo = false);
+        bool ReDo(int levels, bool without_undo = false);
         void UnDoAll();
         void ClearStacks();
         void AddUnDoReDo(IUnDoReDoSystem unDoReDo);

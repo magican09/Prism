@@ -168,7 +168,16 @@ namespace PrismWorkApp.Core
            });
 
         }
+        public static void InputTextValueActionDialog
+           (string action_name, string input_text, 
+         Action<IDialogResult> action, IDialogService dialogService)
+        {
+            var dialog_par = new DialogParameters();
+            dialog_par.Add("massege",action_name);
+           
+            dialogService.ShowDialog(typeof(InputTextValueDialog).Name, dialog_par, action);
 
+        }
         public static void ConfirmActionDialog
             (string action_name, string element_type_name, string confirm_action_name,
             string cencel_action_name, string confirm_Yes_action_massage,

@@ -12,11 +12,7 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="600" d:DesignWidth="1150">
     <UserControl.Resources>
-        <!--<ResourceDictionary Source="/Themes/generic.xaml"/>
-        <Style TargetType="{x:Type Button}" x:Key="removeAddButoomStyle">
-            <Setter Property="Width"  Value="20"/>
-            <Setter Property="Height" Value="20"/>
-        </Style>-->
+
         <Style x:Key="codeTextBoxStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="Margin" Value="0 0 5 0"/>
         </Style>
@@ -44,7 +40,7 @@
 
         <StackPanel x:Name="mainStakPanel" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Grid.RowSpan="2" Orientation="Vertical" >
             <StackPanel  >
-                
+
                 <StackPanel Orientation="Horizontal" Margin="3"/>
                 <StackPanel Orientation="Horizontal" Margin="3">
                     <ComboBox ItemsSource="{Binding  ElementName=bldDocumentsDataGrid,Path=Columns}" SelectedItem="{Binding SelectedGridColumn}" 
@@ -203,8 +199,49 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <Button Content="просмотр" Command="{Binding  RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl},Path=DataContext.OpenImageFileCommand}" Margin="0 0 1 0"/>
-                                                <Button Content="скачать" Command="{Binding  RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl},Path=DataContext.SaveImageFileToDiskCommand}"/>
+                                                <Button x:Name="viewFileImageButton" Content="просмотр" Command="{Binding  RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl},Path=DataContext.OpenImageFileCommand}"
+                                                       Margin="0 0 1 0">
+                                                      <Button.Style>
+                                                             <Style TargetType="Button">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DataGridRow}},Path=DataContext.ImageFile}" 
+                                                                             Value="{x:Null}">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                </Button>
+                                                <Button x:Name="dowloadFileImageButton" Content="скачать" Command="{Binding  RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl},Path=DataContext.SaveImageFileToDiskCommand}">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DataGridRow}},Path=DataContext.ImageFile}" 
+                                                                               Value="{x:Null}">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                                <Button x:Name="loadFileImageButton" Content="загрузить" Command="{Binding  RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl},Path=DataContext.LoadImageFileFromDiskCommand}" Margin="0 0 1 0">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DataGridRow}},Path=DataContext.ImageFile}" 
+                                                                             Value="{x:Null}">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                  </DataTrigger>
+                                                               
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                        </Button.Style>
+                                                </Button>
+                                             
+
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -218,7 +255,7 @@
 
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10" >
-             <Button  Content="Сохранить" Command="{Binding SaveCommand}" />
+            <Button  Content="Сохранить" Command="{Binding SaveCommand}" />
             <Button  Content="Закрыть"  Command="{Binding CloseCommand}"
                                         CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}}"/>
 

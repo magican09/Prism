@@ -127,6 +127,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             }
                             OnWindowClose();
                         }
+                        else
+                        {
+                            throw new Exception("_regionManager==null and RequestClose=null! in BaseViewModel<T>.OnClose<T>(object view, T selected_obj, string object_name)");
+
+                        }
                     }
                 }, _dialogService);
 

@@ -17,7 +17,7 @@ namespace PrismWorkApp.Core
             get { return string.Format(_projectBDConnectionString,DataSource,Database);}
             set { /*SetProperty(ref _projectBDConnectionString, value);*/ }
         }
-        private string _dataSource= @"M-RUK-04\TEW_SQLEXPRESS_5";
+        private string _dataSource= @"localhost\TEW_SQLEXPRESS";// @"M-RUK-04\TEW_SQLEXPRESS_5";
         public string DataSource
         {
             get { return _dataSource; }

@@ -11,8 +11,13 @@
              Header="{Binding Title}">
      <StackPanel Orientation="Horizontal">
         <RibbonButton Label="Импорт материлов из Access"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/access_icon.png"
-                      Command="{Binding ApplicationCommands.LoadMaterialsFromAccessCommand}"/>
-       
+                      Command="{Binding LoadMaterialCertificatesFromAccessCommand}"/>
+        <RibbonButton Label ="Загрузить из БД" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/Load_from_db.jpg" 
+
+                Command="{Binding LoadMaterialCertificatesFromDBCommand}"/>
+         <RibbonButton Label ="Сохранить данные в БД"  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/save_to_db.jpg" 
+                Command="{Binding SaveDataToDBCommand}"/>
+
 
     </StackPanel>
 </RibbonGroup>

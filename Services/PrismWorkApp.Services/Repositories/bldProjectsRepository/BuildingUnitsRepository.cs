@@ -21,7 +21,8 @@ namespace PrismWorkApp.Services.Repositories
         public bldExecutiveSchemesRepository ExecutiveSchemes { get; }
         public bldProjectMaterialCertificatesRepository MaterialCertificates { get; }
         public PictureRepository PictureRepository { get; }
-       
+        public bldAggregationDocumentsRepository    AggregationDocumentsRepository { get; }
+
         private readonly bldProjectsPlutoContext _context;
 
         public BuildingUnitsRepository(IAppSettingsSystem settings)
@@ -43,6 +44,7 @@ namespace PrismWorkApp.Services.Repositories
             ExecutiveSchemes = new bldExecutiveSchemesRepository(_context);
             MaterialCertificates = new bldProjectMaterialCertificatesRepository(_context);
             PictureRepository = new PictureRepository(_context);
+            AggregationDocumentsRepository = new bldAggregationDocumentsRepository(_context);
         }
         public int Complete()
         {

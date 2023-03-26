@@ -341,7 +341,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             world_document.Words.Last.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
                             world_attached_doc = world_application.Documents.Add(templates_path + "\\Приложения.docx");
                             Microsoft.Office.Interop.Word._Document world_attached_doc_table = world_application.Documents.Add(templates_path + "\\Таблица к Приложениям.docx");
-                            bldDocument attach_doc = new bldDocument();
+                            bldAggregationDocument attach_doc = new bldAggregationDocument();
                             attach_doc.Name = "Реестр документов, подтверждающих соответствие работ предъявляемым к ним требованиям ";
                             attach_doc.Date = aOSRDocument.Date;
                             attach_doc.PagesNumber = Convert.ToInt32(world_attached_doc.ComputeStatistics(Microsoft.Office.Interop.Word.WdStatistic.wdStatisticPages));

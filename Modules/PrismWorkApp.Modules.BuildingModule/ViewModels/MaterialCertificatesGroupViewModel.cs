@@ -1,4 +1,6 @@
-﻿using Prism;
+﻿using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Prism;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
@@ -37,7 +39,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedGridColumn; }
             set { SetProperty(ref _selectedGridColumn, value); }
         }
-        
+
         private bldMaterialCertificate _selectedDocument;
         public bldMaterialCertificate SelectedDocument
         {
@@ -62,14 +64,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _filterEnable; }
             set { SetProperty(ref _filterEnable, value); }
         }
-        private ObservableCollection<bldMaterialCertificate> _filteredCommonPointersCollection = new ObservableCollection<bldMaterialCertificate>();
-        public ObservableCollection<bldMaterialCertificate> FilteredCommonPointersCollection
+        private NameableObservableCollection<bldDocument> _filteredCommonPointersCollection = new NameableObservableCollection<bldDocument>();
+        public NameableObservableCollection<bldDocument> FilteredCommonPointersCollection
         {
             get { return _filteredCommonPointersCollection; }
             set { SetProperty(ref _filteredCommonPointersCollection, value); }
         }
-        private ObservableCollection<bldMaterialCertificate> _sortedCommonPointersCollection = new ObservableCollection<bldMaterialCertificate>();
-        public ObservableCollection<bldMaterialCertificate> SortedCommonPointersCollection
+        private NameableObservableCollection<bldDocument> _sortedCommonPointersCollection = new NameableObservableCollection<bldDocument>();
+        public NameableObservableCollection<bldDocument> SortedCommonPointersCollection
         {
             get { return _sortedCommonPointersCollection; }
             set { SetProperty(ref _sortedCommonPointersCollection, value); }
@@ -86,7 +88,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> FilteredElementCommand { get; private set; }
         public NotifyCommand<object> SortedElementCommand { get; private set; }
 
-        public ObservableCollection<INotifyCommand>  MaterialCertificatesContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
+        public ObservableCollection<INotifyCommand> MaterialCertificatesContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand CreateNewMaterialCertificateCommand { get; private set; }
         public NotifyCommand<object> AddCreatedFromTemplateMaterialCertificateCommand { get; private set; }
 
@@ -94,17 +96,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> SelectUnitOfMeasurementCommand { get; private set; }
         public NotifyCommand<object> RemoveUnitOfMeasurementCommand { get; private set; }
 
-        public NotifyCommand OpenImageFileCommand { get; private set;}
-        public NotifyCommand SaveImageFileToDiskCommand { get; private set;}
+        public NotifyCommand OpenImageFileCommand { get; private set; }
+        public NotifyCommand SaveImageFileToDiskCommand { get; private set; }
+        public NotifyCommand LoadImageFileFromDiskCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
- 
+
         public MaterialCertificatesGroupViewModel(IDialogService dialogService,
            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
-           
+
             UnDoReDo = new UnDoReDoSystem();
             ApplicationCommands = applicationCommands;
+            _dialogService = dialogService;
+            _buildingUnitsRepository = buildingUnitsRepository;
+            _regionManager = regionManager;
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
 
@@ -113,8 +119,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             FilterDisableCommand = new NotifyCommand(OnFilterDisable);
             SortedElementCommand = new NotifyCommand<object>(OnSortingElement);
 
-            _buildingUnitsRepository = buildingUnitsRepository;
-        
+
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedDocument);
             CloseCommand = new NotifyCommand<object>(OnClose);
@@ -128,80 +133,144 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CreateNewMaterialCertificateCommand = new NotifyCommand(OnCreateNewMaterialCertificate);
             CreateNewMaterialCertificateCommand.Name = "Создать новый документ";
             AddCreatedFromTemplateMaterialCertificateCommand = new NotifyCommand<object>(OnAddCreatedFromTemplateMaterialCertificate,
-                                    (ob) => { return SelectedDocuments.Count == 1;}).ObservesPropertyChangedEvent(SelectedDocuments);
+                                    (ob) => { return SelectedDocuments.Count == 1; }).ObservesPropertyChangedEvent(SelectedDocuments);
             AddCreatedFromTemplateMaterialCertificateCommand.Name = "Создать новый на основании..";
             MaterialCertificatesContextMenuCommands.Add(CreateNewMaterialCertificateCommand);
             MaterialCertificatesContextMenuCommands.Add(AddCreatedFromTemplateMaterialCertificateCommand);
-        
+
             SelectUnitOfMeasurementCommand = new NotifyCommand<object>(OnSelectUnitOfMeasurement);
             SelectUnitOfMeasurementCommand.Name = "Установить";
-            RemoveUnitOfMeasurementCommand = new NotifyCommand<object>(OnUnitOfMeasurement);
+            RemoveUnitOfMeasurementCommand = new NotifyCommand<object>(OnRemoveUnitOfMeasurement);
             RemoveUnitOfMeasurementCommand.Name = "Удалить";
             UnitsOfMeasurementContextMenuCommands.Add(SelectUnitOfMeasurementCommand);
             UnitsOfMeasurementContextMenuCommands.Add(RemoveUnitOfMeasurementCommand);
 
             OpenImageFileCommand = new NotifyCommand(OnOpenImageFile);
             SaveImageFileToDiskCommand = new NotifyCommand(OnSaveImageFileToDisk);
-
+            LoadImageFileFromDiskCommand = new NotifyCommand(OnLoadImageFileFromDisk);
             #endregion
             ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
         }
 
+        private void OnLoadImageFileFromDisk()
+        {
+            string image_file_name = "";
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+                image_file_name = openFileDialog.FileName;
+            if (image_file_name != "")
+                try
+                {
+                    using (FileStream fs = File.OpenRead(image_file_name))
+                    {
+                        byte[] buffer = new byte[fs.Length];
+                        fs.ReadAsync(buffer, 0, buffer.Length);
+                        SelectedDocument.ImageFile = new Picture();
+                        SelectedDocument.ImageFile.Data = buffer;
+                        SelectedDocument.ImageFile.FileName = openFileDialog.SafeFileName;
+                    }
+                }
+                catch
+                {
+                    throw new Exception("Не удается считать файл!");
+                }
+        }
+
         private void OnSaveImageFileToDisk()
         {
+
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
            
-           
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+               
+                string BD_FilesDir = dialog.FileName; ;
+
+                if (!Directory.Exists(BD_FilesDir))
+                    Directory.CreateDirectory(BD_FilesDir);
+                string s = Path.Combine(BD_FilesDir, SelectedDocument.ImageFile.FileName);
+
+                using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
+                {
+                    fs.Write(Functions.FormatPDFFromAccess(SelectedDocument.ImageFile.Data));
+                }
+            }
+
         }
 
         private void OnOpenImageFile()
         {
-            string BD_FilesDir =  Path.GetTempPath();
+            string BD_FilesDir = Path.GetTempPath();
 
             if (!Directory.Exists(BD_FilesDir))
                 Directory.CreateDirectory(BD_FilesDir);
-            string s = Path.Combine(BD_FilesDir,SelectedDocument.ImageFile.FileName);
-           
+            string s = Path.Combine(BD_FilesDir, SelectedDocument.ImageFile.FileName);
+
             using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
             {
-                     fs.Write(Functions.FormatPDFFromAccess(SelectedDocument.ImageFile.Data));
+                fs.Write(Functions.FormatPDFFromAccess(SelectedDocument.ImageFile.Data));
             }
             ProcessStartInfo info = new ProcessStartInfo(s);
             info.UseShellExecute = true;
             using (var proc = Process.Start(info)) { }
-                                                                        //Process.Start(s);
         }
 
         private void OnAddCreatedFromTemplateMaterialCertificate(object obj)
         {
-            bldMaterialCertificate new_certificate =SelectedDocument.Clone()as bldMaterialCertificate;
+            bldMaterialCertificate new_certificate = SelectedDocument.Clone() as bldMaterialCertificate;
+            UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
+            UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+
+            localUnDoReDoSystem.Register(SelectedDocumentsGroup);
+            localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
+
             SelectedDocumentsGroup.Add(new_certificate);
             FilteredCommonPointersCollection.Add(new_certificate);
-            SortedCommonPointersCollection.Add(new_certificate);
+
+            localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
+            localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
+
+            UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+            UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
+            UnDoReDo.Register(new_certificate);
 
         }
 
         private void OnCreateNewMaterialCertificate()
         {
-            bldMaterialCertificate  new_certificate = new  bldMaterialCertificate();
+            bldMaterialCertificate new_certificate = new bldMaterialCertificate();
+            UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
+            UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+
+            localUnDoReDoSystem.Register(SelectedDocumentsGroup);
+            localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
+
             SelectedDocumentsGroup.Add(new_certificate);
             FilteredCommonPointersCollection.Add(new_certificate);
-            SortedCommonPointersCollection.Add(new_certificate);
+
+            localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
+            localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
+
+            UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+            UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
+            UnDoReDo.Register(new_certificate);
         }
 
         private void OnFilterDisable()
         {
-            FilteredCommonPointersCollection = new ObservableCollection<bldMaterialCertificate>(SortedCommonPointersCollection);
+            FilteredCommonPointersCollection = new NameableObservableCollection<bldDocument>(SortedCommonPointersCollection);
         }
         private void OnFindElement(object obj)
         {
-            string find_string = ((Tuple<object, object>) obj).Item2 as string;
+            string find_string = ((Tuple<object, object>)obj).Item2 as string;
             DataGrid data_grid = ((Tuple<object, object>)obj).Item1 as DataGrid;
 
 
-               var find_materials = CoreFunctions.FindElementInCollection<bldMaterialCertificate, ObservableCollection<bldMaterialCertificate>>(
-                SelectedDocumentsGroup, SelectedGridColumn.SortMemberPath, find_string);
+            var find_materials = CoreFunctions.FindElementInCollection<bldDocument, ObservableCollection<bldDocument>>(
+             SelectedDocumentsGroup, SelectedGridColumn.SortMemberPath, find_string);
             if (find_materials.Count > 0)
             {
                 data_grid.SelectedIndex = data_grid.Items.IndexOf(find_materials[0]);
@@ -209,21 +278,23 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private void OnSortingElement(object obj)
         {
-                //SortedCommonCollection.Clear();
-                //FilteredCommonCollection.Clear();
-                // foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
-                //{
-                //    SortedCommonCollection.Add(element);
-                //    FilteredCommonCollection.Add(element);
-                // }
-                SortedCommonPointersCollection.Clear();
-                FilteredCommonPointersCollection.Clear();
-                foreach (bldMaterialCertificate material in SelectedDocumentsGroup)
-                {
-                    SortedCommonPointersCollection.Add(material);
-                    FilteredCommonPointersCollection.Add(material);
-                }
-            
+            //SortedCommonCollection.Clear();
+            //FilteredCommonCollection.Clear();
+            // foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
+            //{
+            //    SortedCommonCollection.Add(element);
+            //    FilteredCommonCollection.Add(element);
+            // }
+            // SortedCommonPointersCollection.Clear();
+            // UnDoReDo.UnRegister(FilteredCommonPointersCollection);
+            FilteredCommonPointersCollection.Clear();
+            foreach (bldMaterialCertificate material in SelectedDocumentsGroup)
+            {
+                SortedCommonPointersCollection.Add(material);
+                FilteredCommonPointersCollection.Add(material);
+            }
+            //    UnDoReDo.Register(FilteredCommonPointersCollection);
+
         }
         private void OnFilteredElement(object obj)
         {
@@ -236,35 +307,34 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //comboBox.ItemsSource = finded_elements;
             if (!FilterEnable) return;
             if (SelectedGridColumn == null) return;
-                TextBox textBox = obj as TextBox;
+            TextBox textBox = obj as TextBox;
             string text_box_text = textBox.Text;
             //FilteredCommonCollection.Clear();
             //foreach (T elemtnt in SortedCommonCollection.Where(el => el.Name.Contains(text_box_text)))
             //    FilteredCommonCollection.Add(elemtnt);
-
+            //  UnDoReDo.UnRegister(FilteredCommonPointersCollection);
             FilteredCommonPointersCollection.Clear();
             //foreach (bldMaterialCertificate elemtnt in SortedCommonPointersCollection.Where(el => el.Name.Contains(text_box_text)))
             //    FilteredCommonPointersCollection.Add(elemtnt);
-           
-            var find_materials = CoreFunctions.FindElementInCollection<bldMaterialCertificate, ObservableCollection<bldMaterialCertificate>>(
+
+            var find_materials = CoreFunctions.FindElementInCollection<bldDocument, ObservableCollection<bldDocument>>(
                 SortedCommonPointersCollection, SelectedGridColumn.SortMemberPath, text_box_text);
             foreach (bldMaterialCertificate elemtnt in find_materials)
                 FilteredCommonPointersCollection.Add(elemtnt);
-
-
+            //  UnDoReDo.Register(FilteredCommonPointersCollection);
         }
         #region  Commmands Methods
-        private void OnUnitOfMeasurement(object obj)
+        private void OnRemoveUnitOfMeasurement(object obj)
         {
-            bldWork selected_work = obj as bldWork;
-            UnDoReDo.Register(selected_work);
-            selected_work.UnitOfMeasurement = null;
+            bldMaterialCertificate selected_certificate = obj as bldMaterialCertificate;
+            UnDoReDo.Register(selected_certificate);
+            selected_certificate.UnitOfMeasurement = null;
 
         }
 
         private void OnSelectUnitOfMeasurement(object obj)
         {
-            bldWork selected_work = obj as bldWork;
+            bldMaterialCertificate selected_certificate = obj as bldMaterialCertificate;
             ObservableCollection<bldUnitOfMeasurement> All_UnitOfMeasurements =
                  new ObservableCollection<bldUnitOfMeasurement>(_buildingUnitsRepository.UnitOfMeasurementRepository.GetAllUnits());
             NameablePredicate<ObservableCollection<bldUnitOfMeasurement>, bldUnitOfMeasurement> predicate_1 = new NameablePredicate<ObservableCollection<bldUnitOfMeasurement>, bldUnitOfMeasurement>();
@@ -283,8 +353,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                   {
                       foreach (bldUnitOfMeasurement unit_of_measurement in units_for_add_collection)
                       {
-                          UnDoReDo.Register(selected_work);
-                          selected_work.UnitOfMeasurement = unit_of_measurement;
+                          UnDoReDo.Register(selected_certificate);
+                          selected_certificate.UnitOfMeasurement = unit_of_measurement;
                           break;
                       }
                       SaveCommand.RaiseCanExecuteChanged();
@@ -307,10 +377,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnDataGridSelectionChanged(object certificates)
         {
             SelectedDocuments.Clear();
-            foreach (bldMaterialCertificate  certificate in (IList)certificates)
+            foreach (bldMaterialCertificate certificate in (IList)certificates)
                 SelectedDocuments.Add(certificate);
         }
-       
+
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             SaveCommand.RaiseCanExecuteChanged();
@@ -322,12 +392,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             else
                 return false;
         }
-        public override void OnSave()
+        public virtual void OnSave()
         {
-            base.OnSave();
-            foreach (bldMaterialCertificate certificate in SelectedDocumentsGroup)
-            _buildingUnitsRepository.MaterialCertificates.Add(certificate);
-            _buildingUnitsRepository.Complete();
+            base.OnSave<bldMaterialCertificatesGroup>(SelectedDocumentsGroup);
+        }
+        public virtual void OnClose(object obj)
+        {
+            base.OnClose<bldMaterialCertificatesGroup>(obj, SelectedDocumentsGroup);
         }
         public override void OnWindowClose()
         {
@@ -338,7 +409,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            ConveyanceObject navigane_message_works = (ConveyanceObject)navigationContext.Parameters["bld_documents"];
+            ConveyanceObject navigane_message_works = (ConveyanceObject)navigationContext.Parameters["bld_material_certificates"];
             if (navigane_message_works != null)
             {
                 EditMode = navigane_message_works.EditMode;
@@ -346,22 +417,23 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (SelectedDocumentsGroup != null) SelectedDocumentsGroup.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedDocumentsGroup = (bldMaterialCertificatesGroup)navigane_message_works.Object;
                 SelectedDocumentsGroup.ErrorsChanged += RaiseCanExecuteChanged;
+                Title = $"{SelectedDocumentsGroup.Code} {SelectedDocumentsGroup.Name}";
+                SortedCommonPointersCollection = new NameableObservableCollection<bldDocument>(SelectedDocumentsGroup.Where(el => el != null).ToList());
+                FilteredCommonPointersCollection = new NameableObservableCollection<bldDocument>(SortedCommonPointersCollection);
+
                 UnDoReDo.Register(SelectedDocumentsGroup);
-                foreach (bldMaterialCertificate   document in SelectedDocumentsGroup)
+                foreach (bldMaterialCertificate document in SelectedDocumentsGroup)
                 {
                     UnDoReDo.Register(document);
-                    foreach(bldMaterialCertificate attach_document in document.AttachedDocuments)
-                          UnDoReDo.Register(attach_document);
+                    foreach (bldMaterialCertificate attach_document in document.AttachedDocuments)
+                        UnDoReDo.Register(attach_document);
                 }
-                Title = $"{SelectedDocumentsGroup.Code} {SelectedDocumentsGroup.Name}";
-                SortedCommonPointersCollection = new ObservableCollection<bldMaterialCertificate>(SelectedDocumentsGroup.Where(el =>el!=null).ToList());
-                FilteredCommonPointersCollection = new ObservableCollection<bldMaterialCertificate>(SortedCommonPointersCollection);
-                
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_documents"];
+            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_material_certificates"];
+
             if (((bldMaterialCertificatesGroup)navigane_message.Object).Id != SelectedDocumentsGroup.Id)
             {
 
@@ -370,7 +442,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             else
                 return true;
         }
-
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
 

@@ -22,19 +22,6 @@ namespace PrismWorkApp.Core
 
             }
         }
-        //private void SetPropertiesCurrentId()
-        //{
-        //    var prop_infoes = this.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0 &&
-        //                                                            pr.PropertyType is IJornalable);
-        //    foreach (PropertyInfo prop_info in prop_infoes)
-        //    {
-        //        IJornalable prop_val = (IJornalable)prop_info.GetValue(this);
-        //        if (prop_val != null)
-        //        {
-        //            prop_val.CurrentContextId = Id;
-        //        }
-        //    }
-        //}
         protected override bool SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = null)
         {
             if (val is ICuntextIdable)
@@ -43,14 +30,6 @@ namespace PrismWorkApp.Core
             }
             return base.SetProperty(ref member, val, propertyName);
         }
-
-        /*   private object _selectedObject;
-           public object SelectedObject
-           {
-               get { return _selectedObject; }
-               set { SetProperty(ref _selectedObject, value); }
-           }
-           */
         private bool _editMode;
         public bool EditMode
         {
@@ -88,10 +67,6 @@ namespace PrismWorkApp.Core
 
         }
 
-        //public virtual void RaiseCanExecuteChanged(object sender, EventArgs e)
-        //{
-
-        //}
 
 
     }

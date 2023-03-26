@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldDocument : BindableBase, IbldDocument
+    public abstract class bldDocument : BindableBase, IbldDocument,IEntityObject
     {
 
         private DateTime _date;
@@ -20,11 +21,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private string _shortName;
         public virtual string ShortName
         {
-            get {return _shortName;}
+            get { return _shortName; }
             set { SetProperty(ref _shortName, value); }
         }
-        private bldDocumentsGroup _attachedDocuments = new bldDocumentsGroup("Приложения");
-        public bldDocumentsGroup AttachedDocuments
+        private bldDocumentsGroup  _attachedDocuments = new bldDocumentsGroup ("Приложения");
+        public bldDocumentsGroup  AttachedDocuments
         {
             get { return _attachedDocuments; }
             set { SetProperty(ref _attachedDocuments, value); }
@@ -49,13 +50,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             AttachedDocuments.Name = "Приложения";
         }
-
+        private  ObservableCollection<bldDocument> _parentDocuments = new ObservableCollection<bldDocument>();
+        public ObservableCollection<bldDocument> ParentDocuments
+        {
+            get { return _parentDocuments; }
+            set { SetProperty(ref _parentDocuments, value); }
+        }
         private Picture _imageFile;
         public Picture ImageFile
         {
             get { return _imageFile; }
             set { SetProperty(ref _imageFile, value); }
         }
-       
+
     }
 }

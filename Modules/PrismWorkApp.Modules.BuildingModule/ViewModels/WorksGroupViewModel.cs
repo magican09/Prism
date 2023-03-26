@@ -368,9 +368,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         //}
 
 
-
-
-
         private void OnCopyMaterials(object obj)
         {
             if (obj == null) return;
@@ -1081,6 +1078,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public virtual void OnSave()
         {
+          
             base.OnSave<bldConstruction>(SelectedConstruction);
         }
         public virtual void OnClose(object obj)

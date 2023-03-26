@@ -59,8 +59,10 @@ namespace PrismWorkApp.Modules.BuildingModule
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             //    _regionManager.RequestNavigate(RegionNames.ContentRegion, "ProjectExplorerView");
             //  _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, "ConvertersView");
+            _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new DocumentationExplorerView());
             _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new ProjectExplorerView());
-             var projectManagerRibbonTab = new ProjectManagerRibbonTabView();
+           
+            var projectManagerRibbonTab = new ProjectManagerRibbonTabView();
              var dataImportRibbonGroup = new DataImportRibbonGroupView();
              var currentProjectRibbonGroup = new CurentProjectRibbonGroupView();
             projectManagerRibbonTab.DataContext = new ProjectManagerRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands);
@@ -161,8 +163,9 @@ namespace PrismWorkApp.Modules.BuildingModule
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<WorksTableView>();
             containerRegistry.RegisterForNavigation<ProjectExplorerView>();
+            containerRegistry.RegisterForNavigation<DocumentationExplorerView>();
+            containerRegistry.RegisterForNavigation<WorksTableView>();
             containerRegistry.RegisterForNavigation<AOSRDocumentsTableView>();
             containerRegistry.RegisterForNavigation<MaterialView>();
             containerRegistry.RegisterForNavigation<WorkView>();
@@ -214,6 +217,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<SelectDocumentFromTreeViewDialog, SelectDocumentFromTreeViewDialogViewModel>();
 
             containerRegistry.RegisterDialog<AddConstructionCompaniesToCollectionFromListDialogView, AddConstructionCompaniesToCollectionFromListDialogViewModel>();
+            containerRegistry.RegisterDialog<SelectAggregationDocumentFromCollectionDialogView, SelectAggregationDocumentFromCollectionDialogViewModel>();
+            
             //  containerRegistry.RegisterForNavigation<ToolBarRibbonTabView, ToolBarRibbonTabViewModel>();
             //   containerRegistry.RegisterDialog<ConfirmCreateDialogViewModel, ConfirmCreateDialogViewModel>();
 

@@ -428,7 +428,13 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             }
                         break;
                     }
+                case nameof(bldAggregationDocument):
+                    {
+                        bldAggregationDocument document = value as bldAggregationDocument;
+                        if (document?.AttachedDocuments != null) collection.Add(document.AttachedDocuments);
 
+                        break;
+                    }
                 case nameof(bldProjectDocument):
                     {
                         bldDocument document = value as bldDocument;

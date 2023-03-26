@@ -17,7 +17,7 @@ using System.Runtime.CompilerServices;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class ProjectExplorerViewModel : LocalBindableBase, INotifyPropertyChanged, INavigationAware, IConfirmNavigationRequest
+    public class ProjectExplorerViewModel : LocalBindableBase, INotifyPropertyChanged, INavigationAware//, IConfirmNavigationRequest
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")

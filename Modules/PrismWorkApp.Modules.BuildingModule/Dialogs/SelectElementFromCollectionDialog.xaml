@@ -31,10 +31,14 @@
                Content="{Binding Message}" />
         <Label Grid.Row="1"  Margin="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" 
                Content="{Binding CurrentCollectionName}" />
-       
+
         <Label Grid.Row="1"   Margin="2"  Grid.Column="2"  HorizontalAlignment="Left" VerticalAlignment="Center" 
                Content="{Binding CurrentCollectionName}" />
-        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <Button Grid.Row="3" Grid.Column="0" Content="Создать новый" Width="105" Height="25" Margin="10"
+                Command="{Binding CreateNewCommand}"/>
+
+        </StackPanel>
         <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"/>
         <DataGrid Grid.Row="2" Grid.Column="0" Margin="2"  ItemsSource="{Binding CurrentCollection}" 
                   SelectedItem="{Binding SelectedElement,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"

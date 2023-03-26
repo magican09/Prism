@@ -33,8 +33,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 SetProperty(ref _role, value);
             }
         }
-        private bldDocument _docConfirmingTheAthority;
-        public bldDocument DocConfirmingTheAthority
+        private bldOrderDocument _docConfirmingTheAthority;
+        public bldOrderDocument DocConfirmingTheAthority
         {
             get { return _docConfirmingTheAthority; }
             set { SetProperty(ref _docConfirmingTheAthority, value); }

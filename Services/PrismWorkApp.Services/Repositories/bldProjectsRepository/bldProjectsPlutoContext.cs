@@ -32,11 +32,13 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<bldAOSRDocument> AOSRDocuments { get; set; }
         public virtual DbSet<bldExecutiveScheme> ExecutiveSchemes { get; set; }
         public virtual DbSet<bldLaboratoryReport> LaboratoryReports { get; set; }
-        public virtual DbSet<bldMaterialCertificate> MaterialCertificates { get; set; }
+        public virtual DbSet<bldOrderDocument>  OrderDocuments{ get; set; }
+       public virtual DbSet<bldMaterialCertificate> MaterialCertificates { get; set; }
         public virtual DbSet<bldPasportDocument> PasportDocuments { get; set; }
         public virtual DbSet<bldProjectDocument> ProjectDocuments { get; set; }
         public virtual DbSet<bldRegulationtDocument> RegulationtDocuments { get; set; }
         public virtual DbSet<Picture> Pictures { get; set; }
+        public virtual DbSet<bldAggregationDocument> AggregationDocuments { get; set; }
         #endregion
         #region Participants
         public virtual DbSet<bldCompany> Companies { get; set; }
@@ -155,6 +157,11 @@ namespace PrismWorkApp.Services.Repositories
              .HasOne(bo => bo.ParentObject)
              .WithMany(bo => bo.BuildingObjects)
              .HasForeignKey(bo => bo.bldObjectId);
+
+            //modelBuilder.Entity<bldAggregationDocument>()
+            //    .HasMany(ad => ad.ParentDocuments)
+            //    .WithMany(aa => aa.AttachedDocuments);
+
             modelBuilder.Entity<Employee>().ToTable("Employees");
             modelBuilder.Entity<bldResponsibleEmployee>().ToTable("ResponsibleEmployees");
 
@@ -169,6 +176,9 @@ namespace PrismWorkApp.Services.Repositories
             modelBuilder.Entity<bldPasportDocument>().ToTable("PasportDocuments");
             modelBuilder.Entity<bldProjectDocument>().ToTable("ProjectDocuments");
             modelBuilder.Entity<bldRegulationtDocument>().ToTable("RegulationtDocuments");
+            modelBuilder.Entity<bldAggregationDocument>().ToTable("AggregationDocuments");
+            modelBuilder.Entity<bldOrderDocument>().ToTable("OrderDocuments");
+
             //modelBuilder.Entity<EmployeePosition>().ToTable("EmployeePositions");
             //modelBuilder.Entity<Person>().ToTable("Persons");
             //modelBuilder.Entity<Picture>().ToTable("Pictures");
@@ -188,7 +198,7 @@ namespace PrismWorkApp.Services.Repositories
             //modelBuilder.Entity<bldWork>().ToTable("bldWorks");
             //modelBuilder.Entity<bldMaterial>().ToTable("bldMaterials");
 
-            
+
             base.OnModelCreating(modelBuilder);
         }
         public override int SaveChanges()

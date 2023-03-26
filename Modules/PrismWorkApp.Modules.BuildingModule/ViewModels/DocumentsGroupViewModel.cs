@@ -275,7 +275,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                           UnDoReDo.Register(attach_document);
                 }
                 Title = $"{SelectedDocumentsGroup.Code} {SelectedDocumentsGroup.Name}";
-                SortedCommonPointersCollection = new ObservableCollection<bldDocument>(SelectedDocumentsGroup.Where(el =>el!=null).ToList());
+                SortedCommonPointersCollection = new ObservableCollection<bldDocument>(SelectedDocumentsGroup.Where(el =>el!=null).ToList() as IList<bldDocument>);
                 FilteredCommonPointersCollection = new ObservableCollection<bldDocument>(SortedCommonPointersCollection);
                 
             }

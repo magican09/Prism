@@ -188,7 +188,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         employee.Name = employee.FullName;
 
                     bld_employee.Employee = employee;
-                    bld_employee.DocConfirmingTheAthority = new bldDocument(responsibleEmplDataWorksheet.Cells[rowIndex, 6].Value?.ToString());
+                    bld_employee.DocConfirmingTheAthority = new   bldOrderDocument(responsibleEmplDataWorksheet.Cells[rowIndex, 6].Value?.ToString());
 
 
                     string fdf = responsibleEmplDataWorksheet.Cells[rowIndex, 7].Value?.ToString();
@@ -507,7 +507,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
 
             return project;
         }
-        public static void OnLoadMaterialCertificatesFromAccess(IList<bldMaterialCertificate> certificates)
+        public static void OnLoadMaterialCertificatesFromAccess(IList<bldDocument> certificates)
         {
             string access_file_name;
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -613,7 +613,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             int fist_byte = matches_1[0].Index;
             Regex regex_2 = new Regex(@"%%EOF");
             MatchCollection matches_2 = regex_2.Matches(byte_string);
-            int last_byte = matches_2[matches_2.Count - 1].Index + 6;
+            int last_byte = matches_2[matches_2.Count - 1].Index + 5;
             return bytes[fist_byte..last_byte];
         }
         public static string GetFolderPath()

@@ -29,7 +29,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
     public class ProjectManagerRibbonTabViewModel : LocalBindableBase, INotifyPropertyChanged, IActiveAware
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        private string _title = "Конвертер";
+        public string Title
+        {
+            get { return _title; }
+            set { SetProperty(ref _title, value); }
+        }
         public NotifyCommand LoadProjectFromExcelCommand { get; private set; }
         public NotifyCommand LoadProjectFromARPCommand { get; private set; }
         public NotifyCommand LoadProjectFromXMLCommand { get; private set; }
@@ -42,29 +47,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private const int CURRENT_MODULE_ID = 2;
         public IBuildingUnitsRepository _buildingUnitsRepository;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
-        private string _title = "Конвертер";
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
+
         private IModulesContext _modulesContext;
-        public IModulesContext ModulesContext
-        {
-            get { return _modulesContext; }
-            set { SetProperty(ref _modulesContext, value); }
-        }
         private IModuleInfoData _moduleInfoData;
-        public IModuleInfoData ModuleInfo
-        {
-            get { return _moduleInfoData; }
-            set { SetProperty(ref _moduleInfoData, value); }
-        }
         private readonly IRegionManager _regionManager;
         private readonly IEventAggregator _eventAggregator;
         private IDialogService _dialogService;
@@ -81,22 +66,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { _allProjectsContext = value; }
         }
         public bldProjectsGroup allbldProjects { get; set; } = new bldProjectsGroup();
-
         private bool _allChangesIsDone;
-
         public bool AllChangesIsDone
         {
             get { return _allChangesIsDone; }
             set { _allChangesIsDone = value; }
         }
 
-
         private IApplicationCommands _applicationCommands;
-        public IApplicationCommands ApplicationCommands
-        {
-            get { return _applicationCommands; }
-            set { SetProperty(ref _applicationCommands, value); }
-        }
+
 
         //public ProjectManagerRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
         //                                    IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
@@ -113,15 +91,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public ProjectManagerRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
                                             IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
         {
-
-            _regionManager = regionManager;
-
-            // ModulesContext = modulesContext;
+           _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
-            ApplicationCommands = applicationCommands;
-            //  ModuleInfo = ModulesContext.ModulesInfoData.Where(mi => mi.Id == CURRENT_MODULE_ID).FirstOrDefault();
+            _applicationCommands = applicationCommands;
 
             LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
             LoadProjectFromARPCommand = new NotifyCommand(LoadProjectFromARP, CanLoadAllProjects);
@@ -130,10 +104,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SaveDataToDBCommand = new NotifyCommand(SaveDataToDB, CanSaveDataToDB)
                 .ObservesProperty(() => AllChangesIsDone);
             AllChangesIsDone = true;
-            ApplicationCommands.SaveAllCommand.SetLastCommand(SaveDataToDBCommand);
-            LoadMaterialsFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
+          
            
-           // ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
+            // ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
             IsActiveChanged += OnActiveChanged;
         }
 
@@ -141,21 +114,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             if (IsActive)
             {
-                ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
-
+         
             }
             else
             {
-                ApplicationCommands.LoadMaterialsFromAccessCommand.UnregisterCommand(LoadMaterialsFromAccessCommand);
-
+        
             }
         }
 
-        private void OnLoadMaterialsFromAccess()
-        {
-            //ObservableCollection<bldMaterial> materials = new  ObservableCollection<bldMaterial>();
-            //Functions.OnLoadMaterialCertificatesFromAccess(materials);
-        }
+       
 
         private void LoadProjectFromXML()
         {
@@ -188,7 +155,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-       
+
         //private void OnLoadMaterialsFromAccess_1()
         //{
         //   // string sMyDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -256,7 +223,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
                             }
                         }
-
                         SaveDataToDBCommand.RaiseCanExecuteChanged();
                         _buildingUnitsRepository.Complete();
                     }

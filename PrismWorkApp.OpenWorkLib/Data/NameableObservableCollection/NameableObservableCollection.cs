@@ -13,15 +13,19 @@ using System.Runtime.CompilerServices;
 namespace PrismWorkApp.OpenWorkLib.Data
 {
 
-    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableOservableCollection<TEntity>, ICloneable where TEntity : IEntityObject
+    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableOservableCollection<TEntity>, ICloneable 
+        where TEntity : IEntityObject
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated = delegate { };
+        public void InvokeUnDoReDoCommandCreatedEvent(IUnDoRedoCommand command)
+        {
+            UnDoReDoCommandCreated.Invoke(this, new UnDoReDoCommandCreateEventsArgs(command));
+        }
         protected virtual bool BaseSetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = "")
         {
-
-            if (object.Equals(val, member)) return false;
+           if (object.Equals(val, member)) return false;
             if (b_jornal_recording_flag)
             {
                 PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
@@ -273,6 +277,33 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get { return _children; }
             set { _children = value; }
+        }
+
+
+        public void Add(TEntity item)
+        {
+
+            if (b_jornal_recording_flag)
+            {
+                AddItemCommand<TEntity> Command = new AddItemCommand<TEntity>(item, this);
+                InvokeUnDoReDoCommandCreatedEvent(Command);
+            }
+            else
+            {
+                base.Add(item);
+            }
+        }
+        public void Remove(TEntity item)
+        {
+            if (b_jornal_recording_flag)
+            {
+                RemoveItemCommand<TEntity> Command = new RemoveItemCommand<TEntity>(item, this);
+                InvokeUnDoReDoCommandCreatedEvent(Command);
+            }
+            else
+            {
+                base.Remove(item);
+            }
         }
 
 

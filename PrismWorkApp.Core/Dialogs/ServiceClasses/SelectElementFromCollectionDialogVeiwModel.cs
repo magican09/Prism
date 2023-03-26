@@ -8,7 +8,8 @@ namespace PrismWorkApp.Core.Dialogs
 {
     public class SelectElementFromCollectionDialogVeiwModel<TContainer, T> : BindableBase, IDialogAware
         where TContainer : ICollection<T>, new()
-        where T : class, new()
+        where T : class, OpenWorkLib.Data.IEntityObject, new()
+    
     {
         private string _title = "Выбрать";
         public string Title
@@ -56,12 +57,26 @@ namespace PrismWorkApp.Core.Dialogs
         }
         public event Action<IDialogResult> RequestClose;
         public NotifyCommand CloseDialogCommand { get; private set; }
-        public NotifyCommand ConfirmDialogCommand { get; private set; }
+         public NotifyCommand ConfirmDialogCommand { get; private set; }
+        public NotifyCommand CreateNewCommand { get; private set; }
         public SelectElementFromCollectionDialogVeiwModel()
         {
             CloseDialogCommand = new NotifyCommand(CloseDialog);
             ConfirmDialogCommand = new NotifyCommand(ConfirmDialog, CanConfirmDialog).
                 ObservesProperty(() => SelectedElement);
+            CreateNewCommand = new NotifyCommand(OnCreateNew);
+
+        }
+
+        private void OnCreateNew()
+        {
+            SelectedElement = new T();
+            CurrentCollection.Add(SelectedElement);
+            //var result = ButtonResult.Yes;
+            //var param = new DialogParameters();
+            //param.Add("confirm_dialog_param", "Создан новый элемент");
+            //param.Add("element", SelectedElement);
+            //RequestClose.Invoke(new DialogResult(result, param));
         }
 
         private bool CanConfirmDialog()

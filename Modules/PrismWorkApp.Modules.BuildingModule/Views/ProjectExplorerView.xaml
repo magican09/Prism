@@ -18,10 +18,15 @@
                             Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/ProjectTreeViewDefaultTheme.xaml"/>
                      </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
+       
     </UserControl.Resources>
 
     <Grid>
-
+        <Grid.Resources>
+            <loc_core:BindingProxy x:Key="Proxy" Data="{Binding}" />
+            <loc_core:NextPreviousWorkMultiConverter x:Key="NextPreviousWorkMultiConverter"/>
+            <loc_core:ObjectsPairMultiConverter x:Key="ObjectsPairMultiConverter"/>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.9*"/>
             <!--<RowDefinition Height="Auto"/>-->

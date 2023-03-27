@@ -96,9 +96,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> SelectUnitOfMeasurementCommand { get; private set; }
         public NotifyCommand<object> RemoveUnitOfMeasurementCommand { get; private set; }
 
-        public NotifyCommand OpenImageFileCommand { get; private set; }
-        public NotifyCommand SaveImageFileToDiskCommand { get; private set; }
-        public NotifyCommand LoadImageFileFromDiskCommand { get; private set; }
+        public NotifyCommand<object> OpenImageFileCommand { get; private set; }
+        public NotifyCommand<object> SaveImageFileToDiskCommand { get; private set; }
+        public NotifyCommand<object> LoadImageFileFromDiskCommand { get; private set; }
+        public ObservableCollection<MenuItem> CommonContextMenuItems { get; set; } 
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
 
@@ -145,17 +146,30 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnitsOfMeasurementContextMenuCommands.Add(SelectUnitOfMeasurementCommand);
             UnitsOfMeasurementContextMenuCommands.Add(RemoveUnitOfMeasurementCommand);
 
-            OpenImageFileCommand = new NotifyCommand(OnOpenImageFile);
-            SaveImageFileToDiskCommand = new NotifyCommand(OnSaveImageFileToDisk);
-            LoadImageFileFromDiskCommand = new NotifyCommand(OnLoadImageFileFromDisk);
+            OpenImageFileCommand = new NotifyCommand<object>(OnOpenImageFile);
+            SaveImageFileToDiskCommand = new NotifyCommand<object>(OnSaveImageFileToDisk);
+            LoadImageFileFromDiskCommand = new NotifyCommand<object>(OnLoadImageFileFromDisk);
+
+            CommonContextMenuItems = new ObservableCollection<MenuItem>();
+            MenuItem addItem = new MenuItem();
+            addItem.Text = "Add";
+            CommonContextMenuItems.Add(addItem);
+            MenuItem editItem = new MenuItem();
+            editItem.Text = "Edit";
+            CommonContextMenuItems.Add(editItem);
+            MenuItem deleteItem = new MenuItem();
+            deleteItem.Text = "Delete";
+            CommonContextMenuItems.Add(deleteItem);
+
             #endregion
             ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
         }
 
-        private void OnLoadImageFileFromDisk()
+        private void OnLoadImageFileFromDisk(object document)
         {
+            bldMaterialCertificate selected_certificate = document as bldMaterialCertificate;
             string image_file_name = "";
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
@@ -167,9 +181,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     {
                         byte[] buffer = new byte[fs.Length];
                         fs.ReadAsync(buffer, 0, buffer.Length);
-                        SelectedDocument.ImageFile = new Picture();
-                        SelectedDocument.ImageFile.Data = buffer;
-                        SelectedDocument.ImageFile.FileName = openFileDialog.SafeFileName;
+                        selected_certificate.ImageFile = new Picture();
+                        selected_certificate.ImageFile.Data = buffer;
+                        selected_certificate.ImageFile.FileName = openFileDialog.SafeFileName;
                     }
                 }
                 catch
@@ -178,8 +192,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
         }
 
-        private void OnSaveImageFileToDisk()
+        private void OnSaveImageFileToDisk(object document)
         {
+            bldMaterialCertificate selected_certificate = document as bldMaterialCertificate;
 
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
            
@@ -191,27 +206,28 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
                 if (!Directory.Exists(BD_FilesDir))
                     Directory.CreateDirectory(BD_FilesDir);
-                string s = Path.Combine(BD_FilesDir, SelectedDocument.ImageFile.FileName);
+                string s = Path.Combine(BD_FilesDir, selected_certificate.ImageFile.FileName);
 
                 using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
                 {
-                    fs.Write(Functions.FormatPDFFromAccess(SelectedDocument.ImageFile.Data));
+                    fs.Write(Functions.FormatPDFFromAccess(selected_certificate.ImageFile.Data));
                 }
             }
 
         }
 
-        private void OnOpenImageFile()
+        private void OnOpenImageFile(object document)
         {
+            bldMaterialCertificate selected_certificate = document as bldMaterialCertificate;
             string BD_FilesDir = Path.GetTempPath();
-
+           
             if (!Directory.Exists(BD_FilesDir))
                 Directory.CreateDirectory(BD_FilesDir);
-            string s = Path.Combine(BD_FilesDir, SelectedDocument.ImageFile.FileName);
+            string s = Path.Combine(BD_FilesDir, selected_certificate.ImageFile.FileName);
 
             using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
             {
-                fs.Write(Functions.FormatPDFFromAccess(SelectedDocument.ImageFile.Data));
+                fs.Write(Functions.FormatPDFFromAccess(selected_certificate.ImageFile.Data));
             }
             ProcessStartInfo info = new ProcessStartInfo(s);
             info.UseShellExecute = true;

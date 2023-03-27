@@ -60,6 +60,7 @@
         <Page Remove="ResourceDictionaries\ProjectTreeViewDefaultTheme.xaml" />
       </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="devexpress.wpf.grid.core" Version="21.2.3" />
     <PackageReference Include="EPPlus" Version="5.8.7" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
@@ -68,6 +69,7 @@
     <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
     <PackageReference Include="Syncfusion.Pdf.Wpf" Version="20.3.0.61" />
     <PackageReference Include="System.Data.Odbc" Version="4.7.0" />
+    <PackageReference Include="telerik.ui.for.wpf.netcore.xaml" Version="2023.1.117" />
     <PackageReference Include="WindowsAPICodePack" Version="7.0.2" />
   </ItemGroup>
   <ItemGroup>

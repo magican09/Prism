@@ -1,29 +1,40 @@
-﻿<UserControl x:Class="PrismWorkApp.Modules.BuildingModule.Views.MaterialCertificatesGroupView"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views"
-              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:cc="clr-namespace:bldCustomControlLibrary;assembly=bldCustomControlLibrary"
              xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" 
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             x:Class="PrismWorkApp.Modules.BuildingModule.Views.MaterialCertificatesGroupView"
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="600" d:DesignWidth="1150">
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary    Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/MenuItemsTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
 
-        <Style x:Key="codeTextBoxStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="Margin" Value="0 0 5 0"/>
-        </Style>
-
-        <loc_core:BindingProxy x:Key="Proxy" Data="{Binding}" />
-        <loc_core:NextPreviousWorkMultiConverter x:Key="NextPreviousWorkMultiConverter"/>
-        <loc_core:ObjectsPairMultiConverter x:Key="ObjectsPairMultiConverter"/>
-        <cc:TestConverter x:Key="TestConvector"/>
 
     </UserControl.Resources>
     <Grid>
+        <Grid.Resources>
+
+            <telerik:RadContextMenu x:Key="GridContextMenu_2" 
+                                            ItemContainerStyle="{StaticResource MenuItemContainerStyle}"
+                                            ItemsSource="{Binding CommonContextMenuItems}">
+              </telerik:RadContextMenu>
+             <Style TargetType="telerik:GridViewCell" x:Key="FirstNameCellStyle" >
+                <Setter Property="ContextMenu" Value="{StaticResource GridContextMenu_2}" />
+            </Style>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.05*"/>
             <ColumnDefinition Width="Auto"/>
@@ -39,220 +50,95 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="mainStakPanel" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Grid.RowSpan="2" Orientation="Vertical" >
-            <StackPanel  >
+         
+            <telerik:RadGridView ItemsSource="{Binding SelectedDocumentsGroup}" SelectedItem="{Binding SelectedDocument}"
+                                 AutoGenerateColumns="False">
+                <!--<telerik:RadContextMenu.ContextMenu >
+                    <telerik:RadContextMenu x:Name="GridContextMenu_1" 
+                                            ItemContainerStyle="{StaticResource MenuItemContainerStyle}"
+                                            ItemsSource="{Binding CommonContextMenuItems}">
+                    </telerik:RadContextMenu>
+                </telerik:RadContextMenu.ContextMenu>-->
 
-                <StackPanel Orientation="Horizontal" Margin="3"/>
-                <StackPanel Orientation="Horizontal" Margin="3">
-                    <ComboBox ItemsSource="{Binding  ElementName=bldDocumentsDataGrid,Path=Columns}" SelectedItem="{Binding SelectedGridColumn}" 
-                          DisplayMemberPath="Header"
-                          SelectedValuePath="Header"  Width="300"/>
-                    <TextBox Name="findTextBox" Width="250" />
-                    <Button  Content="Найти" Command="{Binding FindElementCommand}" >
-                        <!--CommandParameter="{Binding ElementName=findTextBox,Path=Text}">-->
-                        <Button.CommandParameter>
-                            <MultiBinding Converter="{StaticResource ObjectsPairMultiConverter}">
-                                <Binding ElementName="bldDocumentsDataGrid" />
-                                <Binding  ElementName="findTextBox" Path="Text"/>
-                            </MultiBinding>
-                        </Button.CommandParameter>
-                    </Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="3">
-                    <TextBox Name="filterTextBox" Width="250" IsEnabled="{Binding FilterEnable, Mode=OneWay}"  >
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="KeyUp">
-                                <prism:InvokeCommandAction Command="{Binding FilteredElementCommand}" 
-                                                           CommandParameter="{Binding ElementName=filterTextBox}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </TextBox>
-                    <CheckBox x:Name="filterEnableCheckBox" IsChecked="{Binding FilterEnable}" Content="Использовать фильтр" >
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Unchecked">
-                                <prism:InvokeCommandAction Command="{Binding FilterDisableCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="Checked">
-                                <prism:InvokeCommandAction Command="{Binding FilteredElementCommand}" 
-                                                           CommandParameter="{Binding ElementName=filterTextBox}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </CheckBox>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" x:Name="bldObjectStackPanel"  >
-                    <Grid Width="{Binding ActualWidth, ElementName=mainStakPanel}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*" x:Name="DataGridLeftCulumn"/>
-                            <ColumnDefinition  Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                <telerik:RadGridView.Columns>
+                    <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code}" Width="1*"/>
+                    <telerik:GridViewDataColumn Header="Наминование материала" DataMemberBinding = "{Binding MaterialName}" Width="1*"/>
+                    <telerik:GridViewDataColumn Header="Геом. парам." DataMemberBinding = "{Binding GeometryParameters}" Width="1*"/>
+                    <telerik:GridViewDataColumn Header="Кол-во." DataMemberBinding = "{Binding Quantity}" Width="1*"/>
+                    <telerik:GridViewDataColumn Header="Ед. изм."  DataMemberBinding = "{Binding UnitOfMeasurement.Name, Mode=OneWay}" Width="1*" IsReadOnly="True"
+                                                CellStyle="{StaticResource FirstNameCellStyle}">
+                        
 
-                        <DataGrid  Visibility="Visible" x:Name="bldDocumentsDataGrid" Grid.Column="0" ItemsSource="{Binding FilteredCommonPointersCollection}"   
-                                 SelectedItem="{Binding SelectedDocument}"  
-                                Style="{StaticResource inlineDataGrid}"  
-                                 AutoGenerateColumns="False"  IsReadOnly="False"  
-                                   HorizontalContentAlignment="Stretch"  CanUserAddRows="False" 
-                                  CanUserDeleteRows="False">
+                        <!--<telerik:GridViewDataColumn.CellStyle>
+                            <Style TargetType="telerik:GridViewCell">
+                                <Setter Property="ContextMenu" Value="{StaticResource cm1}"/>
+                            </Style>
 
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="SelectedCellsChanged">
-                                    <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" 
-                                           CommandParameter="{Binding SelectedItem, ElementName=bldPreviousWorksDataGrid}" />
-                                </i:EventTrigger>
-                                <i:EventTrigger EventName="SelectedCellsChanged">
-                                    <prism:InvokeCommandAction Command="{Binding DataGridSelectionChangedCommand}"
-                                                               CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}"/>
-                                </i:EventTrigger>
-                                <i:EventTrigger EventName="LostFocus">
-                                    <prism:InvokeCommandAction Command="{Binding DataGridLostFocusCommand}" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                            <DataGrid.ContextMenu>
-                                <!--<ContextMenu ItemsSource="{Binding Data.WorksContextMenuCommands, Source={StaticResource Proxy}}">
-                                    <ContextMenu.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type MenuItem}">
-                                            <MenuItem Header="{Binding Name}" Command="{Binding}"
-                                                                      CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
-                                        </DataTemplate>
-                                    </ContextMenu.ItemTemplate>
-                                </ContextMenu>-->
-                                <ContextMenu x:Name="CommanDataGridContextMenu" ItemsSource="{Binding Data.MaterialCertificatesContextMenuCommands, Source={StaticResource Proxy}}">
-                                    <ContextMenu.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type MenuItem}">
-                                            <MenuItem Header="{Binding Name}" Command="{Binding}"
-                                                                      CommandParameter="{Binding SelectedItems, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}, TargetNullValue=Неавава}" />
-                                        </DataTemplate>
-                                    </ContextMenu.ItemTemplate>
-                                </ContextMenu>
-
-                            </DataGrid.ContextMenu>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn  Header="Код"   Width="Auto"
-                                                     Binding = "{Binding Path=Code}" />
-                                <DataGridTextColumn  Header="Наименование материала"   Width="Auto"
-                                                     Binding = "{Binding  Path=MaterialName}" IsReadOnly="False" />
-                                <DataGridTextColumn  Header="Геометрические параметры"   Width="Auto"
-                                                     Binding = "{Binding  Path=GeometryParameters}" IsReadOnly="False" />
-                                <DataGridTextColumn  Header="Кол-во"   Width="Auto"
-                                                     Binding = "{Binding Quantity}" />
-                                <DataGridTemplateColumn Header="Ед.изм">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding  Path=UnitOfMeasurement.Name, Mode=OneWay}">
-                                                <TextBlock.ContextMenu>
-                                                    <ContextMenu ItemsSource="{Binding Data.UnitsOfMeasurementContextMenuCommands, Source={StaticResource Proxy}}">
-                                                        <ContextMenu.ItemTemplate>
-                                                            <DataTemplate DataType="{x:Type MenuItem}">
-                                                                <MenuItem Header="{Binding Name}" Command="{Binding}"
-                                                                      CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}, Mode=FindAncestor}}" />
-                                                            </DataTemplate>
-                                                        </ContextMenu.ItemTemplate>
-                                                    </ContextMenu>
-                                                </TextBlock.ContextMenu>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn  Header="Название документа"   Width="Auto"
-                                                     Binding = "{Binding  Path=Name}" IsReadOnly="False" />
-                                <DataGridTextColumn  Header="№ документа"   Width="Auto"
-                                                     Binding = "{Binding Path=RegId}" />
-                                <DataGridTextColumn  Header="Дата документа"   Width="Auto"
-                                                     Binding = "{Binding Path=Date, StringFormat=d, ConverterCulture=ru}" />
-                                <DataGridTextColumn  Header="Контрольный параметр"   Width="Auto"
-                                                     Binding = "{Binding  Path=ControlingParament}" IsReadOnly="False" />
-                                <DataGridTextColumn  Header="ГОСТ,ТУ параметр"   Width="Auto"
-                                                     Binding = "{Binding  Path=RegulationDocumentsName}" IsReadOnly="False" />
-                                <DataGridTemplateColumn Header="Приложения">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <DataGrid ItemsSource="{Binding SelectedDocument.AttachedDocuments}"
-                                                           SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}},Path=DataContext.SelectedDocument}"  
-                                                           AutoGenerateColumns="False" 
-                                                           IsReadOnly="True"  
-                                                           HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"  CanUserAddRows="False" 
-                                                           CanUserDeleteRows="False"  ColumnWidth="*" HeadersVisibility="None"  Height="Auto" >
-                                                <!--<DataGrid.ContextMenu>
-                                                    <ContextMenu ItemsSource="{Binding Data.DocumentsContextMenuCommands, Source={StaticResource Proxy}}">
-                                                        <ContextMenu.ItemTemplate>
-                                                            <DataTemplate DataType="{x:Type MenuItem}">
-                                                                <MenuItem Header="{Binding Name}" Command="{Binding}" >
-                                                                    <MenuItem.CommandParameter>
-                                                                        <MultiBinding Converter="{StaticResource ObjectsPairMultiConverter}">
-                                                                            <Binding RelativeSource="{RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}" Path="SelectedItems"/>
-                                                                            <Binding RelativeSource="{RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}" Path="DataContext"/>
-                                                                        </MultiBinding>
-                                                                    </MenuItem.CommandParameter>
-                                                                </MenuItem>
-                                                            </DataTemplate>
-                                                        </ContextMenu.ItemTemplate>
-                                                    </ContextMenu>
-                                                </DataGrid.ContextMenu>-->
-                                                <DataGrid.Columns>
-                                                    <DataGridTextColumn  Header="Наименование"   MinWidth="300"  
-                                                     Binding = "{Binding  Path=Name}" IsReadOnly="True" />
-                                                </DataGrid.Columns>
-                                            </DataGrid>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="Скан документа">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Button x:Name="viewFileImageButton" Content="просмотр" Command="{Binding  RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl},Path=DataContext.OpenImageFileCommand}"
-                                                       Margin="0 0 1 0">
-                                                      <Button.Style>
-                                                             <Style TargetType="Button">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DataGridRow}},Path=DataContext.ImageFile}" 
+                        </telerik:GridViewDataColumn.CellStyle>-->
+                    </telerik:GridViewDataColumn>
+                    <telerik:GridViewDataColumn Header="Сертиф./Паспорт"  DataMemberBinding = "{Binding Name}" Width="1*" />
+                    <telerik:GridViewDataColumn Header="№ док. о кач."  DataMemberBinding = "{Binding RegId}" Width="1*" />
+                    <telerik:GridViewDataColumn Header="Дата док."  DataMemberBinding = "{Binding Date, ConverterCulture=ru, StringFormat=d}" Width="1*" />
+                    <telerik:GridViewDataColumn Header="Контр. парам."  DataMemberBinding = "{Binding ControlingParament}" Width="1*" />
+                    <telerik:GridViewDataColumn Header="ГОСТ,ТУ..."  DataMemberBinding = "{Binding RegulationDocumentsName}" Width="1*" />
+                    <telerik:GridViewDataColumn  Header="Скан" DataMemberBinding="{Binding ImageFile}">
+                        <telerik:GridViewDataColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="viewFileImageButton" Content="просмотр" Command="{Binding DataContext.OpenImageFileCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}}"  Margin="0 0 1 0"
+                                      CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}},Path=DataContext}"  >
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding  Path=DataContext.ImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
                                                                              Value="{x:Null}">
-                                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Button.Style>
-                                                </Button>
-                                                <Button x:Name="dowloadFileImageButton" Content="скачать" Command="{Binding  RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl},Path=DataContext.SaveImageFileToDiskCommand}">
-                                                    <Button.Style>
-                                                        <Style TargetType="Button">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DataGridRow}},Path=DataContext.ImageFile}" 
-                                                                               Value="{x:Null}">
-                                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Button.Style>
-                                                </Button>
-                                                <Button x:Name="loadFileImageButton" Content="загрузить" Command="{Binding  RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl},Path=DataContext.LoadImageFileFromDiskCommand}" Margin="0 0 1 0">
-                                                    <Button.Style>
-                                                        <Style TargetType="Button">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DataGridRow}},Path=DataContext.ImageFile}" 
-                                                                             Value="{x:Null}">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                  </DataTrigger>
-                                                               
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                        </Button.Style>
-                                                </Button>
-                                             
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Button x:Name="dowloadFileImageButton" Content="скачать" Command="{Binding DataContext.SaveImageFileToDiskCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}}" 
+                                             CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}},Path=DataContext}">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding  Path=DataContext.ImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
+                                                                                 Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Button x:Name="loadFileImageButton" Content="загрузить" Command="{Binding DataContext.LoadImageFileFromDiskCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}}" Margin="0 0 1 0"
+                                             CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}},Path=DataContext}">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding  Path=DataContext.ImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
+                                                                       Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
 
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </Grid>
-                </StackPanel>
-            </StackPanel>
-
-
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                               </StackPanel>
+                            </DataTemplate>
+                        </telerik:GridViewDataColumn.CellTemplate>
+                        <!--<telerik:GridViewDataColumn.CellEditTemplate>
+                            <DataTemplate>
+                                <telerik:RadNumericUpDown Value="{Binding Salary}" />
+                            </DataTemplate>
+                        </telerik:GridViewDataColumn.CellEditTemplate>-->
+                    </telerik:GridViewDataColumn>
+                </telerik:RadGridView.Columns>
+            </telerik:RadGridView>
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10" >
             <Button  Content="Сохранить" Command="{Binding SaveCommand}" />

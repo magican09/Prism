@@ -7,9 +7,8 @@
              xmlns:core="clr-namespace:PrismWorkApp.Core;assembly=PrismWorkApp.Core"
              xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-               xmlns:prism="http://prismlibrary.com/" >
-
-
+             xmlns:prism="http://prismlibrary.com/" >
+ 
     <loc_core:ProjectExplorerNodeViewConverter x:Key="ProjectNodeViewConverter"/>
     <loc_core:ObjectsToTreeViewNodeModelConvecter x:Key="objToNodesConvecter"/>
     <loc_core:GetImageFrombldProjectObjectConvecter x:Key="imgFrombldProjectObject"/>
@@ -19,7 +18,7 @@
     <loc_core:TreeViewDataTemplateSelector x:Key="treeViewDataTemplateSelector"/>
     <loc_core:GetCollectionFrombldProjectModelConvecter  x:Key="getCollectionFromObjectConvecter"  />
     <loc_core:FindComboBoxMultiConverter x:Key="FindComboBoxMultiConverter"/>
-    
+
     <Style TargetType="{x:Type TreeViewItem}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self},Path=DataContext.Count}" Value="0">
@@ -154,9 +153,9 @@
         </StackPanel>
     </DataTemplate>
 
-    
 
-<!--#region  Materials nodes-->
+
+    <!--#region  Materials nodes-->
     <HierarchicalDataTemplate ItemsSource="{Binding    }" DataType="{x:Type bld:bldMaterialsGroup}">
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
@@ -180,23 +179,23 @@
         </StackPanel>
 
     </HierarchicalDataTemplate>
-   <!--#endregion-->
+    <!--#endregion-->
 
 
 
     <!--#endregion-->
-   
 
-   
-    
+
+
+
     <HierarchicalDataTemplate   DataType="{x:Type bld:NameableObservabelObjectsCollection }">
         <StackPanel Orientation="Horizontal">
             <Image  Source ="{Binding   Converter={StaticResource  imgFrombldProjectObject} }" />
             <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
-    
-<!--#region   Documentation node-->
+
+    <!--#region   Documentation node-->
 
     <HierarchicalDataTemplate ItemsSource="{Binding  }" DataType="{x:Type bld:bldDocumentsGroup}">
         <StackPanel Orientation="Horizontal">
@@ -236,7 +235,7 @@
             <TextBlock  Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
-    
+
     <HierarchicalDataTemplate ItemsSource="{Binding    Converter={StaticResource getCollectionFromObjectConvecter}}"
                               DataType="{x:Type bld:bldAOSRDocument}">
         <StackPanel Orientation="Horizontal">
@@ -276,7 +275,7 @@
             <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
         </StackPanel>
     </HierarchicalDataTemplate>
-    
+
     <HierarchicalDataTemplate ItemsSource="{Binding   Converter={StaticResource getCollectionFromObjectConvecter}}" 
                               DataType="{x:Type bld:bldExecutiveScheme}">
         <StackPanel Orientation="Horizontal">

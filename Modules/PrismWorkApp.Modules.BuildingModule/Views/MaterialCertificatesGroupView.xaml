@@ -27,7 +27,7 @@
     <Grid>
         <Grid.Resources>
 
-            
+             
             <telerik:RadContextMenu x:Key="GridContextMenu_2" 
                                             ItemContainerStyle="{StaticResource MenuItemContainerStyle}"
                                             ItemsSource="{Binding CommonContextMenuItems}">

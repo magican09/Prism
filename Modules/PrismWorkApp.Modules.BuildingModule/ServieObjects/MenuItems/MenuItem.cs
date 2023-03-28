@@ -1,4 +1,5 @@
 ﻿using DevExpress.Mvvm;
+using PrismWorkApp.Core.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,13 +19,10 @@ namespace PrismWorkApp.Modules.BuildingModule
                 this.PropertyChanged(this, new PropertyChangedEventArgs(ptopertyName));
             }
         }
-        private string text;
+        private string name;
         private bool isEnabled = true;
         private ObservableCollection<MenuItem> subItems;
-        public MenuItem()
-        {
-            this.SubItems = new ObservableCollection<MenuItem>();
-        }
+      
       
         public Uri IconUrl
         {
@@ -36,7 +34,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             get;
             set;
         }
-        public ICommand Command
+        public INotifyCommand Command
         {
             get;
             set;
@@ -56,18 +54,18 @@ namespace PrismWorkApp.Modules.BuildingModule
                 }
             }
         }
-        public string Text
+        public string Name
         {
             get
             {
-                return this.text;
+                return this.name;
             }
             set
             {
-                if (this.text != value)
+                if (this.name != value)
                 {
-                    this.text = value;
-                    this.OnNotifyPropertyChanged("Text");
+                    this.name = value;
+                    this.OnNotifyPropertyChanged("Name");
                 }
             }
         }
@@ -89,6 +87,10 @@ namespace PrismWorkApp.Modules.BuildingModule
                     this.OnNotifyPropertyChanged("SubItems");
                 }
             }
+        }
+        public MenuItem()
+        {
+            this.SubItems = new ObservableCollection<MenuItem>();
         }
 
     }

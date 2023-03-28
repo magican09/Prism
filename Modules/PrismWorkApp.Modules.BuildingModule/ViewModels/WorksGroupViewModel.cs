@@ -271,12 +271,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-            ApplicationCommands.MoveWorkCommand.RegisterCommand(MoveWorksToAnotherConatructionCommand);
+            ApplicationCommands.MoveToCommand.RegisterCommand(MoveWorksToAnotherConatructionCommand);
             ApplicationCommands.SaveExecutiveDocumentsCommand.RegisterCommand(SaveWorksExecutiveDocumentationCommand);
-            ApplicationCommands.AddWorkCommand.RegisterCommand(AddWorksFromAnotherConatructionCommand);
-            ApplicationCommands.DeleteWorkCommand.RegisterCommand(DeleteWorkCommand);
-            ApplicationCommands.CreateWorkFromTemplateCommand.RegisterCommand(AddCreatedFromTemplateWorkCommand);
-            ApplicationCommands.CreateWorkCommand.RegisterCommand(CreateNewWorkCommand);
+            ApplicationCommands.AddCommand.RegisterCommand(AddWorksFromAnotherConatructionCommand);
+            ApplicationCommands.DeleteCommand.RegisterCommand(DeleteWorkCommand);
+            ApplicationCommands.CreateBasedOnCommand.RegisterCommand(AddCreatedFromTemplateWorkCommand);
+            ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewWorkCommand);
         }
 
         //private void OnCopy(object obj)
@@ -1090,11 +1090,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
-            ApplicationCommands.CreateWorkCommand.UnregisterCommand(CreateNewWorkCommand);
-            ApplicationCommands.CreateWorkFromTemplateCommand.UnregisterCommand(AddCreatedFromTemplateWorkCommand);
-            ApplicationCommands.AddWorkCommand.UnregisterCommand(AddWorksFromAnotherConatructionCommand);
-            ApplicationCommands.DeleteWorkCommand.UnregisterCommand(DeleteWorkCommand);
-            ApplicationCommands.MoveWorkCommand.UnregisterCommand(MoveWorksToAnotherConatructionCommand);
+            ApplicationCommands.CreateNewCommand.UnregisterCommand(CreateNewWorkCommand);
+            ApplicationCommands.CreateBasedOnCommand.UnregisterCommand(AddCreatedFromTemplateWorkCommand);
+            ApplicationCommands.AddCommand.UnregisterCommand(AddWorksFromAnotherConatructionCommand);
+            ApplicationCommands.DeleteCommand.UnregisterCommand(DeleteWorkCommand);
+            ApplicationCommands.MoveToCommand.UnregisterCommand(MoveWorksToAnotherConatructionCommand);
             ApplicationCommands.SaveExecutiveDocumentsCommand.UnregisterCommand(SaveWorksExecutiveDocumentationCommand);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)

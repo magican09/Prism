@@ -5,11 +5,19 @@
         NotifyCompositeCommand SaveAllCommand { get; }
         NotifyCompositeCommand UnDoCommand { get; }
         NotifyCompositeCommand ReDoCommand { get; }
-        NotifyCompositeCommand CreateWorkCommand { get; }
-        NotifyCompositeCommand CreateWorkFromTemplateCommand { get; }
-        NotifyCompositeCommand DeleteWorkCommand { get; }
-        NotifyCompositeCommand MoveWorkCommand { get; }
-        NotifyCompositeCommand AddWorkCommand { get; }
+        NotifyCompositeCommand CreateNewCommand { get; }
+        NotifyCompositeCommand CreateBasedOnCommand { get; }
+        NotifyCompositeCommand DeleteCommand { get; }
+        NotifyCompositeCommand MoveToCommand { get; }
+        NotifyCompositeCommand MoveFromCommand { get; }
+        NotifyCompositeCommand AddCommand { get; }
+
+        //NotifyCompositeCommand CreateWorkCommand { get; }
+        //NotifyCompositeCommand CreateWorkFromTemplateCommand { get; }
+        //NotifyCompositeCommand DeleteWorkCommand { get; }
+        //NotifyCompositeCommand MoveWorkCommand { get; }
+        //NotifyCompositeCommand AddWorkCommand { get; }
+
         NotifyCompositeCommand SaveExecutiveDocumentsCommand { get; }
         NotifyCompositeCommand LoadMaterialsFromAccessCommand { get; }
         NotifyCompositeCommand OpenAppSettingsDialogCommand { get; }
@@ -33,26 +41,22 @@
         {
             get { return _reDoCommand; }
         }
-        private NotifyCompositeCommand _createWorkCommand = new NotifyCompositeCommand(true);
-        public NotifyCompositeCommand CreateWorkCommand
-        {
-            get { return _createWorkCommand; }
-        }
-        private NotifyCompositeCommand _createWorkFromTemplateCommand = new NotifyCompositeCommand(true);
-        public NotifyCompositeCommand CreateWorkFromTemplateCommand
-        {
-            get { return _createWorkFromTemplateCommand; }
-        }
-        private NotifyCompositeCommand _deleteWorkCommand = new NotifyCompositeCommand(true);
-        public NotifyCompositeCommand DeleteWorkCommand
-        {
-            get { return _deleteWorkCommand; }
-        }
-        //private NotifyCompositeCommand _saveExecutionDocumentationCommand = new NotifyCompositeCommand();
-        //public NotifyCompositeCommand SaveExecutionDocumentationCommand
+        //private NotifyCompositeCommand _createWorkCommand = new NotifyCompositeCommand(true);
+        //public NotifyCompositeCommand CreateWorkCommand
         //{
-        //    get { return _saveExecutionDocumentationCommand; }
+        //    get { return _createWorkCommand; }
         //}
+        //private NotifyCompositeCommand _createWorkFromTemplateCommand = new NotifyCompositeCommand(true);
+        //public NotifyCompositeCommand CreateWorkFromTemplateCommand
+        //{
+        //    get { return _createWorkFromTemplateCommand; }
+        //}
+        //private NotifyCompositeCommand _deleteWorkCommand = new NotifyCompositeCommand(true);
+        //public NotifyCompositeCommand DeleteWorkCommand
+        //{
+        //    get { return _deleteWorkCommand; }
+        //}
+  
         private NotifyCompositeCommand _moveWorkCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand MoveWorkCommand
         {
@@ -63,6 +67,7 @@
         {
             get { return _addWorkCommand; }
         }
+      
         private NotifyCompositeCommand _saveExecutiveDocumentsCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand SaveExecutiveDocumentsCommand
         {
@@ -78,8 +83,42 @@
         {
             get { return _openAppSettingsDialogCommand; }
         }
+      
+        private NotifyCompositeCommand _createNewCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand CreateNewCommand
+        {
+            get { return _createNewCommand; }
+        }
 
-        
+        private NotifyCompositeCommand _createBasedOnCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand CreateBasedOnCommand
+        {
+            get { return _createBasedOnCommand; }
+        }
+
+        private NotifyCompositeCommand _deleteCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand DeleteCommand
+        {
+            get { return _deleteCommand; }
+        }
+   
+        private NotifyCompositeCommand _moveToCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand MoveToCommand
+        {
+            get { return _moveToCommand; }
+        }
+        private NotifyCompositeCommand _moveFromCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand MoveFromCommand
+        {
+            get { return _moveFromCommand; }
+        }
+        private NotifyCompositeCommand _addCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand AddCommand
+        {
+            get { return _addCommand; }
+        }
+      
+
     }
 
 

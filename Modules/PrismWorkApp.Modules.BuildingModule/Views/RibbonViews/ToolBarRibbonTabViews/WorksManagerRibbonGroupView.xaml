@@ -7,19 +7,19 @@
              mc:Ignorable="d" 
               Header="Работа">
     <StackPanel Orientation="Horizontal">
-        <RibbonButton Label="Создать руботу"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/wand.png"
-                      Command="{Binding ApplicationCommands.CreateWorkCommand}"/>
-        <RibbonButton Label="Создать работу на основе.."   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/wand.png"
-                      Command="{Binding ApplicationCommands.CreateWorkFromTemplateCommand}"/>
-        <RibbonButton Label="Удалить работу"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/tag_blue_delete.png"
-                      Command="{Binding ApplicationCommands.DeleteWorkCommand}"/>
+        <RibbonButton Label="Создать"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/wand.png"
+                      Command="{Binding ApplicationCommands.CreateNewCommand}"/>
+        <RibbonButton Label="Создать на основе..."   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/wand.png"
+                      Command="{Binding ApplicationCommands.CreateBasedOnCommand}"/>
+        <RibbonButton Label="Удалить"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/tag_blue_delete.png"
+                      Command="{Binding ApplicationCommands.Delete}"/>
+        <RibbonButton Label="Добавить из..."   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/arrow_down.png" 
+                      Command="{Binding ApplicationCommands.AddFromCommand}"/>
+        <RibbonButton Label="Переместить в..."   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/arrow_up.png" 
+                      Command="{Binding ApplicationCommands.MoveToCommand}"/>
         <RibbonButton Label="Выгрузить ИД"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/48x48/32.png" 
                       Command="{Binding ApplicationCommands.SaveExecutiveDocumentsCommand}"/>
-        <RibbonButton Label="Добавить работу"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/arrow_down.png" 
-                      Command="{Binding ApplicationCommands.AddWorkCommand}"/>
-        <RibbonButton Label="Переместить работу"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/arrow_up.png" 
-                      Command="{Binding ApplicationCommands.MoveWorkCommand}"/>
-       
+
 
     </StackPanel>
 </RibbonGroup>

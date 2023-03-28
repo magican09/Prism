@@ -99,7 +99,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             #region Add Commands
             AddWorkCommand = new NotifyCommand(OnAddWork);
-            _applicationCommands.AddWorkCommand.RegisterCommand(AddWorkCommand);
+            _applicationCommands.AddCommand.RegisterCommand(AddWorkCommand);
             AddConstructionCommand = new NotifyCommand(OnAddConstruction);
             #endregion
             #region Remove Commands
@@ -109,7 +109,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveWorkCommand = new NotifyCommand(OnRemoveWork,
                                         () => SelectedWork != null)
                     .ObservesProperty(() => SelectedWork);
-            _applicationCommands.DeleteWorkCommand.RegisterCommand(RemoveWorkCommand);
+            _applicationCommands.DeleteCommand.RegisterCommand(RemoveWorkCommand);
             #endregion
             #region Edit Commands
 
@@ -331,8 +331,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
             _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
-            _applicationCommands.AddWorkCommand.UnregisterCommand(AddWorkCommand);
-            _applicationCommands.DeleteWorkCommand.UnregisterCommand(RemoveWorkCommand);
+            _applicationCommands.AddCommand.UnregisterCommand(AddWorkCommand);
+            _applicationCommands.DeleteCommand.UnregisterCommand(RemoveWorkCommand);
             _applicationCommands.SaveExecutiveDocumentsCommand.UnregisterCommand(SaveAOSRsToWordCommand);
 
         }

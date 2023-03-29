@@ -22,8 +22,6 @@ namespace PrismWorkApp.Modules.BuildingModule
         private string name;
         private bool isEnabled = true;
         private ObservableCollection<MenuItem> subItems;
-      
-      
         public Uri IconUrl
         {
             get;

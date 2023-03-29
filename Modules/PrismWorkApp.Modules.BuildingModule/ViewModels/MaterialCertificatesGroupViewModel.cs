@@ -24,6 +24,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Telerik.Windows.Controls;
+using Telerik.Windows.Controls.GridView;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -104,9 +105,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> CopyingCommand { get; private set; }
         public NotifyCommand<object> CopyingCellClipboardContentCommand { get; private set; }
         public NotifyCommand<object> CopyedCommand { get; private set; }
-
+      
         public NotifyCommand<object> PastingCellClipboardContentCommand { get; private set; }
-
+        public NotifyCommand<object> ContextMenuOpeningCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
 
@@ -155,6 +156,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CopyingCellClipboardContentCommand = new NotifyCommand<object>(OnCopyingCellClipboardContent);
             PastingCellClipboardContentCommand = new NotifyCommand<object>(OnPastingCellClipboardContent);
             CopyedCommand = new NotifyCommand<object>(OnCopyedCommand);
+            ContextMenuOpeningCommand = new NotifyCommand<object>(OnContextMenuOpening);
 
             CommonContextMenuItems = new ObservableCollection<MenuItem>();
             MenuItem addItem = new MenuItem();
@@ -174,6 +176,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewCommand);
             ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
 
+        }
+
+        private void OnContextMenuOpening(object obj)
+        {
+            RadContextMenu contextMenu   = obj as RadContextMenu;
+            GridViewCell clicked_cell = contextMenu.GetClickedElement<GridViewCell>();
+            GridViewRow clicked_row = contextMenu.GetClickedElement<GridViewRow>();
+
+            if (clicked_cell != null)
+            {
+                bldMaterialCertificate clicked_document = clicked_cell.DataContext as bldMaterialCertificate;
+                var d = clicked_cell.Value;
+            }
         }
 
         private void OnPastingCellClipboardContent(object obj)
@@ -324,7 +339,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
          //   UnDoReDo.Register(selected_certificate);
          //   selected_certificate.UnitOfMeasurement =  new bldUnitOfMeasurement("-");
 
-        f}
+        }
 
         private void OnSelectUnitOfMeasurement(object obj)
         {

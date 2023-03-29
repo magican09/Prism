@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                     xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation">
+                     xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+                    xmlns:obj_lib="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib">
 
 
     <Style x:Key="MenuItemContainerStyle_1" TargetType="MenuItem">
@@ -19,7 +20,14 @@
         <Setter Property="Command" Value="{Binding}"/>
         <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"/>
         <Setter Property="CommandParameter" 
-                Value="{Binding  PlacementTarget.Tag, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ContextMenu}}}"/>
+                Value="{Binding Tag,  RelativeSource={RelativeSource Mode=Self }}"/>
+        <!--<Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource DataContext, Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"
+                         Value="{x:Type obj_lib:bldUnitOfMeasurement}">
+                <Setter  TargetName="GridContextMenu" Property="ItemsSourse" Value="{Binding DataContext.UnitsOfMeasurementContextMenuCommands,
+                    RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}"/>
+            </DataTrigger>
+        </Style.Triggers>-->
     </Style>
     <!--<Style x:Key="RadMenuItemContainerStyle" TargetType="telerik:RadMenuItem">
         <Setter Property="Icon" Value="{Binding IconUrl}"/>
@@ -39,6 +47,13 @@
         <Setter Property="Header" Value="{Binding Name}"/>
         <Setter Property="ItemsSource" Value="{Binding SubItems}"/>
         <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
+        <!--<Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource DataContext, Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"
+                         Value="{x:Type obj_lib:bldUnitOfMeasurement}">
+                <Setter  TargetName="GridContextMenu" Property="ItemsSourse" Value="{Binding DataContext.UnitsOfMeasurementContextMenuCommands,
+                    RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}"/>
+            </DataTrigger>
+        </Style.Triggers>-->
     </Style>
     <!--<Style x:Key="CommonMenuItemStyle" TargetType="telerik:RadMenuItem">
         <Setter Property="Icon" Value="{Binding IconUrl}"/>

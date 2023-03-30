@@ -19,44 +19,14 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary    Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/MenuItemsTheme.xaml"/>
+                <!--<ResourceDictionary    Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/Core/Converters.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-
-
+    
     </UserControl.Resources>
     <Grid>
         <Grid.Resources>
-
-            <ContextMenu x:Key="UnitOfMeasurement_ContextMenu" 
-                                            ItemContainerStyle="{StaticResource MenuItemContainerStyle}"
-                                            ItemsSource="{Binding DataContext.UnitsOfMeasurementContextMenuCommands,
-                RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}">
-            </ContextMenu>
-
-            <ContextMenu x:Key="UnitOfMeasurement_ContextMenu_2"                                             
-                                            ItemsSource="{Binding DataContext.UnitsOfMeasurementContextMenuCommands,
-                RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}" 
-                         >
-                <ContextMenu.ItemTemplate>
-                    <DataTemplate DataType="{x:Type telerik:RadMenuItem}">
-                        <MenuItem Header="{Binding Name}" Command="{Binding}"
-                        CommandParameter="{Binding ElementName=mainGridView,Path=SelectedItem }" />
-                    </DataTemplate>
-                </ContextMenu.ItemTemplate>
-                <!--<telerik:EventToCommandBehavior.EventBindings>
-                    <telerik:EventBinding EventName="ContextMenuOpening" Command="{Binding DataContext.ContextMenuOpeningCommand,
-                RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
-                                           PassEventArgsToCommand="True"/>
-                </telerik:EventToCommandBehavior.EventBindings>-->
-            </ContextMenu>
-
-            <Style x:Key="UnitOfMeasurementStyle" TargetType="{x:Type telerik:GridViewCell}"
-                   >
-                <Setter Property="ContextMenu" Value="{StaticResource UnitOfMeasurement_ContextMenu}"/>
-            </Style>
-
-
-
+            <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
             <ContextMenu x:Key="Common_ContextMenu" 
                                             ItemContainerStyle="{StaticResource MenuItemContainerStyle}"
                                             ItemsSource="{Binding DataContext.CommonCommands,
@@ -66,16 +36,16 @@
             <Style x:Key="CommonCellStyle" TargetType="{x:Type telerik:GridViewCell}" >
                 <Setter Property="ContextMenu" Value="{StaticResource Common_ContextMenu}"/>
             </Style>
-
-
-
-
-            <telerik:RadContextMenu x:Key="UnitOfMeasurement_RaContextMenu" 
-                                           >
-                <telerik:RadMenuItem Header="dsdsd"/>
-            </telerik:RadContextMenu>
-
-
+          
+            <ContextMenu x:Key="UnitOfMeasurement_ContextMenu" 
+                                            ItemContainerStyle="{StaticResource MenuItemContainerStyle}"
+                                            ItemsSource="{Binding DataContext.UnitsOfMeasurementContextMenuCommands,
+                RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}">
+            </ContextMenu>
+         
+            <Style x:Key="UnitOfMeasurementCellStyle" TargetType="{x:Type telerik:GridViewCell}">
+                <Setter Property="ContextMenu" Value="{StaticResource UnitOfMeasurement_ContextMenu}"/>
+            </Style>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.05*"/>
@@ -92,59 +62,35 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="mainStakPanel" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Grid.RowSpan="2" Orientation="Vertical" >
-
             <telerik:RadGridView x:Name="mainGridView" ItemsSource="{Binding SelectedDocumentsGroup}" SelectedItem="{Binding SelectedDocument}"   AutoGenerateColumns="False"
                        RowIndicatorVisibility="Visible"   SelectionMode="Extended"     
                               CanUserSelect="True" CanUserDeleteRows="False" ShowGroupPanel="False"
                                  IsSynchronizedWithCurrentItem="True"   >
-                <telerik:RadContextMenu.ContextMenu>
-                    <telerik:RadContextMenu x:Name="GridContextMenu" ItemContainerStyle="{StaticResource MenuItemContainerStyle}">
-                        <!--<telerik:RadContextMenu.ItemsSource>
-                            
-                        </telerik:RadContextMenu.ItemsSource>-->
-                        
-                      
-                    </telerik:RadContextMenu>
-                </telerik:RadContextMenu.ContextMenu>
+
                 
                 <telerik:EventToCommandBehavior.EventBindings>
                     <telerik:EventBinding  Command="{Binding ContextMenuOpeningCommand}"
-                                           CommandParameter="{Binding ElementName=GridContextMenu}"
-                                           
-                                           EventName="ContextMenuOpening" 
-                                           RaiseOnHandledEvents="True" 
-                                           PassEventArgsToCommand="True" />
+                                            EventName="SelectionChanged" 
+                                           RaiseOnHandledEvents="True"  >
+                        <telerik:EventBinding.CommandParameter>
+                            <MultiBinding Converter="{StaticResource    ObjectsToListMultiConverter}">
+                                <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItem"/>
+                                <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
+                                <!--<Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedCells"/>-->
+                         </MultiBinding>
+                        </telerik:EventBinding.CommandParameter>
+                    </telerik:EventBinding>
                 </telerik:EventToCommandBehavior.EventBindings>
-
-                <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="GridContextMenu_Opened">
-                        <prism:InvokeCommandAction Command="{Binding CopyingCommand}" 
-                                                   CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
-                            AncestorType={x:Type telerik:RadGridView}}}" telerik:EventToCommandBehavior.EventBindings="" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>-->
-
-                <!--<telerik:EventToCommandBehavior.EventBindings>
-
-                    <telerik:EventBinding  Command="{Binding CopyingCommand}" EventName="Copying"  RaiseOnHandledEvents="True" 
-                        PassEventArgsToCommand="True" />
-                    <telerik:EventBinding  Command="{Binding CopyingCellClipboardContentCommand}" EventName="CopyingCellClipboardContent"  RaiseOnHandledEvents="True" 
-                        PassEventArgsToCommand="True" />
-                    <telerik:EventBinding  Command="{Binding PastingCellClipboardContentCommand}" EventName="PastingCellClipboardContent"  RaiseOnHandledEvents="True" 
-                        PassEventArgsToCommand="True" />
-                    <telerik:EventBinding  Command="{Binding CopyedCommand}" EventName="Copied"  RaiseOnHandledEvents="True" 
-                        PassEventArgsToCommand="True" />
-
-                </telerik:EventToCommandBehavior.EventBindings>-->
-
+  
                 <telerik:RadGridView.Columns>
                     <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code}" Width="1*" CellStyle="{StaticResource CommonCellStyle}"/>
                     <telerik:GridViewDataColumn Header="Наминование материала" DataMemberBinding = "{Binding MaterialName}" Width="1*" CellStyle="{StaticResource CommonCellStyle}"/>
                     <telerik:GridViewDataColumn Header="Геом. парам." DataMemberBinding = "{Binding GeometryParameters}" Width="1*" CellStyle="{StaticResource CommonCellStyle}"/>
                     <telerik:GridViewDataColumn Header="Кол-во." DataMemberBinding = "{Binding Quantity}" Width="1*" CellStyle="{StaticResource CommonCellStyle}"/>
-                    <telerik:GridViewDataColumn Header="Ед. изм."  DataMemberBinding = "{Binding UnitOfMeasurement.Name, Mode=OneWay}" Width="1*" />
-
-
+                    <telerik:GridViewComboBoxColumn  Header="Ед. изм." 
+                                                     DataMemberBinding = "{Binding UnitOfMeasurement}"  
+                                                     ItemsSource="{Binding DataContext.AllUnitsOfMeasurements, RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
+                                                     DisplayMemberPath="Name"/>
 
                     <telerik:GridViewDataColumn Header="Сертиф./Паспорт"  DataMemberBinding = "{Binding Name}" Width="1*" />
                     <telerik:GridViewDataColumn Header="№ док. о кач."  DataMemberBinding = "{Binding RegId}" Width="1*" />
@@ -161,8 +107,8 @@
                                             <Style TargetType="{x:Type Button}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding  Path=DataContext.ImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
-                                                                             Value="{x:Null}">
+                                                    <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
+                                                                             Value="False">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -175,8 +121,8 @@
                                             <Style TargetType="{x:Type Button}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding  Path=DataContext.ImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
-                                                                                 Value="{x:Null}">
+                                                    <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
+                                                                                 Value="False">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -189,11 +135,10 @@
                                             <Style TargetType="{x:Type Button}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding  Path=DataContext.ImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
-                                                                       Value="{x:Null}">
+                                                    <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
+                                                                       Value="False">
                                                         <Setter Property="Visibility" Value="Visible"/>
                                                     </DataTrigger>
-
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Style>
@@ -209,6 +154,7 @@
                     </telerik:GridViewDataColumn>
                 </telerik:RadGridView.Columns>
             </telerik:RadGridView>
+          
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10" >
             <Button  Content="Сохранить" Command="{Binding SaveCommand}" />

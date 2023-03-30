@@ -98,9 +98,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         bldAggregationDocument aggregationDocument = clc_node as bldAggregationDocument;
                         if (aggregationDocument.AttachedDocuments.Count > 0 && aggregationDocument.AttachedDocuments[0] is bldMaterialCertificate)
                         {
-                            bldMaterialCertificatesGroup materialCertificates = (bldMaterialCertificatesGroup)aggregationDocument.AttachedDocuments ;
-                            navParam.Add("bld_material_certificates", (new ConveyanceObject(materialCertificates, ConveyanceObjectModes.EditMode.FOR_EDIT)));
-                            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificatesGroupView).Name, navParam);
+                            bldDocumentsGroup materialCertificates = aggregationDocument.AttachedDocuments ;
+                         //   navParam.Add("bld_material_certificates", (new ConveyanceObject(materialCertificates, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                            navParam.Add("bld_material_certificates_agrregation", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
                             break;
                         }
                     }

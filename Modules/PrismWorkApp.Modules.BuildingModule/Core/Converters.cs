@@ -1,6 +1,8 @@
 ﻿using PrismWorkApp.Core;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -567,6 +569,23 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
         {
             Tuple<object, object> tuple = new Tuple<object, object>(values[0], values[1]);
             return tuple;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class ObjectsToListMultiConverter : IMultiValueConverter
+    {
+
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            List<object> output_objects = new List<object>();
+            foreach (object obj in values)
+                output_objects.Add(obj);
+            
+            return output_objects;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)

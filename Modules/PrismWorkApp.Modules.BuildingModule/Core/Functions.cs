@@ -5,8 +5,11 @@ using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Estimate;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
+using System.Data.Common;
 using System.Data.Odbc;
+using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -188,7 +191,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         employee.Name = employee.FullName;
 
                     bld_employee.Employee = employee;
-                    bld_employee.DocConfirmingTheAthority = new   bldOrderDocument(responsibleEmplDataWorksheet.Cells[rowIndex, 6].Value?.ToString());
+                    bld_employee.DocConfirmingTheAthority = new bldOrderDocument(responsibleEmplDataWorksheet.Cells[rowIndex, 6].Value?.ToString());
 
 
                     string fdf = responsibleEmplDataWorksheet.Cells[rowIndex, 7].Value?.ToString();
@@ -513,31 +516,39 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
                 access_file_name = openFileDialog.FileName;
-
             string ConnectionString = @"Driver={Microsoft Access Driver (*.mdb, *.accdb)}; Dbq=" +
                  openFileDialog.FileName + "; Uid = Admin; Pwd =; ";
             string table_name = "Таблица_1";
             string query = $"SELECT * FROM {table_name}";
-
+            //    string query_2 = $"select MSysObjects.name from MSysObjects where    MSysObjects.type In(1, 4, 6) and MSysObjects.name not like '~*' and MSysObjects.name not like 'MSys*' order by MSysObjects.name";
             string BD_FilesDir = Directory.GetCurrentDirectory();
 
             BD_FilesDir = Path.Combine(BD_FilesDir, "MaterialsBDFiles");
             //  BD_FilesDir = Path.Combine(BD_FilesDir, table_name);
             Directory.CreateDirectory(BD_FilesDir);
-
             MemoryStream memoryStream = new MemoryStream();
+
+            ObservableCollection<bldUnitOfMeasurement> units = new ObservableCollection<bldUnitOfMeasurement>();
+
 
             using (OdbcConnection connection = new OdbcConnection(ConnectionString))
             {
                 //OdbcDataAdapter dataAdapter = new OdbcDataAdapter
                 //         (query, connection);
                 //DataSet dataSet = new DataSet();
+                // var sheme =  connection.GetSchema("Tables").AsEnumerable().Where(r => r.Field<string>("TABLE_TYPE") == "TABLE");
+                //DataTable tableschema = connection.GetSchema(OdbcMetaDataCollectionNames.Tables);
                 string stmt = "SELECT COUNT(*) FROM " + table_name;
+                //OdbcCommand command_2 = connection.CreateCommand();
+                //command_2.CommandText = query_2;
+
                 OdbcCommand command = connection.CreateCommand();
                 command.CommandText = query;
+
                 connection.Open();
                 //dataAdapter.Fill(dataSet,0,10, table_name);
                 //DataTable dataTable = dataSet.Tables[0];
+                //OdbcDataReader row_2 = command_2.ExecuteReader();
                 OdbcDataReader row = command.ExecuteReader();
                 int file_count = 0;
                 //foreach (DataRow row in dataTable.Rows)
@@ -555,7 +566,15 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             materialCertificate.GeometryParameters = row["Геометрические_параметры"].ToString();
                             if (row["Кол-во"].ToString() != "-" && row["Кол-во"].ToString() != "")
                                 materialCertificate.Quantity = Convert.ToDecimal(row["Кол-во"].ToString().Replace(',', '.'));
+
                             materialCertificate.UnitOfMeasurement = new bldUnitOfMeasurement(row["Ед_изм"].ToString());
+                            if (units.Where(u => u.Name == materialCertificate.UnitOfMeasurement.Name).FirstOrDefault() != null)
+                                materialCertificate.UnitOfMeasurement = units.Where(u => u.Name == materialCertificate.UnitOfMeasurement.Name).FirstOrDefault();
+                            else
+                            {
+                                //materialCertificate.UnitOfMeasurement.Id = Guid.NewGuid();
+                                units.Add(materialCertificate.UnitOfMeasurement);
+                            }
                             materialCertificate.Name = row["Сертификаты,_паспорта"].ToString();
                             materialCertificate.RegId = row["№_документа_о_качестве"].ToString();
                             string[] st_dates = row["Дата_документа"].ToString().Split('-');
@@ -584,11 +603,25 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                                 .Replace("\r", "_");
 
                             //  picture.ImageFile = (byte[])row["files"];
-                            if ((byte[])row["files"]!=null) 
-                                    picture.Data = (byte[])row["files"];
-
+                            if ((byte[])row["files"] != null)
+                            {
+                                picture.Data = (byte[])row["files"];
+                                materialCertificate.IsHaveImageFile = true;
+                            }
+                            else
+                                materialCertificate.IsHaveImageFile = false;
                             materialCertificate.ImageFile = picture;
                             certificates.Add(materialCertificate);
+
+
+                            //using (var cmd = connection.CreateCommand())
+                            //{
+                            //    cmd.CommandText = $"DELETE FROM {table_name} WHERE Наименование _материала = {materialCertificate.MaterialName} AND №_документа_о_качестве {materialCertificate.RegId} AND Дата_документа={materialCertificate.Date}" ;
+                            //   // cmd.Parameters.AddWithValue("@id", person.NumberStudents);
+                            //    connection.Open();
+                            //    var deleted = cmd.ExecuteNonQuery();
+                              
+                            //}
                         }
                     }
                     catch (Exception e)

@@ -180,7 +180,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterForNavigation<ParticipantsGroupView>();
             containerRegistry.RegisterForNavigation<DocumentsGroupView>();
             containerRegistry.RegisterForNavigation<MaterialCertificatesGroupView>();
-           
+            containerRegistry.RegisterForNavigation<AggregationDocumentsView>();
+            
             containerRegistry.RegisterDialog<UserParametersDialogView, UserParametersDialogViewModel>();
             
             containerRegistry.RegisterDialog<AddbldObjectToCollectionDialogView, AddbldObjectToCollectionViewModel>();

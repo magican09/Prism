@@ -2,12 +2,12 @@
 {
     public class bldUnitOfMeasurement : BindableBase, IbldUnitOfMeasurement, IEntityObject
     {
-        private string _name = "ед.изм.";
-        public string Name
-        {
-            get { return _name; }
-            set { SetProperty(ref _name, value); }
-        }
+        //private string _name = "ед.изм.";
+        //public string Name
+        //{
+        //    get { return _name; }
+        //    set { SetProperty(ref _name, value); }
+        //}
         private string _shortName;
         public string ShortName
         {

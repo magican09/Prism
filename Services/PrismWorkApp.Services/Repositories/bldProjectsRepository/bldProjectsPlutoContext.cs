@@ -11,7 +11,7 @@ namespace PrismWorkApp.Services.Repositories
         public bldProjectsPlutoContext(string connectionString) : base()
         {
             _connectionString = connectionString;
-        //     Database.EnsureDeleted();
+            // Database.EnsureDeleted();
              Database.EnsureCreated();
         }
         #region Building Construction
@@ -62,6 +62,7 @@ namespace PrismWorkApp.Services.Repositories
             // optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;;Database=workappdb;Trusted_Connection=True;");
             optionsBuilder.UseSqlServer(_connectionString);
             optionsBuilder.EnableSensitiveDataLogging();
+            
             // optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -214,7 +215,7 @@ namespace PrismWorkApp.Services.Repositories
                     .Select(p => p.Entity);
 
             var deletedAuditedEntities = ChangeTracker.Entries<IEntityObject>()
-                   .Where(p => p.State == EntityState.Deleted)
+                  .Where(p => p.State == EntityState.Deleted)
                   .Select(p => p.Entity);
 
             var now = DateTime.UtcNow;

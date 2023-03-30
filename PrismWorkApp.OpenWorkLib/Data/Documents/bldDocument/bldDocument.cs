@@ -62,6 +62,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _imageFile; }
             set { SetProperty(ref _imageFile, value); }
         }
+        private bool _IsHaveImageFile = false;
+        public bool IsHaveImageFile
+        {
+            get { return _IsHaveImageFile; }
+            set { SetProperty(ref _IsHaveImageFile, value); }
+        }
 
     }
 }

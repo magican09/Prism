@@ -72,13 +72,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnLoadMaterialCertificatesFromDB()
         {
             bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.AggregationDocumentsRepository.GetAllAsync().ToList());
-           
+
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
                       (All_AggregationDocuments, _dialogService, (result) =>
                       {
                           if (result.Result == ButtonResult.Yes)
                           {
-                              bldAggregationDocument  selected_catalog = result.Parameters.GetValue<bldAggregationDocument>("element");
+                              bldAggregationDocument selected_catalog = result.Parameters.GetValue<bldAggregationDocument>("element");
 
                               var navParam = new NavigationParameters();
                               navParam.Add("bld_aggregation_document", selected_catalog);
@@ -129,7 +129,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                                 }
                                             });
 
-                                        
+
                                     }
 
                                 }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
@@ -140,14 +140,24 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
                          foreach (bldMaterialCertificate certificate in TempCatalog.AttachedDocuments)
-                             if (!current_catalog.AttachedDocuments.Where(mc => (mc.Id == certificate.Id && mc.Id!=Guid.Empty) ||
+                             if (!current_catalog.AttachedDocuments.Where(mc => (mc.Id == certificate.Id && mc.Id != Guid.Empty) ||
                              (mc.Name == certificate.Name && mc.RegId == certificate.RegId && mc.Date == certificate.Date)).Any())
                                  current_catalog.AttachedDocuments.Add(certificate);
-
-                         if(!_buildingUnitsRepository.AggregationDocumentsRepository.Find(ad=>ad.Id==current_catalog.Id).Any())
-                               _buildingUnitsRepository.AggregationDocumentsRepository.Add(current_catalog);
+                         if (!_buildingUnitsRepository.AggregationDocumentsRepository.Find(ad => ad.Id == current_catalog.Id).Any())
+                         {
+                             foreach(bldMaterialCertificate certificate in current_catalog.AttachedDocuments)
+                             {
+                                 if(!_buildingUnitsRepository.MaterialCertificates.Find(mc=>mc.Id==certificate.Id).Any())
+                                 {
+                                     _buildingUnitsRepository.MaterialCertificates.Add(certificate);
+                                     _buildingUnitsRepository.Complete();
+                                 }
+                             }
+                             _buildingUnitsRepository.AggregationDocumentsRepository.Add(current_catalog);
+                         }
                          SaveDataToDBCommand.RaiseCanExecuteChanged();
-                        _buildingUnitsRepository.Complete();
+                         _buildingUnitsRepository.Complete();
+
                      }
                  }, _dialogService);
         }
@@ -157,20 +167,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldMaterialCertificatesGroup certificates = new bldMaterialCertificatesGroup();
             Functions.OnLoadMaterialCertificatesFromAccess(certificates);
 
-
             ObservableCollection<bldUnitOfMeasurement> units = new ObservableCollection<bldUnitOfMeasurement>();
             EntityCategory category = new EntityCategory();
             foreach (bldMaterialCertificate certificate in certificates)
             {
-                bldUnitOfMeasurement measurement = units.Where(el => el.Name == certificate.UnitOfMeasurement.Name).FirstOrDefault();
+                bldUnitOfMeasurement measurement =
+                    _buildingUnitsRepository.UnitOfMeasurementRepository.GetAllAsync().Where(el => el.Name == certificate.UnitOfMeasurement.Name).FirstOrDefault();
                 if (measurement == null)
                 {
-                    units.Add(certificate.UnitOfMeasurement);
+                    _buildingUnitsRepository.UnitOfMeasurementRepository.Add(certificate.UnitOfMeasurement);
                 }
                 else
                     certificate.UnitOfMeasurement = measurement;
                 //   Catalog.AttachedDocuments.Add(certificate);
             }
+            _buildingUnitsRepository.Complete();
             TempCatalog.AttachedDocuments = (bldDocumentsGroup)certificates;
             TempCatalog.Name = "Загруженные документы";
             var navParam = new NavigationParameters();

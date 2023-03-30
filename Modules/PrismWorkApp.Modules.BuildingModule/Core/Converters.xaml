@@ -6,4 +6,5 @@
     <loc_core:BindingProxy x:Key="Proxy" Data="{Binding}" />
     <loc_core:NextPreviousWorkMultiConverter x:Key="NextPreviousWorkMultiConverter"/>
     <loc_core:ObjectsPairMultiConverter x:Key="ObjectsPairMultiConverter"/>
+    <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
 </ResourceDictionary>

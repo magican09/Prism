@@ -28,9 +28,9 @@ using Telerik.Windows.Controls.GridView;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class MaterialCertificatesGroupViewModel : BaseViewModel<bldMaterialCertificate>, INotifyPropertyChanged, INavigationAware
+    public class AggregationDocumentsViewModel : BaseViewModel<bldMaterialCertificate>, INotifyPropertyChanged, INavigationAware
     {
-        private string _title = "Список сертификатов";
+        private string _title = "Список каталогов";
         public string Title
         {
             get { return _title; }
@@ -73,18 +73,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _allUnitsOfMeasurements; }
             set { SetProperty(ref _allUnitsOfMeasurements, value); }
         }
-        //private NameableObservableCollection<bldDocument> _filteredCommonPointersCollection = new NameableObservableCollection<bldDocument>();
-        //public NameableObservableCollection<bldDocument> FilteredCommonPointersCollection
-        //{
-        //    get { return _filteredCommonPointersCollection; }
-        //    set { SetProperty(ref _filteredCommonPointersCollection, value); }
-        //}
-        //private NameableObservableCollection<bldDocument> _sortedCommonPointersCollection = new NameableObservableCollection<bldDocument>();
-        //public NameableObservableCollection<bldDocument> SortedCommonPointersCollection
-        //{
-        //    get { return _sortedCommonPointersCollection; }
-        //    set { SetProperty(ref _sortedCommonPointersCollection, value); }
-        //}
+        private bldDocumentsGroup _aggregationDocuments = new bldDocumentsGroup();
+        public bldDocumentsGroup AggregationDocuments
+        {
+            get { return _aggregationDocuments; }
+            set { SetProperty(ref _aggregationDocuments, value); }
+        }
+      
 
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
         public NotifyCommand<object> DataGridSelectionChangedCommand { get; private set; }
@@ -95,7 +90,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public ObservableCollection<INotifyCommand> CommonCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand CreateNewCommand { get; private set; }
-        public NotifyCommand<object>CreatedBasedOnCommand { get; private set; }
+        public NotifyCommand<object> CreatedBasedOnCommand { get; private set; }
 
         public ObservableCollection<INotifyCommand> UnitsOfMeasurementContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> SelectUnitOfMeasurementCommand { get; private set; }
@@ -105,19 +100,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> OpenImageFileCommand { get; private set; }
         public NotifyCommand<object> SaveImageFileToDiskCommand { get; private set; }
         public NotifyCommand<object> LoadImageFileFromDiskCommand { get; private set; }
-     
+
         public ObservableCollection<MenuItem> CommonContextMenuItems { get; set; }
 
         public NotifyCommand<object> CopyingCommand { get; private set; }
         public NotifyCommand<object> CopyingCellClipboardContentCommand { get; private set; }
         public NotifyCommand<object> CopyedCommand { get; private set; }
-      
+
         public NotifyCommand<object> PastingCellClipboardContentCommand { get; private set; }
         public NotifyCommand<object> ContextMenuOpeningCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
 
-        public MaterialCertificatesGroupViewModel(IDialogService dialogService,
+        public AggregationDocumentsViewModel(IDialogService dialogService,
            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
 
@@ -142,7 +137,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CreateNewCommand = new NotifyCommand(OnCreateNewMaterialCertificate);
             CreateNewCommand.Name = "Создать новый документ";
             CreatedBasedOnCommand = new NotifyCommand<object>(OnCreatedBasedOn,
-                                    (ob) => { return SelectedDocument != null; }).ObservesProperty(()=>SelectedDocument);
+                                    (ob) => { return SelectedDocument != null; }).ObservesProperty(() => SelectedDocument);
             CreatedBasedOnCommand.Name = "Создать новый на основании..";
             CommonCommands.Add(CreateNewCommand);
             CommonCommands.Add(CreatedBasedOnCommand);
@@ -179,7 +174,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-          
+
             ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewCommand);
             ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
 
@@ -190,7 +185,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnContextMenuOpening(object obj)
         {
-           List<object> grid_state_objects = obj as List<object>;
+            List<object> grid_state_objects = obj as List<object>;
             SelectedDocument = grid_state_objects[0] as bldMaterialCertificate;
             //   SelectedDocuments = (ObservableCollection<bldMaterialCertificate>) grid_state_objects[1];
             SelectedDocuments.Clear();
@@ -225,13 +220,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnCopyedCommand(object obj)
         {
-           
+
         }
 
         private void OnCopying(object obj)
         {
             GridViewClipboardEventArgs e = obj as GridViewClipboardEventArgs;
-           
+
         }
 
         private void OnLoadImageFileFromDisk(object document)
@@ -265,11 +260,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             selected_certificate = _buildingUnitsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
 
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-           
+
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-               
+
                 string BD_FilesDir = dialog.FileName; ;
 
                 if (!Directory.Exists(BD_FilesDir))
@@ -288,10 +283,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldMaterialCertificate selected_certificate = document as bldMaterialCertificate;
             string BD_FilesDir = Path.GetTempPath();
-           
+
             if (!Directory.Exists(BD_FilesDir))
                 Directory.CreateDirectory(BD_FilesDir);
-            selected_certificate = _buildingUnitsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id); 
+            selected_certificate = _buildingUnitsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
             string s = Path.Combine(BD_FilesDir, selected_certificate.ImageFile.FileName);
 
             using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
@@ -312,13 +307,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
 
             localUnDoReDoSystem.Register(SelectedDocumentsGroup);
-           // localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
+            // localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
 
             SelectedDocumentsGroup.Add(new_certificate);
-           // FilteredCommonPointersCollection.Add(new_certificate);
+            // FilteredCommonPointersCollection.Add(new_certificate);
 
             localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
-         //   localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
+            //   localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
 
             UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
             UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
@@ -333,13 +328,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
 
             localUnDoReDoSystem.Register(SelectedDocumentsGroup);
-        //    localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
+            //    localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
 
             SelectedDocumentsGroup.Add(new_certificate);
-         //   FilteredCommonPointersCollection.Add(new_certificate);
+            //   FilteredCommonPointersCollection.Add(new_certificate);
 
             localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
-          //  localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
+            //  localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
 
             UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
             UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
@@ -348,10 +343,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnFilterDisable()
         {
-  //          FilteredCommonPointersCollection = new NameableObservableCollection<bldDocument>(SortedCommonPointersCollection);
+            //          FilteredCommonPointersCollection = new NameableObservableCollection<bldDocument>(SortedCommonPointersCollection);
         }
-      
-       
+
+
         #region  Commmands Methods
         private void OnRemoveUnitOfMeasurement(object obj)
         {
@@ -439,37 +434,38 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            ConveyanceObject navigane_message_works = (ConveyanceObject)navigationContext.Parameters["bld_material_certificates"];
-            if (navigane_message_works != null)
+            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_material_certificates_agrregation"];
+            if (navigane_message != null)
             {
-                EditMode = navigane_message_works.EditMode;
-                bldDocumentsGroup documents = (bldDocumentsGroup)navigane_message_works.Object;
-                if (SelectedDocumentsGroup != null) SelectedDocumentsGroup.ErrorsChanged -= RaiseCanExecuteChanged;
-                SelectedDocumentsGroup = (bldDocumentsGroup)navigane_message_works.Object;
-                SelectedDocumentsGroup.ErrorsChanged += RaiseCanExecuteChanged;
-                Title = $"{SelectedDocumentsGroup.Code} {SelectedDocumentsGroup.Name}";
+                EditMode = navigane_message.EditMode;
+                if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
+                bldAggregationDocument arg_document = (bldAggregationDocument)navigane_message.Object;
+                if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() != null)
+                    AggregationDocuments.Add(arg_document);
+                AggregationDocuments.ErrorsChanged += RaiseCanExecuteChanged;
+              //  Title = $"{AggregationDocuments.Code} {AggregationDocuments.Name}";
                 //SortedCommonPointersCollection = new NameableObservableCollection<bldDocument>(SelectedDocumentsGroup.Where(el => el != null).ToList());
                 //FilteredCommonPointersCollection = new NameableObservableCollection<bldDocument>(SortedCommonPointersCollection);
 
-                UnDoReDo.Register(SelectedDocumentsGroup);
-                foreach (bldMaterialCertificate document in SelectedDocumentsGroup)
+                UnDoReDo.Register(AggregationDocuments);
+                foreach (bldDocument document in AggregationDocuments)
                 {
                     UnDoReDo.Register(document);
-                    foreach (bldMaterialCertificate attach_document in document.AttachedDocuments)
+                    foreach (bldDocument attach_document in document.AttachedDocuments)
                         UnDoReDo.Register(attach_document);
                 }
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_material_certificates"];
+            //ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_material_certificates_agrregation"];
+            //bldAggregationDocument document =(bldAggregationDocument)navigane_message.Object;
+            //if (AggregationDocuments.Where(ad=>ad.Id==document.Id).FirstOrDefault()!=null)
+            //{
 
-            if (((bldDocumentsGroup)navigane_message.Object).Id != SelectedDocumentsGroup.Id)
-            {
-
-                return false;
-            }
-            else
+            //    return false;
+            //}
+            //else
                 return true;
         }
         public void OnNavigatedFrom(NavigationContext navigationContext)

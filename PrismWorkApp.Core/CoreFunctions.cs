@@ -110,12 +110,12 @@ namespace PrismWorkApp.Core
         {
             var dialog_par = new DialogParameters();
             dialog_par.Add("massege",
-               $"Вы действительно хотите {action_name} {element_type_name} \"{element.Name }\" ?!");
+               $"Вы действительно хотите {action_name} {element_type_name} \"{element?.Name }\" ?!");
             dialog_par.Add("confirm_button_content", confirm_action_name);
             dialog_par.Add("refuse_button_content", refuse_action_name);
             dialog_par.Add("cancel_button_content", cencel_action_name);
 
-            string element_name = element.Name;
+            string element_name = element?.Name;
             if (dialogService == null) new Exception("_dialogService is Null!!");
             dialogService.ShowDialog(typeof(ConfirmActionDialog).Name, dialog_par, result =>
             {

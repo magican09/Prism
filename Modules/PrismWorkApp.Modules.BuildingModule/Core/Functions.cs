@@ -527,10 +527,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             //  BD_FilesDir = Path.Combine(BD_FilesDir, table_name);
             Directory.CreateDirectory(BD_FilesDir);
             MemoryStream memoryStream = new MemoryStream();
-
             ObservableCollection<bldUnitOfMeasurement> units = new ObservableCollection<bldUnitOfMeasurement>();
-
-
             using (OdbcConnection connection = new OdbcConnection(ConnectionString))
             {
                 //OdbcDataAdapter dataAdapter = new OdbcDataAdapter
@@ -626,7 +623,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show("Обнаружено не обработанное исключение: " + e.Message, "Ошибка записи данных", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Обнаружено не обработанное исключение: " + e.Message, $"Ошибка записи данных:{row["Наименование _материала"]}", MessageBoxButton.OK, MessageBoxImage.Error);
                         //     break;
                     }
                     // System.Threading.Thread.Sleep(100);

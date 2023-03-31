@@ -1,9 +1,12 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+﻿<ResourceDictionary  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
-                    xmlns:obj_lib="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib">
+                     xmlns:obj_lib="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
+                     xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
+                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                     xmlns:prism="http://prismlibrary.com/">
 
-
+    <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
     <Style x:Key="MenuItemContainerStyle_1" TargetType="MenuItem">
         <Setter Property="Header" Value="{Binding Name}"/>
         <Setter Property="ItemsSource" Value="{Binding }"/>
@@ -21,14 +24,30 @@
         <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"/>
         <Setter Property="CommandParameter" 
                 Value="{Binding Tag,  RelativeSource={RelativeSource Mode=Self }}"/>
-        <!--<Style.Triggers>
-            <DataTrigger Binding="{Binding RelativeSource={RelativeSource DataContext, Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"
-                         Value="{x:Type obj_lib:bldUnitOfMeasurement}">
-                <Setter  TargetName="GridContextMenu" Property="ItemsSourse" Value="{Binding DataContext.UnitsOfMeasurementContextMenuCommands,
-                    RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}"/>
-            </DataTrigger>
-        </Style.Triggers>-->
-    </Style>
+        <!--<Setter Property="Template" >
+            <Setter.Value>
+                <DataTemplate>
+                    
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>-->
+      </Style>
+    <loc_core:Triggers x:Key="ContextMenuTriggers" x:Shared="False">
+        <i:EventTrigger   EventName="Opened">
+            <prism:InvokeCommandAction Command="{Binding DataContext.ContextMenuOpeningCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
+                                         >
+                <prism:InvokeCommandAction.CommandParameter>
+                    <MultiBinding Converter="{StaticResource     ObjectsToListMultiConverter}">
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewRow}}" Path="DataContext"/>
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
+                        <Binding  RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="DataContext"/>
+                    </MultiBinding>
+                </prism:InvokeCommandAction.CommandParameter>
+            </prism:InvokeCommandAction>
+        </i:EventTrigger>
+    </loc_core:Triggers>
+
+
     <!--<Style x:Key="RadMenuItemContainerStyle" TargetType="telerik:RadMenuItem">
         <Setter Property="Icon" Value="{Binding IconUrl}"/>
         <Setter Property="IconTemplate">
@@ -43,7 +62,7 @@
         <Setter Property="ItemsSource" Value="{Binding SubItems}"/>
         <Setter Property="Command" Value="{Binding }"/>
     </Style>-->
-    <Style x:Key="RadMenuItemContainerStyle" TargetType="telerik:RadMenuItem">
+    <Style x:Key="RadMenuItemContainerStyle" TargetType="telerik:RadMenuItem" BasedOn="{StaticResource  RadMenuItemStyle}">
         <Setter Property="Header" Value="{Binding Name}"/>
         <Setter Property="ItemsSource" Value="{Binding SubItems}"/>
         <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>

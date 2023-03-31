@@ -79,7 +79,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _aggregationDocuments; }
             set { SetProperty(ref _aggregationDocuments, value); }
         }
-      
+        private bldAggregationDocument _selectedAggregationDocument;
+        public bldAggregationDocument SelectedAggregationDocument
+        {
+            get { return _selectedAggregationDocument; }
+            set { SetProperty(ref _selectedAggregationDocument, value); }
+        }
 
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
         public NotifyCommand<object> DataGridSelectionChangedCommand { get; private set; }
@@ -109,7 +114,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand<object> PastingCellClipboardContentCommand { get; private set; }
         public NotifyCommand<object> ContextMenuOpeningCommand { get; private set; }
-
+        public NotifyCommand<object> GridViewSelectionChangedCommand { get; private set; }
+        
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
 
         public AggregationDocumentsViewModel(IDialogService dialogService,
@@ -159,9 +165,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CopyedCommand = new NotifyCommand<object>(OnCopyedCommand);
             ContextMenuOpeningCommand = new NotifyCommand<object>(OnContextMenuOpening);
 
-            CommonContextMenuItems = new ObservableCollection<MenuItem>();
+                      CommonContextMenuItems = new ObservableCollection<MenuItem>();
             MenuItem addItem = new MenuItem();
             addItem.Name = "Add";
+            addItem.IsEnabled = true;
             CommonContextMenuItems.Add(addItem);
             MenuItem editItem = new MenuItem();
             editItem.Name = "Edit";
@@ -185,6 +192,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnContextMenuOpening(object obj)
         {
+            
+        }
+
+        private void OnDataGridSelectionChanged(object obj)
+        {
             List<object> grid_state_objects = obj as List<object>;
             SelectedDocument = grid_state_objects[0] as bldMaterialCertificate;
             //   SelectedDocuments = (ObservableCollection<bldMaterialCertificate>) grid_state_objects[1];
@@ -192,6 +204,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             var selected_items = (ObservableCollection<object>)grid_state_objects[1];
             foreach (object elm in selected_items)
                 SelectedDocuments.Add(obj as bldMaterialCertificate);
+            SelectedAggregationDocument = (bldAggregationDocument)grid_state_objects[2];
             //    ContextMenu contextMenu   = obj as ContextMenu;
             //GridViewCell clicked_cell = contextMenu.GetClickedElement<GridViewCell>();
             //GridViewRow clicked_row = contextMenu.GetClickedElement<GridViewRow>();
@@ -303,20 +316,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldMaterialCertificate new_certificate = SelectedDocument.Clone() as bldMaterialCertificate;
             new_certificate.IsHaveImageFile = false;
             new_certificate.ImageFile = null;
-            UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
-            UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+            //UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
+            //UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
 
-            localUnDoReDoSystem.Register(SelectedDocumentsGroup);
+            //localUnDoReDoSystem.Register(SelectedDocumentsGroup);
             // localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
 
-            SelectedDocumentsGroup.Add(new_certificate);
+            SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
             // FilteredCommonPointersCollection.Add(new_certificate);
 
-            localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
+           // localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
             //   localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
 
-            UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
-            UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
+            //UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+           // UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
             UnDoReDo.Register(new_certificate);
 
         }
@@ -325,28 +338,23 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldMaterialCertificate new_certificate = new bldMaterialCertificate();
             UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
-            UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+            //UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
 
-            localUnDoReDoSystem.Register(SelectedDocumentsGroup);
+            //localUnDoReDoSystem.Register(SelectedDocumentsGroup);
             //    localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
-
-            SelectedDocumentsGroup.Add(new_certificate);
+            
+            SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
             //   FilteredCommonPointersCollection.Add(new_certificate);
 
-            localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
+            //localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
             //  localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
 
-            UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
-            UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
+            //UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+            //UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
             UnDoReDo.Register(new_certificate);
         }
 
-        private void OnFilterDisable()
-        {
-            //          FilteredCommonPointersCollection = new NameableObservableCollection<bldDocument>(SortedCommonPointersCollection);
-        }
-
-
+      
         #region  Commmands Methods
         private void OnRemoveUnitOfMeasurement(object obj)
         {
@@ -397,15 +405,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnDataGridLostFocus(object obj)
         {
             SelectedDocuments.Clear();
+            SelectedDocument = null;
+            SelectedAggregationDocument = null;
 
         }
-        private void OnDataGridSelectionChanged(object certificates)
-        {
-            SelectedDocuments.Clear();
-            foreach (bldMaterialCertificate certificate in (IList)certificates)
-                SelectedDocuments.Add(certificate);
-        }
-
+       
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             SaveCommand.RaiseCanExecuteChanged();
@@ -440,7 +444,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 EditMode = navigane_message.EditMode;
                 if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
                 bldAggregationDocument arg_document = (bldAggregationDocument)navigane_message.Object;
-                if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() != null)
+                if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
                     AggregationDocuments.Add(arg_document);
                 AggregationDocuments.ErrorsChanged += RaiseCanExecuteChanged;
               //  Title = $"{AggregationDocuments.Code} {AggregationDocuments.Name}";

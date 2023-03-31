@@ -90,7 +90,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         bldMaterialCertificatesGroup materialCertificates = clc_node as bldMaterialCertificatesGroup;
                         navParam.Add("bld_material_certificates", (new ConveyanceObject(materialCertificates, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                         _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificatesGroupView).Name, navParam);
-
                         break;
                     }
                 case (nameof(bldAggregationDocument)):
@@ -102,10 +101,22 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          //   navParam.Add("bld_material_certificates", (new ConveyanceObject(materialCertificates, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             navParam.Add("bld_material_certificates_agrregation", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
-                            break;
+                        
                         }
+                        break;
                     }
-                
+                case (nameof(bldDocumentsGroup)):
+                    {
+                        bldDocumentsGroup documents = clc_node as bldDocumentsGroup;
+                        if (documents.Count > 0 && documents[0] is bldMaterialCertificate)
+                        {
+                            navParam.Add("bld_material_certificates", (new ConveyanceObject(documents, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificatesGroupView).Name, navParam);
+                        
+                        }
+                        break;
+                    }
+
                     break;
                      
             }

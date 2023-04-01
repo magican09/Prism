@@ -609,6 +609,19 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             throw new NotImplementedException();
         }
     }
+    public class StringToUriConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Uri img_uri = new Uri($"/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/bldProjectImages/{value}.png", UriKind.Relative);
+            return img_uri;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public class testConvecter : IValueConverter
     {

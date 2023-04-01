@@ -48,18 +48,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldAggregationDocument agr_document = new bldAggregationDocument();
             agr_document.Name = "Каталог";
-            agr_document.AttachedDocuments.Add(new bldMaterialCertificate("документ 1"));
-            agr_document.AttachedDocuments.Add(new bldMaterialCertificate("документ 2"));
-            agr_document.AttachedDocuments.Add(new bldMaterialCertificate("документ 3"));
+            bldMaterialCertificate certificate_1 = new bldMaterialCertificate() { MaterialName = "Сертификат 1" };
+            agr_document.AttachedDocuments.Add(certificate_1);
+            bldMaterialCertificate certificate_2 = new bldMaterialCertificate() { MaterialName = "Сертификат 2" };
+            agr_document.AttachedDocuments.Add(certificate_2);
+
 
             Items = new DataItemCollection(null);
             DataItem root = new DataItem();
-            root.Text = "Personal Folders";
+          //  root.Text = "Personal Folders";
           //  root.ImageUrl = new Uri($"pack://application:,,,/Resourses/Images/Ribbon/32x32/add.png"); 
             root.AttachedObject = agr_document;
           //  root.IsExpanded = true;
-
-                 Items.Add(root);
+              Items.Add(root);
 
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;

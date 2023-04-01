@@ -8,29 +8,106 @@
 
     <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
     <loc_core:GetImageFrombldProjectObjectConvecter x:Key="imgFrombldProjectObject"/>
-
+    <loc_core:StringToUriConverter x:Key="stringToUriConverter"/>
+    
     <Style x:Key="TreeViewItemStyle" TargetType="{x:Type  telerik:RadTreeViewItem}">
         <Setter Property="IsExpanded" Value="{Binding IsExpanded,Mode=TwoWay}"/>
         <Setter Property="DefaultImageSrc" Value="{Binding ImageUrl}"/>
     </Style>
 
-      
-     <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}" >
+    <DataTemplate x:Key="bldAggregationDocumentTreeViewItemTemplate" >
         <StackPanel Orientation="Horizontal">
-           <!--<Image  Source ="{Binding  Type, Converter={StaticResource  imgFrombldProjectObject} }" />-->
-            <Image Source="{Binding ImageUrl}" />
-            <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding Text}" Margin="5 0 0 0" />
+            <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
+            <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding TypeName}" Margin="5 0 0 0" />
         </StackPanel>
-        <!--<HierarchicalDataTemplate.Triggers>
-            <DataTrigger Binding="{Binding  Type}"  Value="{x:Type obj_lib:bldAggregationDocument}">
-                <Setter   TargetName="treeViewItemTextBlock" Property="Text" Value="{Binding AttachedObject.Name}"/>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding  ImageUri}"  Value="{x:Null}">
+                <Setter TargetName="treeViewItemTImage"  Property="Source"    Value="{Binding DataContext.TypeName, Converter={StaticResource stringToUriConverter},RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=telerik:RadTreeViewItem}}"/>
             </DataTrigger>
-            <DataTrigger Binding="{Binding  Type}" Value="{x:Type obj_lib:bldMaterialCertificate}">
-                <Setter TargetName="treeViewItemTextBlock" Property="Text" Value="{Binding AttachedObject.MaterialName}"/>
+            <DataTrigger Binding="{Binding  Text}"  Value="{x:Null}">
+                <Setter   TargetName="treeViewItemTextBlock" Property="Text" Value="{Binding DataContext.AttachedObject.Name,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=telerik:RadTreeViewItem}}"/>
             </DataTrigger>
-        </HierarchicalDataTemplate.Triggers>-->
-    </HierarchicalDataTemplate>
+       </DataTemplate.Triggers>
+    </DataTemplate>
     
+    <DataTemplate x:Key="bldDocumentsGroupTreeViewItemTemplate" >
+        <StackPanel Orientation="Horizontal">
+            <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
+            <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding TypeName}" Margin="5 0 0 0" />
+            <!--<telerik:RadTreeViewItem ItemsSource="{Binding DataContext.TypeName, Converter={StaticResource stringToUriConverter},RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=telerik:RadTreeViewItem}}"
+                                     />-->
+        </StackPanel>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding  ImageUri}"  Value="{x:Null}">
+                <Setter TargetName="treeViewItemTImage"  Property="Source"    Value="{Binding DataContext.TypeName, Converter={StaticResource stringToUriConverter},RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=telerik:RadTreeViewItem}}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding  Text}"  Value="{x:Null}">
+                <Setter   TargetName="treeViewItemTextBlock" Property="Text" Value="{Binding DataContext.AttachedObject.Name,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=telerik:RadTreeViewItem}}"/>
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}" >
+            <ContentControl>
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <Style.Triggers>
+                            <DataTrigger  Binding="{Binding  Type}"  Value="{x:Type obj_lib:bldAggregationDocument}">
+                                <Setter Property="ContentTemplate" Value="{StaticResource bldAggregationDocumentTreeViewItemTemplate}"/>
+                            </DataTrigger>
+                        <DataTrigger  Binding="{Binding  Type}"  Value="{x:Type obj_lib:bldDocumentsGroup}">
+                            <Setter Property="ContentTemplate" Value="{StaticResource bldDocumentsGroupTreeViewItemTemplate}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                     </Style>
+                </ContentControl.Style>
+               
+            </ContentControl>
+           <!--<Image  Source ="{Binding  Type, Converter={StaticResource  imgFrombldProjectObject} }" />--><!--
+            <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
+            <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding TypeName}" Margin="5 0 0 0" />-->
+        
+        <HierarchicalDataTemplate.Triggers>
+            <!--<DataTrigger Binding="{Binding  ImageUri}"  Value="{x:Null}">
+                <Setter TargetName="treeViewItemTImage"  Property="Source"    Value="{Binding TypeName, Converter={StaticResource stringToUriConverter}}"/>
+            </DataTrigger>
+             <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding  Text}"  Value="{x:Null}"/>
+                    <Condition Binding="{Binding  Type}"  Value="{x:Type obj_lib:bldAggregationDocument}"/>
+                </MultiDataTrigger.Conditions>
+                 <Setter   TargetName="treeViewItemTextBlock" Property="Text" Value="{Binding AttachedObject.Name}"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding  Text}"  Value="{x:Null}"/>
+                    <Condition Binding="{Binding  Type}"  Value="{x:Type obj_lib:bldDocumentsGroup}"/>
+                </MultiDataTrigger.Conditions>
+                <Setter   TargetName="treeViewItemTextBlock" Property="Text" Value="{Binding AttachedObject.Name}"/>
+            </MultiDataTrigger>-->
+        <!--<MultiDataTrigger>
+            <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding  Text}"  Value="{x:Null}"/>
+                <Condition Binding="{Binding  Type}"  Value="{x:Type obj_lib:bldMaterialCertificate}"/>
+            </MultiDataTrigger.Conditions>
+            <Setter   TargetName="treeViewItemTextBlock" Property="Text" Value="{Binding AttachedObject.MaterialName}"/>
+        </MultiDataTrigger>-->
+            <!--<DataTrigger Binding="{Binding Type}" Value="{x:Type obj_lib:bldAggregationDocument}">
+                <Setter TargetName="treeItemContent" Property="DataTemplate" >
+                    <Setter.Value>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock  Text="11111111111111111111" Margin="5 0 0 0" />
+                            </StackPanel>
+                         </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>--> 
+        </HierarchicalDataTemplate.Triggers>
+    </HierarchicalDataTemplate>
+  
+    
+
     <DataTemplate x:Key="EditTreeViewTemplate">
         <StackPanel Orientation="Horizontal">
             <Image Source="{Binding ImageUrl}"/>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -7,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Markup;
 using PrismWorkApp.Modules.BuildingModule.Core;
+using PrismWorkApp.OpenWorkLib.Data;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
@@ -68,7 +70,8 @@ namespace PrismWorkApp.Modules.BuildingModule
         }
 
         private object  _attachedObject;
-        static private GetImageTextFrombldProjectObjectConvecter ObjecobjectTo_Urltext_Convectert = new GetImageTextFrombldProjectObjectConvecter();
+       // static private GetImageTextFrombldProjectObjectConvecter ObjecobjectTo_Urltext_Convectert = new GetImageTextFrombldProjectObjectConvecter();
+        static private GetImageFrombldProjectObjectConvecter ObjecobjectTo_Urltext_Convectert = new GetImageFrombldProjectObjectConvecter();
         public object AttachedObject
         {
             get { return _attachedObject; }
@@ -76,9 +79,9 @@ namespace PrismWorkApp.Modules.BuildingModule
                 _attachedObject = value;
                 if (_attachedObject != null)
                 {
-                    Tuple<Uri,string> tuple = (Tuple<Uri, string>)ObjecobjectTo_Urltext_Convectert.Convert(_attachedObject, null, null, CultureInfo.CurrentCulture);
-                    ImageUrl = tuple.Item1;
-                    Text = tuple.Item2;
+                    //Tuple<Uri,string> tuple = (Tuple<Uri, string>)ObjecobjectTo_Urltext_Convectert.Convert(_attachedObject, null, null, CultureInfo.CurrentCulture);
+                    //ImageUrl = tuple.Item1;
+                    //Text = tuple.Item2;
 
                 }
                 OnSetAttachedObject(); 
@@ -94,20 +97,47 @@ namespace PrismWorkApp.Modules.BuildingModule
                     _type = AttachedObject.GetType();
                 return _type;
             }
-            set { _type = value; OnPropertyChanged("Type"); }
+            set { _type = value; OnPropertyChanged("Type"); OnPropertyChanged("TypeName"); }
+        }
+        private string _typeName;
+
+        public string TypeName
+        {
+            get
+            {
+                if (Type != null)
+                    _typeName = Type.Name;
+                return _typeName;
+            }
+            set { _typeName = value; OnPropertyChanged("TypeName"); }
         }
         private void OnSetAttachedObject()
         {
             var prop_infoes = AttachedObject.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
             foreach(PropertyInfo prop_info in prop_infoes)
             {
-                if(!prop_info.PropertyType.FullName.Contains("System."))
+                var prop_val = prop_info.GetValue(AttachedObject);
+                if (!prop_info.PropertyType.FullName.Contains("System."))
                 {
-                    var prop_val = prop_info.GetValue(AttachedObject);
-                    DataItem dataItem = new DataItem();
-                    dataItem.PropName = prop_info.Name;
-                    dataItem.Type = prop_info.PropertyType;
-                    Items.Add(dataItem);
+                   if ((prop_val is IEntityObject))
+                    {
+                        DataItem dataItem = new DataItem();
+                        dataItem.PropName = prop_info.Name;
+                        dataItem.Type = prop_info.PropertyType;
+                        if (prop_val is IList list_prop)
+                        {
+                            foreach(object obj in  list_prop)
+                            {
+                                DataItem in_dataItem = new DataItem();
+                                in_dataItem.PropName = prop_info.Name;
+                                in_dataItem.Type = prop_info.PropertyType;
+                            }
+                        }
+                        Items.Add(dataItem);
+
+
+
+                    }
                 }
             }    
         }

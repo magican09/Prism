@@ -81,10 +81,16 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            
+            if (value == null) return null;
             Type node_object_type = value.GetType();
+            //if (value is Type)
+            //    node_object_type = (Type)value;
+
+
             string img_suffix = "";
 
-            switch (value.GetType().Name)
+            switch (node_object_type.Name)
             {
                 case nameof(bldParticipant):
                     {
@@ -153,7 +159,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             // Uri img_uri_ = new Uri($"pack://application:,,,/Resourses/Images/Ribbon/32x32/add.png");
 
             //new BitmapImage(img_uri);
-            return img_uri;
+            return  img_uri;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -161,7 +167,104 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             throw new NotImplementedException();
         }
     }
+    public class GetImageTextFrombldProjectObjectConvecter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
 
+            if (value == null) return null;
+            Type node_object_type = value.GetType();
+            //if (value is Type)
+            //    node_object_type = (Type)value;
+            string item_node_text = "не определено";
+
+            string img_suffix = "";
+
+            switch (node_object_type.Name)
+            {
+                case nameof(bldParticipant):
+                    {
+                        bldParticipant participant = (bldParticipant)value;
+                        switch (participant.Role.RoleCode)
+                        {
+                            case ParticipantRole.DEVELOPER:
+                                {
+                                    img_suffix = "_DEVELOPER";
+                                    break;
+                                }
+                            case ParticipantRole.GENERAL_CONTRACTOR:
+                                img_suffix = "_GENERAL_CONTRACTOR";
+                                break;
+                            case ParticipantRole.DISIGNER:
+                                img_suffix = "_DISIGNER";
+                                break;
+                            case ParticipantRole.BUILDER:
+                                img_suffix = "_BUILDER";
+                                break;
+                            case ParticipantRole.NONE:
+                                img_suffix = "_NONE";
+                                break;
+                        }
+
+                        break;
+                    }
+                case nameof(bldResponsibleEmployee):
+                    {
+                        bldResponsibleEmployee employee = (bldResponsibleEmployee)value;
+                        switch (employee.Role.RoleCode)
+                        {
+                            case RoleOfResponsible.CUSTOMER:
+                                img_suffix = "_CUSTOMER";
+                                break;
+                            case RoleOfResponsible.GENERAL_CONTRACTOR:
+                                img_suffix = "_GENERAL_CONTRACTOR";
+                                break;
+                            case RoleOfResponsible.GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER:
+                                img_suffix = "_GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER";
+                                break;
+                            case RoleOfResponsible.AUTHOR_SUPERVISION:
+                                img_suffix = "_AUTHOR_SUPERVISION";
+                                break;
+                            case RoleOfResponsible.WORK_PERFORMER:
+                                img_suffix = "_WORK_PERFORMER";
+                                break;
+                            case RoleOfResponsible.OTHER:
+                                img_suffix = "_OTHER";
+                                break;
+                            case RoleOfResponsible.NONE:
+                                img_suffix = "_NONE";
+                                break;
+                        }
+                  
+                        break;
+                    }
+                case (nameof(bldAggregationDocument)): { item_node_text=(value as bldAggregationDocument).Name; break;}
+                case (nameof(bldDocumentsGroup)): { item_node_text = (value as bldDocumentsGroup).Name; break; }
+                case (nameof(bldMaterialCertificate)): { item_node_text = (value as bldMaterialCertificate).MaterialName; break; }
+
+            }
+
+
+            string type_name = node_object_type.Name;
+
+            var image = "Images/Ribbon/32x32/add.png";
+            image = $"Images/bldProjectImages/{type_name}{img_suffix}.png";
+            Uri img_uri = new Uri($"/PrismWorkApp.Modules.BuildingModule;component/Resourses/{image}", UriKind.Relative);
+
+
+
+
+            // Uri img_uri_ = new Uri($"pack://application:,,,/Resourses/Images/Ribbon/32x32/add.png");
+
+            //new BitmapImage(img_uri);
+            return new Tuple<Uri,string>(img_uri,item_node_text);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class SetTreeViewVisibilityFrombldObjectState : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

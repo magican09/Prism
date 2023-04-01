@@ -46,62 +46,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public   DocumentationExplorerViewModel(IEventAggregator eventAggregator, 
                             IRegionManager regionManager, IDialogService dialogService)
         {
+            bldAggregationDocument agr_document = new bldAggregationDocument();
+            agr_document.Name = "Каталог";
+            agr_document.AttachedDocuments.Add(new bldMaterialCertificate("документ 1"));
+            agr_document.AttachedDocuments.Add(new bldMaterialCertificate("документ 2"));
+            agr_document.AttachedDocuments.Add(new bldMaterialCertificate("документ 3"));
+
             Items = new DataItemCollection(null);
             DataItem root = new DataItem();
             root.Text = "Personal Folders";
-            root.ImageUrl = "../../Images/ContextMenu/Outlook/1PersonalFolders.png";
-            root.IsExpanded = true;
+          //  root.ImageUrl = new Uri($"pack://application:,,,/Resourses/Images/Ribbon/32x32/add.png"); 
+            root.AttachedObject = agr_document;
+          //  root.IsExpanded = true;
 
-            DataItem deletedItems = new DataItem();
-            root.Items.Add(deletedItems);
-            deletedItems.Text = "Deleted Items(6)";
-            deletedItems.ImageUrl = "../../Images/ContextMenu/Outlook/2DeletedItems.png";
-
-            DataItem inbox = new DataItem();
-            root.Items.Add(inbox);
-            inbox.Text = "Inbox(14)";
-            inbox.ImageUrl = "../../Images/ContextMenu/Outlook/4Inbox.png";
-
-            DataItem folders = new DataItem();
-            inbox.Items.Add(folders);
-            folders.Text = "Folders";
-            folders.ImageUrl = "../../Images/ContextMenu/Outlook/folder.png";
-
-            DataItem junkEmails = new DataItem();
-            root.Items.Add(junkEmails);
-            junkEmails.Text = "Junk E-mails";
-            junkEmails.ImageUrl = "../../Images/ContextMenu/Outlook/junk.png";
-
-            DataItem outbox = new DataItem();
-            root.Items.Add(outbox);
-            outbox.Text = "Outbox";
-            outbox.ImageUrl = "../../Images/ContextMenu/Outlook/outbox.png";
-
-            DataItem sentItems = new DataItem();
-            root.Items.Add(sentItems);
-            sentItems.Text = "Sent Items";
-            sentItems.ImageUrl = "../../Images/ContextMenu/Outlook/sent.png";
-
-            DataItem search = new DataItem();
-            root.Items.Add(search);
-            search.Text = "Search Folder";
-            search.ImageUrl = "../../Images/ContextMenu/Outlook/searchFolder.png";
-
-            DataItem followup = new DataItem();
-            search.Items.Add(followup);
-            followup.Text = "From Follow up";
-            followup.ImageUrl = "../../Images/ContextMenu/Outlook/folder.png";
-
-            DataItem largeMail = new DataItem();
-            search.Items.Add(largeMail);
-            largeMail.Text = "Large Mail";
-            largeMail.ImageUrl = "../../Images/ContextMenu/Outlook/search.png";
-
-            DataItem unreadMail = new DataItem();
-            search.Items.Add(unreadMail);
-            unreadMail.Text = "Unread Mail";
-            unreadMail.ImageUrl = "../../Images/ContextMenu/Outlook/search.png";
-            Items.Add(root);
+                 Items.Add(root);
 
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;

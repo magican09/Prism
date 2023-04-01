@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Markup;
+using PrismWorkApp.Modules.BuildingModule.Core;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
@@ -29,14 +33,22 @@ namespace PrismWorkApp.Modules.BuildingModule
             get { return _text; }
             set { _text = value; OnPropertyChanged("Text"); }
         }
+
+        private string _propName;
+
+        public string PropName
+        {
+            get { return _propName; }
+            set { _propName = value; OnPropertyChanged("PropName"); }
+        }
         private bool _isExpanded;
         public bool IsExpanded
         {
             get { return _isExpanded; }
-            set { _isExpanded = value; OnPropertyChanged("IsExpanded"); }
+            set { _isExpanded = value; OnExpand(); OnPropertyChanged("IsExpanded"); }
         }
-        private string _imageUrl;
-        public string ImageUrl
+        private Uri _imageUrl;
+        public Uri ImageUrl
         {
             get { return _imageUrl; }
             set { _imageUrl = value; OnPropertyChanged("ImageUrl"); }
@@ -55,5 +67,58 @@ namespace PrismWorkApp.Modules.BuildingModule
             set { _items = value; OnPropertyChanged("Items"); }
         }
 
+        private object  _attachedObject;
+        static private GetImageTextFrombldProjectObjectConvecter ObjecobjectTo_Urltext_Convectert = new GetImageTextFrombldProjectObjectConvecter();
+        public object AttachedObject
+        {
+            get { return _attachedObject; }
+            set {
+                _attachedObject = value;
+                if (_attachedObject != null)
+                {
+                    Tuple<Uri,string> tuple = (Tuple<Uri, string>)ObjecobjectTo_Urltext_Convectert.Convert(_attachedObject, null, null, CultureInfo.CurrentCulture);
+                    ImageUrl = tuple.Item1;
+                    Text = tuple.Item2;
+
+                }
+                OnSetAttachedObject(); 
+                OnPropertyChanged("AttachedObject"); 
+                OnPropertyChanged("Type"); 
+            }
+        }
+        private Type _type;
+
+        public Type Type
+        {
+            get { if (AttachedObject != null)
+                    _type = AttachedObject.GetType();
+                return _type;
+            }
+            set { _type = value; OnPropertyChanged("Type"); }
+        }
+        private void OnSetAttachedObject()
+        {
+            var prop_infoes = AttachedObject.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            foreach(PropertyInfo prop_info in prop_infoes)
+            {
+                if(!prop_info.PropertyType.FullName.Contains("System."))
+                {
+                    var prop_val = prop_info.GetValue(AttachedObject);
+                    DataItem dataItem = new DataItem();
+                    dataItem.PropName = prop_info.Name;
+                    dataItem.Type = prop_info.PropertyType;
+                    Items.Add(dataItem);
+                }
+            }    
+        }
+
+        private void OnExpand()
+        {
+            foreach (DataItem item in Items)
+            {
+               var obj = AttachedObject.GetType().GetProperty(item.PropName).GetValue(AttachedObject);
+                if (obj != null) item.AttachedObject = obj;
+            }
+        }
     }
 }

@@ -16,13 +16,16 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary
                             Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/ProjectTreeViewDefaultTheme.xaml"/>
+                <ResourceDictionary
+                            Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/TreeViewTheme.xaml"/>
+
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
         <Grid.Resources>
-            <Style x:Key="TreeViewItemStyle" TargetType="{x:Type  telerik:RadTreeViewItem}" BasedOn="{StaticResource RadTreeViewItemStyle}"/>
+          
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.9*"/>
@@ -42,8 +45,15 @@
                 </i:Interaction.Triggers>
             </TreeView>-->
 
-        <telerik:RadTreeView >
-            
+        <telerik:RadTreeView Grid.Row="0"  Width="350" Height="450"  IsEditable="True" telerik:StyleManager.Theme="VisualStudio2019"
+                             ItemContainerStyle="{StaticResource TreeViewItemStyle}" 
+                             ItemsSource="{Binding Items}"
+                             ItemTemplate="{StaticResource TreeViewItemTamplate}"
+                             ItemEditTemplate="{StaticResource EditTreeViewTemplate}"
+                             IsExpandOnSingleClickEnabled="True">
+            <!--<telerik:RadContextMenu >
+                
+            </telerik:RadContextMenu>-->
         </telerik:RadTreeView>
      
     </Grid>

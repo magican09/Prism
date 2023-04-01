@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+                     xmlns:obj_lib="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
+                     xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
+                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                     xmlns:prism="http://prismlibrary.com/">
+
+    <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
+    <loc_core:GetImageFrombldProjectObjectConvecter x:Key="imgFrombldProjectObject"/>
+
+    <Style x:Key="TreeViewItemStyle" TargetType="{x:Type  telerik:RadTreeViewItem}">
+        <Setter Property="IsExpanded" Value="{Binding IsExpanded,Mode=TwoWay}"/>
+        <Setter Property="DefaultImageSrc" Value="{Binding ImageUrl}"/>
+    </Style>
+
+      
+     <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}" >
+        <StackPanel Orientation="Horizontal">
+           <!--<Image  Source ="{Binding  Type, Converter={StaticResource  imgFrombldProjectObject} }" />-->
+            <Image Source="{Binding ImageUrl}" />
+            <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding Text}" Margin="5 0 0 0" />
+        </StackPanel>
+        <!--<HierarchicalDataTemplate.Triggers>
+            <DataTrigger Binding="{Binding  Type}"  Value="{x:Type obj_lib:bldAggregationDocument}">
+                <Setter   TargetName="treeViewItemTextBlock" Property="Text" Value="{Binding AttachedObject.Name}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding  Type}" Value="{x:Type obj_lib:bldMaterialCertificate}">
+                <Setter TargetName="treeViewItemTextBlock" Property="Text" Value="{Binding AttachedObject.MaterialName}"/>
+            </DataTrigger>
+        </HierarchicalDataTemplate.Triggers>-->
+    </HierarchicalDataTemplate>
+    
+    <DataTemplate x:Key="EditTreeViewTemplate">
+        <StackPanel Orientation="Horizontal">
+            <Image Source="{Binding ImageUrl}"/>
+            <TextBlock Text="{Binding Text,Mode=TwoWay}" Margin="5 0 0 0" />
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>

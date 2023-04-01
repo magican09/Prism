@@ -166,13 +166,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             CommonContextMenuItems = new ObservableCollection<MenuItem>();
             MenuItem addItem = new MenuItem();
-            addItem.Name = "Add";
+            addItem.Text = "Add";
             CommonContextMenuItems.Add(addItem);
             MenuItem editItem = new MenuItem();
-            editItem.Name = "Edit";
+            editItem.Text = "Edit";
             CommonContextMenuItems.Add(editItem);
             MenuItem deleteItem = new MenuItem();
-            deleteItem.Name = "Delete";
+            deleteItem.Text = "Delete";
             CommonContextMenuItems.Add(deleteItem);
 
             #endregion

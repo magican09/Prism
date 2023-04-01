@@ -9,6 +9,7 @@
         <DefineConstants>TRACE</DefineConstants>
       </PropertyGroup>
       <ItemGroup>
+        <None Remove="Resourses\Images\bldProjectImages\bldAggregationDocument.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldAOSRDocument.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldConstruction.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldConstructionsGroup.png" />
@@ -80,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ResourceDictionaries\ProjectTreeViewDefaultTheme.xaml" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldAggregationDocument.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldAOSRDocument.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

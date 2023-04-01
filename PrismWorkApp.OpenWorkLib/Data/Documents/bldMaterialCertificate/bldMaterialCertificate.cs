@@ -58,6 +58,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _netExecutionTime; }
             set { SetProperty(ref _netExecutionTime, value); }
         }//Чистое время выполнения
+        public bldMaterialCertificate(string name):base(name)
+        {
+
+        }
+        public bldMaterialCertificate()
+        {
+
+        }
 
     }
 }

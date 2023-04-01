@@ -1,4 +1,4 @@
-﻿<dx:ThemedWindow x:Class="PrismWorkApp.Views.MainWindow"
+﻿<Window x:Class="PrismWorkApp.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
@@ -8,7 +8,7 @@
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Title="{Binding Title}" Height="950" Width="1025" WindowState="Maximized"  >
-    <dx:ThemedWindow.Resources>
+    <Window.Resources>
         <Style  x:Name="MainItemTabStyle" TargetType="{x:Type  TabItem}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -68,7 +68,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>-->
-    </dx:ThemedWindow.Resources>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.2*"/>
@@ -113,4 +113,4 @@
         </Ribbon>
 
     </Grid>
-</dx:ThemedWindow>
+</Window>

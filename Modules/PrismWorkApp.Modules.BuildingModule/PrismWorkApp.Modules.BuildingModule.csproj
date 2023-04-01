@@ -59,7 +59,6 @@
         <Page Remove="ResourceDictionaries\ProjectTreeViewDefaultTheme.xaml" />
       </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="devexpress.wpf.grid.core" Version="21.2.3" />
     <PackageReference Include="EPPlus" Version="5.8.7" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>

@@ -270,7 +270,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnSaveImageFileToDisk(object document)
         {
             bldMaterialCertificate selected_certificate = document as bldMaterialCertificate;
-            selected_certificate = _buildingUnitsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
+            if (selected_certificate.ImageFile == null)
+                selected_certificate = _buildingUnitsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
 
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
 
@@ -299,7 +300,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             if (!Directory.Exists(BD_FilesDir))
                 Directory.CreateDirectory(BD_FilesDir);
-            selected_certificate = _buildingUnitsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
+            if(selected_certificate.ImageFile==null)
+                selected_certificate = _buildingUnitsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
             string s = Path.Combine(BD_FilesDir, selected_certificate.ImageFile.FileName);
 
             using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))

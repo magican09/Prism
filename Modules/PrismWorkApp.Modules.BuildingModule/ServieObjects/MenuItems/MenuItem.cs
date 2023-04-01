@@ -1,4 +1,4 @@
-﻿using DevExpress.Mvvm;
+﻿using Prism.Mvvm;
 using PrismWorkApp.Core.Commands;
 using System;
 using System.Collections.Generic;

@@ -8,8 +8,9 @@
              xmlns:core="clr-namespace:PrismWorkApp.Core;assembly=PrismWorkApp.Core"
              xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:prism="http://prismlibrary.com/"
-              prism:ViewModelLocator.AutoWireViewModel="True"  >
+             xmlns:prism="http://prismlibrary.com/" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             prism:ViewModelLocator.AutoWireViewModel="True"  >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -20,7 +21,9 @@
     </UserControl.Resources>
 
     <Grid>
-
+        <Grid.Resources>
+            <Style x:Key="TreeViewItemStyle" TargetType="{x:Type  telerik:RadTreeViewItem}" BasedOn="{StaticResource RadTreeViewItemStyle}"/>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.9*"/>
             <!--<RowDefinition Height="Auto"/>-->
@@ -28,7 +31,7 @@
         </Grid.RowDefinitions>
         <!--<GridSplitter Grid.Row="1" ShowsPreview="False" Width="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>-->
   
-            <TreeView  Grid.Row="0" x:Name="treeViewDocumetation"    Margin="3"   ItemsSource="{Binding AggregationDocuments}" VerticalAlignment="Stretch">
+            <!--<TreeView  Grid.Row="0" x:Name="treeViewDocumetation"    Margin="3"   ItemsSource="{Binding AggregationDocuments}" VerticalAlignment="Stretch">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick">
                         <prism:InvokeCommandAction Command="{Binding TreeViewItemSelectedCommand}" CommandParameter="{Binding SelectedItem, ElementName=treeViewDocumetation}"/>
@@ -37,8 +40,11 @@
                         <prism:InvokeCommandAction Command="{Binding TreeViewItemExpandedCommand}" CommandParameter="{Binding SelectedItem, ElementName=treeViewDocumetation}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-            </TreeView>
-      
+            </TreeView>-->
+
+        <telerik:RadTreeView >
+            
+        </telerik:RadTreeView>
      
     </Grid>
 </UserControl>

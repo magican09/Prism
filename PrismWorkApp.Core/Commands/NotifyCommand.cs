@@ -11,6 +11,7 @@ namespace PrismWorkApp.Core.Commands
     public class NotifyCommand : NotifyCommandBase, ICommand, IActiveAware, INotifyCommand
     {
         public string Name { get; set; }
+        public Uri ImageUri { get; set; }
         public bool IsActive { get; set; }
         public event EventHandler IsActiveChanged = delegate { };
         public event EventHandler CanExecuteChanged = delegate { };
@@ -175,6 +176,7 @@ namespace PrismWorkApp.Core.Commands
     public class NotifyCommand<T> : NotifyCommandBase, ICommand, IActiveAware, INotifyCommand
     {
         public string Name { get; set; } = "Имя команды не определено!!!";
+        public Uri ImageUri { get; set; }
         public bool IsActive { get; set; }
         public event EventHandler IsActiveChanged = delegate { };
         public event EventHandler CanExecuteChanged = delegate { };

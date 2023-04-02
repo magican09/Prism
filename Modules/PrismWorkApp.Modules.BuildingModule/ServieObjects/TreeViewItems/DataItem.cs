@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -12,6 +13,10 @@ using PrismWorkApp.OpenWorkLib.Data;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
+    public delegate void DataItemInitDelegateHandler(DataItem dataItem, object sender, PropertyChangedEventArgs e);
+    public delegate void AttachedCollectionChangedDelegateHandler(DataItem dataItem, object sender, NotifyCollectionChangedEventArgs e);
+    public delegate void MenuItemExpandDelegateHandler(DataItem dataItem);
+
     [ContentProperty("Children")]
   public   class DataItem:INotifyPropertyChanged
     {
@@ -23,10 +28,16 @@ namespace PrismWorkApp.Modules.BuildingModule
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+        public DataItemInitDelegateHandler  DataItemInit;
+        public   AttachedCollectionChangedDelegateHandler AttachedObjectCollectionChanged;
+       // public MenuItemExpandDelegateHandler MenuItemExpand;
         public DataItem()
         {
             this._items = new DataItemCollection(this);
+             
         }
+
+        
 
         private string _text;
 
@@ -47,7 +58,12 @@ namespace PrismWorkApp.Modules.BuildingModule
         public bool IsExpanded
         {
             get { return _isExpanded; }
-            set { _isExpanded = value; OnExpand(); OnPropertyChanged("IsExpanded"); }
+            set { _isExpanded = value;
+                if (_isExpanded)
+                    OnMenuItemExpand(this);
+                else
+                    OnMenuItemFolded(this);
+                OnPropertyChanged("IsExpanded"); }
         }
         private Uri _imageUrl;
         public Uri ImageUrl
@@ -59,7 +75,10 @@ namespace PrismWorkApp.Modules.BuildingModule
         public DataItem Parent
         {
             get { return _parent; }
-            set { _parent = value; OnPropertyChanged("Parent"); }
+            set {
+                _parent = value; 
+
+                OnPropertyChanged("Parent"); }
         }
         private DataItemCollection _items;
 
@@ -70,31 +89,71 @@ namespace PrismWorkApp.Modules.BuildingModule
         }
 
         private object  _attachedObject;
-       // static private GetImageTextFrombldProjectObjectConvecter ObjecobjectTo_Urltext_Convectert = new GetImageTextFrombldProjectObjectConvecter();
-        static private GetImageFrombldProjectObjectConvecter ObjecobjectTo_Urltext_Convectert = new GetImageFrombldProjectObjectConvecter();
-        public object AttachedObject
+       public object AttachedObject
         {
             get { return _attachedObject; }
             set {
                 _attachedObject = value;
                 if (_attachedObject != null)
                 {
-                    //Tuple<Uri,string> tuple = (Tuple<Uri, string>)ObjecobjectTo_Urltext_Convectert.Convert(_attachedObject, null, null, CultureInfo.CurrentCulture);
-                    //ImageUrl = tuple.Item1;
-                    //Text = tuple.Item2;
-                    if (_attachedObject is INotifyPropertyChanged)
-                        OnAttachedObjectPropertyChanged(_attachedObject as INotifyPropertyChanged);
-                    if(_attachedObject is I)
+                    if (_attachedObject is INotifyPropertyChanged notifyable_object)
+                        notifyable_object.PropertyChanged+=OnAttachedObjectPropertyChanged;
+                    if(_attachedObject is INotifyCollectionChanged notifyable_collection)
+                        notifyable_collection.CollectionChanged += OnAttachedCollectionChanged;
+                    if(_attachedObject is IList attached_collection)
+                    {
+                        foreach(object obj in attached_collection)
+                        {
+
+                        }
+                    }
+                    OnAttachedObjectPropertyChanged(this, new PropertyChangedEventArgs("AttachedObject"));
                 }
-             //   OnSetAttachedObject(); 
                 OnPropertyChanged("AttachedObject"); 
                 OnPropertyChanged("Type"); 
             }
         }
-
-        private void OnAttachedObjectPropertyChanged(INotifyPropertyChanged notifyPropertyChanged)
+        private void OnMenuItemFolded(DataItem dataItem)
         {
-            throw new NotImplementedException();
+
+        }
+
+       private void  OnMenuItemExpand(DataItem dataItem)
+        {
+           
+            foreach (DataItem item in dataItem.Items)
+            {
+                item.OnAttachedObjectPropertyChanged(item,new PropertyChangedEventArgs("IsExpanded"));
+            }
+        }
+        public  void OnAttachedCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //if (e.Action == NotifyCollectionChangedAction.Add &&  IsExpanded)
+            //{
+            //    foreach (object obj in e.NewItems)
+            //    {
+            //        if (Items.Where(itm => itm.AttachedObject == obj).FirstOrDefault() == null)
+            //        {
+            //            DataItem new_item = new DataItem();
+            //            new_item.AttachedObject = obj;
+            //       //     Items.Add(new_item);
+            //        }
+            //    }
+            //}
+            if (Parent != null && Parent.IsExpanded) { Parent.IsExpanded = false; }
+            AttachedObjectCollectionChanged?.Invoke(this, sender, e);
+            OnAttachedObjectPropertyChanged(this, new PropertyChangedEventArgs("AttachedCollectionChanged"));
+           
+        }
+
+        public void OnAttachedObjectPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (this.AttachedObject == null) return;
+            this.Items.Clear();
+            if(DataItemInit==null)
+                throw new Exception($"Не установлен оработчик инициализации DataItemInit {this.ToString()} объекта {this.AttachedObject.ToString()}");  
+            DataItemInit?.Invoke(this, sender, e);
+            
         }
 
         private Type _type;

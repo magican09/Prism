@@ -15,7 +15,7 @@
         <Setter Property="DefaultImageSrc" Value="{Binding ImageUrl}"/>
     </Style>
 
-    <DataTemplate x:Key="bldAggregationDocumentTreeViewItemTemplate" >
+    <!--<DataTemplate x:Key="bldAggregationDocumentTreeViewItemTemplate" >
         <StackPanel Orientation="Horizontal">
             <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
             <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding TypeName}" Margin="5 0 0 0" />
@@ -34,8 +34,8 @@
         <StackPanel Orientation="Horizontal">
             <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
             <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding TypeName}" Margin="5 0 0 0" />
-            <!--<telerik:RadTreeViewItem ItemsSource="{Binding DataContext.TypeName, Converter={StaticResource stringToUriConverter},RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=telerik:RadTreeViewItem}}"
-                                     />-->
+            --><!--<telerik:RadTreeViewItem ItemsSource="{Binding DataContext.TypeName, Converter={StaticResource stringToUriConverter},RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=telerik:RadTreeViewItem}}"
+                                     />--><!--
         </StackPanel>
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding  ImageUri}"  Value="{x:Null}">
@@ -63,12 +63,12 @@
                 </ContentControl.Style>
                
             </ContentControl>
-           <!--<Image  Source ="{Binding  Type, Converter={StaticResource  imgFrombldProjectObject} }" />--><!--
+           --><!--<Image  Source ="{Binding  Type, Converter={StaticResource  imgFrombldProjectObject} }" />--><!--
             <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
-            <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding TypeName}" Margin="5 0 0 0" />-->
+            <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding TypeName}" Margin="5 0 0 0" />--><!--
         
         <HierarchicalDataTemplate.Triggers>
-            <!--<DataTrigger Binding="{Binding  ImageUri}"  Value="{x:Null}">
+            --><!--<DataTrigger Binding="{Binding  ImageUri}"  Value="{x:Null}">
                 <Setter TargetName="treeViewItemTImage"  Property="Source"    Value="{Binding TypeName, Converter={StaticResource stringToUriConverter}}"/>
             </DataTrigger>
              <MultiDataTrigger>
@@ -102,13 +102,13 @@
                          </DataTemplate>
                     </Setter.Value>
                 </Setter>
-            </DataTrigger>--> 
+            </DataTrigger>--><!-- 
         </HierarchicalDataTemplate.Triggers>
-    </HierarchicalDataTemplate>
+    </HierarchicalDataTemplate>-->
    
     <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}" >
         <StackPanel Orientation="Horizontal">
-            <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
+            <!--<Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />-->
             <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding Text}" Margin="5 0 0 0" />
          </StackPanel>
     </HierarchicalDataTemplate>

@@ -4,14 +4,17 @@ using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Events;
+using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -37,44 +40,43 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-        public ObservableCollection<bldAggregationDocument> AggregationDocuments { get; set; } = new ObservableCollection<bldAggregationDocument>() ;
+        public bldDocumentsGroup Documentation{ get; set; }
+
+        public NotifyMenuCommands DocumentationCommands { get; set; }
         public NotifyCommand<object> TreeViewItemSelectedCommand { get; private set; }
         public NotifyCommand<object> TreeViewItemExpandedCommand { get; private set; }
         private readonly IEventAggregator _eventAggregator;
         private readonly IRegionManager _regionManager;
         private IDialogService _dialogService;
+        private AppObjectsModel _appObjectsModel;
         public   DocumentationExplorerViewModel(IEventAggregator eventAggregator, 
-                            IRegionManager regionManager, IDialogService dialogService)
+                            IRegionManager regionManager, IDialogService dialogService,IAppObjectsModel appObjectsModel)
         {
-            bldAggregationDocument agr_document = new bldAggregationDocument();
-            agr_document.Name = "Каталог";
-            bldMaterialCertificate certificate_1 = new bldMaterialCertificate() { MaterialName = "Сертификат 1" };
-            agr_document.AttachedDocuments.Add(certificate_1);
-            bldMaterialCertificate certificate_2 = new bldMaterialCertificate() { MaterialName = "Сертификат 2" };
-            agr_document.AttachedDocuments.Add(certificate_2);
-
+            _appObjectsModel = appObjectsModel as AppObjectsModel;
+            _eventAggregator = eventAggregator;
+            _regionManager = regionManager;
+            _dialogService = dialogService; Documentation = _appObjectsModel.Documentation;
+            DocumentationCommands = _appObjectsModel.DocumentationCommands;
 
             Items = new DataItemCollection(null);
             DataItem root = new DataItem();
-          //  root.Text = "Personal Folders";
-          //  root.ImageUrl = new Uri($"pack://application:,,,/Resourses/Images/Ribbon/32x32/add.png"); 
-            root.AttachedObject = agr_document;
-          //  root.IsExpanded = true;
-              Items.Add(root);
-
-            _eventAggregator = eventAggregator;
-            _regionManager = regionManager;
-            _dialogService = dialogService;
-          //  SentProjectCommand = new NotifyCommand(SentProject, CanSentProject);
+            root.DataItemInit += _appObjectsModel.OnDataItemInit; ;
+            root.AttachedObject = Documentation;
+            Items.Add(root);
+            
             TreeViewItemSelectedCommand = new NotifyCommand<object>(OnTreeViewItemSelected);
             TreeViewItemExpandedCommand = new NotifyCommand<object>(onTreeViewItemExpanded);
+         
             _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
              ThreadOption.PublisherThread, false,
              message => message.Recipient == "DocumentationExplorer");
 
     }
 
-        private void OnGetMessage(EventMessage event_message)
+  
+        static private GetImageFrombldProjectObjectConvecter ObjecobjectTo_Url_Convectert = new GetImageFrombldProjectObjectConvecter();
+
+      private void OnGetMessage(EventMessage event_message)
         {
             //bldAggregationDocument bld_document = (bldAggregationDocument)event_message.Value;
             ////  if (bld_project != null && bld_Projects.Where(pr => pr.Id == bld_project.Id).FirstOrDefault() == null && bld_project != null)
@@ -168,12 +170,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            bldAggregationDocument bld_document = (bldAggregationDocument)navigationContext.Parameters["bld_aggregation_document"];
+            object bld_document = (bldDocument)navigationContext.Parameters["bld_document"];
             //  if (bld_project != null && bld_Projects.Where(pr => pr.Id == bld_project.Id).FirstOrDefault() == null && bld_project != null)
-            bldAggregationDocument doc = AggregationDocuments.Where(doc => doc.Id == bld_document.Id).FirstOrDefault();
-            if (bld_document != null && doc == null)
+            if (bld_document is bldAggregationDocument bld_aggregationDoc)
             {
-                AggregationDocuments.Add(bld_document);
+              var doc= Documentation.Where(doc => doc.Id == bld_aggregationDoc.Id).FirstOrDefault();
+                if (doc == null)
+                {
+                    Documentation.Add(bld_aggregationDoc);
+                }
             }
            
         }

@@ -81,7 +81,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                               bldAggregationDocument selected_catalog = result.Parameters.GetValue<bldAggregationDocument>("element");
 
                               var navParam = new NavigationParameters();
-                              navParam.Add("bld_aggregation_document", selected_catalog);
+                              navParam.Add("bld_document", selected_catalog);
                               _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(DocumentationExplorerView).Name, navParam);
 
 
@@ -185,7 +185,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             TempCatalog.AttachedDocuments = (bldDocumentsGroup)certificates;
             TempCatalog.Name = "Загруженные документы";
             var navParam = new NavigationParameters();
-            navParam.Add("bld_aggregation_document", TempCatalog);
+            navParam.Add("bld_document", TempCatalog);
             _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(DocumentationExplorerView).Name, navParam);
             //  navParam.Add("bld_documents", new ConveyanceObject(certificates, ConveyanceObjectModes.EditMode.FOR_EDIT));
             //_regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificatesGroupView).Name, navParam);

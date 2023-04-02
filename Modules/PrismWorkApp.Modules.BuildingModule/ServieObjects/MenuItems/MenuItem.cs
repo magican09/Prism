@@ -36,8 +36,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             get { return _isEnabled; }
             set { _isEnabled = value; OnPropertyChanged("IsEnabled"); }
         }
-        private string _imageUrl;
-        public string ImageUrl
+        private Uri _imageUrl;
+        public Uri ImageUrl
         {
             get { return _imageUrl; }
             set { _imageUrl = value; OnPropertyChanged("ImageUrl"); }

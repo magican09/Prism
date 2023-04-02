@@ -219,7 +219,8 @@ namespace PrismWorkApp.Modules.BuildingModule
 
             containerRegistry.RegisterDialog<AddConstructionCompaniesToCollectionFromListDialogView, AddConstructionCompaniesToCollectionFromListDialogViewModel>();
             containerRegistry.RegisterDialog<SelectAggregationDocumentFromCollectionDialogView, SelectAggregationDocumentFromCollectionDialogViewModel>();
-            
+
+            containerRegistry.RegisterSingleton<IAppObjectsModel,AppObjectsModel>();
             //  containerRegistry.RegisterForNavigation<ToolBarRibbonTabView, ToolBarRibbonTabViewModel>();
             //   containerRegistry.RegisterDialog<ConfirmCreateDialogViewModel, ConfirmCreateDialogViewModel>();
 

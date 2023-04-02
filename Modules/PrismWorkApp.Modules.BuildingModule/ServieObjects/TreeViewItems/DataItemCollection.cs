@@ -19,6 +19,7 @@ namespace PrismWorkApp.Modules.BuildingModule
         public DataItemCollection(DataItem owner)
         {
             Owner = owner;
+           
         }
         private DataItem _owner;
 
@@ -30,23 +31,52 @@ namespace PrismWorkApp.Modules.BuildingModule
         protected override void SetItem(int index, DataItem item)
         {
             item.Parent = this.Owner;
+            if (this.Owner != null)
+            {
+             //   item.AttachedObjectCollectionChanged += this.Owner.AttachedObjectCollectionChanged;
+                item.DataItemInit += this.Owner.DataItemInit;
+              //  item.MenuItemExpand += this.Owner.MenuItemExpand;
+                
+            }
             base.SetItem(index, item);
         }
         protected override void ClearItems()
         {
             foreach (DataItem item in this)
+            {
                 item.Parent = null;
+                if (this.Owner != null)
+                {
+                 //   item.AttachedObjectCollectionChanged -= this.Owner.AttachedObjectCollectionChanged;
+                    item.DataItemInit -= this.Owner.DataItemInit;
+                //    item.MenuItemExpand -= this.Owner.MenuItemExpand;
+                }
+            }
             base.ClearItems();
         }
         protected override void InsertItem(int index, DataItem item)
         {
             item.Parent = this.Owner;
-            base.InsertItem(index, item);
+            if (this.Owner != null)
+            {
+               // item.AttachedObjectCollectionChanged += this.Owner.AttachedObjectCollectionChanged;
+                item.DataItemInit += this.Owner.DataItemInit;
+            //    item.MenuItemExpand += this.Owner.MenuItemExpand;
+            }
+
+           if(!this.Contains(item))
+              base.InsertItem(index, item);
 
         }
         protected override void RemoveItem(int index)
         {
             this[index].Parent = null;
+            if (this.Owner != null)
+            {
+               // this[index].AttachedObjectCollectionChanged -= this.Owner.AttachedObjectCollectionChanged;
+                this[index].DataItemInit -= this.Owner.DataItemInit;
+              //  this[index].MenuItemExpand -= this.Owner.MenuItemExpand;
+            }
             base.RemoveItem(index);
         }
     }

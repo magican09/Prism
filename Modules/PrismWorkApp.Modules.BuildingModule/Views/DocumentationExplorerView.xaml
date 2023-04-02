@@ -15,7 +15,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary
-                            Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/ProjectTreeViewDefaultTheme.xaml"/>
+                            Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/MenuItemsTheme.xaml"/>
                 <ResourceDictionary
                             Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/TreeViewTheme.xaml"/>
 
@@ -49,11 +49,11 @@
                              ItemContainerStyle="{StaticResource TreeViewItemStyle}" 
                              ItemsSource="{Binding Items}"
                              ItemTemplate="{StaticResource TreeViewItemTamplate}"
-                             ItemEditTemplate="{StaticResource EditTreeViewTemplate}"
                              IsExpandOnSingleClickEnabled="True">
-            <!--<telerik:RadContextMenu >
-                
-            </telerik:RadContextMenu>-->
+            <telerik:RadContextMenu>
+                    
+            </telerik:RadContextMenu>
+            
         </telerik:RadTreeView>
      
     </Grid>

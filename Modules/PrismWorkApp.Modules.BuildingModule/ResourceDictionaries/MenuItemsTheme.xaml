@@ -32,11 +32,10 @@
             </Setter.Value>
         </Setter>-->
       </Style>
-    <loc_core:Triggers x:Key="ContextMenuTriggers" x:Shared="False">
+    <!--<loc_core:Triggers x:Key="ContextMenuTriggers" x:Shared="False">
         <i:EventTrigger   EventName="Opened">
             <prism:InvokeCommandAction Command="{Binding DataContext.ContextMenuOpeningCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
-                                         >
-                <prism:InvokeCommandAction.CommandParameter>
+                  <prism:InvokeCommandAction.CommandParameter>
                     <MultiBinding Converter="{StaticResource     ObjectsToListMultiConverter}">
                         <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewRow}}" Path="DataContext"/>
                         <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
@@ -45,7 +44,7 @@
                 </prism:InvokeCommandAction.CommandParameter>
             </prism:InvokeCommandAction>
         </i:EventTrigger>
-    </loc_core:Triggers>
+    </loc_core:Triggers>-->
 
 
     <!--<Style x:Key="RadMenuItemContainerStyle" TargetType="telerik:RadMenuItem">
@@ -62,7 +61,7 @@
         <Setter Property="ItemsSource" Value="{Binding SubItems}"/>
         <Setter Property="Command" Value="{Binding }"/>
     </Style>-->
-    <Style x:Key="RadMenuItemContainerStyle" TargetType="telerik:RadMenuItem" BasedOn="{StaticResource  RadMenuItemStyle}">
+    <Style x:Key="RadMenuItemContainerStyle" TargetType="{x:Type telerik:RadMenuItem}">
         <Setter Property="Header" Value="{Binding Name}"/>
         <Setter Property="ItemsSource" Value="{Binding SubItems}"/>
         <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>

@@ -47,8 +47,9 @@ namespace PrismWorkApp
             
             containerRegistry.RegisterDialog<ConfirmActionWhithoutCancelDialog, ConfirmActionWhithoutCancelDialogViewModel>();
             containerRegistry.RegisterDialogWindow<CommonDialogWindow>();
+            containerRegistry.RegisterSingleton<IAppObjectsModel, AppObjectsModel>();
 
-           
+
             ;
         }
 

@@ -15,6 +15,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Globalization;
+using Telerik.Windows;
+using System.Windows.Controls;
+using Telerik.Windows.Controls;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -40,43 +43,91 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-        public bldDocumentsGroup Documentation{ get; set; }
-
+        public bldDocumentsGroup Documentation { get; set; }
+        private object  _selectionObject;
+        public object SelectionObject
+        {
+            get { return _selectionObject; }
+            set { SetProperty(ref _selectionObject, value); }
+        }
         public NotifyMenuCommands DocumentationCommands { get; set; }
         public NotifyCommand<object> TreeViewItemSelectedCommand { get; private set; }
         public NotifyCommand<object> TreeViewItemExpandedCommand { get; private set; }
+        public NotifyCommand<object> ContextMenuOpenedCommand { get; private set; }
         private readonly IEventAggregator _eventAggregator;
         private readonly IRegionManager _regionManager;
         private IDialogService _dialogService;
         private AppObjectsModel _appObjectsModel;
-        public   DocumentationExplorerViewModel(IEventAggregator eventAggregator, 
-                            IRegionManager regionManager, IDialogService dialogService,IAppObjectsModel appObjectsModel)
+        public AppObjectsModel AppObjectsModel
         {
-            _appObjectsModel = appObjectsModel as AppObjectsModel;
+            get { return _appObjectsModel; }
+            set { SetProperty(ref _appObjectsModel, value); }
+        }
+        private IApplicationCommands _applicationCommands;
+        public DocumentationExplorerViewModel(IEventAggregator eventAggregator,
+                            IRegionManager regionManager, IDialogService dialogService, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel)
+        {
+            AppObjectsModel = appObjectsModel as AppObjectsModel;
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;
-            _dialogService = dialogService; Documentation = _appObjectsModel.Documentation;
-            DocumentationCommands = _appObjectsModel.DocumentationCommands;
+            _dialogService = dialogService;
+            _applicationCommands = applicationCommands;
+            Documentation = AppObjectsModel.Documentation;
+            ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
+
+            //_applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(_appObjectsModel.LoadDocumentCommand);
 
             Items = new DataItemCollection(null);
             DataItem root = new DataItem();
-            root.DataItemInit += _appObjectsModel.OnDataItemInit; ;
+            root.DataItemInit += AppObjectsModel.OnDataItemInit; 
             root.AttachedObject = Documentation;
             Items.Add(root);
-            
+
             TreeViewItemSelectedCommand = new NotifyCommand<object>(OnTreeViewItemSelected);
             TreeViewItemExpandedCommand = new NotifyCommand<object>(onTreeViewItemExpanded);
-         
+
             _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
              ThreadOption.PublisherThread, false,
              message => message.Recipient == "DocumentationExplorer");
 
-    }
+        }
 
-  
+        private void OnContextMenuOpened(object obj)
+        {
+           
+            RadContextMenu contextMenu = obj as RadContextMenu;
+            RadTreeViewItem clicked_item = contextMenu.GetClickedElement<RadTreeViewItem>();
+            //GridViewRow clicked_row = contextMenu.GetClickedElement<GridViewRow>();
+            DataItem clicked_dataItem = (DataItem)clicked_item.DataContext;
+            AppObjectsModel.SelectedDocumentsGroup=null;
+            AppObjectsModel.SelectedDocument = null;
+            switch (clicked_dataItem.AttachedObject.GetType().Name)
+            {
+                case (nameof(bldDocumentsGroup)):
+                case (nameof(bldAggregationDocumentsGroup)):
+                case (nameof(bldMaterialCertificatesGroup)):
+                    {
+                        AppObjectsModel.SelectedDocumentsGroup = (bldDocumentsGroup)clicked_dataItem.AttachedObject;
+                        contextMenu.ItemsSource = AppObjectsModel.DocumentationCommands.MenuItem.Items;
+                        break;
+                    }
+                case (nameof(bldDocument)):
+                case (nameof(bldAggregationDocument)):
+                case (nameof(bldMaterialCertificate)):
+
+                    {
+                        AppObjectsModel.SelectedDocument = (bldDocument)clicked_dataItem.AttachedObject;
+                        contextMenu.ItemsSource = AppObjectsModel.DocumentationCommands.MenuItem.Items;
+                        break;
+                       
+                    }
+            }
+
+        }
+
         static private GetImageFrombldProjectObjectConvecter ObjecobjectTo_Url_Convectert = new GetImageFrombldProjectObjectConvecter();
 
-      private void OnGetMessage(EventMessage event_message)
+        private void OnGetMessage(EventMessage event_message)
         {
             //bldAggregationDocument bld_document = (bldAggregationDocument)event_message.Value;
             ////  if (bld_project != null && bld_Projects.Where(pr => pr.Id == bld_project.Id).FirstOrDefault() == null && bld_project != null)
@@ -122,11 +173,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         bldAggregationDocument aggregationDocument = clc_node as bldAggregationDocument;
                         if (aggregationDocument.AttachedDocuments.Count > 0 && aggregationDocument.AttachedDocuments[0] is bldMaterialCertificate)
                         {
-                            bldDocumentsGroup materialCertificates = aggregationDocument.AttachedDocuments ;
-                         //   navParam.Add("bld_material_certificates", (new ConveyanceObject(materialCertificates, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                            bldDocumentsGroup materialCertificates = aggregationDocument.AttachedDocuments;
+                            //   navParam.Add("bld_material_certificates", (new ConveyanceObject(materialCertificates, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             navParam.Add("bld_material_certificates_agrregation", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
-                        
+
                         }
                         break;
                     }
@@ -137,16 +188,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         {
                             navParam.Add("bld_material_certificates", (new ConveyanceObject(documents, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificatesGroupView).Name, navParam);
-                        
+
                         }
                         break;
                     }
 
                     break;
-                     
-            }
 
             }
+
+        }
 
         private void onTreeViewItemExpanded(object obj)
         {
@@ -174,13 +225,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //  if (bld_project != null && bld_Projects.Where(pr => pr.Id == bld_project.Id).FirstOrDefault() == null && bld_project != null)
             if (bld_document is bldAggregationDocument bld_aggregationDoc)
             {
-              var doc= Documentation.Where(doc => doc.Id == bld_aggregationDoc.Id).FirstOrDefault();
+                var doc = Documentation.Where(doc => doc.Id == bld_aggregationDoc.Id).FirstOrDefault();
                 if (doc == null)
                 {
                     Documentation.Add(bld_aggregationDoc);
                 }
             }
-           
+
         }
     }
 }

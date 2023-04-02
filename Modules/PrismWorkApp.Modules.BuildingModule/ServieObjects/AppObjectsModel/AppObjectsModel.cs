@@ -1,52 +1,126 @@
-﻿using PrismWorkApp.Core.Commands;
+﻿using Prism.Events;
+using Prism.Regions;
+using Prism.Services.Dialogs;
+using PrismWorkApp.Core;
+using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.Core;
+using PrismWorkApp.Modules.BuildingModule.Dialogs;
+using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using Telerik.Windows.Controls;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
-    public class AppObjectsModel : IAppObjectsModel
+    public class AppObjectsModel :BindableBase, IAppObjectsModel
     {
+        public bldDocumentsGroup Documentation { get; set; } = new bldDocumentsGroup();
+        private bldDocument _selectedDocument;
+        public bldDocument SelectedDocument
+        {
+            get { return _selectedDocument; }
+            set { SetProperty(ref _selectedDocument, value); }
+        }
+        private bldDocumentsGroup _selectedDocumentsGroup = new bldDocumentsGroup();
+        public bldDocumentsGroup SelectedDocumentsGroup 
+        {
+            get { return _selectedDocumentsGroup; }
+            set { SetProperty(ref _selectedDocumentsGroup, value); }
+        }
         #region Commands 
+        public NotifyCommand<object> LoadDocumentsGroupFromDBCommand { get; set; }
         public NotifyMenuCommands DocumentationCommands { get; set; } = new NotifyMenuCommands();
-        public NotifyCommand<object> RemoveDocumentCommand { get; private set; }
-        public NotifyCommand<object> CreateNewDocumentCommand { get; set; }
+        public NotifyCommand<object> CreateNewDocumentsGroupCommand { get; set; }
+        public NotifyCommand<object> RemoveDocumentsGroupCommand { get; private set; }
+        public NotifyCommand<object> LoadDocumentCommand { get; set; }
+
         #endregion
         #region Contructors
-        public AppObjectsModel()
+        private IApplicationCommands _applicationCommands;
+        public IBuildingUnitsRepository _buildingUnitsRepository { get; }
+        private readonly IRegionManager _regionManager;
+        private IDialogService _dialogService;
+        public AppObjectsModel(IRegionManager regionManager, IEventAggregator eventAggregator,
+                                           IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
         {
+            _regionManager = regionManager;
+            _buildingUnitsRepository = buildingUnitsRepository;
+            _dialogService = dialogService;
+            _applicationCommands = applicationCommands;
+           
             Documentation.Name = "Документация";
-            RemoveDocumentCommand = new NotifyCommand<object>(OnRemoveDocument);
-            RemoveDocumentCommand.Name = "Удалить документ";
-            CreateNewDocumentCommand = new NotifyCommand<object>(OnCreateNewDocument);
-            CreateNewDocumentCommand.Name = "Создать документ";
-            DocumentationCommands.Add(CreateNewDocumentCommand);
-            DocumentationCommands.Add(RemoveDocumentCommand);
+            CreateNewDocumentsGroupCommand = new NotifyCommand<object>(OnCreateDocumentsGrioup);
+            CreateNewDocumentsGroupCommand.Name = "Создать новый каталог";
+            RemoveDocumentsGroupCommand = new NotifyCommand<object>(OnRemoveDocumentsGrioup);
+            RemoveDocumentsGroupCommand.Name = "Удалить";
+            LoadDocumentsGroupFromDBCommand = new NotifyCommand<object>(OnLoadDocumentsGrioup);
+            LoadDocumentsGroupFromDBCommand.Name = "Загрузить документацию из БД";
+
+            DocumentationCommands.Add(CreateNewDocumentsGroupCommand);
+            DocumentationCommands.Add(RemoveDocumentsGroupCommand);
+            DocumentationCommands.Add(LoadDocumentsGroupFromDBCommand);
+          
         }
 
-        private void OnCreateNewDocument(object obj)
-        {
-            
-        }
-
-        private void OnRemoveDocument(object obj)
+        private void OnRemoveDocumentsGrioup(object obj)
         {
            
         }
+
+        private void OnCreateDocumentsGrioup(object obj)
+        {
+            RadContextMenu contextMenu = obj as RadContextMenu;
+            RadTreeViewItem clicked_item = contextMenu.GetClickedElement<RadTreeViewItem>();
+            DataItem clicked_dataItem = (DataItem)clicked_item.DataContext;
+
+        }
+
+        private void OnLoadDocumentsGrioup(object obj)
+        {
+            bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.AggregationDocumentsRepository.GetAllAsync().ToList());
+
+            CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
+                      (All_AggregationDocuments, _dialogService, (result) =>
+                      {
+                          if (result.Result == ButtonResult.Yes)
+                          {
+                              bldAggregationDocument selected_catalog = result.Parameters.GetValue<bldAggregationDocument>("element");
+
+                              var navParam = new NavigationParameters();
+                              if (SelectedDocument != null) SelectedDocument.AttachedDocuments.Add(selected_catalog);
+                              if (SelectedDocumentsGroup != null&& SelectedDocumentsGroup.Parent?.Id!=selected_catalog.Id) 
+                              { 
+                                  SelectedDocumentsGroup.Add(selected_catalog);
+                              }
+
+                              //navParam.Add("bld_document", selected_catalog);
+                              //_regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(DocumentationExplorerView).Name, navParam);
+
+
+                          }
+
+                      }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
+                      "Выберете каталог для сохранения",
+                         "Форма для выбора каталога для загзузки из базы данных."
+                        , "Перечень каталогов");
+        }
+
+
         #endregion
         #region Model data 
         #region Documentation
         /// <summary>
         /// Коллекция для хранения документации
         /// </summary>
-        public bldDocumentsGroup Documentation { get; set; } = new bldDocumentsGroup();
-              #endregion
-       
+        #endregion
+
         #endregion
         #region DataItems imlemantation
         static private GetImageFrombldProjectObjectConvecter ObjecobjectTo_Url_Convectert = new GetImageFrombldProjectObjectConvecter();
@@ -96,6 +170,10 @@ namespace PrismWorkApp.Modules.BuildingModule
                     }
             }
         }
+        #endregion
+
+        #region ContextMenu Implamatation
+
         #endregion
     }
 }

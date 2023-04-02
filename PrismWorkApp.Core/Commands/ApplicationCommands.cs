@@ -20,6 +20,7 @@
 
         NotifyCompositeCommand SaveExecutiveDocumentsCommand { get; }
         NotifyCompositeCommand LoadMaterialsFromAccessCommand { get; }
+        NotifyCompositeCommand LoadAggregationDocumentsFromDBCommand { get; }
         NotifyCompositeCommand OpenAppSettingsDialogCommand { get; }
 
 
@@ -78,6 +79,12 @@
         {
             get { return _loadMaterialsFromAccessCommand; }
         }
+        private NotifyCompositeCommand _loadAggregationDocumentsFromDBCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand LoadAggregationDocumentsFromDBCommand
+        {
+            get { return _loadAggregationDocumentsFromDBCommand; }
+        }
+
         private NotifyCompositeCommand _openAppSettingsDialogCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand OpenAppSettingsDialogCommand
         {

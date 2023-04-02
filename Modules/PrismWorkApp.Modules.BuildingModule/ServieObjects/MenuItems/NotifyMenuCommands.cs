@@ -35,6 +35,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             MenuItem menuItem = new MenuItem();
             menuItem.Text = item.Name;
             menuItem.ImageUrl = item.ImageUri;
+            menuItem.Command = item;
             MenuItem.Items.Add(menuItem);
             base.SetItem(index, item);
         }
@@ -45,7 +46,9 @@ namespace PrismWorkApp.Modules.BuildingModule
                 MenuItem menuItem = new MenuItem();
                 menuItem.Text = item.Name;
                 menuItem.ImageUrl = item.ImageUri;
+                menuItem.Command = item;
                 MenuItem.Items.Add(menuItem);
+             
                 base.InsertItem(index, item);
             }
         }

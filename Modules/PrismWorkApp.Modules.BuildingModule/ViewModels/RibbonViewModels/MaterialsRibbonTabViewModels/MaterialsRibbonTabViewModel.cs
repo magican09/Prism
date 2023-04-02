@@ -44,28 +44,30 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private IDialogService _dialogService;
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
-        private IApplicationCommands _applicationCommands;
-        public IApplicationCommands ApplicationCommands
+         public IApplicationCommands ApplicationCommands
         {
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
+        private IApplicationCommands _applicationCommands;
         private readonly IRegionManager _regionManager;
         private readonly IEventAggregator _eventAggregator;
+        private AppObjectsModel _appObjectsModel;
         public MaterialsRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
-                                           IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
+                                           IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel)
 
         {
             _regionManager = regionManager;
             _buildingUnitsRepository = buildingUnitsRepository;
             _dialogService = dialogService;
             _applicationCommands = applicationCommands;
+            _appObjectsModel = appObjectsModel as AppObjectsModel;
             _eventAggregator = eventAggregator;
             IsActiveChanged += OnActiveChanged;
             LoadMaterialCertificatesFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
             LoadMaterialCertificatesFromDBCommand = new NotifyCommand(OnLoadMaterialCertificatesFromDB);
             SaveDataToDBCommand = new NotifyCommand(OnSaveDataToDB);
-            // ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
+        //    ApplicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadMaterialCertificatesFromDBCommand);
 
         }
 

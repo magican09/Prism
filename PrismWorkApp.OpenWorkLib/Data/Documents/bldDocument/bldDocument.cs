@@ -45,10 +45,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bldDocument(string name) : this()
         {
             Name = name;
+            AttachedDocuments.Parent = this;
         }
         public bldDocument()
         {
             AttachedDocuments.Name = "Приложения";
+            AttachedDocuments.Parent = this;
         }
         private  ObservableCollection<bldDocument> _parentDocuments = new ObservableCollection<bldDocument>();
         public ObservableCollection<bldDocument> ParentDocuments

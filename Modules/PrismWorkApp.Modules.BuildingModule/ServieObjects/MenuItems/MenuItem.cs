@@ -30,7 +30,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             get { return _text; }
             set { _text = value; OnPropertyChanged("Text"); }
         }
-        private bool _isEnabled;
+        private bool _isEnabled=true;
         public bool IsEnabled
         {
             get { return _isEnabled; }
@@ -64,7 +64,6 @@ namespace PrismWorkApp.Modules.BuildingModule
             set { _attachedObject = value; OnPropertyChanged("AttachedObject"); }
         }
         private INotifyCommand _command;
-
         public INotifyCommand Command
         {
             get { return _command; }

@@ -38,8 +38,9 @@ namespace PrismWorkApp.Modules.BuildingModule
         public IbldMaterialsUnitsRepository _bldMaterialsUnitsRepository;
         private IDialogService _dialogService;
         private IAppSettingsSystem _appSettings;
+        private IAppObjectsModel _appObjectsModel;
         public BuildingModule(IRegionManager regionManager, IEventAggregator eventAggregator, IBuildingUnitsRepository buildingUnitsRepository/*, IbldMaterialsUnitsRepository bldMaterialsUnitsRepository*/, 
-            IDialogService dialogService, IApplicationCommands applicationCommands,IAppSettingsSystem appSettings)
+            IDialogService dialogService, IApplicationCommands applicationCommands,IAppSettingsSystem appSettings,IAppObjectsModel appObjectsModel)
         {
 
             ModuleId = 2;
@@ -49,6 +50,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _appSettings = appSettings;
+            _appObjectsModel = appObjectsModel;
          //   _bldMaterialsUnitsRepository = bldMaterialsUnitsRepository;
 
         }
@@ -78,7 +80,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             _regionManager.Regions[RegionNames.RibbonRegion].Add(toolBarRibbonTab);
 
             var materialsRibbonTab = new MaterialsRibbonTabView();
-            materialsRibbonTab.DataContext = new MaterialsRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands);
+            materialsRibbonTab.DataContext = new MaterialsRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands, _appObjectsModel);
             var materialsRibbonGroup = new MaterialsRibbonGroupView();
             materialsRibbonTab.Items.Add(materialsRibbonGroup);
             _regionManager.Regions[RegionNames.RibbonRegion].Add(materialsRibbonTab);

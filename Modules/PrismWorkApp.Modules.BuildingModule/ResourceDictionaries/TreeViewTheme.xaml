@@ -47,7 +47,7 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
-    <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}" >
+    <HierarchicalDataTemplate x:Key="TreeViewItemTamplate_test" ItemsSource="{Binding Items}" >
             <ContentControl>
                 <ContentControl.Style>
                     <Style TargetType="ContentControl">
@@ -105,8 +105,14 @@
             </DataTrigger>--> 
         </HierarchicalDataTemplate.Triggers>
     </HierarchicalDataTemplate>
-  
-    
+   
+    <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}" >
+        <StackPanel Orientation="Horizontal">
+            <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
+            <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding Text}" Margin="5 0 0 0" />
+         </StackPanel>
+    </HierarchicalDataTemplate>
+
 
     <DataTemplate x:Key="EditTreeViewTemplate">
         <StackPanel Orientation="Horizontal">

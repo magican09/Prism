@@ -82,13 +82,21 @@ namespace PrismWorkApp.Modules.BuildingModule
                     //Tuple<Uri,string> tuple = (Tuple<Uri, string>)ObjecobjectTo_Urltext_Convectert.Convert(_attachedObject, null, null, CultureInfo.CurrentCulture);
                     //ImageUrl = tuple.Item1;
                     //Text = tuple.Item2;
-
+                    if (_attachedObject is INotifyPropertyChanged)
+                        OnAttachedObjectPropertyChanged(_attachedObject as INotifyPropertyChanged);
+                    if(_attachedObject is I)
                 }
-                OnSetAttachedObject(); 
+             //   OnSetAttachedObject(); 
                 OnPropertyChanged("AttachedObject"); 
                 OnPropertyChanged("Type"); 
             }
         }
+
+        private void OnAttachedObjectPropertyChanged(INotifyPropertyChanged notifyPropertyChanged)
+        {
+            throw new NotImplementedException();
+        }
+
         private Type _type;
 
         public Type Type

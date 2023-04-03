@@ -9,12 +9,59 @@
     <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
     <loc_core:GetImageFrombldProjectObjectConvecter x:Key="imgFrombldProjectObject"/>
     <loc_core:StringToUriConverter x:Key="stringToUriConverter"/>
+    <loc_core:DataTypeConverter x:Key="dataTypeConverter"/>
+   
+    <Style x:Key="MenuItemContainerStyle" TargetType="MenuItem">
+    <Setter Property="Header" Value="{Binding Name}"/>
+    <Setter Property="ItemsSource" Value="{Binding Items}"/>
+    <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
+    <Setter Property="Command" Value="{Binding }"/>
+    <Setter Property="CommandParameter">
+        <Setter.Value>
+            <!--<MultiBinding Converter="{StaticResource ObjectsToListMultiConverter}">-->
+                <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}" Path="DataContext.AttachedObject"/>
+            <!--</MultiBinding>-->
+        </Setter.Value>
+    </Setter>
+    <Setter Property="CommandTarget" Value="{Binding RelativeSource={RelativeSource Mode=Self}}"/>
+    </Style>
+
+    <Style x:Key="CuntextMenuStyle" TargetType="{x:Type ContextMenu}">
+           <Setter Property="ItemContainerStyle" Value="{StaticResource MenuItemContainerStyle}"/>
+    </Style>
+      
+    
+    <ContextMenu x:Key="TreeViewItemContextMenu"  Style="{StaticResource  CuntextMenuStyle}">
+        <telerik:EventToCommandBehavior.EventBindings>
+            <telerik:EventBinding EventName="Opened" 
+                                  Command="{Binding DataContext.ContextMenuOpenedCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}">
+                <telerik:EventBinding.CommandParameter>
+                    <MultiBinding Converter="{StaticResource     ObjectsToListMultiConverter}">
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}"/>
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}" Path="DataContext"/> 
+                    </MultiBinding>
+                </telerik:EventBinding.CommandParameter>
+            </telerik:EventBinding>
+        </telerik:EventToCommandBehavior.EventBindings>
+     </ContextMenu>
+   
     
     <Style x:Key="TreeViewItemStyle" TargetType="{x:Type  telerik:RadTreeViewItem}">
         <Setter Property="IsExpanded" Value="{Binding IsExpanded,Mode=TwoWay}"/>
-        <Setter Property="DefaultImageSrc" Value="{Binding ImageUrl}"/>
+        <!--<Setter Property="DefaultImageSrc" Value="{Binding ImageUrl}"/>-->
+        <Setter Property="ContextMenu" Value="{StaticResource TreeViewItemContextMenu}"/>
+        <Setter Property="loc_core:MouseDoubleClick.Command" Value="{Binding DataContext.MouseDoubleClickCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"/>
+        <Setter Property="loc_core:MouseDoubleClick.CommandParameter" Value="{Binding  DataContext.AttachedObject, RelativeSource={RelativeSource Mode=Self}}"/>
     </Style>
-
+   
+    <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}">
+        <StackPanel Orientation="Horizontal"  
+                    >
+            <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
+            <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding Text}" Margin="5 0 0 0" />
+        </StackPanel>
+    </HierarchicalDataTemplate>
+    
     <!--<DataTemplate x:Key="bldAggregationDocumentTreeViewItemTemplate" >
         <StackPanel Orientation="Horizontal">
             <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
@@ -106,18 +153,10 @@
         </HierarchicalDataTemplate.Triggers>
     </HierarchicalDataTemplate>-->
    
-    <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}" >
-        <StackPanel Orientation="Horizontal">
-            <!--<Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />-->
-            <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding Text}" Margin="5 0 0 0" />
-         </StackPanel>
-    </HierarchicalDataTemplate>
-
-
-    <DataTemplate x:Key="EditTreeViewTemplate">
+    <!--<DataTemplate x:Key="EditTreeViewTemplate">
         <StackPanel Orientation="Horizontal">
             <Image Source="{Binding ImageUrl}"/>
             <TextBlock Text="{Binding Text,Mode=TwoWay}" Margin="5 0 0 0" />
         </StackPanel>
-    </DataTemplate>
+    </DataTemplate>-->
 </ResourceDictionary>

@@ -2,6 +2,7 @@
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
+using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
@@ -34,11 +35,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
+        
         protected IUnDoReDoSystem _unDoReDo;
-
-     
-
-        public IUnDoReDoSystem UnDoReDo
+         public IUnDoReDoSystem UnDoReDo
         {
             get { return _unDoReDo; }
             set { SetProperty(ref _unDoReDo, value); }
@@ -51,7 +50,24 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             // IsActiveChanged += OnActiveChanged;
 
         }
+        public virtual void OnSave(string object_name = "")
+        {
+            var dialog_par = new DialogParameters();
+            dialog_par.Add("massege",
+               $"Вы действительно хотите сохранить измениния в {object_name }\" ?!");
+            dialog_par.Add("confirm_button_content", "Cохранить");
+            dialog_par.Add("refuse_button_content", "Отмена");
+            dialog_par.Add("cancel_button_content", "Закрыть");
+            _dialogService.ShowDialog(typeof(ConfirmActionDialog).Name, dialog_par, result =>
+            {
+                if (result.Result == ButtonResult.Yes)
+                {
+                    UnDoReDo.ClearStacks();
+                }
+            });
+               
 
+        }
         public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IEntityObject
         {
             CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public  class bldDocumentsGroup: NameableObservableCollection<bldDocument>, IbldDocumentsGroup, IEntityObject 
-       
+    public  class bldDocumentsGroup: NameableObservableCollection<bldDocument>, IbldDocumentsGroup, IEntityObject,INotifyCollectionChanged
+
     {
         public bldDocumentsGroup()
         {

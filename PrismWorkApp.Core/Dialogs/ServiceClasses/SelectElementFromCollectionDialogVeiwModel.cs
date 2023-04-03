@@ -2,13 +2,14 @@
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core.Commands;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace PrismWorkApp.Core.Dialogs
 {
     public class SelectElementFromCollectionDialogVeiwModel<TContainer, T> : BindableBase, IDialogAware
-        where TContainer : ICollection<T>, new()
-        where T : class, OpenWorkLib.Data.IEntityObject, new()
+        where TContainer : ICollection,IList, new()
+        where T :  OpenWorkLib.Data.IEntityObject, new()
     
     {
         private string _title = "Выбрать";

@@ -48,7 +48,7 @@ namespace PrismWorkApp.Modules.BuildingModule
                 if (this.Owner != null)
                 {
                  //   item.AttachedObjectCollectionChanged -= this.Owner.AttachedObjectCollectionChanged;
-                    item.DataItemInit -= this.Owner.DataItemInit;
+                  //  item.DataItemInit -= this.Owner.DataItemInit;
                 //    item.MenuItemExpand -= this.Owner.MenuItemExpand;
                 }
             }

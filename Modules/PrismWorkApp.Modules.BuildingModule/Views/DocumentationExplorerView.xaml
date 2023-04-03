@@ -21,7 +21,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-
     <Grid>
         <Grid.Resources>
           
@@ -44,22 +43,17 @@
                 </i:Interaction.Triggers>
             </TreeView>-->
 
-        <telerik:RadTreeView Grid.Row="0"  Width="350" Height="450"  IsEditable="True" telerik:StyleManager.Theme="VisualStudio2019"
+        <telerik:RadTreeView Grid.Row="0"  IsExpandOnSingleClickEnabled="True" IsLineEnabled="True" Margin="5"
+                             IsEditable="True"
+                             telerik:StyleManager.Theme="VisualStudio2019"
                              ItemContainerStyle="{StaticResource TreeViewItemStyle}" 
                              ItemsSource="{Binding Items}"
                              ItemTemplate="{StaticResource TreeViewItemTamplate}"
-                             IsExpandOnSingleClickEnabled="True"
-                             SelectedItem="{Binding   SelectionObject}"
-                             SelectionMode="Single">
-            <telerik:RadContextMenu.ContextMenu >
-                <telerik:RadContextMenu ItemContainerStyle="{StaticResource MenuItemContainerStyle}">
-                    <telerik:EventToCommandBehavior.EventBindings>
-                        <telerik:EventBinding EventName="Opened"  
-                                              Command="{Binding ContextMenuOpenedCommand}"
-                                               CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=telerik:RadContextMenu}}"/>
-                    </telerik:EventToCommandBehavior.EventBindings>
-                 </telerik:RadContextMenu>
-            </telerik:RadContextMenu.ContextMenu>
+                             SelectedItem="{Binding   SelectionObject,Mode=TwoWay}"
+                             SelectionMode="Single"
+                             >
+            
+         
            
         </telerik:RadTreeView>
      

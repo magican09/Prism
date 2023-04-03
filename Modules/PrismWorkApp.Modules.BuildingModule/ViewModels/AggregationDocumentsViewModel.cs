@@ -440,7 +440,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_material_certificates_agrregation"];
+            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_agrregation_document"];
             if (navigane_message != null)
             {
                 EditMode = navigane_message.EditMode;

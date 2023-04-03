@@ -18,10 +18,12 @@ using System.Globalization;
 using Telerik.Windows;
 using System.Windows.Controls;
 using Telerik.Windows.Controls;
+using System.Collections;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class DocumentationExplorerViewModel : LocalBindableBase, INotifyPropertyChanged, INavigationAware//, IConfirmNavigationRequest
+    public class DocumentationExplorerViewModel : BaseViewModel<object>, INotifyPropertyChanged, INavigationAware//, IConfirmNavigationRequest
     {
         public Dictionary<string, Node> _nodeDictionary;
         public Dictionary<string, Node> NodeDictionary
@@ -44,16 +46,30 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _title, value); }
         }
         public bldDocumentsGroup Documentation { get; set; }
-        private object  _selectionObject;
+        private object _selectionObject;
         public object SelectionObject
         {
             get { return _selectionObject; }
             set { SetProperty(ref _selectionObject, value); }
         }
+        public NotifyCommand UnDoCommand { get; protected set; }
+        public NotifyCommand ReDoCommand { get; protected set; }
+        public NotifyCommand SaveCommand { get; protected set; }
+        public NotifyCommand<object> CloseCommand { get; protected set; }
+
         public NotifyMenuCommands DocumentationCommands { get; set; }
         public NotifyCommand<object> TreeViewItemSelectedCommand { get; private set; }
         public NotifyCommand<object> TreeViewItemExpandedCommand { get; private set; }
+
         public NotifyCommand<object> ContextMenuOpenedCommand { get; private set; }
+        public NotifyCommand<object> MouseDoubleClickCommand { get; private set; }
+
+        protected IUnDoReDoSystem _unDoReDo;
+        public IUnDoReDoSystem UnDoReDo
+        {
+            get { return _unDoReDo; }
+            set { SetProperty(ref _unDoReDo, value); }
+        }
         private readonly IEventAggregator _eventAggregator;
         private readonly IRegionManager _regionManager;
         private IDialogService _dialogService;
@@ -67,22 +83,38 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public DocumentationExplorerViewModel(IEventAggregator eventAggregator,
                             IRegionManager regionManager, IDialogService dialogService, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel)
         {
+          
             AppObjectsModel = appObjectsModel as AppObjectsModel;
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;
             _dialogService = dialogService;
             _applicationCommands = applicationCommands;
-            Documentation = AppObjectsModel.Documentation;
-            ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
 
+            UnDoReDo = new UnDoReDoSystem();
+            SaveCommand = new NotifyCommand(OnSave);
+         
+            UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
+                                     () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
+               () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            UnDoReDo.Register(AppObjectsModel.Documentation);
+
+            Documentation = AppObjectsModel.Documentation;
+
+            DocumentationCommands = AppObjectsModel.DocumentsGroupCommands;
+          
+            
+            
+            ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
+            MouseDoubleClickCommand = new NotifyCommand<object>(OnMouseDoubleClick);
             //_applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(_appObjectsModel.LoadDocumentCommand);
 
             Items = new DataItemCollection(null);
             DataItem root = new DataItem();
-            root.DataItemInit += AppObjectsModel.OnDataItemInit; 
-            root.AttachedObject = Documentation;
+            root.DataItemInit += AppObjectsModel.OnDataItemInit;
             Items.Add(root);
-
+            root.AttachedObject = Documentation;
+           
             TreeViewItemSelectedCommand = new NotifyCommand<object>(OnTreeViewItemSelected);
             TreeViewItemExpandedCommand = new NotifyCommand<object>(onTreeViewItemExpanded);
 
@@ -90,12 +122,59 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
              ThreadOption.PublisherThread, false,
              message => message.Recipient == "DocumentationExplorer");
 
+            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+
+        }
+
+        private void OnMouseDoubleClick(object d_clicked_object)
+        {
+            switch (d_clicked_object?.GetType().Name)
+            {
+                case (nameof(bldAggregationDocument)):
+                    {
+                        bldAggregationDocument aggregationDocument = d_clicked_object as bldAggregationDocument;
+                        if (aggregationDocument.AttachedDocuments.Count > 0 && aggregationDocument.AttachedDocuments[0] is bldMaterialCertificate)
+                        {
+                            bldDocumentsGroup materialCertificates = aggregationDocument.AttachedDocuments;
+                            NavigationParameters navParam = new NavigationParameters();
+                            navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
+
+                        }
+                        break;
+                    }
+            }
         }
 
         private void OnContextMenuOpened(object obj)
         {
-           
-            RadContextMenu contextMenu = obj as RadContextMenu;
+            DataItem clicked_dataItem = ((IList)obj)[1] as DataItem;
+            ContextMenu contextMenu = ((IList)obj)[0] as ContextMenu;
+            switch (clicked_dataItem.AttachedObject.GetType().Name)
+            {
+                case (nameof(bldDocumentsGroup)):
+                case (nameof(bldAggregationDocumentsGroup)):
+                case (nameof(bldMaterialCertificatesGroup)):
+                    {
+                        contextMenu.ItemsSource = new NotifyMenuCommands()
+                            {
+                            AppObjectsModel.CreateNewAggregationDocumentCommand,
+                            AppObjectsModel.RemoveAggregationDocumentCommand,
+                        AppObjectsModel.LoadAggregationDocumentFromDBCommand};
+                        break;
+                    }
+                case (nameof(bldDocument)):
+                case (nameof(bldAggregationDocument)):
+
+                    {
+                        contextMenu.ItemsSource = AppObjectsModel.DocumentsGroupCommands;
+                        break;
+
+                    }
+            }
+            /*RadContextMenu contextMenu = obj as RadContextMenu;
             RadTreeViewItem clicked_item = contextMenu.GetClickedElement<RadTreeViewItem>();
             //GridViewRow clicked_row = contextMenu.GetClickedElement<GridViewRow>();
             DataItem clicked_dataItem = (DataItem)clicked_item.DataContext;
@@ -122,7 +201,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                        
                     }
             }
-
+            */
         }
 
         static private GetImageFrombldProjectObjectConvecter ObjecobjectTo_Url_Convectert = new GetImageFrombldProjectObjectConvecter();
@@ -175,7 +254,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         {
                             bldDocumentsGroup materialCertificates = aggregationDocument.AttachedDocuments;
                             //   navParam.Add("bld_material_certificates", (new ConveyanceObject(materialCertificates, ConveyanceObjectModes.EditMode.FOR_EDIT)));
-                            navParam.Add("bld_material_certificates_agrregation", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                            navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
 
                         }
@@ -202,6 +281,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void onTreeViewItemExpanded(object obj)
         {
 
+        }
+
+        public virtual void OnSave()
+        {
+            base.OnSave<bldDocumentsGroup>(SelectedDocumentsGroup);
         }
         private void NavgationCoplete(NavigationResult obj)
         {

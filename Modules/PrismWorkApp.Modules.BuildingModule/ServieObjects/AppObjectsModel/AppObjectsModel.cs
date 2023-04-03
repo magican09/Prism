@@ -9,6 +9,7 @@ using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.Services.Repositories;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -35,10 +36,11 @@ namespace PrismWorkApp.Modules.BuildingModule
             set { SetProperty(ref _selectedDocumentsGroup, value); }
         }
         #region Commands 
-        public NotifyCommand<object> LoadDocumentsGroupFromDBCommand { get; set; }
-        public NotifyMenuCommands DocumentationCommands { get; set; } = new NotifyMenuCommands();
-        public NotifyCommand<object> CreateNewDocumentsGroupCommand { get; set; }
-        public NotifyCommand<object> RemoveDocumentsGroupCommand { get; private set; }
+        public NotifyMenuCommands DocumentsGroupCommands { get; set; } = new NotifyMenuCommands();
+    
+        public NotifyCommand<object> LoadAggregationDocumentFromDBCommand { get; set; }
+        public NotifyCommand<object> CreateNewAggregationDocumentCommand { get; set; }
+        public NotifyCommand<object> RemoveAggregationDocumentCommand { get; private set; }
         public NotifyCommand<object> LoadDocumentCommand { get; set; }
 
         #endregion
@@ -56,60 +58,92 @@ namespace PrismWorkApp.Modules.BuildingModule
             _applicationCommands = applicationCommands;
            
             Documentation.Name = "Документация";
-            CreateNewDocumentsGroupCommand = new NotifyCommand<object>(OnCreateDocumentsGrioup);
-            CreateNewDocumentsGroupCommand.Name = "Создать новый каталог";
-            RemoveDocumentsGroupCommand = new NotifyCommand<object>(OnRemoveDocumentsGrioup);
-            RemoveDocumentsGroupCommand.Name = "Удалить";
-            LoadDocumentsGroupFromDBCommand = new NotifyCommand<object>(OnLoadDocumentsGrioup);
-            LoadDocumentsGroupFromDBCommand.Name = "Загрузить документацию из БД";
+            LoadAggregationDocumentFromDBCommand = new NotifyCommand<object>(OnAggregationDocumentFromDB);
+            LoadAggregationDocumentFromDBCommand.Name = "Загрузить перечень документов из БД";
+            CreateNewAggregationDocumentCommand = new NotifyCommand<object>(OnCreateNewAggregationDocument);
+            CreateNewAggregationDocumentCommand.Name = "Создать новый список документов";
 
-            DocumentationCommands.Add(CreateNewDocumentsGroupCommand);
-            DocumentationCommands.Add(RemoveDocumentsGroupCommand);
-            DocumentationCommands.Add(LoadDocumentsGroupFromDBCommand);
+            RemoveAggregationDocumentCommand = new NotifyCommand<object>(OnRemoveAggregationDocument);
+            RemoveAggregationDocumentCommand.Name = "Удалить список документов";
+            
+           // DocumentsGroupCommands.Add(CreateNewDocumentsGroupCommand);
+            //DocumentsGroupCommands.Add(RemoveDocumentsGroupCommand);
+           // DocumentsGroupCommands.Add(LoadDocumentsGroupFromDBCommand);
           
         }
 
-        private void OnRemoveDocumentsGrioup(object obj)
+        private void OnRemoveAggregationDocument(object clicked_object)
         {
-           
+            switch(clicked_object?.GetType().Name)
+            {
+                case (nameof(bldDocumentsGroup)):
+                case (nameof(bldMaterialCertificatesGroup)):
+                case (nameof(bldAggregationDocumentsGroup)):
+                    {
+                        bldDocumentsGroup documents = clicked_object as bldDocumentsGroup;
+
+
+                        break;
+                    }
+
+
+            }
+
         }
 
-        private void OnCreateDocumentsGrioup(object obj)
+        private void OnCreateNewAggregationDocument(object clicked_object)
         {
-            RadContextMenu contextMenu = obj as RadContextMenu;
-            RadTreeViewItem clicked_item = contextMenu.GetClickedElement<RadTreeViewItem>();
-            DataItem clicked_dataItem = (DataItem)clicked_item.DataContext;
-
+          
+        if (clicked_object is IbldDocumentsGroup)
+            {
+                bldAggregationDocument new_agr_doc  =  new bldAggregationDocument();
+                new_agr_doc.Name = "Новый каталог";
+                (clicked_object as IbldDocumentsGroup).Add(new_agr_doc as bldDocument);
+            }
         }
 
-        private void OnLoadDocumentsGrioup(object obj)
+        private void OnAggregationDocumentFromDB(object selected_object)
         {
-            bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.AggregationDocumentsRepository.GetAllAsync().ToList());
 
-            CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
-                      (All_AggregationDocuments, _dialogService, (result) =>
-                      {
-                          if (result.Result == ButtonResult.Yes)
-                          {
-                              bldAggregationDocument selected_catalog = result.Parameters.GetValue<bldAggregationDocument>("element");
+            switch (selected_object?.GetType().Name)
+            {
+                case (nameof(bldDocumentsGroup)):
+                case (nameof(bldDocument)):
+                case (nameof(bldAggregationDocumentsGroup)):
+                    {
+                       
+                        bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.AggregationDocumentsRepository.GetAllAsync().ToList());
 
-                              var navParam = new NavigationParameters();
-                              if (SelectedDocument != null) SelectedDocument.AttachedDocuments.Add(selected_catalog);
-                              if (SelectedDocumentsGroup != null&& SelectedDocumentsGroup.Parent?.Id!=selected_catalog.Id) 
-                              { 
-                                  SelectedDocumentsGroup.Add(selected_catalog);
-                              }
+                        CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
+                                  (All_AggregationDocuments, _dialogService, (result) =>
+                                  {
+                                      if (result.Result == ButtonResult.Yes)
+                                      {
+                                          bldAggregationDocument selected_aggregation_doc = result.Parameters.GetValue<bldAggregationDocument>("element");
 
-                              //navParam.Add("bld_document", selected_catalog);
-                              //_regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(DocumentationExplorerView).Name, navParam);
+                                          var navParam = new NavigationParameters();
+                                          bldDocumentsGroup doc_collection = null;
+                                          if (selected_object is bldDocument document) doc_collection = document.AttachedDocuments;
+                                          if (selected_object is NameableObservableCollection<bldDocument> collection && collection.Parent?.Id != selected_aggregation_doc.Id)
+                                              doc_collection = selected_object as bldDocumentsGroup;
+                                         if(doc_collection!=null && doc_collection.Where(d=>d.Id== selected_aggregation_doc.Id).FirstOrDefault()==null)
+                                           doc_collection.Add(selected_aggregation_doc);
+                                          //navParam.Add("bld_document", selected_catalog);
+                                          //_regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(DocumentationExplorerView).Name, navParam);
+                                      }
+
+                                  }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
+                                  "Выберете каталог для сохранения",
+                                     "Форма для выбора каталога для загзузки из базы данных."
+                                    , "Перечень каталогов");
+
+                        break;
+                    }
 
 
-                          }
+            }
 
-                      }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
-                      "Выберете каталог для сохранения",
-                         "Форма для выбора каталога для загзузки из базы данных."
-                        , "Перечень каталогов");
+          
         }
 
 
@@ -158,6 +192,7 @@ namespace PrismWorkApp.Modules.BuildingModule
                             DataItem atch_doc_item = new DataItem();
                             dataItem.Items.Add(atch_doc_item);
                             atch_doc_item.AttachedObject = doc;
+                         
                         }
                         break;
                     }

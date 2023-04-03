@@ -155,7 +155,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                      _buildingUnitsRepository.Complete();
                                  }
                              }
-                             _buildingUnitsRepository.AggregationDocumentsRepository.Add(current_catalog);
+                             _buildingUnitsRepository.AggregationDocumentsRepository.Add((bldAggregationDocument)current_catalog);
                          }
                          SaveDataToDBCommand.RaiseCanExecuteChanged();
                          _buildingUnitsRepository.Complete();

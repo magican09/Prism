@@ -13,7 +13,7 @@ using System.Runtime.CompilerServices;
 namespace PrismWorkApp.OpenWorkLib.Data
 {
 
-    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableOservableCollection<TEntity>, ICloneable 
+    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableOservableCollection<TEntity>, ICloneable, INotifyCollectionChanged
         where TEntity : IEntityObject
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -155,7 +155,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set
             {
                 status = value;
-                IsVisible = (status != JornalRecordType.REMOVED) ? true : false;
+               // IsVisible = (status != JornalRecordType.REMOVED) ? true : false;
             }
         }
         //    public ObservableCollection<IJornalable> ParentObjects { get; set; }
@@ -193,7 +193,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 foreach (IBindableBase added_element in e.NewItems)
                     added_element.Parent = Parent;
-                IsVisible = Count > 0;
+               // IsVisible = Count > 0;
             }
 
         }

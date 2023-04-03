@@ -64,15 +64,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> ContextMenuOpenedCommand { get; private set; }
         public NotifyCommand<object> MouseDoubleClickCommand { get; private set; }
 
-        protected IUnDoReDoSystem _unDoReDo;
-        public IUnDoReDoSystem UnDoReDo
-        {
-            get { return _unDoReDo; }
-            set { SetProperty(ref _unDoReDo, value); }
-        }
+      
         private readonly IEventAggregator _eventAggregator;
-        private readonly IRegionManager _regionManager;
-        private IDialogService _dialogService;
         private AppObjectsModel _appObjectsModel;
         public AppObjectsModel AppObjectsModel
         {
@@ -285,7 +278,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public virtual void OnSave()
         {
-            base.OnSave<bldDocumentsGroup>(SelectedDocumentsGroup);
+            base.OnSave("документации");
         }
         private void NavgationCoplete(NavigationResult obj)
         {

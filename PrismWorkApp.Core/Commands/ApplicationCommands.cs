@@ -3,6 +3,7 @@
     public interface IApplicationCommands
     {
         NotifyCompositeCommand SaveAllCommand { get; }
+        NotifyCompositeCommand SaveAllToDBCommand { get; }
         NotifyCompositeCommand UnDoCommand { get; }
         NotifyCompositeCommand ReDoCommand { get; }
         NotifyCompositeCommand CreateNewCommand { get; }
@@ -32,6 +33,13 @@
         {
             get { return _saveAllCommand; }
         }
+        private NotifyCompositeCommand _saveAllToDBCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand SaveAllToDBCommand
+        {
+            get { return _saveAllToDBCommand; }
+        }
+
+
         private NotifyCompositeCommand _unDoCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand UnDoCommand
         {

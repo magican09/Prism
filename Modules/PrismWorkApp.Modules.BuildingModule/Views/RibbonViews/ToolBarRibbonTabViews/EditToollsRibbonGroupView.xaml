@@ -1,11 +1,11 @@
-﻿<RibbonGroup x:Class="PrismWorkApp.Modules.BuildingModule.Views.RibbonViews.WorksManagerRibbonGroupView"
+﻿<RibbonGroup x:Class="PrismWorkApp.Modules.BuildingModule.Views.EditToollsRibbonGroupView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views.RibbonViews"
+             xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views"
              mc:Ignorable="d" 
-              Header="Работа">
+              Header="Редактировать">
     <StackPanel Orientation="Horizontal">
         <RibbonButton Label="Создать"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/wand.png"
                       Command="{Binding ApplicationCommands.CreateNewCommand}"/>

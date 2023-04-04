@@ -45,7 +45,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-        public bldDocumentsGroup Documentation { get; set; }
+        private bldDocumentsGroup _documentation;
+        public bldDocumentsGroup Documentation
+        {
+            get { return _documentation; }
+            set { SetProperty(ref _documentation, value); }
+        }
         private object _selectionObject;
         public object SelectionObject
         {
@@ -63,7 +68,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand<object> ContextMenuOpenedCommand { get; private set; }
         public NotifyCommand<object> MouseDoubleClickCommand { get; private set; }
-
       
         private readonly IEventAggregator _eventAggregator;
         private AppObjectsModel _appObjectsModel;
@@ -74,7 +78,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private IApplicationCommands _applicationCommands;
         public DocumentationExplorerViewModel(IEventAggregator eventAggregator,
-                            IRegionManager regionManager, IDialogService dialogService, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel)
+                            IRegionManager regionManager, IDialogService dialogService, IApplicationCommands applicationCommands,IAppObjectsModel appObjectsModel,IUnDoReDoSystem unDoReDoSystem)
         {
           
             AppObjectsModel = appObjectsModel as AppObjectsModel;
@@ -83,20 +87,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _dialogService = dialogService;
             _applicationCommands = applicationCommands;
 
-            UnDoReDo = new UnDoReDoSystem();
+            UnDoReDo = new UnDoReDoSystem(this,true);
             SaveCommand = new NotifyCommand(OnSave);
          
             UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
                                      () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            UnDoCommand.Name = "UnDoCommand";
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            ReDoCommand.Name="ReDoCommand";
             UnDoReDo.Register(AppObjectsModel.Documentation);
 
             Documentation = AppObjectsModel.Documentation;
 
-            DocumentationCommands = AppObjectsModel.DocumentsGroupCommands;
-          
-            
+          //  DocumentationCommands = AppObjectsModel.DocumentsGroupCommands;
             
             ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
             MouseDoubleClickCommand = new NotifyCommand<object>(OnMouseDoubleClick);
@@ -104,7 +108,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             Items = new DataItemCollection(null);
             DataItem root = new DataItem();
-            root.DataItemInit += AppObjectsModel.OnDataItemInit;
+            root.DataItemInit += OnDataItemInit;
             Items.Add(root);
             root.AttachedObject = Documentation;
            
@@ -121,6 +125,57 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
+        #region DataItems init
+      static private GetImageFrombldProjectObjectConvecter ObjecobjectTo_Url_Convectert = new GetImageFrombldProjectObjectConvecter();
+        /// <summary>
+        /// Шаблон построения дерева DataItems для TreeView в форме метода, который вызываеся каждый при инициализации или 
+        /// обновления DataItem или вызове IPropertyChanged, ICollectionChanged прикрепленных к DataItem объектов
+        /// </summary>
+        /// <param name="dataItem"></param>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnDataItemInit(DataItem dataItem, object sender, PropertyChangedEventArgs e)
+        {
+            switch (dataItem.AttachedObject.GetType().Name)
+            {
+
+                case (nameof(bldAggregationDocument)):
+                    {
+                        bldAggregationDocument document = ((bldAggregationDocument)dataItem.AttachedObject);
+                        dataItem.Text = document.Name;
+                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                        DataItem attachedDocs = new DataItem();
+                        dataItem.Items.Add(attachedDocs);
+                        attachedDocs.AttachedObject = document.AttachedDocuments;
+                        break;
+                    }
+                case (nameof(bldDocumentsGroup)):
+                case (nameof(bldAggregationDocumentsGroup)):
+                case (nameof(bldMaterialCertificatesGroup)):
+                    {
+                        bldDocumentsGroup documents = ((bldDocumentsGroup)dataItem.AttachedObject);
+                        dataItem.Text = documents.Name;
+                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                        foreach (bldDocument doc in documents)
+                        {
+                            DataItem atch_doc_item = new DataItem();
+                            dataItem.Items.Add(atch_doc_item);
+                            atch_doc_item.AttachedObject = doc;
+
+                        }
+                        break;
+                    }
+                case (nameof(bldMaterialCertificate)):
+                    {
+                        bldMaterialCertificate document = ((bldMaterialCertificate)dataItem.AttachedObject);
+                        dataItem.Text = document.MaterialName;
+                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                        break;
+                    }
+            }
+        }
+        #endregion
+        #region Mouse methods
         private void OnMouseDoubleClick(object d_clicked_object)
         {
             switch (d_clicked_object?.GetType().Name)
@@ -154,15 +209,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         contextMenu.ItemsSource = new NotifyMenuCommands()
                             {
                             AppObjectsModel.CreateNewAggregationDocumentCommand,
-                            AppObjectsModel.RemoveAggregationDocumentCommand,
-                        AppObjectsModel.LoadAggregationDocumentFromDBCommand};
+                             AppObjectsModel.LoadAggregationDocumentFromDBCommand};
                         break;
                     }
                 case (nameof(bldDocument)):
                 case (nameof(bldAggregationDocument)):
 
                     {
-                        contextMenu.ItemsSource = AppObjectsModel.DocumentsGroupCommands;
+                        contextMenu.ItemsSource = new NotifyMenuCommands()
+                            {
+                               AppObjectsModel.RemoveAggregationDocumentCommand
+                            };
                         break;
 
                     }
@@ -196,9 +253,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             }
             */
         }
+        #endregion
 
-        static private GetImageFrombldProjectObjectConvecter ObjecobjectTo_Url_Convectert = new GetImageFrombldProjectObjectConvecter();
 
+     
         private void OnGetMessage(EventMessage event_message)
         {
             //bldAggregationDocument bld_document = (bldAggregationDocument)event_message.Value;
@@ -275,6 +333,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
         }
+
 
         public virtual void OnSave()
         {

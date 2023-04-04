@@ -42,7 +42,7 @@ namespace PrismWorkApp.Core.Commands
 
             bool can_execute_val = true;
             bool _LastCommandCanExecuteVal = true;
-            bool _RegisteredCommandsCanExecuteVal = true;
+            bool _RegisteredCommandsCanExecuteVal = false;
             bool _TargetCanExecuteMethod_CanExecuteVal = true;
 
             foreach (ICommand command in RegisteredCommands)
@@ -54,13 +54,18 @@ namespace PrismWorkApp.Core.Commands
                         _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
                         if (_RegisteredCommandsCanExecuteVal == false) break;
                     }
+                    //else
+                    //{
+                    //    _RegisteredCommandsCanExecuteVal = false; break;
+                    //}
+                    
                 }
                 else
                 {
                     _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
                     if (_RegisteredCommandsCanExecuteVal == false) break;
                 }
-
+             //   can_execute_val = false;
             }
 
             if (_LastCommand != null)
@@ -74,6 +79,7 @@ namespace PrismWorkApp.Core.Commands
             {
                 _TargetCanExecuteMethod_CanExecuteVal = true;
             }
+           
             can_execute_val = (RegisteredCommands.Count > 0) & _RegisteredCommandsCanExecuteVal &&
                _LastCommandCanExecuteVal &&
                _TargetCanExecuteMethod_CanExecuteVal;
@@ -113,6 +119,7 @@ namespace PrismWorkApp.Core.Commands
         }
         private void OnIsActivateChaged(object sender, EventArgs e)
         {
+          
             RaiseCanExecuteChanged();
         }
         private void RaiseChildrenCanExecuteChanged(object sender, EventArgs e)

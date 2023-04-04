@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
@@ -23,7 +24,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void UnSetChildrenUnDoReDoSystem(IUnDoReDoSystem children_system);
         public IUnDoReDoSystem ParentUnDoReDo { get; set; }
         public ObservableCollection<IJornalable> _RegistedModels { get; set; }
-
+      
 
     }
 }

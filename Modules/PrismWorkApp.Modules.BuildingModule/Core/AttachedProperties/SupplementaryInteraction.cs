@@ -10,7 +10,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
     public class Behaviors : List<Behavior>
     {
     }
-
     public class Triggers : List<Microsoft.Xaml.Behaviors.TriggerBase>
     {
     }

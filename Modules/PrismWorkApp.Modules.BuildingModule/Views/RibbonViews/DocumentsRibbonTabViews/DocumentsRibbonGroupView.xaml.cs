@@ -12,14 +12,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PrismWorkApp.Modules.BuildingModule.Views.RibbonViews
+namespace PrismWorkApp.Modules.BuildingModule.Views
 {
     /// <summary>
-    /// Interaction logic for MaterialsToolBar.xaml
+    /// Interaction logic for DocumentsRibbonGroupView.xaml
     /// </summary>
-    public partial class MaterialsRibbonTabView : RibbonTab
+    public partial class DocumentsRibbonGroupView : RibbonGroup
     {
-        public MaterialsRibbonTabView()
+        public DocumentsRibbonGroupView()
         {
             InitializeComponent();
         }

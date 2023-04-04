@@ -1,13 +1,13 @@
 ﻿using System.Windows.Controls.Ribbon;
 
-namespace PrismWorkApp.Modules.BuildingModule.Views.RibbonViews
+namespace PrismWorkApp.Modules.BuildingModule.Views
 {
     /// <summary>
     /// Interaction logic for ToolBarRibbonGroupView.xaml
     /// </summary>
-    public partial class WorksManagerRibbonGroupView : RibbonGroup
+    public partial class EditToollsRibbonGroupView : RibbonGroup
     {
-        public WorksManagerRibbonGroupView()
+        public EditToollsRibbonGroupView()
         {
             InitializeComponent();
         }

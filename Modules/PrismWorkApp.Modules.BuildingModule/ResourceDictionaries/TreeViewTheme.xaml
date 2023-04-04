@@ -50,16 +50,16 @@
         <Setter Property="IsExpanded" Value="{Binding IsExpanded,Mode=TwoWay}"/>
         <!--<Setter Property="DefaultImageSrc" Value="{Binding ImageUrl}"/>-->
         <Setter Property="ContextMenu" Value="{StaticResource TreeViewItemContextMenu}"/>
-        <Setter Property="loc_core:MouseDoubleClick.Command" Value="{Binding DataContext.MouseDoubleClickCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"/>
-        <Setter Property="loc_core:MouseDoubleClick.CommandParameter" Value="{Binding  DataContext.AttachedObject, RelativeSource={RelativeSource Mode=Self}}"/>
+        <!--<Setter Property="loc_core:MouseDoubleClick.Command" Value="{Binding DataContext.MouseDoubleClickCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"/>
+        <Setter Property="loc_core:MouseDoubleClick.CommandParameter" Value="{Binding  DataContext.AttachedObject, RelativeSource={RelativeSource Mode=Self}}"/>-->
     </Style>
    
     <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}">
-        <StackPanel Orientation="Horizontal"  
-                    >
+        <StackPanel Orientation="Horizontal">
             <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
             <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding Text}" Margin="5 0 0 0" />
         </StackPanel>
+        
     </HierarchicalDataTemplate>
     
     <!--<DataTemplate x:Key="bldAggregationDocumentTreeViewItemTemplate" >
@@ -153,10 +153,10 @@
         </HierarchicalDataTemplate.Triggers>
     </HierarchicalDataTemplate>-->
    
-    <!--<DataTemplate x:Key="EditTreeViewTemplate">
+    <DataTemplate x:Key="EditTreeViewTemplate">
         <StackPanel Orientation="Horizontal">
             <Image Source="{Binding ImageUrl}"/>
             <TextBlock Text="{Binding Text,Mode=TwoWay}" Margin="5 0 0 0" />
         </StackPanel>
-    </DataTemplate>-->
+    </DataTemplate>
 </ResourceDictionary>

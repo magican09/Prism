@@ -653,7 +653,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             // bldExecutiveScheme removed_document = ((Tuple<object, object>)obj).Item1 as bldExecutiveScheme;
             bldWork scheme_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             bldExecutiveSchemesGroup All_ExecutiveSchemes = new bldExecutiveSchemesGroup(
-                 _buildingUnitsRepository.ExecutiveSchemes.GetAllAsync().Where(ech => !scheme_work.ExecutiveSchemes.Contains(ech)).ToList());
+                 _buildingUnitsRepository.DocumentsRepository.ExecutiveSchemes.GetAllAsync().Where(ech => !scheme_work.ExecutiveSchemes.Contains(ech)).ToList());
 
             NameablePredicate<bldExecutiveSchemesGroup, bldExecutiveScheme> predicate_1 = new NameablePredicate<bldExecutiveSchemesGroup, bldExecutiveScheme>();
             predicate_1.Name = "Показать все схемы";
@@ -711,7 +711,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             // bldLaboratoryReport removed_document = ((Tuple<object, object>)obj).Item1 as bldLaboratoryReport;
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             bldLaboratoryReportsGroup All_LaboratoryRecords = new bldLaboratoryReportsGroup(
-                 _buildingUnitsRepository.LaboratoryReports.GetAllAsync().Where(lr => !selected_work.LaboratoryReports.Contains(lr)).ToList());
+                 _buildingUnitsRepository.DocumentsRepository.LaboratoryReports.GetAllAsync().Where(lr => !selected_work.LaboratoryReports.Contains(lr)).ToList());
 
             NameablePredicate<bldLaboratoryReportsGroup, bldLaboratoryReport> predicate_1 = new NameablePredicate<bldLaboratoryReportsGroup, bldLaboratoryReport>();
             predicate_1.Name = "Показать все документы";

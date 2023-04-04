@@ -122,7 +122,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
 
-            UnDoReDo = new UnDoReDoSystem();
+            UnDoReDo = new UnDoReDoSystem(this,true);
             ApplicationCommands = applicationCommands;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
@@ -178,6 +178,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CommonContextMenuItems.Add(deleteItem);
 
             #endregion
+           
             ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
@@ -271,7 +272,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldMaterialCertificate selected_certificate = document as bldMaterialCertificate;
             if (selected_certificate.ImageFile == null)
-                selected_certificate = _buildingUnitsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
+                selected_certificate = _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
 
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
 
@@ -301,7 +302,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             if (!Directory.Exists(BD_FilesDir))
                 Directory.CreateDirectory(BD_FilesDir);
             if(selected_certificate.ImageFile==null)
-                selected_certificate = _buildingUnitsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
+                selected_certificate = _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
             string s = Path.Combine(BD_FilesDir, selected_certificate.ImageFile.FileName);
 
             using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
@@ -344,7 +345,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             //localUnDoReDoSystem.Register(SelectedDocumentsGroup);
             //    localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
-            
+
+            UnDoReDo.Register(SelectedAggregationDocument.AttachedDocuments);
             SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
             //   FilteredCommonPointersCollection.Add(new_certificate);
 

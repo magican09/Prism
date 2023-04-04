@@ -15,14 +15,9 @@ namespace PrismWorkApp.Services.Repositories
         public bldResponsibleEmployeeRoleRepository ResponsibleEmployeeRoleRepository { get; }
         public bldConstructionCompaniesRepository ConstructionCompanies { get; }
         public bldProjectUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
-        public bldProjectDocumentsRepository ProjectDocuments { get; }
-        public bldProjectMaterialsRepository Materials { get; }
-        public bldLaboratoryReportsRepository LaboratoryReports { get; }
-        public bldExecutiveSchemesRepository ExecutiveSchemes { get; }
-        public bldProjectMaterialCertificatesRepository MaterialCertificates { get; }
-        public PictureRepository PictureRepository { get; }
-        public bldAggregationDocumentsRepository    AggregationDocumentsRepository { get; }
-
+         public bldProjectMaterialsRepository Materials { get; }
+     public bldDocumentsRepository DocumentsRepository { get; }
+     
         private readonly bldProjectsPlutoContext _context;
 
         public BuildingUnitsRepository(IAppSettingsSystem settings)
@@ -39,12 +34,7 @@ namespace PrismWorkApp.Services.Repositories
             ResponsibleEmployeeRoleRepository = new bldResponsibleEmployeeRoleRepository(_context);
             UnitOfMeasurementRepository = new bldProjectUnitOfMeasuremenRepository(_context);
             Materials = new bldProjectMaterialsRepository(_context);
-            ProjectDocuments = new bldProjectDocumentsRepository(_context);
-            LaboratoryReports = new bldLaboratoryReportsRepository(_context);
-            ExecutiveSchemes = new bldExecutiveSchemesRepository(_context);
-            MaterialCertificates = new bldProjectMaterialCertificatesRepository(_context);
-            PictureRepository = new PictureRepository(_context);
-            AggregationDocumentsRepository = new bldAggregationDocumentsRepository(_context);
+            DocumentsRepository = new bldDocumentsRepository(_context);
         }
         public int Complete()
         {

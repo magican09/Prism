@@ -6,7 +6,7 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using System;
 
-namespace PrismWorkApp.Modules.BuildingModule.ViewModels.RibbonViewModels
+namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
     public class ToolBarRibbonTabViewModel : LocalBindableBase, IActiveAware
     {
@@ -25,7 +25,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels.RibbonViewModels
             _appSettings = appSettings;
             _dialogService = dialogService;
             OpenAppSetingsCommand = new NotifyCommand(OnOpenAppSetings);
-            _applicationCommands.OpenAppSettingsDialogCommand.RegisterCommand(OpenAppSetingsCommand);
+            ApplicationCommands.OpenAppSettingsDialogCommand.RegisterCommand(OpenAppSetingsCommand);
 
         }
 

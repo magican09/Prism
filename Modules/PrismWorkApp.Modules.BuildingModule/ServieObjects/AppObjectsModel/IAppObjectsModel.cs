@@ -6,6 +6,6 @@ namespace PrismWorkApp.Modules.BuildingModule
     public interface IAppObjectsModel
     {
         public bldDocumentsGroup Documentation { get; set; }
-        public void OnDataItemInit(DataItem dataItem, object sender, PropertyChangedEventArgs e);
+      
     }
 }

@@ -37,7 +37,7 @@ namespace PrismWorkApp.Core
         public static void RemoveElementFromCollectionWhithDialog<TContainer, T>
                (T element, string element_type_name,
             Action<IDialogResult> elm_erase_action, IDialogService dialogService, Guid current_context_id)
-           where TContainer : ICollection<T>
+           where TContainer : ICollection,IList
            where T : IEntityObject
         {
             var dialog_par = new DialogParameters();
@@ -97,6 +97,72 @@ namespace PrismWorkApp.Core
             });
 
         }
+       public static object GetContainObjectFromParentProperties(object paren_obj,object child_obj)
+        {
+            var prop_infoes = paren_obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+
+            foreach(PropertyInfo propertyInfo in prop_infoes)
+            {
+                var prop_val = propertyInfo.GetValue(paren_obj);
+                if (prop_val == child_obj) 
+                    return propertyInfo;
+                if (prop_val is IList coll_prop_val && coll_prop_val.Contains(child_obj))
+                    return coll_prop_val;
+            }
+            return null;
+        }
+       
+        /// <summary>
+        /// Функция удаления объекта из родительского из свойств(как типа объект и типа лист) родительского объекта 
+        /// </summary>
+        /// <param name="paren_obj">Родительский объект</param>
+        /// <param name="child_obj">Удаляемый из родительсого объекта объект</param>
+        /// <param name="element_type_name">Название типа удаляемого объекта</param>
+        /// <param name="element_name">Нимнование INameable</param>
+        /// <param name="dialogService">Интерфейс диалогового сервиса</param>
+        /// <param name="elm_erase_action">Лямда выражение вызывается после действий</param>
+        public static void RemoveFromParentObject(
+            object paren_obj,
+            object child_obj,
+            string element_type_name,
+            string element_name,
+           IDialogService dialogService,
+            Action<IDialogResult> elm_erase_action=null)
+        {
+            var dialog_par = new DialogParameters();
+            dialog_par.Add("massege",
+               $"Вы действительно хотите удалить {element_type_name} \"{element_type_name}\" ?!");
+            dialog_par.Add("confirm_button_content", "Удалить");
+            dialog_par.Add("refuse_button_content", "Отмена");
+            dialogService.Show(typeof(ConfirmActionWhithoutCancelDialog).Name, dialog_par, result =>
+            {
+                if (result.Result == ButtonResult.Yes)
+                {
+                    var contain_obj = CoreFunctions.GetContainObjectFromParentProperties(paren_obj, child_obj);
+                    if (contain_obj is IList contain_obj_coll)
+                    {
+                        contain_obj_coll.Remove(child_obj);
+                    }
+                    else if(contain_obj is PropertyInfo parent_prop_info)
+                    {
+                        parent_prop_info.SetValue(paren_obj,null);
+                    }
+                    var res_massage = result.Parameters.GetValue<string>("confirm_dialog_param");
+                    var p = new DialogParameters();
+                    p.Add("message", $"{element_type_name.ToUpper()} " +
+                        $"\"{element_name}\" удален!");
+                    elm_erase_action?.Invoke(new DialogResult(ButtonResult.Yes));
+                    dialogService.Show(typeof(MessageDialog).Name, p, (r) => { });
+                }
+                if (result.Result == ButtonResult.No)
+                {
+                    elm_erase_action?.Invoke(new DialogResult(ButtonResult.No));
+                }
+            });
+
+        }
+
+     
         #endregion
 
         #region Confirm actions  

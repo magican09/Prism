@@ -23,7 +23,6 @@ namespace PrismWorkApp.Services.Repositories
                 PlutoContext.AggregationDocuments
                 .Include(ad => ad.AttachedDocuments)
                 .Include(ad=>ad.ImageFile).ToList();
-
                  return all_arrg_documents;//out_val;
         }
         public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }

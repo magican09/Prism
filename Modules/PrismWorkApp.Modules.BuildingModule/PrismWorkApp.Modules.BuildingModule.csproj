@@ -55,6 +55,7 @@
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
+        <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\save_to_db.png" />
       </ItemGroup>
       <ItemGroup>
         <Page Remove="ResourceDictionaries\ProjectTreeViewDefaultTheme.xaml" />
@@ -128,6 +129,7 @@
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\save_as.png" />
+    <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\save_to_db.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -156,5 +158,8 @@
     <Page Update="Views\RibbonViews\ProjectManagerRibbonTabViews\ProjectManagerRibbonTabView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resourses\Images\Ribbon\DocumentsRibbonTab\" />
   </ItemGroup>
 </Project>

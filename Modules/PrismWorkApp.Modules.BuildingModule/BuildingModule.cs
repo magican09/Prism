@@ -9,9 +9,7 @@ using PrismWorkApp.Core.Console;
 using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
-using PrismWorkApp.Modules.BuildingModule.ViewModels.RibbonViewModels;
 using PrismWorkApp.Modules.BuildingModule.Views;
-using PrismWorkApp.Modules.BuildingModule.Views.RibbonViews;
 using PrismWorkApp.Services.Repositories;
 using System.Text;
 
@@ -75,16 +73,20 @@ namespace PrismWorkApp.Modules.BuildingModule
             var toolBarRibbonTab = new ToolBarRibbonTabView();
             var toolBarRibbonTabDataContext = new ToolBarRibbonTabViewModel(_dialogService,_applicationCommands,_appSettings);
             toolBarRibbonTab.DataContext = toolBarRibbonTabDataContext;
-            var toolBarRibbonGroup = new WorksManagerRibbonGroupView();
+            var toolBarRibbonGroup = new EditToollsRibbonGroupView();
             toolBarRibbonTab.Items.Add(toolBarRibbonGroup);//
             _regionManager.Regions[RegionNames.RibbonRegion].Add(toolBarRibbonTab);
 
-            var materialsRibbonTab = new MaterialsRibbonTabView();
-            materialsRibbonTab.DataContext = new MaterialsRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands, _appObjectsModel);
-            var materialsRibbonGroup = new MaterialsRibbonGroupView();
-            materialsRibbonTab.Items.Add(materialsRibbonGroup);
-            _regionManager.Regions[RegionNames.RibbonRegion].Add(materialsRibbonTab);
-
+            var documentsRibbonTab = new DocumentsRibbonTabView();
+            documentsRibbonTab.DataContext = new DocumentsRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands, _appObjectsModel);
+            //  var materialsRibbonGroup = new MaterialsRibbonGroupView();
+            // documentsRibbonTab.Items.Add(materialsRibbonGroup);
+            var documentsRibbonGroup = new DocumentsRibbonGroupView();
+            documentsRibbonTab.Items.Add(documentsRibbonGroup);
+            var materialCertificatesRibbonGroup = new MaterialCertificatesRibbonGroup();
+            documentsRibbonTab.Items.Add(materialCertificatesRibbonGroup);
+            _regionManager.Regions[RegionNames.RibbonRegion].Add(documentsRibbonTab);
+           
             var quickAccessTollBar = new QuickAccessToolBarView();
             quickAccessTollBar.Items.Add(new QuickAccessToolBar());
             quickAccessTollBar.DataContext = toolBarRibbonTabDataContext;

@@ -29,6 +29,7 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<EmployeePosition> EmployeePositions { get; set; }
         #endregion
         #region Documentation
+        public virtual DbSet<bldDocument> Documents { get; set; }
         public virtual DbSet<bldAOSRDocument> AOSRDocuments { get; set; }
         public virtual DbSet<bldExecutiveScheme> ExecutiveSchemes { get; set; }
         public virtual DbSet<bldLaboratoryReport> LaboratoryReports { get; set; }

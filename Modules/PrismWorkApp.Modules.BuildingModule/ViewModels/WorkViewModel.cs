@@ -288,7 +288,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnAddExecutiveSchemes()
         {
             bldExecutiveSchemesGroup All_Schemes = new bldExecutiveSchemesGroup("Все схемы");
-            foreach (bldExecutiveScheme scheme in _buildingUnitsRepository.ExecutiveSchemes.GetAllAsync().Where(el => !SelectedWork.ExecutiveSchemes.Contains(el)).ToList())
+            foreach (bldExecutiveScheme scheme in _buildingUnitsRepository.DocumentsRepository.ExecutiveSchemes.GetAllAsync().Where(el => !SelectedWork.ExecutiveSchemes.Contains(el)).ToList())
                 All_Schemes.Add(scheme);
 
             NameablePredicate<bldExecutiveSchemesGroup, bldExecutiveScheme> predicate_1 = new NameablePredicate<bldExecutiveSchemesGroup, bldExecutiveScheme>();
@@ -344,7 +344,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             if (SelectedWork == null) return;
             bldLaboratoryReportsGroup All_Materials = new bldLaboratoryReportsGroup("Все лабораторные заключения");
-            foreach (bldLaboratoryReport report in _buildingUnitsRepository.LaboratoryReports.GetAllAsync().Where(mt => !SelectedWork.LaboratoryReports.Contains(mt)).ToList())
+            foreach (bldLaboratoryReport report in _buildingUnitsRepository.DocumentsRepository.LaboratoryReports.GetAllAsync().Where(mt => !SelectedWork.LaboratoryReports.Contains(mt)).ToList())
                 All_Materials.Add(report);
 
             NameablePredicate<bldLaboratoryReportsGroup, bldLaboratoryReport> predicate_1 = new NameablePredicate<bldLaboratoryReportsGroup, bldLaboratoryReport>();

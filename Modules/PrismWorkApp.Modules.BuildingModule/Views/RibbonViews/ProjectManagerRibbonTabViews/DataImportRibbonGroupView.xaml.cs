@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls.Ribbon;
 
-namespace PrismWorkApp.Modules.BuildingModule.Views.RibbonViews
+namespace PrismWorkApp.Modules.BuildingModule.Views
 {
     /// <summary>
     /// Interaction logic for DataImportRibbonGroupView.xaml

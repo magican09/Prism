@@ -28,7 +28,7 @@ using System.Windows;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class MaterialsRibbonTabViewModel : LocalBindableBase, IActiveAware
+    public class DocumentsRibbonTabViewModel : LocalBindableBase, IActiveAware
     {
 
         public NotifyCommand LoadMaterialCertificatesFromAccessCommand { get; private set; }
@@ -53,7 +53,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private readonly IRegionManager _regionManager;
         private readonly IEventAggregator _eventAggregator;
         private AppObjectsModel _appObjectsModel;
-        public MaterialsRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
+        public DocumentsRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
                                            IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel)
 
         {
@@ -73,7 +73,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnLoadMaterialCertificatesFromDB()
         {
-            bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.AggregationDocumentsRepository.GetAllAsync().ToList());
+            bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
 
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
                       (All_AggregationDocuments, _dialogService, (result) =>
@@ -104,7 +104,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                  {
                      if (result.Result == ButtonResult.Yes)
                      {
-                         bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.AggregationDocumentsRepository.GetAll().ToList());
+                         bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAll().ToList());
                          var current_catalog = All_AggregationDocuments.Where(ct => ct.Id == TempCatalog.Id).FirstOrDefault();
                          if (current_catalog == null)
                          {
@@ -145,17 +145,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                              if (!current_catalog.AttachedDocuments.Where(mc => (mc.Id == certificate.Id && mc.Id != Guid.Empty) ||
                              (mc.Name == certificate.Name && mc.RegId == certificate.RegId && mc.Date == certificate.Date)).Any())
                                  current_catalog.AttachedDocuments.Add(certificate);
-                         if (!_buildingUnitsRepository.AggregationDocumentsRepository.Find(ad => ad.Id == current_catalog.Id).Any())
+                         if (!_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.Find(ad => ad.Id == current_catalog.Id).Any())
                          {
                              foreach(bldMaterialCertificate certificate in current_catalog.AttachedDocuments)
                              {
-                                 if(!_buildingUnitsRepository.MaterialCertificates.Find(mc=>mc.Id==certificate.Id).Any())
+                                 if(!_buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Find(mc=>mc.Id==certificate.Id).Any())
                                  {
-                                     _buildingUnitsRepository.MaterialCertificates.Add(certificate);
+                                     _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Add(certificate);
                                      _buildingUnitsRepository.Complete();
                                  }
                              }
-                             _buildingUnitsRepository.AggregationDocumentsRepository.Add((bldAggregationDocument)current_catalog);
+                             _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.Add((bldAggregationDocument)current_catalog);
                          }
                          SaveDataToDBCommand.RaiseCanExecuteChanged();
                          _buildingUnitsRepository.Complete();

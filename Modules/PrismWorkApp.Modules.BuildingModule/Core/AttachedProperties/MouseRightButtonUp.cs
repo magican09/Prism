@@ -8,9 +8,7 @@ using System.Windows.Input;
 namespace PrismWorkApp.Modules.BuildingModule.Core
 {
 
-
-
-    public  class MouseDoubleClick
+    public static class MouseRightButtonUp
     {
         public static DependencyProperty CommandProperty =
          DependencyProperty.RegisterAttached("Command",
@@ -45,16 +43,16 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             {
                 if ((e.NewValue != null) && (e.OldValue == null))
                 {
-                    control.MouseDoubleClick += OnMouseDoubleClick;
+                    control.MouseRightButtonUp += OnMouseRightButtonUp;
                 }
                 else if ((e.NewValue == null) && (e.OldValue != null))
                 {
-                    control.MouseDoubleClick -= OnMouseDoubleClick;
+                    control.MouseRightButtonUp -= OnMouseRightButtonUp;
                 }
             }
         }
 
-        private static void OnMouseDoubleClick(object sender, RoutedEventArgs e)
+        private static void OnMouseRightButtonUp(object sender, RoutedEventArgs e)
         {
             Control control = sender as Control;
             ICommand command = (ICommand)control.GetValue(CommandProperty);

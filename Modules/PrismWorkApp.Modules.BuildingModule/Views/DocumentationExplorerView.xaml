@@ -47,12 +47,18 @@
                              IsEditable="True"
                              telerik:StyleManager.Theme="VisualStudio2019"
                              ItemContainerStyle="{StaticResource TreeViewItemStyle}" 
+                             ItemEditTemplate="{StaticResource EditTreeViewTemplate}"
                              ItemsSource="{Binding Items}"
                              ItemTemplate="{StaticResource TreeViewItemTamplate}"
                              SelectedItem="{Binding   SelectionObject,Mode=TwoWay}"
-                             SelectionMode="Single"
+                             SelectionMode="Single" 
+                          
                              >
-            
+            <telerik:EventToCommandBehavior.EventBindings>
+                <telerik:EventBinding EventName="ItemDoubleClick"
+                                      Command="{Binding DataContext.MouseDoubleClickCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                      CommandParameter="{Binding SelectedValue.AttachedObject, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadTreeView}}}"/>
+            </telerik:EventToCommandBehavior.EventBindings>
          
            
         </telerik:RadTreeView>

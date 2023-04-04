@@ -136,8 +136,8 @@ namespace PrismWorkApp.Core.Commands
         public NotifyCommand ObservesPropertyChangedEvent(INotifyPropertyChanged obj)
         {
             obj.PropertyChanged += RaiseCanExecuteChanged;//Подписываемся на событие PropertyChanged
-            if (obj is IActiveAware activeAware_obj)
-                activeAware_obj.IsActiveChanged += OnIsActivateChaged;
+            //if (obj is IActiveAware activeAware_obj)
+            //    activeAware_obj.IsActiveChanged += OnIsActivateChaged;
             return this;
         }
 

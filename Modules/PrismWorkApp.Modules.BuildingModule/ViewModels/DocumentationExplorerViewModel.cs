@@ -87,7 +87,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _dialogService = dialogService;
             _applicationCommands = applicationCommands;
 
-            UnDoReDo = new UnDoReDoSystem(this,true);
+            UnDoReDo = new UnDoReDoSystem();
             SaveCommand = new NotifyCommand(OnSave);
          
             UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
@@ -96,12 +96,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             ReDoCommand.Name="ReDoCommand";
-            UnDoReDo.Register(AppObjectsModel.Documentation);
-
+        
             Documentation = AppObjectsModel.Documentation;
+            UnDoReDo.Register(Documentation);
 
-          //  DocumentationCommands = AppObjectsModel.DocumentsGroupCommands;
-            
+            //  DocumentationCommands = AppObjectsModel.DocumentsGroupCommands;
+
             ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
             MouseDoubleClickCommand = new NotifyCommand<object>(OnMouseDoubleClick);
             //_applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(_appObjectsModel.LoadDocumentCommand);
@@ -119,9 +119,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
              ThreadOption.PublisherThread, false,
              message => message.Recipient == "DocumentationExplorer");
 
-            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
-            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
-            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+            //_applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            //_applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            //_applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
 
         }
 

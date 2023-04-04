@@ -122,7 +122,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
 
-            UnDoReDo = new UnDoReDoSystem(this,true);
+            UnDoReDo = new UnDoReDoSystem();
             ApplicationCommands = applicationCommands;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;

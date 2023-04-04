@@ -156,11 +156,11 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 if (ParentUnDoReDo != null && ParentUnDoReDo._RegistedModels.Contains(obj)) //Если регистрируем объект, которые уже был зарегистирован в родительсокй системе
                     ParentUnDoReDo.UnRegister(obj);//то удаляем его из родительской системы
             }
-            var obj_props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length==0);
+           ///Регистрация свойтво которые являются коллекциями
+            var obj_props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
             foreach (PropertyInfo propertyInfo in obj_props_infoes)
             {
                 var prop_val = propertyInfo.GetValue(obj);
-
                 if (prop_val is INotifyCollectionChanged && prop_val is IJornalable jornable_prop)
                     if (!_RegistedModels.Contains(jornable_prop))
                         this.Register(jornable_prop);

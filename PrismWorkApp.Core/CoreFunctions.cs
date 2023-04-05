@@ -17,7 +17,43 @@ namespace PrismWorkApp.Core
     public static class CoreFunctions
     {
 
+        #region WPF Functions 
+        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            //get parent item
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
 
+            //we've reached the end of the tree
+            if (parentObject == null) return null;
+
+            //check if the parent matches the type we're looking for
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+            else
+                return FindParent<T>(parentObject);
+        }
+
+        public static T GetLogicalParent<T>(DependencyObject p_oElement)
+    where T : DependencyObject
+        {
+            DependencyObject oParent = p_oElement;
+            Type oTargetType = typeof(T);
+            do
+            {
+                oParent = LogicalTreeHelper.GetParent(oParent);
+            }
+            while (
+                !(
+                    oParent == null
+                    || oParent.GetType() == oTargetType
+                    || oParent.GetType().IsSubclassOf(oTargetType)
+                )
+            );
+
+            return oParent as T;
+        }
+        #endregion
         public static T GetChildOfType<T>(this DependencyObject depObj)
     where T : DependencyObject
         {

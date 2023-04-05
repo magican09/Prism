@@ -61,11 +61,9 @@ namespace PrismWorkApp.Modules.BuildingModule
         
             UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
                                    () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-            UnDoCommand.MonitorCommandActivity = false;
-            ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
+             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-            ReDoCommand.MonitorCommandActivity = false;
-
+         
             SaveDocumentationToDBCommand = new NotifyCommand(OnSaveDocumentationToDB);
             LoadAggregationDocumentFromDBCommand = new NotifyCommand<object>(OnLoadAggregationDocumentFromDB);
             LoadAggregationDocumentFromDBCommand.Name = "Загрузить ведомость документов из БД";
@@ -73,10 +71,14 @@ namespace PrismWorkApp.Modules.BuildingModule
             CreateNewAggregationDocumentCommand.Name = "Добавить новую ведомость документов";
             RemoveAggregationDocumentCommand = new NotifyCommand<object>(OnRemoveAggregationDocument);
             RemoveAggregationDocumentCommand.Name = "Удалить ведомость документов";
+         
+            UnDoCommand.MonitorCommandActivity = false;
+            ReDoCommand.MonitorCommandActivity = false;
+            SaveDocumentationToDBCommand.MonitorCommandActivity = false;
 
             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-
+            _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveDocumentationToDBCommand);
         }
         #region bldDocumentaation  services
       

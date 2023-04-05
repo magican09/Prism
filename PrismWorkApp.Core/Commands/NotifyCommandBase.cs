@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.Core.Commands
 {
-    public abstract class NotifyCommandBase : DelegateCommandBase
+    public abstract class NotifyCommandBase //: DelegateCommandBase
     {
        
 

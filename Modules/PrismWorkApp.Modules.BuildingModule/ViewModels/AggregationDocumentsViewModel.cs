@@ -135,12 +135,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CloseCommand = new NotifyCommand<object>(OnClose);
             UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
                                      () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            UnDoCommand.Name = "UnDoCommand";
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-
+            ReDoCommand.Name = "ReDoCommand";
             #region ContextMenu Commands
 
-            CreateNewCommand = new NotifyCommand(OnCreateNewMaterialCertificate);
+            CreateNewCommand = new NotifyCommand(OnCreateNewMaterialCertificate, ()=>SelectedAggregationDocument!=null).ObservesProperty(()=>SelectedAggregationDocument);
             CreateNewCommand.Name = "Создать новый документ";
             CreatedBasedOnCommand = new NotifyCommand<object>(OnCreatedBasedOn,
                                     (ob) => { return SelectedDocument != null; }).ObservesProperty(() => SelectedDocument);
@@ -187,7 +188,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
 
             AllUnitsOfMeasurements = new ObservableCollection<bldUnitOfMeasurement>(_buildingUnitsRepository.UnitOfMeasurementRepository.GetAllAsync());
-
 
         }
 
@@ -420,25 +420,26 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private bool CanSave()
         {
-            if (SelectedDocument != null)
-                return !SelectedDocument.HasErrors;// && SelectedWork.UnDoReDoSystem.Count > 0;
+            if (SelectedAggregationDocument != null)
+                return !SelectedAggregationDocument.HasErrors;// && SelectedWork.UnDoReDoSystem.Count > 0;
             else
                 return false;
         }
         public virtual void OnSave()
         {
-            base.OnSave<bldDocumentsGroup>(SelectedDocumentsGroup);
+            base.OnSave<bldDocumentsGroup>(AggregationDocuments);
         }
         public virtual void OnClose(object obj)
         {
-            base.OnClose<bldDocumentsGroup>(obj, SelectedDocumentsGroup);
+            base.OnClose<bldDocumentsGroup>(obj, AggregationDocuments);
         }
         public override void OnWindowClose()
         {
             ApplicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
-
+            ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewCommand);
+            ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -449,7 +450,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
                 bldAggregationDocument arg_document = (bldAggregationDocument)navigane_message.Object;
                 if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
+                {
+
                     AggregationDocuments.Add(arg_document);
+                }
                 AggregationDocuments.ErrorsChanged += RaiseCanExecuteChanged;
               //  Title = $"{AggregationDocuments.Code} {AggregationDocuments.Name}";
                 //SortedCommonPointersCollection = new NameableObservableCollection<bldDocument>(SelectedDocumentsGroup.Where(el => el != null).ToList());

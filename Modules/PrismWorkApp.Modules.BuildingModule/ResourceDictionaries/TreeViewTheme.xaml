@@ -18,9 +18,11 @@
     <Setter Property="Command" Value="{Binding }"/>
     <Setter Property="CommandParameter">
         <Setter.Value>
-            <!--<MultiBinding Converter="{StaticResource ObjectsToListMultiConverter}">-->
-                <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}" Path="DataContext.AttachedObject"/>
-            <!--</MultiBinding>-->
+           <MultiBinding Converter="{StaticResource ObjectsToListMultiConverter}">
+                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}" Path="DataContext.AttachedObject"/>
+                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}"/>
+                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadTreeView}"/>
+                </MultiBinding>
         </Setter.Value>
     </Setter>
     <Setter Property="CommandTarget" Value="{Binding RelativeSource={RelativeSource Mode=Self}}"/>
@@ -59,8 +61,14 @@
             <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
             <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding Text}" Margin="5 0 0 0" />
         </StackPanel>
-        
     </HierarchicalDataTemplate>
+
+    <DataTemplate x:Key="EditTreeViewTemplate">
+        <StackPanel Orientation="Horizontal">
+            <Image Source="{Binding ImageUrl}"/>
+            <TextBlock Text="{Binding Text,Mode=TwoWay}" Margin="5 0 0 0" />
+        </StackPanel>
+    </DataTemplate>
     
     <!--<DataTemplate x:Key="bldAggregationDocumentTreeViewItemTemplate" >
         <StackPanel Orientation="Horizontal">
@@ -153,10 +161,4 @@
         </HierarchicalDataTemplate.Triggers>
     </HierarchicalDataTemplate>-->
    
-    <DataTemplate x:Key="EditTreeViewTemplate">
-        <StackPanel Orientation="Horizontal">
-            <Image Source="{Binding ImageUrl}"/>
-            <TextBlock Text="{Binding Text,Mode=TwoWay}" Margin="5 0 0 0" />
-        </StackPanel>
-    </DataTemplate>
 </ResourceDictionary>

@@ -52,9 +52,8 @@ namespace PrismWorkApp.Core.Commands
             }
         }
 
-
         #region ICommand members
-        bool ICommand.CanExecute(object parameter)
+        bool _CanExecute(object parameter)
         {
             if (_TargetCanExecuteMethod != null)
             {
@@ -66,7 +65,7 @@ namespace PrismWorkApp.Core.Commands
             }
             return false;
         }
-        void ICommand.Execute(object parameter)
+        void _Execute(object parameter)
         {
             if (_TargetExecuteMetod != null)
                 _TargetExecuteMetod();
@@ -133,7 +132,11 @@ namespace PrismWorkApp.Core.Commands
             }
             return this;
         }
-
+        /// <summary>
+        ///Отслеживаем событие PropertyChanged свойства , если оно реализует INotifyPropertyChanged
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public NotifyCommand ObservesPropertyChangedEvent(INotifyPropertyChanged obj)
         {
             obj.PropertyChanged += RaiseCanExecuteChanged;//Подписываемся на событие PropertyChanged
@@ -162,19 +165,19 @@ namespace PrismWorkApp.Core.Commands
         {
             CanExecuteChanged(this, EventArgs.Empty);
         }
-        protected override void Execute(object parameter)
+        public  void Execute(object parameter)
         {
-            Execute(parameter);
+            _Execute(parameter);
         }
-        protected override bool CanExecute(object parameter)
+        public bool CanExecute(object parameter)
         {
-            return CanExecute(parameter);
+            return _CanExecute(parameter);
         }
 
 
     }
 
-    public class NotifyCommand<T> : NotifyCommandBase, ICommand, IActiveAware, INotifyCommand
+    public class NotifyCommand<T> : NotifyCommandBase,  ICommand, IActiveAware, INotifyCommand
     {
         public string Name { get; set; } = "Имя команды не определено!!!";
         public Uri ImageUri { get; set; }
@@ -214,7 +217,7 @@ namespace PrismWorkApp.Core.Commands
 
         #region ICommand members
 
-        bool ICommand.CanExecute(object parameter)
+        bool _CanExecute(object parameter)
         {
             if (_TargetCanExecuteMethod != null)
             {
@@ -228,7 +231,7 @@ namespace PrismWorkApp.Core.Commands
             return false;
         }
 
-        void ICommand.Execute(object parameter)
+        void _Execute(object parameter)
         {
             if (_TargetExecuteMetod != null)
                 _TargetExecuteMetod((T)parameter);
@@ -305,13 +308,13 @@ namespace PrismWorkApp.Core.Commands
         {
             CanExecuteChanged(this, EventArgs.Empty);
         }
-        protected override void Execute(object parameter)
+         public  void Execute(object parameter)
         {
-            Execute(parameter);
+            this._Execute(parameter);
         }
-        protected override bool CanExecute(object parameter)
+        public  bool CanExecute(object parameter)
         {
-            return CanExecute(parameter);
+            return _CanExecute(parameter);
         }
     }
 }

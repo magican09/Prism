@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Windows.Input;
 
 namespace PrismWorkApp.Core.Commands
@@ -16,7 +17,7 @@ namespace PrismWorkApp.Core.Commands
         private bool _monitorCommandActivity;
 
         //    private ObservableCollection<ICommand> _registeredCommands = new ObservableCollection<ICommand>();
-        public ObservableCollection<ICommand> RegisteredCommands { get; set; } = new ObservableCollection<ICommand>();
+        public ObservableCollection<INotifyCommand> RegisteredCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         private ICommand _LastCommand { get; set; }
         public NotifyCompositeCommand()
         {
@@ -54,7 +55,8 @@ namespace PrismWorkApp.Core.Commands
                         _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
                         if (_RegisteredCommandsCanExecuteVal == false) break;
                     }
-                   else if(!notify_command.MonitorCommandActivity)
+                   else if(!notify_command.MonitorCommandActivity && 
+                        RegisteredCommands.Where(cmd=>cmd.MonitorCommandActivity==true).FirstOrDefault()==null)
                     {
                         _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
                         if (_RegisteredCommandsCanExecuteVal == false) break;
@@ -110,7 +112,7 @@ namespace PrismWorkApp.Core.Commands
 
 
         #endregion
-        public virtual void RegisterCommand(ICommand command)
+        public virtual void RegisterCommand(INotifyCommand command)
         {
             RegisteredCommands.Add(command);
             command.CanExecuteChanged += RaiseChildrenCanExecuteChanged;
@@ -129,7 +131,7 @@ namespace PrismWorkApp.Core.Commands
         {
             RaiseCanExecuteChanged();
         }
-        public virtual void UnregisterCommand(ICommand command)
+        public virtual void UnregisterCommand(INotifyCommand command)
         {
             RegisteredCommands.Remove(command);
             command.CanExecuteChanged -= RaiseChildrenCanExecuteChanged;

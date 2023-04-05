@@ -20,6 +20,8 @@ using System.Windows.Controls;
 using Telerik.Windows.Controls;
 using System.Collections;
 using PrismWorkApp.OpenWorkLib.Data.Service;
+using System.Windows;
+using System.Windows.Media;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -68,6 +70,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand<object> ContextMenuOpenedCommand { get; private set; }
         public NotifyCommand<object> MouseDoubleClickCommand { get; private set; }
+        public NotifyCommand<object> EditInTreeViewItemCommand { get; private set; }
+        public NotifyCommand<object> LoadAggregationDocumentFromDBCommand { get; set; }
+        public NotifyCommand<object> CreateNewAggregationDocumentCommand { get; set; }
+        public NotifyCommand<object> RemoveAggregationDocumentCommand { get; private set; }
 
         private readonly IEventAggregator _eventAggregator;
         private AppObjectsModel _appObjectsModel;
@@ -104,6 +110,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
             MouseDoubleClickCommand = new NotifyCommand<object>(OnMouseDoubleClick);
+            EditInTreeViewItemCommand = new NotifyCommand<object>(OnEditInTreeViewItem);
+            EditInTreeViewItemCommand.Name = "Редактировать";
+
+            LoadAggregationDocumentFromDBCommand = new NotifyCommand<object>(OnLoadAggregationDocumentFromDB);
+            LoadAggregationDocumentFromDBCommand.Name = "Загрузить ведомость документов из БД";
+            CreateNewAggregationDocumentCommand = new NotifyCommand<object>(OnCreateNewAggregationDocument);
+            CreateNewAggregationDocumentCommand.Name = "Добавить новую ведомость документов";
+            RemoveAggregationDocumentCommand = new NotifyCommand<object>(OnRemoveAggregationDocument);
+            RemoveAggregationDocumentCommand.Name = "Удалить ведомость документов";
+
             //_applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(_appObjectsModel.LoadDocumentCommand);
 
             Items = new DataItemCollection(null);
@@ -122,6 +138,51 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //_applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             //_applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             //_applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+
+        }
+
+        private void OnRemoveAggregationDocument(object obj)
+        {
+            object selected_object = null;
+            if (obj is IList list) selected_object = list[0]; else selected_object = obj;
+            var command = AppObjectsModel.RemoveAggregationDocumentCommand;
+            if (command.CanExecute(selected_object))
+                command.Execute(selected_object);
+        }
+
+        private void OnCreateNewAggregationDocument(object obj)
+        {
+            object selected_object = null;
+            if (obj is IList list) selected_object = list[0]; else selected_object = obj;
+            var command = AppObjectsModel.CreateNewAggregationDocumentCommand;
+            if (command.CanExecute(selected_object))
+                command.Execute(selected_object);
+        }
+
+        private void OnLoadAggregationDocumentFromDB(object obj)
+        {
+           object selected_object = null;
+            if (obj is IList list) selected_object = list[0]; else selected_object = obj;
+          var command =  AppObjectsModel.LoadAggregationDocumentFromDBCommand;
+            if (command.CanExecute(selected_object))
+                command.Execute(selected_object);
+        }
+
+        private void OnEditInTreeViewItem(object obj)
+        {
+            object selected_object = null;
+            if (obj is IList list) { 
+                selected_object = list[1];
+               // RadTreeView treeView  = selected_object as RadTreeView;
+                ContextMenu contextMenu = selected_object as ContextMenu;
+                var  parent_ = LogicalTreeHelper.GetParent((DependencyObject)contextMenu);
+                var parent =  CoreFunctions.FindParent<RadTreeViewItem >((DependencyObject)contextMenu);
+                RadTreeViewItem selected_treeViewItem = (RadTreeViewItem)parent;
+                RadTreeView treeView = list[2] as RadTreeView;
+               
+                //selected_treeViewItem?.IsInEditMode = true;
+            }
+            else return;
 
         }
 
@@ -201,30 +262,33 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             DataItem clicked_dataItem = ((IList)obj)[1] as DataItem;
             ContextMenu contextMenu = ((IList)obj)[0] as ContextMenu;
+            NotifyMenuCommands context_menu_item_commands = null ;
             switch (clicked_dataItem.AttachedObject.GetType().Name)
             {
                 case (nameof(bldDocumentsGroup)):
                 case (nameof(bldAggregationDocumentsGroup)):
                 case (nameof(bldMaterialCertificatesGroup)):
                     {
-                        contextMenu.ItemsSource = new NotifyMenuCommands()
+                        context_menu_item_commands = new NotifyMenuCommands()
                             {
-                            AppObjectsModel.CreateNewAggregationDocumentCommand,
-                             AppObjectsModel.LoadAggregationDocumentFromDBCommand};
+                             CreateNewAggregationDocumentCommand,
+                             LoadAggregationDocumentFromDBCommand};
                         break;
                     }
                 case (nameof(bldDocument)):
                 case (nameof(bldAggregationDocument)):
 
                     {
-                        contextMenu.ItemsSource = new NotifyMenuCommands()
+                        context_menu_item_commands = new NotifyMenuCommands()
                             {
-                               AppObjectsModel.RemoveAggregationDocumentCommand
+                               RemoveAggregationDocumentCommand
                             };
                         break;
 
                     }
             }
+            context_menu_item_commands.Add(EditInTreeViewItemCommand);
+            contextMenu.ItemsSource = context_menu_item_commands;
             /*RadContextMenu contextMenu = obj as RadContextMenu;
             RadTreeViewItem clicked_item = contextMenu.GetClickedElement<RadTreeViewItem>();
             //GridViewRow clicked_row = contextMenu.GetClickedElement<GridViewRow>();

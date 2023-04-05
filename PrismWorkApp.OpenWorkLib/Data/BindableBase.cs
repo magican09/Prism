@@ -13,9 +13,8 @@ using System.Runtime.CompilerServices;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public abstract class BindableBase : IBindableBase, IEntityObject, ICloneable
+    public abstract class BindableBase : IBindableBase
     {
-
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated = delegate { };
@@ -57,6 +56,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _name; }
             set { SetProperty(ref _name, value); }
         }
+        #region NotyfyPropertyChaged
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
@@ -79,7 +79,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 ValidateProperty(propertyName, val);
             return BaseSetProperty<T>(ref member, val, propertyName);
         }
-
+        #endregion
         #region Validating
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
         private Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
@@ -115,35 +115,23 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #endregion
 
-        #region Changes Jornaling
+        #region IJornaling
+        //public void SaveChanges()
+        //{
+ 
+        //}
+
+
+        private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
+        [NotMapped]
+        public ObservableCollection<IUnDoRedoCommand> ChangesJornal
+        {
+            get { return _changesJornal; }
+            set { SetProperty(ref _changesJornal, value); }
+        }
 
         private bool b_jornal_recording_flag = true;
-        private bool visible = true;
-        //private Guid _currentContextId;
-        //[NotMapped]
-        //public Guid CurrentContextId
-        //{
-        //    get { return _currentContextId; }
-        //    set
-        //    {
-        //        b_jornal_recording_flag = false;
-        //        SetProperty(ref _currentContextId, value);
-        //        b_jornal_recording_flag = true;
-        //    }
-        //}
-        //[NotMapped]
-        //public bool IsVisible
-        //{
-        //    get { return visible; }
-        //    set
-        //    {
-        //        b_jornal_recording_flag = false;
-        //        SetProperty(ref visible, value);
-        //        b_jornal_recording_flag = true;
-        //    }
-        //}
-
-        public void JornalingOff()
+         public void JornalingOff()
         {
             if (b_jornal_recording_flag == true)
                 b_jornal_recording_flag = false;
@@ -154,38 +142,35 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 b_jornal_recording_flag = true;
         }
         #endregion
+
         public BindableBase()
         {
         }
 
         [NotMapped]
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе (например копирования рефлексией) с данныv объектом по умолчанию 
-        [NotMapped]
-        public bool CopingEnable { get; set; } = true;
 
-        public Guid? ParentId { get;set;}
-        private BindableBase? _parent;
+        #region  IHierarchical
+        public ObservableCollection<IEntityObject> _parents = new ObservableCollection<IEntityObject>();
         [NotMapped]
         [NavigateProperty]
-        public BindableBase? Parent
+        public ObservableCollection<IEntityObject> Parents
         {
-            get { return _parent; }
+            get { return _parents; }
             set
             {
-                SetProperty(ref _parent, value);
-             ///   if (_parent != null && !_parent.Children.Contains(_parent)) _parent.Children.Add(this);
-                //foreach (IBindableBase elm in Children)
-                //    if(!Children.Contains(_parent)) elm.Parent = _parent;
+                SetProperty(ref _parents, value);
             }
         }
-        private ObservableCollection<BindableBase> _children = new ObservableCollection<BindableBase>();
+        private ObservableCollection<IEntityObject> _children = new ObservableCollection<IEntityObject>();
         [NotMapped]
         [NavigateProperty]
-        public ObservableCollection<BindableBase> Children
+        public ObservableCollection<IEntityObject> Children
         {
             get { return _children; }
             set { _children = value; }
         }
+        #endregion
 
         public virtual object Clone()
         {
@@ -296,8 +281,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         //    }
         //    return new_object;
         //}
-       // public Guid? CategoryId { get; set; }
-      //  public EntityCategory? Category { get; set; }
+        // public Guid? CategoryId { get; set; }
+        //  public EntityCategory? Category { get; set; }
     }
 
 

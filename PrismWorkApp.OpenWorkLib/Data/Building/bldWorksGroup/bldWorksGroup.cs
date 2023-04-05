@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldWorksGroup : NameableObservableCollection<bldWork>, IbldWorksGroup, IEntityObject
+    public class bldWorksGroup : NameableObservableCollection<bldWork>, IbldWorksGroup
     {
 
         private bool _isDone;

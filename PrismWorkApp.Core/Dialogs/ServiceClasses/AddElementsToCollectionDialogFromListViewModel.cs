@@ -430,7 +430,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 SelectedPredicate.CollectionSelectPredicate = (col) =>
                {
                    ObservableCollection<NameableObjectPointer> out_coll = new ObservableCollection<NameableObjectPointer>();
-                   foreach (IEntityObject elm in col)
+                   foreach (IBindableBase elm in col)
                    {
                        NameableObjectPointer objectPointer = new NameableObjectPointer();
                        objectPointer.Name = elm.Name;

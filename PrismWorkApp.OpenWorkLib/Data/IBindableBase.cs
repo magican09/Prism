@@ -4,8 +4,8 @@ using System.ComponentModel;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IBindableBase : INameable, IJornalable, IKeyable, ICodeable, IValidateable, IHierarchical, INotifyPropertyChanged
+    public interface IBindableBase : IEntityObject,INotifyPropertyChanged,ICloneable,ICodeable
     {
-        public Func<IEntityObject, bool> RestrictionPredicate { get; set; }
+ 
     }
 }

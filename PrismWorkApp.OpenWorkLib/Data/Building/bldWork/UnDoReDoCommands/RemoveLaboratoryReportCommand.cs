@@ -3,7 +3,7 @@ using System;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class RemoveLaboratoryReportCommand : IUnDoRedoCommand
+    public class RemoveLaboratoryReportCommand : UnDoRedoCommandBase, IUnDoRedoCommand
     {
         private bldWork _CurrentWork;
         private bldLaboratoryReport _RemovedReport;

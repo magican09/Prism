@@ -1,12 +1,15 @@
-﻿namespace PrismWorkApp.OpenWorkLib.Data.Service
+﻿using System.Collections.ObjectModel;
+
+namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public interface IJornalable : IKeyable//, ICuntextIdable
+    public interface IJornalable : IKeyable
     {
         public void JornalingOff();
         public void JornalingOn();
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged;
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
-
+        public ObservableCollection<IUnDoRedoCommand> ChangesJornal { get; set; }
+      //  public void SaveChanges();
     }
     public enum AdjustStatus
     {

@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public class PropertySetCommand : IUnDoRedoCommand
+    public class PropertySetCommand : UnDoRedoCommandBase, IUnDoRedoCommand
     {
         public string Name { get; set; }
-        private IJornalable _ModelObject { get; set; }
+        private  IJornalable _ModelObject { get; set; }
+        public ObservableCollection<IJornalable> ChangedObjects { get; set; } = new ObservableCollection<IJornalable>();
         private object _Value;
         private object _LastValue;
         private object _Buffer;

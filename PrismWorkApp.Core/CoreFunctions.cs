@@ -161,8 +161,8 @@ namespace PrismWorkApp.Core
             });
 
         }
+       
 
-     
         #endregion
 
         #region Confirm actions  
@@ -333,7 +333,7 @@ namespace PrismWorkApp.Core
                 string currentCollectionName = "",
                 string commonCollectionName = ""
                 )
-            where TContainer : ICollection<T>, INameableOservableCollection<T>, new()
+            where TContainer : ICollection<T>,  new()
             where T : INameable
         {
             TContainer current_collection = new TContainer();
@@ -469,6 +469,24 @@ namespace PrismWorkApp.Core
                string collectionName = "")
            where TContainer : ICollection
            where T :  new()
+        {
+
+            var dialog_par = new DialogParameters();
+            dialog_par.Add("title", title);
+            dialog_par.Add("message", message);
+            dialog_par.Add("current_collection", collection);
+            dialog_par.Add("current_collection_name", collectionName);
+            dialog_par.Add("confirm_button_content", "Добавить");
+            dialog_par.Add("refuse_button_content", "Закрыть");
+            dialogService.ShowDialog(dialogViewName, dialog_par, action);
+
+        }
+        public static void GetElementFromCollectionWhithDialog(IList collection,IEntityObject obj,
+               IDialogService dialogService, Action<IDialogResult> action,
+               string dialogViewName,
+               string title = "",
+               string message = "",
+               string collectionName = "")
         {
 
             var dialog_par = new DialogParameters();

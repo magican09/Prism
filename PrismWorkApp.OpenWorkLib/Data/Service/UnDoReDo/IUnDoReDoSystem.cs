@@ -9,7 +9,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
     {
         event PropertyChangedEventHandler PropertyChanged;
         public Guid Id { get; set; }
-        bool AllUnDoIsDone();
+        bool IsAllUnDoIsDone();
         public bool IsSatcksEmpty();
         bool CanReDoExecute();
         bool CanUnDoExecute();
@@ -24,6 +24,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void UnSetChildrenUnDoReDoSystem(IUnDoReDoSystem children_system);
         public IUnDoReDoSystem ParentUnDoReDo { get; set; }
         public ObservableCollection<IJornalable> _RegistedModels { get; set; }
+        public void SaveAll();
       
 
     }

@@ -1,7 +1,9 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -30,6 +32,23 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #endregion
 
         #region IJornalable
+        private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
+        [NotMapped]
+        public ObservableCollection<IUnDoRedoCommand> ChangesJornal
+        {
+            get { return _changesJornal; }
+            set { SetProperty(ref _changesJornal, value); }
+        }
+        public void JornalingOff()
+        {
+            if (b_jornal_recording_flag == true)
+                b_jornal_recording_flag = false;
+        }
+        public void JornalingOn()
+        {
+            if (b_jornal_recording_flag == false)
+                b_jornal_recording_flag = true;
+        }
         private bool b_jornal_recording_flag = true;
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
@@ -47,16 +66,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             UnDoReDoCommandCreated.Invoke(this, new UnDoReDoCommandCreateEventsArgs(command));
         }
-        public void JornalingOff()
-        {
-            if (b_jornal_recording_flag == true)
-                b_jornal_recording_flag = false;
-        }
-        public void JornalingOn()
-        {
-            if (b_jornal_recording_flag == false)
-                b_jornal_recording_flag = true;
-        }
+     
         #endregion
     }
 }

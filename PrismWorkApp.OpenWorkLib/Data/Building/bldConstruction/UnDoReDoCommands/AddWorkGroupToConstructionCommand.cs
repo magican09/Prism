@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class AddWorkGroupToConstructionCommand : IUnDoRedoCommand
+    public class AddWorkGroupToConstructionCommand : UnDoRedoCommandBase, IUnDoRedoCommand
     {
         private ObservableCollection<bldWork> _AddedWorks = new ObservableCollection<bldWork>();
         private ObservableCollection<Tuple<bldWork, bldWork>> _Works_PreviousWork_Collection = new ObservableCollection<Tuple<bldWork, bldWork>>();

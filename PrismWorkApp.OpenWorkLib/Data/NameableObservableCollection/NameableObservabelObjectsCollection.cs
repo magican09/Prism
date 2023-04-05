@@ -8,11 +8,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
 
         }
-        public NameableObservabelObjectsCollection(ICollection<IEntityObject> collection) : base(collection)
+        public NameableObservabelObjectsCollection(ICollection<BindableBase> collection) : base(collection)
         {
 
         }
-        public NameableObservabelObjectsCollection(IEnumerable<IEntityObject> entities) : base(entities)
+        public NameableObservabelObjectsCollection(IEnumerable<BindableBase> entities) : base(entities)
         {
 
         }

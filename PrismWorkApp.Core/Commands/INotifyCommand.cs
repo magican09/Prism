@@ -8,5 +8,6 @@ namespace PrismWorkApp.Core.Commands
     {
         string Name { get; set; }
         Uri ImageUri { get; set; }
+        bool MonitorCommandActivity { get; set; }
     }
 }

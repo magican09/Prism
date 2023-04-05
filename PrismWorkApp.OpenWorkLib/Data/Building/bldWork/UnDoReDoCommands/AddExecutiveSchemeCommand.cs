@@ -3,7 +3,7 @@ using System;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class AddExecutiveSchemeCommand : IUnDoRedoCommand
+    public class AddExecutiveSchemeCommand : UnDoRedoCommandBase, IUnDoRedoCommand
     {
         private bldWork _CurrentWork;
         private bldExecutiveScheme _AddedScheme;

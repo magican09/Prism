@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class RemoveWorkCommand : IUnDoRedoCommand
+    public class RemoveWorkCommand : UnDoRedoCommandBase, IUnDoRedoCommand
     {
         private bldWork _removedWork;
         private bldConstruction _contruction;

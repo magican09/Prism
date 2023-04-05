@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public class UnDoReDoCommand<TEntity> : IUnDoRedoCommand
+    public class UnDoReDoCommand<TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand
     {
         //  public UnDoReDoSystem UnDoReDoSystem;
         private Action<TEntity> _ExecuteAction;

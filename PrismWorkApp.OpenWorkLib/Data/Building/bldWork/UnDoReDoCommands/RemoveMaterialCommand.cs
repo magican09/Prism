@@ -3,7 +3,7 @@ using System;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class RemoveMaterialCommand : IUnDoRedoCommand
+    public class RemoveMaterialCommand : UnDoRedoCommandBase, IUnDoRedoCommand
     {
         private bldWork _CurrentWork;
         private bldMaterial _RemovedMaterial;

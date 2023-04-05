@@ -6,6 +6,7 @@ using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Console;
+using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
@@ -224,7 +225,9 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<AddConstructionCompaniesToCollectionFromListDialogView, AddConstructionCompaniesToCollectionFromListDialogViewModel>();
             containerRegistry.RegisterDialog<SelectAggregationDocumentFromCollectionDialogView, SelectAggregationDocumentFromCollectionDialogViewModel>();
 
-            containerRegistry.RegisterSingleton<IAppObjectsModel,AppObjectsModel>();
+            containerRegistry.RegisterDialog<GetObjectFromCollectionDialogVeiw, GetObjectFromCollectionDialogVeiwModel>();
+          
+         //   containerRegistry.RegisterSingleton<IAppObjectsModel,AppObjectsModel>();
             //  containerRegistry.RegisterForNavigation<ToolBarRibbonTabView, ToolBarRibbonTabViewModel>();
             //   containerRegistry.RegisterDialog<ConfirmCreateDialogViewModel, ConfirmCreateDialogViewModel>();
 

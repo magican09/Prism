@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldResourseCategoriesGroup : NameableObservableCollection<bldResourseCategory>, INotifyPropertyChanged, IEntityObject
+    public class bldResourseCategoriesGroup : NameableObservableCollection<bldResourseCategory>
     {
 
         public bldResourseCategoriesGroup()

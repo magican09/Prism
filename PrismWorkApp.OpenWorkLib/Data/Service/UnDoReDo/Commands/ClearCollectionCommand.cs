@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
 
-    public class ClearCollectionCommand<TCollection, TEntity> : IUnDoRedoCommand
+    public class ClearCollectionCommand<TCollection, TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand
         where TCollection : IList, IEnumerable
     {
         private TCollection _Collection;

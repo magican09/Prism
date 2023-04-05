@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldMaterialsGroup : NameableObservableCollection<bldMaterial>, IbldMaterialsGroup, INotifyPropertyChanged, IEntityObject
+    public class bldMaterialsGroup : NameableObservableCollection<bldMaterial>, IbldMaterialsGroup 
     {
 
         public bldMaterialsGroup()

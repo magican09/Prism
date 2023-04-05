@@ -211,8 +211,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public bldWork()
         {
-            PreviousWorks.CopingEnable = false; //отключаем при копировании
-            NextWorks.CopingEnable = false; //отключаем при копировании 
+            //PreviousWorks.CopingEnable = false; //отключаем при копировании
+            //NextWorks.CopingEnable = false; //отключаем при копировании 
 
             ExecutiveSchemes.CollectionChanged += OnAddExecutiveScheme;
             LaboratoryReports.CollectionChanged += OnAddLaboratoryReport;

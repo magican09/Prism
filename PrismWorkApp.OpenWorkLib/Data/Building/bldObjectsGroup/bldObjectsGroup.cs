@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldObjectsGroup : NameableObservableCollection<bldObject>, IEntityObject, IbldObjectsGroup
+    public class bldObjectsGroup : NameableObservableCollection<bldObject>,IbldObjectsGroup
     {
 
         public bldObjectsGroup() : base()

@@ -49,15 +49,16 @@ namespace PrismWorkApp.Core.Commands
             {
                 if (command is INotifyCommand notify_command && _monitorCommandActivity)
                 {
-                    if (notify_command.IsActive)
+                    if (notify_command.MonitorCommandActivity && notify_command.IsActive)
                     {
                         _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
                         if (_RegisteredCommandsCanExecuteVal == false) break;
                     }
-                    //else
-                    //{
-                    //    _RegisteredCommandsCanExecuteVal = false; break;
-                    //}
+                   else if(!notify_command.MonitorCommandActivity)
+                    {
+                        _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
+                        if (_RegisteredCommandsCanExecuteVal == false) break;
+                    }
                     
                 }
                 else
@@ -93,7 +94,9 @@ namespace PrismWorkApp.Core.Commands
             {
                 if (command is INotifyCommand notify_command && _monitorCommandActivity)
                 {
-                    if (_monitorCommandActivity && notify_command.IsActive)
+                    if (notify_command.IsActive)
+                        notify_command.Execute(parameter);
+                    else if(!notify_command.MonitorCommandActivity)
                         notify_command.Execute(parameter);
                 }
                 else

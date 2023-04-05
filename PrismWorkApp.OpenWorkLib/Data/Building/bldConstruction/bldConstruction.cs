@@ -165,7 +165,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bldConstruction()
         {
             // Works.ParentObject = this;
-            Works.Parent = this;
+            Works.Parents.Add(this);
 
         }
         public bldConstruction(string name, string short_name)

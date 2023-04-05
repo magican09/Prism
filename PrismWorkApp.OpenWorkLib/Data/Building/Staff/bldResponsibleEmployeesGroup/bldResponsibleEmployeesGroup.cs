@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldResponsibleEmployeesGroup : NameableObservableCollection<bldResponsibleEmployee>, IbldResponsibleEmployeesGroup, IEntityObject
+    public class bldResponsibleEmployeesGroup : NameableObservableCollection<bldResponsibleEmployee>, IbldResponsibleEmployeesGroup
     {
 
         public bldResponsibleEmployeesGroup()

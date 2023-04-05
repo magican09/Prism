@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class AddItemCommand<TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand where TEntity: IEntityObject
+    public class InsertItemCommand<TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand where TEntity: IEntityObject
     {
         private NameableObservableCollection<TEntity> _Collection;
         private TEntity _Item;
@@ -31,13 +31,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void UnExecute()
         {
             _Collection.JornalingOff();
-            _Item.Parents.Remove(_Collection.Owner);
+            _Item.Parents.Remove(_Collection.Owner); 
             _Collection.Remove(_Item);
             ChangedObjects.Remove(_Item);
             ChangedObjects.Remove(_Collection);
             _Collection.JornalingOn();
         }
-        public AddItemCommand(TEntity  item, NameableObservableCollection<TEntity> collection)
+        public InsertItemCommand(int index,TEntity  item, NameableObservableCollection<TEntity> collection)
         {
             _Item = item;
             _Collection = collection;

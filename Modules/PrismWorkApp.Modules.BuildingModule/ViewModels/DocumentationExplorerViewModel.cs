@@ -23,7 +23,7 @@ using PrismWorkApp.OpenWorkLib.Data.Service;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class DocumentationExplorerViewModel : BaseViewModel<object>, INotifyPropertyChanged, INavigationAware//, IConfirmNavigationRequest
+    public class DocumentationExplorerViewModel : LocalBindableBase, INotifyPropertyChanged, INavigationAware//, IConfirmNavigationRequest
     {
         public Dictionary<string, Node> _nodeDictionary;
         public Dictionary<string, Node> NodeDictionary
@@ -68,7 +68,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand<object> ContextMenuOpenedCommand { get; private set; }
         public NotifyCommand<object> MouseDoubleClickCommand { get; private set; }
-      
+
         private readonly IEventAggregator _eventAggregator;
         private AppObjectsModel _appObjectsModel;
         public AppObjectsModel AppObjectsModel
@@ -77,28 +77,28 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _appObjectsModel, value); }
         }
         private IApplicationCommands _applicationCommands;
+        private IUnDoReDoSystem UnDoReDo;
+        protected IDialogService _dialogService;
+        protected IRegionManager _regionManager;
         public DocumentationExplorerViewModel(IEventAggregator eventAggregator,
-                            IRegionManager regionManager, IDialogService dialogService, IApplicationCommands applicationCommands,IAppObjectsModel appObjectsModel,IUnDoReDoSystem unDoReDoSystem)
+                            IRegionManager regionManager, IDialogService dialogService, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel, IUnDoReDoSystem unDoReDoSystem)
         {
-          
             AppObjectsModel = appObjectsModel as AppObjectsModel;
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;
             _dialogService = dialogService;
             _applicationCommands = applicationCommands;
-
-            UnDoReDo = new UnDoReDoSystem();
+            UnDoReDo = unDoReDoSystem;
             SaveCommand = new NotifyCommand(OnSave);
-         
-            UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
-                                     () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-            UnDoCommand.Name = "UnDoCommand";
-            ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
-               () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-            ReDoCommand.Name="ReDoCommand";
-        
+            //UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
+            //                         () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            //UnDoCommand.Name = "UnDoCommand";
+            //ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
+            //   () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            //ReDoCommand.Name="ReDoCommand";
+
             Documentation = AppObjectsModel.Documentation;
-            UnDoReDo.Register(Documentation);
+            //  UnDoReDo.Register(Documentation);
 
             //  DocumentationCommands = AppObjectsModel.DocumentsGroupCommands;
 
@@ -111,7 +111,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             root.DataItemInit += OnDataItemInit;
             Items.Add(root);
             root.AttachedObject = Documentation;
-           
+
             TreeViewItemSelectedCommand = new NotifyCommand<object>(OnTreeViewItemSelected);
             TreeViewItemExpandedCommand = new NotifyCommand<object>(onTreeViewItemExpanded);
 
@@ -126,7 +126,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
 
         #region DataItems init
-      static private GetImageFrombldProjectObjectConvecter ObjecobjectTo_Url_Convectert = new GetImageFrombldProjectObjectConvecter();
+        static private GetImageFrombldProjectObjectConvecter ObjecobjectTo_Url_Convectert = new GetImageFrombldProjectObjectConvecter();
         /// <summary>
         /// Шаблон построения дерева DataItems для TreeView в форме метода, который вызываеся каждый при инициализации или 
         /// обновления DataItem или вызове IPropertyChanged, ICollectionChanged прикрепленных к DataItem объектов
@@ -187,6 +187,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         {
                             bldDocumentsGroup materialCertificates = aggregationDocument.AttachedDocuments;
                             NavigationParameters navParam = new NavigationParameters();
+                            UnDoReDo.SaveAll();
                             navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
 
@@ -256,7 +257,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         #endregion
 
 
-     
+
         private void OnGetMessage(EventMessage event_message)
         {
             //bldAggregationDocument bld_document = (bldAggregationDocument)event_message.Value;
@@ -337,7 +338,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public virtual void OnSave()
         {
-            base.OnSave("документации");
+            //  base.OnSave("документации");
         }
         private void NavgationCoplete(NavigationResult obj)
         {

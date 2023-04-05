@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldConstructionCompanyGroup : NameableObservableCollection<bldConstructionCompany>, IEntityObject
+    public class bldConstructionCompanyGroup : NameableObservableCollection<bldConstructionCompany>
     {
         public bldConstructionCompanyGroup()
         {

@@ -3,7 +3,7 @@ using System;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class RemoveNextWorkCommand : IUnDoRedoCommand
+    public class RemoveNextWorkCommand : UnDoRedoCommandBase, IUnDoRedoCommand
     {
         private bldWork _CurrentWork;
         private bldWork _RemovedNextWork;

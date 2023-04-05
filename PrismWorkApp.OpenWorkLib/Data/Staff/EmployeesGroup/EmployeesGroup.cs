@@ -1,6 +1,6 @@
 ﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class EmployeesGroup : NameableObservableCollection<Employee>, IEmployeesGroup, IEntityObject
+    public class EmployeesGroup : NameableObservableCollection<Employee>, IEmployeesGroup
     {
 
     }

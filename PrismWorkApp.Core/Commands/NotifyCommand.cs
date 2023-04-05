@@ -17,6 +17,7 @@ namespace PrismWorkApp.Core.Commands
         public event EventHandler CanExecuteChanged = delegate { };
         protected Action _TargetExecuteMetod;
         protected Func<bool> _TargetCanExecuteMethod;
+        public bool MonitorCommandActivity { get; set; } = true;
         //public NotifyCommand(Action executeMethod)
         //{
         //    _TargetExecuteMetod = executeMethod;
@@ -25,6 +26,7 @@ namespace PrismWorkApp.Core.Commands
         {
             RegisterActiveAwareEventHandler(executeMethod);
             _TargetExecuteMetod = executeMethod;
+            
         }
 
         private void RegisterActiveAwareEventHandler(Action executeMethod)
@@ -78,7 +80,6 @@ namespace PrismWorkApp.Core.Commands
         /// <returns></returns>
         public NotifyCommand ObservesCanExecute(Expression<Func<bool>> canExecuteExpression)
         {
-
             var body = (MemberExpression)canExecuteExpression.Body;
             var view_model_expression = (ConstantExpression)body.Expression;
             var view_model = view_model_expression.Value; //Значение родиельского объекта VeiwModel
@@ -141,8 +142,6 @@ namespace PrismWorkApp.Core.Commands
             return this;
         }
 
-
-
         /// <summary>
         /// Метод вызываемый собятием PropertyChanged  объктом ViewModel на котором находятис свойства на изменения которых подписаны
         /// </summary>
@@ -184,6 +183,7 @@ namespace PrismWorkApp.Core.Commands
         public event EventHandler CanExecuteChanged = delegate { };
         protected Action<T> _TargetExecuteMetod;
         protected Func<T, bool> _TargetCanExecuteMethod;
+        public bool MonitorCommandActivity { get; set; } = true;
         public NotifyCommand(Action<T> executeMethod)
         {
             RegisterActiveAwareEventHandler(executeMethod);

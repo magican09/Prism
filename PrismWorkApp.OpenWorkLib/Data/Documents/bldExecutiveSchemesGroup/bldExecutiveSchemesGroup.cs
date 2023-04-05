@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldExecutiveSchemesGroup : NameableObservableCollection<bldExecutiveScheme>, IbldExecutiveSchemesGroup, IEntityObject, INotifyCollectionChanged
+    public class bldExecutiveSchemesGroup : NameableObservableCollection<bldExecutiveScheme>, IbldExecutiveSchemesGroup
     {
         public bldExecutiveSchemesGroup()
         {

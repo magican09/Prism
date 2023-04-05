@@ -4,7 +4,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public interface IHierarchical
     {
-        public BindableBase Parent { get; set; }
-        public ObservableCollection<BindableBase> Children { get; set; }
+        public ObservableCollection<IEntityObject> Parents { get; set; }
+        public ObservableCollection<IEntityObject> Children { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public  class bldDocumentsGroup: NameableObservableCollection<bldDocument>, IbldDocumentsGroup, IEntityObject,INotifyCollectionChanged
+    public  class bldDocumentsGroup: NameableObservableCollection<bldDocument>, IbldDocumentsGroup
 
     {
         public bldDocumentsGroup()

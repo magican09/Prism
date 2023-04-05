@@ -4,7 +4,7 @@ using System;
 namespace PrismWorkApp.OpenWorkLib.Data
 {
 
-    public class AddObjectToObjectCommand : IUnDoRedoCommand
+    public class AddObjectToObjectCommand : UnDoRedoCommandBase, IUnDoRedoCommand
     {
         private bldObject _CurrentObject;
         private bldObject _AddedObject;

@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldAOSRDocumentsGroup : NameableObservableCollection<bldAOSRDocument>, IbldAOSRDocumentsGroup, IEntityObject
+    public class bldAOSRDocumentsGroup : NameableObservableCollection<bldAOSRDocument>, IbldAOSRDocumentsGroup
     {
         public bldAOSRDocumentsGroup()
         {

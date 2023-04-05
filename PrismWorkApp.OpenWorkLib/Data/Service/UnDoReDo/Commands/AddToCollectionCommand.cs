@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public class AddToCollectionCommand<TColloction, TEntity> : IUnDoRedoCommand
+    public class AddToCollectionCommand<TColloction, TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand
        where TColloction : ICollection<TEntity>
     {
         private TColloction _Collection;

@@ -47,10 +47,12 @@ namespace PrismWorkApp
             
             containerRegistry.RegisterDialog<ConfirmActionWhithoutCancelDialog, ConfirmActionWhithoutCancelDialogViewModel>();
             containerRegistry.RegisterDialogWindow<CommonDialogWindow>();
+            //AppObjectsModel appModel = Container.Resolve<AppObjectsModel>();
+           // containerRegistry.RegisterInstance(appModel);
             containerRegistry.RegisterSingleton<IAppObjectsModel, AppObjectsModel>();
 
 
-            ;
+               ;
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

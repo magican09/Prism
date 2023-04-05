@@ -3,7 +3,7 @@ using System;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class AddNextWorkCommand : IUnDoRedoCommand
+    public class AddNextWorkCommand : UnDoRedoCommandBase, IUnDoRedoCommand
     {
         private bldWork _CurrentWork;
         private bldConstruction _CurrentWorkConstruction;

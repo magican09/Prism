@@ -179,18 +179,18 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     }
                 case (nameof(bldWorksGroup)):
                     {
-                        if (((bldWorksGroup)clicked_node).Parent != null)
+                        if (((bldWorksGroup)clicked_node).Parents != null)
                         {
-                            navParam.Add("bld_construction", new ConveyanceObject(((bldWorksGroup)clicked_node).Parent, ConveyanceObjectModes.EditMode.FOR_EDIT));
+                            navParam.Add("bld_construction", new ConveyanceObject(((bldWorksGroup)clicked_node).Parents, ConveyanceObjectModes.EditMode.FOR_EDIT));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(WorksGroupView).Name, navParam);
                         }
                         break;
                     }
                 case (nameof(bldParticipantsGroup)):
                     {
-                        if (((bldParticipantsGroup)clicked_node).Parent != null)
+                        if (((bldParticipantsGroup)clicked_node).Parents != null)
                         {
-                            navParam.Add("bld_project", new ConveyanceObject(((bldParticipantsGroup)clicked_node).Parent, ConveyanceObjectModes.EditMode.FOR_EDIT));
+                            navParam.Add("bld_project", new ConveyanceObject(((bldParticipantsGroup)clicked_node).Parents, ConveyanceObjectModes.EditMode.FOR_EDIT));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(ParticipantsGroupView).Name, navParam);
                         }
                         break;

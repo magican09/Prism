@@ -280,13 +280,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (SelectedMaterialsGroup != null) SelectedMaterialsGroup.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedMaterialsGroup = (bldMaterialsGroup)navigane_message_works.Object;
                 SelectedMaterialsGroup.ErrorsChanged += RaiseCanExecuteChanged;
-                bldResourseCategory load_mat_category = SelectedMaterialsGroup.Parent as bldResourseCategory;
-                SelectedMaterialCategory = MaterialsCategories.Where(mc => mc.Name == load_mat_category.Name).FirstOrDefault();
-                if (SelectedMaterialCategory==null)
-                {
-                    MaterialsCategories.Add(load_mat_category);
-                    SelectedMaterialCategory = load_mat_category;
-                }
+                //bldResourseCategory load_mat_category = SelectedMaterialsGroup.Parents as bldResourseCategory;
+                //SelectedMaterialCategory = MaterialsCategories.Where(mc => mc.Name == load_mat_category.Name).FirstOrDefault();
+                //if (SelectedMaterialCategory==null)
+                //{
+                //    MaterialsCategories.Add(load_mat_category);
+                //    SelectedMaterialCategory = load_mat_category;
+                //}
                 UnDoReDo.Register(SelectedMaterialsGroup);
                 foreach (bldMaterial  material in SelectedMaterialsGroup)
                 {

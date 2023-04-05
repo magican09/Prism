@@ -455,7 +455,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 //SortedCommonPointersCollection = new NameableObservableCollection<bldDocument>(SelectedDocumentsGroup.Where(el => el != null).ToList());
                 //FilteredCommonPointersCollection = new NameableObservableCollection<bldDocument>(SortedCommonPointersCollection);
 
-                UnDoReDo.Register(AggregationDocuments);
+                UnDoReDo.Register(arg_document);
                 foreach (bldDocument document in AggregationDocuments)
                 {
                     UnDoReDo.Register(document);

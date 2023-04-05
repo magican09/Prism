@@ -7,6 +7,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldResourseCategory:BindableBase
     {
-        public ObservableCollection<bldResource> Resources { get; set; } = new ObservableCollection<bldResource>();
+        public NameableObservableCollection<bldResource> Resources { get; set; } = new NameableObservableCollection<bldResource>();
     }
 }

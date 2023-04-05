@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldCompany : BindableBase, IbldCompany, IEntityObject
+    public class bldCompany : BindableBase, IbldCompany
     {
         private Guid _storedId;
         public Guid StoredId

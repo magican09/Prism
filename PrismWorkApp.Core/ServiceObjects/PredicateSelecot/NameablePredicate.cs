@@ -9,7 +9,7 @@ namespace PrismWorkApp.Core
     {
         public string Name { get; set; }
         public string Code { get; set; }
-        public virtual INameableOservableCollection<IEntityObject> ResultCollection { get; set; }
+        public virtual INameableObservableCollection<IEntityObject> ResultCollection { get; set; }
     }
     public class NameablePredicate<TSourse, T> : NameablePredicate
         //    where TSourse: ICollection<T>

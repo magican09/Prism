@@ -345,7 +345,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             view.SortDescriptions.Add(sort);
                             collection.Add(view);*/
                             //        bldWorksGroup  sorted_coll = new bldWorksGroup(((bldConstruction)value).Works);
-                            ((bldConstruction)value).Works.IsVisible = true;
                             collection.Add(((bldConstruction)value).Works);
 
                         }

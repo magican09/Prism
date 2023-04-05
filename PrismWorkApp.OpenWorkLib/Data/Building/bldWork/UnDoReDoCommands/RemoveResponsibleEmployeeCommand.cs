@@ -3,7 +3,7 @@ using System;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class RemoveResponsibleEmployeeCommand : IUnDoRedoCommand
+    public class RemoveResponsibleEmployeeCommand : UnDoRedoCommandBase, IUnDoRedoCommand
     {
         private bldResponsibleEmployeesGroup _ResponsibleEmployees;
         private bldResponsibleEmployee _RemovedResp_Empl;

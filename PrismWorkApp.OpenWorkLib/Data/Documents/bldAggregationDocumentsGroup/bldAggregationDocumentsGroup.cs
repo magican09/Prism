@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldAggregationDocumentsGroup : bldDocumentsGroup,  IEntityObject
+    public class bldAggregationDocumentsGroup : bldDocumentsGroup
     {
         public bldAggregationDocumentsGroup()
         {

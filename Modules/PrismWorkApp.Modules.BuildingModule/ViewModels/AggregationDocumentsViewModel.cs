@@ -115,15 +115,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> PastingCellClipboardContentCommand { get; private set; }
         public NotifyCommand<object> ContextMenuOpeningCommand { get; private set; }
         public NotifyCommand<object> GridViewSelectionChangedCommand { get; private set; }
-        
-        public IBuildingUnitsRepository _buildingUnitsRepository { get; }
 
+        public IBuildingUnitsRepository _buildingUnitsRepository { get; }
+        AppObjectsModel _appObjectsModel;
         public AggregationDocumentsViewModel(IDialogService dialogService,
-           IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
+           IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands,IAppObjectsModel appObjectsModel)
         {
 
             UnDoReDo = new UnDoReDoSystem();
             ApplicationCommands = applicationCommands;
+            _appObjectsModel = appObjectsModel as AppObjectsModel;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
@@ -141,7 +142,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ReDoCommand.Name = "ReDoCommand";
             #region ContextMenu Commands
 
-            CreateNewCommand = new NotifyCommand(OnCreateNewMaterialCertificate, ()=>SelectedAggregationDocument!=null).ObservesProperty(()=>SelectedAggregationDocument);
+            CreateNewCommand = new NotifyCommand(OnCreateNewMaterialCertificate, () => SelectedAggregationDocument != null).ObservesProperty(() => SelectedAggregationDocument);
             CreateNewCommand.Name = "Создать новый документ";
             CreatedBasedOnCommand = new NotifyCommand<object>(OnCreatedBasedOn,
                                     (ob) => { return SelectedDocument != null; }).ObservesProperty(() => SelectedDocument);
@@ -166,7 +167,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CopyedCommand = new NotifyCommand<object>(OnCopyedCommand);
             ContextMenuOpeningCommand = new NotifyCommand<object>(OnContextMenuOpening);
 
-                      CommonContextMenuItems = new ObservableCollection<MenuItem>();
+            CommonContextMenuItems = new ObservableCollection<MenuItem>();
             MenuItem addItem = new MenuItem();
             addItem.Text = "Add";
             addItem.IsEnabled = true;
@@ -179,21 +180,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CommonContextMenuItems.Add(deleteItem);
 
             #endregion
-           
+
             ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-
             ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewCommand);
             ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
-
             AllUnitsOfMeasurements = new ObservableCollection<bldUnitOfMeasurement>(_buildingUnitsRepository.UnitOfMeasurementRepository.GetAllAsync());
 
         }
 
         private void OnContextMenuOpening(object obj)
         {
-            
+
         }
 
         private void OnDataGridSelectionChanged(object obj)
@@ -301,7 +300,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             if (!Directory.Exists(BD_FilesDir))
                 Directory.CreateDirectory(BD_FilesDir);
-            if(selected_certificate.ImageFile==null)
+            if (selected_certificate.ImageFile == null)
                 selected_certificate = _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
             string s = Path.Combine(BD_FilesDir, selected_certificate.ImageFile.FileName);
 
@@ -328,37 +327,41 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
             // FilteredCommonPointersCollection.Add(new_certificate);
 
-           // localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
+            // localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
             //   localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
 
             //UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
-           // UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
+            // UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
             UnDoReDo.Register(new_certificate);
 
         }
 
         private void OnCreateNewMaterialCertificate()
         {
-            bldMaterialCertificate new_certificate = new bldMaterialCertificate();
-            UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
-            //UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+            bldMaterialCertificate new_certificate;
+            //if(_appObjectsModel.CreateNewMaterialCertificateCommand.CanExecute())
+            //_appObjectsModel.CreateNewMaterialCertificateCommand(new_certificate)
 
-            //localUnDoReDoSystem.Register(SelectedDocumentsGroup);
-            //    localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
+            //bldMaterialCertificate new_certificate = new bldMaterialCertificate();
+            //UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
+            ////UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
 
-            UnDoReDo.Register(SelectedAggregationDocument.AttachedDocuments);
-            SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
-            //   FilteredCommonPointersCollection.Add(new_certificate);
+            ////localUnDoReDoSystem.Register(SelectedDocumentsGroup);
+            ////    localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
 
-            //localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
-            //  localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
+            //UnDoReDo.Register(SelectedAggregationDocument.AttachedDocuments);
+            //SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
+            ////   FilteredCommonPointersCollection.Add(new_certificate);
 
-            //UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
-            //UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
-            UnDoReDo.Register(new_certificate);
+            ////localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
+            ////  localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
+
+            ////UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+            ////UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
+            //UnDoReDo.Register(new_certificate);
         }
 
-      
+
         #region  Commmands Methods
         private void OnRemoveUnitOfMeasurement(object obj)
         {
@@ -413,7 +416,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SelectedAggregationDocument = null;
 
         }
-       
+
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             SaveCommand.RaiseCanExecuteChanged();
@@ -444,28 +447,32 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_agrregation_document"];
+            ConveyanceObject parent_undoredo_navigane_message = (ConveyanceObject)navigationContext.Parameters["parant_undoredo_system"];
             if (navigane_message != null)
             {
+                bldAggregationDocument arg_document = (bldAggregationDocument)navigane_message.Object;
+                UnDoReDoSystem parent_undoredo_sys = (UnDoReDoSystem)parent_undoredo_navigane_message.Object;
+
                 EditMode = navigane_message.EditMode;
                 if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
-                bldAggregationDocument arg_document = (bldAggregationDocument)navigane_message.Object;
                 if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
                 {
-
                     AggregationDocuments.Add(arg_document);
+                    if (parent_undoredo_sys != null && !parent_undoredo_sys.ChildrenSystems.Contains(UnDoReDo))
+                    {
+                        parent_undoredo_sys.SetChildrenUnDoReDoSystem(UnDoReDo);
+                    }
+                    UnDoReDo.Register(arg_document);
+                    UnDoReDo.Register(arg_document);
+                    foreach (bldDocument document in AggregationDocuments)
+                    {
+                        UnDoReDo.Register(document);
+                        foreach (bldDocument attach_document in document.AttachedDocuments)
+                            UnDoReDo.Register(attach_document);
+                    }
                 }
                 AggregationDocuments.ErrorsChanged += RaiseCanExecuteChanged;
-              //  Title = $"{AggregationDocuments.Code} {AggregationDocuments.Name}";
-                //SortedCommonPointersCollection = new NameableObservableCollection<bldDocument>(SelectedDocumentsGroup.Where(el => el != null).ToList());
-                //FilteredCommonPointersCollection = new NameableObservableCollection<bldDocument>(SortedCommonPointersCollection);
-
-                UnDoReDo.Register(arg_document);
-                foreach (bldDocument document in AggregationDocuments)
-                {
-                    UnDoReDo.Register(document);
-                    foreach (bldDocument attach_document in document.AttachedDocuments)
-                        UnDoReDo.Register(attach_document);
-                }
+                //  Title = $"{AggregationDocuments.Code} {AggregationDocuments.Name}";
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -478,7 +485,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //    return false;
             //}
             //else
-                return true;
+            return true;
         }
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {

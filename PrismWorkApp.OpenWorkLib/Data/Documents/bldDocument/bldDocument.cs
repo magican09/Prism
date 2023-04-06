@@ -49,8 +49,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public bldDocument()
         {
-            AttachedDocuments.Name = "Приложения";
-            AttachedDocuments.Parents.Add(this);
+            AttachedDocuments.Owner = this;
         }
         private  ObservableCollection<bldDocument> _parentDocuments = new ObservableCollection<bldDocument>();
         public ObservableCollection<bldDocument> ParentDocuments
@@ -71,5 +70,32 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _IsHaveImageFile, value); }
         }
 
+        #region Commands 
+        public TEntity AddNewDocument<TEntity>() where TEntity:IbldDocument,new()
+        {
+            TEntity new_doc = new TEntity();
+            AddDocumentCommand<TEntity> Command = new AddDocumentCommand<TEntity>(this, new_doc);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+            return new_doc;
+        }
+        public TEntity AddCreatedBasedOnNewDocument<TEntity>(TEntity sample_doc) where TEntity : IbldDocument, new()
+        {
+            TEntity new_doc =(TEntity)sample_doc.Clone();
+            new_doc.Id = Guid.NewGuid();
+            AddDocumentCommand<TEntity> Command = new AddDocumentCommand<TEntity>(this, new_doc);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+            return new_doc;
+        }
+        public void  RemoveDocument(IbldDocument removed_doc) 
+        {
+            RemoveDocumentCommand Command = new RemoveDocumentCommand(this, removed_doc);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        public void AddDocument(IbldDocument added_doc)
+        {
+            AddDocumentCommand<IbldDocument> Command = new AddDocumentCommand<IbldDocument>(this, added_doc);
+            InvokeUnDoReDoCommandCreatedEvent(Command);
+        }
+        #endregion
     }
 }

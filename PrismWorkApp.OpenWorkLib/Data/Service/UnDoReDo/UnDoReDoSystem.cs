@@ -90,8 +90,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             _ReDoCommands.Clear();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClearStacks"));
         }
-        public void SaveAll()
+        public void SaveAll(Func<object, bool> IsSavedPermission)
         {
+            if(IsSavedPermission(this))
+            { 
             foreach (IUnDoRedoCommand command in _UnDoCommands)
             {
                 foreach (IJornalable changed_obj in command.ChangedObjects)
@@ -107,6 +109,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 }
             }
             ClearStacks();
+            }
         }
         #endregion
         public bool IsAllUnDoIsDone()
@@ -192,6 +195,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 }
             }
         }
+
+     
+        /// <summary>
+        /// Уставновка системы UnDoReDoSystem в качестве дочерней системы.
+        /// </summary>
+        /// <param name="children_system">Утавнавливаемая в качестеве дочереней система UnDoReDoSystem</param>
         public void SetChildrenUnDoReDoSystem(IUnDoReDoSystem children_system)
         {
             //Если в системе регистриуюется дочерняя система, то объекты которые зарегирированы в дочерней системе

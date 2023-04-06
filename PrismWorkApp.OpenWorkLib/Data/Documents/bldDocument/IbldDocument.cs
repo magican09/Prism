@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldDocument: IRegisterable, IEntityObject, INameable,IBindableBase
+    public interface IbldDocument: IRegisterable, IEntityObject, INameable,IBindableBase,ICloneable
     {
         bldDocumentsGroup  AttachedDocuments { get; set; }
         DateTime Date { get; set; }

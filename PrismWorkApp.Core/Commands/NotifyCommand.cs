@@ -17,6 +17,13 @@ namespace PrismWorkApp.Core.Commands
         public event EventHandler CanExecuteChanged = delegate { };
         protected Action _TargetExecuteMetod;
         protected Func<bool> _TargetCanExecuteMethod;
+        /// <summary>
+        /// Свойство при установки которого в False(по умолчанию True) CanExecute в составе NotifyCompositeCommand 
+        /// срабатывает только тогда, когда и NotifyCompositeCommand нет больше команд со свойством 
+        /// MonitorCommandActivity установленным в True. 
+        /// Иными словами, команды со MonitorCommandActivity==false влияют на CanExecute NotifyCompositeCommand 
+        /// только тодга, когда не будет комад со свойством onitorCommandActivity==true.
+        /// </summary>
         public bool MonitorCommandActivity { get; set; } = true;
         //public NotifyCommand(Action executeMethod)
         //{

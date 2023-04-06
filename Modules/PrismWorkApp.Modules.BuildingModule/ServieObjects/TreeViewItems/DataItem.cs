@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Windows;
 using System.Windows.Markup;
-using PrismWorkApp.Modules.BuildingModule.Core;
+
+
 using PrismWorkApp.OpenWorkLib.Data;
 
 namespace PrismWorkApp.Modules.BuildingModule
@@ -18,8 +18,47 @@ namespace PrismWorkApp.Modules.BuildingModule
     public delegate void MenuItemExpandDelegateHandler(DataItem dataItem);
 
     [ContentProperty("Children")]
-    public class DataItem : INotifyPropertyChanged
+    public class DataItem : DependencyObject,INotifyPropertyChanged
     {
+
+
+        public string Text
+        {
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TextProperty =
+           DependencyProperty.Register(
+                    "Text",
+                    typeof(string),
+                    typeof(DataItem),
+                    new FrameworkPropertyMetadata(
+                        string.Empty));
+
+
+        private static object CoerceText(DependencyObject d, object baseValue)
+        {
+            return d;
+        }
+
+        private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            
+        }
+
+
+
+
+        //private string _text;
+
+        //public string Text
+        //{
+        //    get { return _text; }
+        //    set { _text = value; OnPropertyChanged("Text"); }
+        //}
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {
@@ -35,17 +74,11 @@ namespace PrismWorkApp.Modules.BuildingModule
         {
             this._items = new DataItemCollection(this);
 
+           
         }
 
 
 
-        private string _text;
-
-        public string Text
-        {
-            get { return _text; }
-            set { _text = value; OnPropertyChanged("Text"); }
-        }
 
         private string _propName;
 

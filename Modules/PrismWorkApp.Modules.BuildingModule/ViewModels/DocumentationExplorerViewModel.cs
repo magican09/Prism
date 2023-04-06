@@ -22,11 +22,16 @@ using System.Collections;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Data;
+using PrismWorkApp.Services.Repositories;
+using PrismWorkApp.Modules.BuildingModule.Dialogs;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
     public class DocumentationExplorerViewModel : LocalBindableBase, INotifyPropertyChanged, INavigationAware//, IConfirmNavigationRequest
     {
+
+
         public Dictionary<string, Node> _nodeDictionary;
         public Dictionary<string, Node> NodeDictionary
         {
@@ -65,13 +70,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> CloseCommand { get; protected set; }
 
         public NotifyMenuCommands DocumentationCommands { get; set; }
-        public NotifyCommand<object> TreeViewItemSelectedCommand { get; private set; }
-        public NotifyCommand<object> TreeViewItemExpandedCommand { get; private set; }
 
         public NotifyCommand<object> ContextMenuOpenedCommand { get; private set; }
         public NotifyCommand<object> MouseDoubleClickCommand { get; private set; }
+
+
         public NotifyCommand<object> EditInTreeViewItemCommand { get; private set; }
         public NotifyCommand<object> LoadAggregationDocumentFromDBCommand { get; set; }
+        public NotifyCommand SaveDocumentationToDBCommand { get; private set; }
+
         public NotifyCommand<object> CreateNewAggregationDocumentCommand { get; set; }
         public NotifyCommand<object> RemoveAggregationDocumentCommand { get; private set; }
 
@@ -82,31 +89,38 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _appObjectsModel; }
             set { SetProperty(ref _appObjectsModel, value); }
         }
+
+
         private IApplicationCommands _applicationCommands;
         private IUnDoReDoSystem UnDoReDo;
         protected IDialogService _dialogService;
         protected IRegionManager _regionManager;
+        IBuildingUnitsRepository _buildingUnitsRepository;
         public DocumentationExplorerViewModel(IEventAggregator eventAggregator,
-                            IRegionManager regionManager, IDialogService dialogService, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel, IUnDoReDoSystem unDoReDoSystem)
+                            IRegionManager regionManager, IDialogService dialogService,
+                                           IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel, IUnDoReDoSystem unDoReDoSystem)
         {
             AppObjectsModel = appObjectsModel as AppObjectsModel;
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;
             _dialogService = dialogService;
             _applicationCommands = applicationCommands;
+            _buildingUnitsRepository = buildingUnitsRepository;
             UnDoReDo = unDoReDoSystem;
+            Documentation = AppObjectsModel.Documentation.AttachedDocuments;
+            UnDoReDo.Register(Documentation);
+
+            UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
+                                   () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
+              () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            UnDoCommand.MonitorCommandActivity = false;
+            ReDoCommand.MonitorCommandActivity = false;
+
+            SaveDocumentationToDBCommand = new NotifyCommand(OnSaveDocumentationToDB);
+            SaveDocumentationToDBCommand.MonitorCommandActivity = false;
+
             SaveCommand = new NotifyCommand(OnSave);
-            //UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
-            //                         () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-            //UnDoCommand.Name = "UnDoCommand";
-            //ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
-            //   () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
-            //ReDoCommand.Name="ReDoCommand";
-
-            Documentation = AppObjectsModel.Documentation;
-            //  UnDoReDo.Register(Documentation);
-
-            //  DocumentationCommands = AppObjectsModel.DocumentsGroupCommands;
 
             ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
             MouseDoubleClickCommand = new NotifyCommand<object>(OnMouseDoubleClick);
@@ -120,7 +134,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveAggregationDocumentCommand = new NotifyCommand<object>(OnRemoveAggregationDocument);
             RemoveAggregationDocumentCommand.Name = "Удалить ведомость документов";
 
-            //_applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(_appObjectsModel.LoadDocumentCommand);
 
             Items = new DataItemCollection(null);
             DataItem root = new DataItem();
@@ -128,59 +141,101 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             Items.Add(root);
             root.AttachedObject = Documentation;
 
-            TreeViewItemSelectedCommand = new NotifyCommand<object>(OnTreeViewItemSelected);
-            TreeViewItemExpandedCommand = new NotifyCommand<object>(onTreeViewItemExpanded);
+
 
             _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
              ThreadOption.PublisherThread, false,
              message => message.Recipient == "DocumentationExplorer");
 
-            //_applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
-            //_applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
-            //_applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-
+            _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveDocumentationToDBCommand);
+            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
         }
 
         private void OnRemoveAggregationDocument(object obj)
         {
             object selected_object = null;
             if (obj is IList list) selected_object = list[0]; else selected_object = obj;
-            var command = AppObjectsModel.RemoveAggregationDocumentCommand;
-            if (command.CanExecute(selected_object))
-                command.Execute(selected_object);
+            if (selected_object is bldDocument document)
+            {
+                foreach (object parent in new List<object>(document.Parents))
+                {
+                    if (parent is bldDocument parent_doc) parent_doc.RemoveDocument(document);
+                    if (parent is IList list_parent) list_parent.Remove(document);
+                }
+            }
         }
 
         private void OnCreateNewAggregationDocument(object obj)
         {
             object selected_object = null;
             if (obj is IList list) selected_object = list[0]; else selected_object = obj;
-            var command = AppObjectsModel.CreateNewAggregationDocumentCommand;
-            if (command.CanExecute(selected_object))
-                command.Execute(selected_object);
+            if (selected_object is bldDocument document)
+            {
+                UnDoReDo.Register(document.AddNewDocument<bldAggregationDocument>());
+            }
+            else if (selected_object is bldDocumentsGroup documents_coll)
+                documents_coll.Add(new bldAggregationDocument("Новый перечень документации"));
+
         }
 
         private void OnLoadAggregationDocumentFromDB(object obj)
         {
-           object selected_object = null;
+            object selected_object = null;
             if (obj is IList list) selected_object = list[0]; else selected_object = obj;
-          var command =  AppObjectsModel.LoadAggregationDocumentFromDBCommand;
-            if (command.CanExecute(selected_object))
-                command.Execute(selected_object);
+            var command = AppObjectsModel.LoadAggregationDocumentFromDBCommand;
+            bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
+
+            CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
+                      (All_AggregationDocuments, _dialogService, (result) =>
+                      {
+                          if (result.Result == ButtonResult.Yes)
+                          {
+                              bldAggregationDocument selected_aggregation_doc = result.Parameters.GetValue<bldAggregationDocument>("element");
+                              bldAggregationDocument loaded_doc = selected_aggregation_doc;
+                              if (loaded_doc != null)
+                              {
+                                  if (selected_object is bldDocument document) document.AddDocument(document);
+                                  if (selected_object is IList doc_coll) doc_coll.Add(loaded_doc as bldDocument);
+
+                              }
+                          }
+                      }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
+                      "Выберете каталог для сохранения",
+                         "Форма для загрузки ведомости документации из базы данных."
+                        , "Перечень каталогов");
+
+        }
+        public void OnSaveDocumentationToDB()
+        {
+            CoreFunctions.ConfirmActionDialog("Сохранить все изменения в документации БД?", "Документация",
+                "Сохранить", "Отмена", (result) =>
+                {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        foreach (bldDocument document in Documentation)
+                        {
+                            if (_buildingUnitsRepository.DocumentsRepository.Get(document.Id) == null)
+                                _buildingUnitsRepository.DocumentsRepository.Add(document);
+                        }
+                        _buildingUnitsRepository.Complete();
+                    }
+                }, _dialogService);
+
         }
 
         private void OnEditInTreeViewItem(object obj)
         {
             object selected_object = null;
-            if (obj is IList list) { 
+            if (obj is IList list)
+            {
                 selected_object = list[1];
-               // RadTreeView treeView  = selected_object as RadTreeView;
+                // RadTreeView treeView  = selected_object as RadTreeView;
                 ContextMenu contextMenu = selected_object as ContextMenu;
-                var  parent_ = LogicalTreeHelper.GetParent((DependencyObject)contextMenu);
-                var parent =  CoreFunctions.FindParent<RadTreeViewItem >((DependencyObject)contextMenu);
-                RadTreeViewItem selected_treeViewItem = (RadTreeViewItem)parent;
-                RadTreeView treeView = list[2] as RadTreeView;
-               
-                //selected_treeViewItem?.IsInEditMode = true;
+                var parent_ = LogicalTreeHelper.GetParent((DependencyObject)contextMenu);
+                var parent = CoreFunctions.FindParent<RadTreeViewItem>((DependencyObject)contextMenu);
+                RadTreeViewItem selected_treeViewItem = contextMenu.PlacementTarget as RadTreeViewItem;
+                selected_treeViewItem.IsInEditMode = true;
             }
             else return;
 
@@ -190,20 +245,41 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         static private GetImageFrombldProjectObjectConvecter ObjecobjectTo_Url_Convectert = new GetImageFrombldProjectObjectConvecter();
         /// <summary>
         /// Шаблон построения дерева DataItems для TreeView в форме метода, который вызываеся каждый при инициализации или 
-        /// обновления DataItem или вызове IPropertyChanged, ICollectionChanged прикрепленных к DataItem объектов
+        /// обновления DataItem или вызове IPropertyChanged, ICollectionChanged прикрепленных к DataItem объектов.
+        /// DataItem.DataItemInit+=OnDataItemInit;
         /// </summary>
-        /// <param name="dataItem"></param>
+        /// <param name="dataItem">Передается объект DataItem который необходимо инициализировать содержанием</param>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void OnDataItemInit(DataItem dataItem, object sender, PropertyChangedEventArgs e)
         {
+            UnDoReDo.Register(dataItem.AttachedObject as IJornalable);
             switch (dataItem.AttachedObject.GetType().Name)
             {
+                case (nameof(bldMaterialCertificate)):
+                    {
+                        bldMaterialCertificate document = ((bldMaterialCertificate)dataItem.AttachedObject);
+                        Binding binding = new Binding("MaterialName");
+                        binding.Source = document;
+                        binding.Path = new PropertyPath("MaterialName");
+                        binding.Mode = BindingMode.OneWay;
+                        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
 
+                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                        DataItem attachedDocs = new DataItem();
+                        dataItem.Items.Add(attachedDocs);
+                        attachedDocs.AttachedObject = document.AttachedDocuments;
+                        break;
+                    }
                 case (nameof(bldAggregationDocument)):
                     {
                         bldAggregationDocument document = ((bldAggregationDocument)dataItem.AttachedObject);
-                        dataItem.Text = document.Name;
+                        Binding binding = new Binding("Name");
+                        binding.Source = document;
+                        binding.Path = new PropertyPath("Name");
+                        binding.Mode = BindingMode.TwoWay;
+                        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
+
                         dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
                         DataItem attachedDocs = new DataItem();
                         dataItem.Items.Add(attachedDocs);
@@ -215,7 +291,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 case (nameof(bldMaterialCertificatesGroup)):
                     {
                         bldDocumentsGroup documents = ((bldDocumentsGroup)dataItem.AttachedObject);
-                        dataItem.Text = documents.Name;
+                        Binding binding = new Binding("Name");
+                        binding.Source = documents;
+                        binding.Path = new PropertyPath("Name");
+                        binding.Mode = BindingMode.TwoWay;
+                        // binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
                         dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
                         foreach (bldDocument doc in documents)
                         {
@@ -226,13 +307,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         }
                         break;
                     }
-                case (nameof(bldMaterialCertificate)):
-                    {
-                        bldMaterialCertificate document = ((bldMaterialCertificate)dataItem.AttachedObject);
-                        dataItem.Text = document.MaterialName;
-                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
-                        break;
-                    }
+                    //case (nameof(bldMaterialCertificate)):
+                    //    {
+                    //        bldMaterialCertificate document = ((bldMaterialCertificate)dataItem.AttachedObject);
+                    //        dataItem.Text = document.MaterialName;
+                    //        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                    //        break;
+                    //    }
             }
         }
         #endregion
@@ -246,10 +327,24 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         bldAggregationDocument aggregationDocument = d_clicked_object as bldAggregationDocument;
                         if (aggregationDocument.AttachedDocuments.Count > 0 && aggregationDocument.AttachedDocuments[0] is bldMaterialCertificate)
                         {
-                            bldDocumentsGroup materialCertificates = aggregationDocument.AttachedDocuments;
                             NavigationParameters navParam = new NavigationParameters();
-                            UnDoReDo.SaveAll();
+                            bool save_permit = false;
+                            UnDoReDo.SaveAll((udrd_sys) =>
+                            {
+                             
+                                CoreFunctions.ConfirmActionDialog("Сохранить все изменения в документации БД?", "Документация",
+                              "Сохранить", "Отмена", (result) =>
+                                                 {
+                                                     if (result.Result == ButtonResult.Yes)
+                                                     {
+                                                         save_permit = true;
+                                                     }
+                                                 }, _dialogService);
+                                return save_permit;
+                            });
+                            if (!save_permit) return;
                             navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                            navParam.Add("parant_undoredo_system", (new ConveyanceObject(UnDoReDo, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
 
                         }
@@ -262,7 +357,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             DataItem clicked_dataItem = ((IList)obj)[1] as DataItem;
             ContextMenu contextMenu = ((IList)obj)[0] as ContextMenu;
-            NotifyMenuCommands context_menu_item_commands = null ;
+            NotifyMenuCommands context_menu_item_commands = null;
             switch (clicked_dataItem.AttachedObject.GetType().Name)
             {
                 case (nameof(bldDocumentsGroup)):
@@ -287,40 +382,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
                     }
             }
-            context_menu_item_commands.Add(EditInTreeViewItemCommand);
+            context_menu_item_commands?.Add(EditInTreeViewItemCommand);
             contextMenu.ItemsSource = context_menu_item_commands;
-            /*RadContextMenu contextMenu = obj as RadContextMenu;
-            RadTreeViewItem clicked_item = contextMenu.GetClickedElement<RadTreeViewItem>();
-            //GridViewRow clicked_row = contextMenu.GetClickedElement<GridViewRow>();
-            DataItem clicked_dataItem = (DataItem)clicked_item.DataContext;
-            AppObjectsModel.SelectedDocumentsGroup=null;
-            AppObjectsModel.SelectedDocument = null;
-            switch (clicked_dataItem.AttachedObject.GetType().Name)
-            {
-                case (nameof(bldDocumentsGroup)):
-                case (nameof(bldAggregationDocumentsGroup)):
-                case (nameof(bldMaterialCertificatesGroup)):
-                    {
-                        AppObjectsModel.SelectedDocumentsGroup = (bldDocumentsGroup)clicked_dataItem.AttachedObject;
-                        contextMenu.ItemsSource = AppObjectsModel.DocumentationCommands.MenuItem.Items;
-                        break;
-                    }
-                case (nameof(bldDocument)):
-                case (nameof(bldAggregationDocument)):
-                case (nameof(bldMaterialCertificate)):
 
-                    {
-                        AppObjectsModel.SelectedDocument = (bldDocument)clicked_dataItem.AttachedObject;
-                        contextMenu.ItemsSource = AppObjectsModel.DocumentationCommands.MenuItem.Items;
-                        break;
-                       
-                    }
-            }
-            */
         }
         #endregion
-
-
 
         private void OnGetMessage(EventMessage event_message)
         {
@@ -332,74 +398,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //    AggregationDocuments.Add(bld_document);
             //}
         }
-
-        private void OnTreeViewItemSelected(object clc_node)
-        {
-            System.Type node_value_type;
-            object clicked_node;
-            if (clc_node.GetType() == typeof(Node))
-            {
-                node_value_type = ((Node)clc_node).Value?.GetType();
-                clicked_node = ((Node)clc_node).Value;
-            }
-            else
-            {
-                node_value_type = clc_node?.GetType();
-                clicked_node = clc_node;
-            }
-            NavigationParameters navParam = new NavigationParameters();
-            switch (node_value_type?.Name)
-            {
-                case (nameof(bldMaterialCertificate)):
-                    {
-                        //navParam.Add("bld_material_certificate", (new ConveyanceObject((bldMaterialCertificate)clicked_node, ConveyanceObjectModes.EditMode.FOR_EDIT)));
-                        //_regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialView).Name, navParam);
-                        break;
-                    }
-                case (nameof(bldMaterialCertificatesGroup)):
-                    {
-                        bldMaterialCertificatesGroup materialCertificates = clc_node as bldMaterialCertificatesGroup;
-                        navParam.Add("bld_material_certificates", (new ConveyanceObject(materialCertificates, ConveyanceObjectModes.EditMode.FOR_EDIT)));
-                        _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificatesGroupView).Name, navParam);
-                        break;
-                    }
-                case (nameof(bldAggregationDocument)):
-                    {
-                        bldAggregationDocument aggregationDocument = clc_node as bldAggregationDocument;
-                        if (aggregationDocument.AttachedDocuments.Count > 0 && aggregationDocument.AttachedDocuments[0] is bldMaterialCertificate)
-                        {
-                            bldDocumentsGroup materialCertificates = aggregationDocument.AttachedDocuments;
-                            //   navParam.Add("bld_material_certificates", (new ConveyanceObject(materialCertificates, ConveyanceObjectModes.EditMode.FOR_EDIT)));
-                            navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
-                            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
-
-                        }
-                        break;
-                    }
-                case (nameof(bldDocumentsGroup)):
-                    {
-                        bldDocumentsGroup documents = clc_node as bldDocumentsGroup;
-                        if (documents.Count > 0 && documents[0] is bldMaterialCertificate)
-                        {
-                            navParam.Add("bld_material_certificates", (new ConveyanceObject(documents, ConveyanceObjectModes.EditMode.FOR_EDIT)));
-                            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificatesGroupView).Name, navParam);
-
-                        }
-                        break;
-                    }
-
-                    break;
-
-            }
-
-        }
-
-        private void onTreeViewItemExpanded(object obj)
-        {
-
-        }
-
-
         public virtual void OnSave()
         {
             //  base.OnSave("документации");
@@ -413,12 +411,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             return true;
         }
-
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
 
         }
-
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {

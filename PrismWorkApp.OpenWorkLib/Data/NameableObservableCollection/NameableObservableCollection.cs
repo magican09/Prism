@@ -170,8 +170,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
           
             if (e.Action == NotifyCollectionChangedAction.Add && !b_jornal_recording_flag)
             {
-                foreach (IEntityObject added_element in e.NewItems)
-                    added_element.Parents.Add(Owner);
+                //foreach (IEntityObject added_element in e.NewItems) /////Эта же функция реализована в AddItemCommand
+                //    added_element.Parents.Add(Owner);
             }
 
         }

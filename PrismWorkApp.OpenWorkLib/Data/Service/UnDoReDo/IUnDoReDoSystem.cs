@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public interface IUnDoReDoSystem : INotifyPropertyChanged
+    public interface IUnDoReDoSystem : INotifyPropertyChanged, IUnDoRedoCommand
     {
         event PropertyChangedEventHandler PropertyChanged;
         public Guid Id { get; set; }

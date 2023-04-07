@@ -1,0 +1,17 @@
+﻿<ResourceDictionary  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+                     xmlns:obj_lib="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
+                     xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
+                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                     xmlns:prism="http://prismlibrary.com/">
+
+    <loc_core:BindingProxy x:Key="Proxy" Data="{Binding}" />
+    <loc_core:NextPreviousWorkMultiConverter x:Key="NextPreviousWorkMultiConverter"/>
+    <loc_core:ObjectsPairMultiConverter x:Key="ObjectsPairMultiConverter"/>
+    <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
+    <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
+    <loc_core:GetImageFrombldProjectObjectConvecter x:Key="imgFrombldProjectObject"/>
+    <loc_core:StringToUriConverter x:Key="stringToUriConverter"/>
+    <loc_core:DataTypeConverter x:Key="dataTypeConverter"/>
+</ResourceDictionary>

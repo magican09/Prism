@@ -8,10 +8,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Reflection;
 using System.Collections;
+using System.ComponentModel.DataAnnotations;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public class UnDoReDoSystem : IUnDoReDoSystem, IUnDoRedoCommand, IActiveAware
+    public class UnDoReDoSystem : IUnDoReDoSystem, IActiveAware
     {
         public Guid Id { get; set; }
         public bool IsActive { get; set; }
@@ -38,14 +39,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 {
                     IUnDoRedoCommand command = _UnDoCommands.Pop();
                     command.UnExecute();
-                    foreach (IJornalable obj in command.ChangedObjects)
-                        obj.ChangesJornal.Remove(command);
+                    var objcs_for_remove = ChangedObjects.Where(cho => !_UnDoCommands.Where(cm => cm.ChangedObjects.Contains(cho)).Any()).ToList();
+                    foreach (IJornalable j_obj in objcs_for_remove)
+                        ChangedObjects.Remove(j_obj);
                     if (!without_redo)
                     {
                         _ReDoCommands.Push(command);
                         _ReDoCounter--;
                     }
                     _UnDoCounter++;
+
                 }
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnDo"));
@@ -60,8 +63,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 {
                     IUnDoRedoCommand command = _ReDoCommands.Pop();
                     command.Execute();
-                    foreach (IJornalable obj in command.ChangedObjects)
-                        obj.ChangesJornal.Add(command);
+                    //foreach (IJornalable obj in command.ChangedObjects)
+                    //    obj.ChangesJornal.Add(command);
                     if (!without_undo)
                     {
                         _UnDoCommands.Push(command);
@@ -92,23 +95,29 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         }
         public void SaveAll(Func<object, bool> IsSavedPermission)
         {
-            if(IsSavedPermission(this))
-            { 
-            foreach (IUnDoRedoCommand command in _UnDoCommands)
+            if (IsSavedPermission(this))
             {
-                foreach (IJornalable changed_obj in command.ChangedObjects)
+                //foreach (IUnDoRedoCommand command in _UnDoCommands)
+                //{
+                //    foreach (IJornalable changed_obj in command.ChangedObjects)
+                //    {
+                //        changed_obj.ChangesJornal.Remove(command);
+                //    }
+                //}
+                //foreach (IUnDoRedoCommand command in _ReDoCommands)
+                //{
+                //    foreach (IJornalable changed_obj in command.ChangedObjects)
+                //    {
+                //        changed_obj.ChangesJornal.Remove(command);
+                //    }
+                //}
+
+                foreach (IJornalable changed_obj in this.ChangedObjects)
                 {
-                    changed_obj.ChangesJornal.Remove(command);
+                    changed_obj.ChangesJornal.Clear();
                 }
-            }
-            foreach (IUnDoRedoCommand command in _ReDoCommands)
-            {
-                foreach (IJornalable changed_obj in command.ChangedObjects)
-                {
-                    changed_obj.ChangesJornal.Remove(command);
-                }
-            }
-            ClearStacks();
+                this.ChangedObjects.Clear();
+                ClearStacks();
             }
         }
         #endregion
@@ -167,36 +176,47 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             foreach (PropertyInfo propertyInfo in props_infoes)
             {
                 var prop_val = propertyInfo.GetValue(obj);
-                if (prop_val is IJornalable jornable_prop && jornable_prop is IList)
+
+                var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();
+                if (prop_val is IJornalable jornable_prop && attr==null)
                 {
-                    jornable_prop.UnDoReDoCommandCreated += OnObservedCommandCreated;
+                    if(jornable_prop is IList)
+                           jornable_prop.UnDoReDoCommandCreated += OnObservedCommandCreated;
                 }
             }
 
             obj.PropertyBeforeChanged += OnModelPropertyBeforeChanged;
             obj.UnDoReDoCommandCreated += OnObservedCommandCreated;
+            obj.SaveChanges += OnSaveChages;
+            obj.UnDoReDoSystems.Add(this);
+            obj.JornalingOn();
 
         }
+
+       
+
         public void UnRegister(IJornalable obj)
         {
             if (_RegistedModels.Contains(obj))
             {
                 obj.PropertyBeforeChanged -= OnModelPropertyBeforeChanged;
                 obj.UnDoReDoCommandCreated -= OnObservedCommandCreated;
+                obj.UnDoReDoSystems.Remove(this);
                 _RegistedModels.Remove(obj);
-
+                obj.JornalingOff();
                 if (obj is IUnDoReDoSystem child_system) //Если в системе регистриуюется дочерняя система, то объекты которые зарегирированы в дочерней системе
                 {//регистриуем в родительской   системе
                     child_system.ParentUnDoReDo = null;
                     foreach (IJornalable reg_obj in child_system._RegistedModels)
                     {
+                        child_system.UnRegister(reg_obj);
                         if (!_RegistedModels.Contains(reg_obj)) this.Register(reg_obj);
                     }
                 }
             }
         }
 
-     
+
         /// <summary>
         /// Уставновка системы UnDoReDoSystem в качестве дочерней системы.
         /// </summary>
@@ -204,7 +224,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void SetChildrenUnDoReDoSystem(IUnDoReDoSystem children_system)
         {
             //Если в системе регистриуюется дочерняя система, то объекты которые зарегирированы в дочерней системе
-            //удаляем и родительской системы, что бы не дублировались комады undo_redo
+            //удаляем регистрацию в родительской системе, что бы не дублировались комады undo_redo
             children_system.ParentUnDoReDo = this;
             ChildrenSystems.Add(children_system);
             unregisted_from_parentSystem_objects.Add(children_system as UnDoReDoSystem, new List<IJornalable>());
@@ -238,22 +258,32 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         #region  Changes Invoke Metjods
         private void OnObservedCommandCreated(object sender, UnDoReDoCommandCreateEventsArgs e)
         {
+            IJornalable changed_obj = sender as IJornalable;
             _UnDoCommands.Push(e.Command);
-            (sender as IJornalable).ChangesJornal.Add(e.Command);
+
+            if (!ChangedObjects.Contains(changed_obj)) ChangedObjects.Add(changed_obj);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OnCommandCreated"));
         }
         private void OnModelPropertyBeforeChanged(object sender, PropertyBeforeChangeEvantArgs e)
         {
+            IJornalable changed_obj = sender as IJornalable;
             PropertySetCommand setCommand =
-                new PropertySetCommand(sender as IJornalable, e.PropertyName, e.NewValue, e.LastValue);
+                new PropertySetCommand(changed_obj, e.PropertyName, e.NewValue, e.LastValue);
             _UnDoCommands.Push(setCommand);
-            (sender as IJornalable).ChangesJornal.Add(setCommand);
+
+            if (!ChangedObjects.Contains(changed_obj)) ChangedObjects.Add(changed_obj);
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OnModelPropertyBeforeChanged"));
         }
         public void AddUnDoReDo(IUnDoReDoSystem unDoReDo)
         {
             _UnDoCommands.Push((UnDoReDoSystem)unDoReDo);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AddUnDoReDo"));
+        }
+        private int OnSaveChages(object sender, JornalEventsArgs e)
+        {
+
+            return 1;
         }
         #endregion
 
@@ -275,6 +305,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             UnDoAll();
         }
         public string Name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        /// <summary>
+        /// Объекты который были изменены
+        /// </summary>
         public ObservableCollection<IJornalable> ChangedObjects { get; set; } = new ObservableCollection<IJornalable>();
         #endregion
 

@@ -18,6 +18,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated = delegate { };
+        public event SaveChangesEventHandler SaveChanges;
         /// <summary>
         /// Вызывается для добалвения UnDoRedo команды в систему UnDoRedo
         /// </summary>
@@ -91,6 +92,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 return null;
         }
         [CreateNewWhenCopy]
+        [NotJornaling]
         public bool HasErrors
         {
             get { return _errors.Count > 0; }
@@ -116,13 +118,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #endregion
 
         #region IJornaling
-        //public void SaveChanges()
-        //{
- 
-        //}
-
+      
+        private ObservableCollection<IUnDoReDoSystem> _unDoReDoSystems = new ObservableCollection<IUnDoReDoSystem>();
+        [NotJornaling]
+        [NotMapped]
+        public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems
+        {
+            get { return _unDoReDoSystems; }
+            set { SetProperty(ref _unDoReDoSystems, value); }
+        }
 
         private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
+        [NotJornaling]
         [NotMapped]
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal
         {
@@ -130,30 +137,32 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _changesJornal, value); }
         }
 
-        private bool b_jornal_recording_flag = true;
-         public void JornalingOff()
+        private bool b_jornal_recording_flag = false;
+        public void JornalingOff()
         {
             if (b_jornal_recording_flag == true)
                 b_jornal_recording_flag = false;
         }
         public void JornalingOn()
         {
-            if (b_jornal_recording_flag == false)
+            if (b_jornal_recording_flag == false && UnDoReDoSystems.Count>0)
                 b_jornal_recording_flag = true;
         }
+        public void Save(IUnDoReDoSystem unDoReDo)
+        {
+         int? saved_items=  this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
+        }
         #endregion
-
         public BindableBase()
         {
         }
-
         [NotMapped]
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе (например копирования рефлексией) с данныv объектом по умолчанию 
 
         #region  IHierarchical
         public ObservableCollection<IEntityObject> _parents = new ObservableCollection<IEntityObject>();
-        [NotMapped]
         [NavigateProperty]
+        [NotMapped]
         public ObservableCollection<IEntityObject> Parents
         {
             get { return _parents; }
@@ -162,14 +171,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 SetProperty(ref _parents, value);
             }
         }
+
         private ObservableCollection<IEntityObject> _children = new ObservableCollection<IEntityObject>();
-        [NotMapped]
         [NavigateProperty]
+        [NotMapped]
         public ObservableCollection<IEntityObject> Children
         {
             get { return _children; }
             set { _children = value; }
         }
+
         #endregion
 
         public virtual object Clone()
@@ -225,6 +236,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             return new_object;
         }
+
+  
         //public virtual object Clone()
         //{
         //    BindableBase new_object = (BindableBase)Activator.CreateInstance(this.GetType());

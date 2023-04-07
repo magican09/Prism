@@ -44,6 +44,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
 
     }
+    [AttributeUsage(AttributeTargets.Property)]
     public class NotJornalingAttribute : ValidationAttribute
     {
         public override bool IsValid(object value)

@@ -8,7 +8,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void JornalingOn();
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged;
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
+        public event SaveChangesEventHandler SaveChanges;    
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal { get; set; }
+        public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems{ get; set; }
+        public void Save(IUnDoReDoSystem unDoReDo);
       //  public void SaveChanges();
     }
     public enum AdjustStatus

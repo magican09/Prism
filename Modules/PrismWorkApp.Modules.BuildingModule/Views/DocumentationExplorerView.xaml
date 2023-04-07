@@ -17,7 +17,7 @@
                 <ResourceDictionary
                             Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/MenuItemsTheme.xaml"/>
                 <ResourceDictionary
-                            Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/TreeViewTheme.xaml"/>
+                            Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/MainTreeViewTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

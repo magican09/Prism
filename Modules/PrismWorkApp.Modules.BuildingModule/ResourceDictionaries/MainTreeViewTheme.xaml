@@ -6,11 +6,18 @@
                      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                      xmlns:prism="http://prismlibrary.com/">
 
+    <ResourceDictionary.MergedDictionaries>
+
+        <ResourceDictionary
+                            Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/MenuItemsTheme.xaml"/>
+   
+    </ResourceDictionary.MergedDictionaries>
+    
     <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
     <loc_core:GetImageFrombldProjectObjectConvecter x:Key="imgFrombldProjectObject"/>
     <loc_core:StringToUriConverter x:Key="stringToUriConverter"/>
     <loc_core:DataTypeConverter x:Key="dataTypeConverter"/>
-   
+    <loc_core:IsCollectionEmpty x:Key="isCollectionEmpty"/>
     <Style x:Key="MenuItemContainerStyle" TargetType="MenuItem">
     <Setter Property="Header" Value="{Binding Name,Mode=TwoWay}"/>
     <Setter Property="ItemsSource" Value="{Binding Items}"/>
@@ -58,10 +65,18 @@
    
     <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}">
         <StackPanel Orientation="Horizontal">
+            <Image x:Name="imageObjectHaveChanges" Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/MainTreeView/object_changed.png"/>
             <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
             <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding Text}" Margin="5 0 0 0" />
         </StackPanel>
+        <HierarchicalDataTemplate.Triggers>
+            <!--<DataTrigger Binding="{Binding AttachedObject.ChangesJornal,Converter={StaticResource isCollectionEmpty}}" Value="True">-->
+            <DataTrigger Binding="{Binding AttachedObject.ChangesJornal.Count}" Value="0">
+                <Setter TargetName="imageObjectHaveChanges" Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </HierarchicalDataTemplate.Triggers>
     </HierarchicalDataTemplate>
+
 
     <DataTemplate x:Key="EditTreeViewTemplate">
         <StackPanel Orientation="Horizontal">

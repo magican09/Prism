@@ -185,7 +185,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             if (obj is IList list) selected_object = list[0]; else selected_object = obj;
             var command = AppObjectsModel.LoadAggregationDocumentFromDBCommand;
             bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
-
+         //   All_AggregationDocuments.SaveChanges();
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
                       (All_AggregationDocuments, _dialogService, (result) =>
                       {
@@ -331,7 +331,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             bool save_permit = false;
                             UnDoReDo.SaveAll((udrd_sys) =>
                             {
-                             
+                                var changed_objects = UnDoReDo.ChangedObjects;
                                 CoreFunctions.ConfirmActionDialog("Сохранить все изменения в документации БД?", "Документация",
                               "Сохранить", "Отмена", (result) =>
                                                  {

@@ -20,45 +20,6 @@ namespace PrismWorkApp.Modules.BuildingModule
     [ContentProperty("Children")]
     public class DataItem : DependencyObject,INotifyPropertyChanged
     {
-
-
-        public string Text
-        {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TextProperty =
-           DependencyProperty.Register(
-                    "Text",
-                    typeof(string),
-                    typeof(DataItem),
-                    new FrameworkPropertyMetadata(
-                        string.Empty));
-
-
-        private static object CoerceText(DependencyObject d, object baseValue)
-        {
-            return d;
-        }
-
-        private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            
-        }
-
-
-
-
-        //private string _text;
-
-        //public string Text
-        //{
-        //    get { return _text; }
-        //    set { _text = value; OnPropertyChanged("Text"); }
-        //}
-
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {
@@ -69,6 +30,30 @@ namespace PrismWorkApp.Modules.BuildingModule
         }
         public DataItemInitDelegateHandler DataItemInit;
         public AttachedCollectionChangedDelegateHandler AttachedObjectCollectionChanged;
+
+        public string Text
+        {
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+        public static readonly DependencyProperty TextProperty =
+           DependencyProperty.Register(
+                    "Text",
+                    typeof(string),
+                    typeof(DataItem),
+                    new FrameworkPropertyMetadata(
+                        string.Empty));
+
+        private bool _isHaveChanges;
+
+        public bool IsHaveChanges
+        {
+            get { return _isHaveChanges; }
+            set { _isHaveChanges = value; OnPropertyChanged("IsHaveChanges"); }
+        }
+
+
+
         // public MenuItemExpandDelegateHandler MenuItemExpand;
         public DataItem()
         {

@@ -25,6 +25,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
             _Collection.Add(_Item);
             ChangedObjects.Add(_Item);
             ChangedObjects.Add(_Collection);
+            _Item.ChangesJornal.Add(this);
+            _Collection.ChangesJornal.Add(this);
+            if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Add(this);
             _Collection.JornalingOn();
 
         }
@@ -35,6 +38,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
             _Collection.Remove(_Item);
             ChangedObjects.Remove(_Item);
             ChangedObjects.Remove(_Collection);
+            _Item.ChangesJornal.Remove(this);
+            _Collection.ChangesJornal.Remove(this);
+            if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Remove(this);
             _Collection.JornalingOn();
         }
         public InsertItemCommand(int index,TEntity  item, NameableObservableCollection<TEntity> collection)
@@ -47,6 +53,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
             _Collection.Add(_Item);
             ChangedObjects.Add(_Item);
             ChangedObjects.Add(_Collection);
+            _Item.ChangesJornal.Add(this);
+            _Collection.ChangesJornal.Add(this);
+            if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Add(this);
             _Collection.JornalingOn();
         }
     }

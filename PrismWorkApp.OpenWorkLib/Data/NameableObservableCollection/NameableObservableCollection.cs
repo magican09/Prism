@@ -24,7 +24,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         protected virtual bool BaseSetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = "")
         {
-           if (object.Equals(val, member)) return false;
+            if (object.Equals(val, member)) return false;
             if (b_jornal_recording_flag)
             {
                 PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
@@ -80,6 +80,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             else
                 return null;
         }
+        [NotJornaling]
         public bool HasErrors
         {
             get { return _errors.Count > 0; }
@@ -106,39 +107,58 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #region Constructors
         public NameableObservableCollection()
         {
-            Id = Guid.NewGuid();
-            CollectionChanged += OnCollectionChangedMethod;
-
         }
         public NameableObservableCollection(string name) : this()
         {
-            Id = Guid.NewGuid();
             Name = name;
-            CollectionChanged += OnCollectionChangedMethod;
         }
-        public NameableObservableCollection(List<TEntity> list) : base(list)
+        public NameableObservableCollection(List<TEntity> list)
         {
-            Id = Guid.NewGuid();
-            CollectionChanged += OnCollectionChangedMethod;
-        }
-        public NameableObservableCollection(IList<TEntity> list) : base(list)
-        {
-            Id = Guid.NewGuid();
-            CollectionChanged += OnCollectionChangedMethod;
-        }
-        public NameableObservableCollection(ICollection<TEntity> collection) : base(collection)
-        {
-            Id = Guid.NewGuid();
-            CollectionChanged += OnCollectionChangedMethod;
+           if (b_jornal_recording_flag)
+            {
 
+                AddListCommand<TEntity> Command = new AddListCommand<TEntity>(list, this);
+                InvokeUnDoReDoCommandCreatedEvent(Command);
+            }
+            else
+            {
+                //var constructor = this.GetType().BaseType.GetConstructor(new Type[] { list.GetType() });
+                //constructor.Invoke(new object[] { list });
+                foreach (TEntity entity in list)
+                    this.Add(entity);
+            }
         }
-        public NameableObservableCollection(IEnumerable<TEntity> entities) : base(entities)
+        public NameableObservableCollection(IEnumerable<TEntity> entities) //: base(entities)
         {
-            Id = Guid.NewGuid();
-            CollectionChanged += OnCollectionChangedMethod;
+            if (b_jornal_recording_flag)
+            {
+
+                AddListCommand<TEntity> Command = new AddListCommand<TEntity>(entities,this);
+                InvokeUnDoReDoCommandCreatedEvent(Command);
+            }
+            else
+            {
+
+                //Type[] types = new Type[1];
+                //types[0] = entities.GetType();
+                //var constructor = this.GetType().BaseType.GetConstructor(types);
+                //var ds  =  constructor.Invoke(new object[] { entities });
+                foreach (TEntity entity in entities)
+                    this.Add(entity);
+            }
         }
+
         #endregion
         #region  IJornaling service
+        public event SaveChangesEventHandler SaveChanges;
+        private ObservableCollection<IUnDoReDoSystem> _unDoReDoSystems = new ObservableCollection<IUnDoReDoSystem>();
+        [NotMapped]
+        [NotJornaling]
+        public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems
+        {
+            get { return _unDoReDoSystems; }
+            set { SetProperty(ref _unDoReDoSystems, value); }
+        }
         private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
         [NotJornaling]
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal
@@ -146,10 +166,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _changesJornal; }
             set { SetProperty(ref _changesJornal, value); }
         }
-        private bool b_jornal_recording_flag = true;
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated = delegate { };
-    
+        private bool b_jornal_recording_flag = false;
         public void JornalingOff()
         {
             if (b_jornal_recording_flag == true)
@@ -158,28 +177,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void JornalingOn()
         {
-            if (b_jornal_recording_flag == false)
+            if (b_jornal_recording_flag == false && UnDoReDoSystems.Count > 0)
                 b_jornal_recording_flag = true;
         }
-        #endregion
-        public Func<TEntity, bool> SortPridicate;
-        public string SortedPropertyName;
-    
-        private void OnCollectionChangedMethod(object sender, NotifyCollectionChangedEventArgs e)
+        public void Save(IUnDoReDoSystem unDoReDo)
         {
-          
-            if (e.Action == NotifyCollectionChangedAction.Add && !b_jornal_recording_flag)
-            {
-                //foreach (IEntityObject added_element in e.NewItems) /////Эта же функция реализована в AddItemCommand
-                //    added_element.Parents.Add(Owner);
-            }
+
+            int? saved_items = this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
 
         }
-
+        #endregion
         public object Clone()
         {
             IList new_collection = (IList)Activator.CreateInstance(this.GetType());
-                 var prop_infoes = new_collection.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            var prop_infoes = new_collection.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
             foreach (PropertyInfo prop_info in prop_infoes)
             {
                 var prop_val = prop_info.GetValue(new_collection);
@@ -214,7 +225,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     else
                         if (no_copy__attributes.Length == 0)
                         prop_info.SetValue(new_collection, prop_val);
-               }
+                }
             }
 
             foreach (TEntity element in this)
@@ -224,9 +235,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
              ((IKeyable)new_collection).Id = Guid.Empty;
             return new_collection;
         }
-         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе с данных объектом по умолчанию
-     
+        public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе с данных объектом по умолчанию
         private IEntityObject _owner;
+        [NotJornaling]
         public IEntityObject Owner
         {
             get { return _owner; }
@@ -253,7 +264,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { _children = value; }
         }
         #endregion
- 
+
         protected override void SetItem(int index, TEntity item)
         {
             if (b_jornal_recording_flag)
@@ -271,7 +282,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
             if (b_jornal_recording_flag)
             {
-                InsertItemCommand<TEntity> Command = new InsertItemCommand<TEntity>(index,item, this);
+                InsertItemCommand<TEntity> Command = new InsertItemCommand<TEntity>(index, item, this);
                 InvokeUnDoReDoCommandCreatedEvent(Command);
             }
             else
@@ -293,5 +304,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 base.RemoveItem(index);
             }
         }
+
+
     }
 }

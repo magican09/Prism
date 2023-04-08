@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
@@ -17,8 +15,8 @@ namespace PrismWorkApp.Services.Repositories
         }
 
         #region Resources 
-      
-        public virtual DbSet<bldResourseCategory>   ResourseCategories { get; set; }
+
+        public virtual DbSet<bldResourseCategory> ResourseCategories { get; set; }
         public virtual DbSet<bldMaterial> Materials { get; set; }
         public virtual DbSet<bldResource> Resources { get; set; }
 
@@ -71,9 +69,9 @@ namespace PrismWorkApp.Services.Repositories
             //    .HasConversion(
             //    v => v as ICollection<bldResourseCategory>,
             //    v => v as ObservableCollection<BindableBase>);
-          
 
-            
+
+
             modelBuilder.Entity<bldMaterialCertificate>().ToTable("MaterialCertificates");
             modelBuilder.Entity<bldPasportDocument>().ToTable("PasportDocuments");
             base.OnModelCreating(modelBuilder);

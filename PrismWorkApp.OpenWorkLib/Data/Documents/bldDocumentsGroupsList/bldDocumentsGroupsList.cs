@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
     //public class bldDocumentsGroupsList : NameableObservableCollection<bldDocumentsGroup>, IbldDocumentsGroupsList
     //{

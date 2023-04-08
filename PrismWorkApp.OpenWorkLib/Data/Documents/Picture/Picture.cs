@@ -1,14 +1,13 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
     public partial class Picture : BindableBase, INameable, IKeyable
     {
-       
+
         public Guid DataId { get; set; } = Guid.NewGuid();
         private byte[] _data;
-     
+
         public byte[] Data
         {
             get { return _data; }

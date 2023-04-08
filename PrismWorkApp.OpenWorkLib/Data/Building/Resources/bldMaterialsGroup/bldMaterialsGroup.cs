@@ -1,8 +1,6 @@
-﻿using System.ComponentModel;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldMaterialsGroup : NameableObservableCollection<bldMaterial>, IbldMaterialsGroup 
+    public class bldMaterialsGroup : NameableObservableCollection<bldMaterial>, IbldMaterialsGroup
     {
 
         public bldMaterialsGroup()

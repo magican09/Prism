@@ -12,6 +12,6 @@
         public bldExecutiveSchemesGroup ExecutiveSchemes { get; }
         // public bldAOSRDocumentsGroup AOSRDocuments { get; set; }
         public bldAOSRDocument AOSRDocument { get; set; }
-        
+
     }
 }

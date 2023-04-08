@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldResourseCategoriesGroup : NameableObservableCollection<bldResourseCategory>
     {

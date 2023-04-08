@@ -1,18 +1,15 @@
 ﻿using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Prism;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
-using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -20,11 +17,9 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.GridView;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -119,7 +114,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         AppObjectsModel _appObjectsModel;
         public AggregationDocumentsViewModel(IDialogService dialogService,
-           IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands,IAppObjectsModel appObjectsModel)
+           IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel)
         {
 
             UnDoReDo = new UnDoReDoSystem();
@@ -430,11 +425,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public virtual void OnSave()
         {
-            base.OnSave<bldDocumentsGroup>(AggregationDocuments);
+            foreach (bldDocument document in AggregationDocuments)
+            {
+                if (UnDoReDo.ChangedObjects.Contains(document))
+                    base.OnSave<bldDocument>(document);
+            }
+
         }
         public virtual void OnClose(object obj)
         {
             base.OnClose<bldDocumentsGroup>(obj, AggregationDocuments);
+            UnDoReDo.ParentUnDoReDo?.UnSetChildrenUnDoReDoSystem(UnDoReDo);
         }
         public override void OnWindowClose()
         {
@@ -454,23 +455,23 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 UnDoReDoSystem parent_undoredo_sys = (UnDoReDoSystem)parent_undoredo_navigane_message.Object;
 
                 EditMode = navigane_message.EditMode;
-                if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
+
                 if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
                 {
                     AggregationDocuments.Add(arg_document);
                     if (parent_undoredo_sys != null && !parent_undoredo_sys.ChildrenSystems.Contains(UnDoReDo))
                     {
-                        parent_undoredo_sys.SetChildrenUnDoReDoSystem(UnDoReDo);
+                        //parent_undoredo_sys.SetChildrenUnDoReDoSystem(UnDoReDo);
+                        parent_undoredo_sys.AddUnDoReDo(UnDoReDo);
                     }
-                    UnDoReDo.Register(arg_document);
-                    UnDoReDo.Register(arg_document);
-                    foreach (bldDocument document in AggregationDocuments)
-                    {
-                        UnDoReDo.Register(document);
-                        foreach (bldDocument attach_document in document.AttachedDocuments)
-                            UnDoReDo.Register(attach_document);
-                    }
+                    parent_undoredo_sys.UnRegisterAll(arg_document);
+                    UnDoReDo.RegisterAll(arg_document);
+                    //UnDoReDo.Register(arg_document);
+                    //UnDoReDo.Register(arg_document.AttachedDocuments);
+                    //foreach (bldDocument document in arg_document.AttachedDocuments)
+                    //    UnDoReDo.Register(document);
                 }
+                if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
                 AggregationDocuments.ErrorsChanged += RaiseCanExecuteChanged;
                 //  Title = $"{AggregationDocuments.Code} {AggregationDocuments.Name}";
             }

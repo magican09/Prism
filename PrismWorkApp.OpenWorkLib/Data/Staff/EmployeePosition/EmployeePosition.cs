@@ -4,7 +4,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class EmployeePosition : BindableBase, IEmployeePosition, IEntityObject
     {
-        
+
 
         private DateTime _date;
         public DateTime Date
@@ -12,7 +12,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _date; }
             set { SetProperty(ref _date, value); }
         }
-       
+
         private string _shortName;
         public string ShortName
         {

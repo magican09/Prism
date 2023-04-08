@@ -34,25 +34,25 @@ namespace PrismWorkApp
             //   containerRegistry.RegisterSingleton<IProjectRepository, ProjectRepository>();
             containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
             containerRegistry.RegisterSingleton<IModulesContext, ModulesContext>();
-            
+
             containerRegistry.RegisterSingleton<IAppSettingsSystem, AppSettingsSystem>();
-          
+
             containerRegistry.RegisterSingleton<IBuildingUnitsRepository, BuildingUnitsRepository>();
-         //   containerRegistry.RegisterSingleton<IbldMaterialsUnitsRepository, bldMaterialsUnitsRepository>();
+            //   containerRegistry.RegisterSingleton<IbldMaterialsUnitsRepository, bldMaterialsUnitsRepository>();
             containerRegistry.RegisterSingleton<IUnDoReDoSystem, UnDoReDoSystem>();
-            
+
             containerRegistry.RegisterDialog<MessageDialog, MessageDialogViewModel>();
             containerRegistry.RegisterDialog<ConfirmActionDialog, ConfirmActionDialogViewModel>();
             containerRegistry.RegisterDialog<InputTextValueDialog, InputTextValueDialogViewModel>();
-            
+
             containerRegistry.RegisterDialog<ConfirmActionWhithoutCancelDialog, ConfirmActionWhithoutCancelDialogViewModel>();
             containerRegistry.RegisterDialogWindow<CommonDialogWindow>();
             //AppObjectsModel appModel = Container.Resolve<AppObjectsModel>();
-           // containerRegistry.RegisterInstance(appModel);
+            // containerRegistry.RegisterInstance(appModel);
             containerRegistry.RegisterSingleton<IAppObjectsModel, AppObjectsModel>();
 
 
-               ;
+            ;
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

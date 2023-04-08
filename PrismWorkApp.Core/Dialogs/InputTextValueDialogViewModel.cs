@@ -94,7 +94,7 @@ namespace PrismWorkApp.Core.Dialogs
         {
             Message = parameters.GetValue<string>("massege");
             InputText = parameters.GetValue<string>("input_text");
-          
+
         }
     }
 }

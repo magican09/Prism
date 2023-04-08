@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
-{ 
-  public abstract class UnDoRedoCommandBase
+{
+    public abstract class UnDoRedoCommandBase
     {
-      public ObservableCollection<IJornalable>  ChangedObjects {get;set;} = new ObservableCollection<IJornalable>();
+        public ObservableCollection<IJornalable> ChangedObjects { get; set; } = new ObservableCollection<IJornalable>();
     }
 }

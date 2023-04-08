@@ -81,7 +81,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            
+
             if (value == null) return null;
             Type node_object_type = value.GetType();
             //if (value is Type)
@@ -159,7 +159,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             // Uri img_uri_ = new Uri($"pack://application:,,,/Resourses/Images/Ribbon/32x32/add.png");
 
             //new BitmapImage(img_uri);
-            return  img_uri;
+            return img_uri;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -235,10 +235,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                                 img_suffix = "_NONE";
                                 break;
                         }
-                  
+
                         break;
                     }
-                case (nameof(bldAggregationDocument)): { item_node_text=(value as bldAggregationDocument).Name; break;}
+                case (nameof(bldAggregationDocument)): { item_node_text = (value as bldAggregationDocument).Name; break; }
                 case (nameof(bldDocumentsGroup)): { item_node_text = (value as bldDocumentsGroup).Name; break; }
                 case (nameof(bldMaterialCertificate)): { item_node_text = (value as bldMaterialCertificate).MaterialName; break; }
 
@@ -257,7 +257,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             // Uri img_uri_ = new Uri($"pack://application:,,,/Resourses/Images/Ribbon/32x32/add.png");
 
             //new BitmapImage(img_uri);
-            return new Tuple<Uri,string>(img_uri,item_node_text);
+            return new Tuple<Uri, string>(img_uri, item_node_text);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -665,7 +665,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value as ICollection).Count==0;
+            return (value as ICollection).Count == 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -700,7 +700,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             throw new NotImplementedException();
         }
     }
-  
+
     public class ObjectsPairMultiConverter : IMultiValueConverter
     {
 
@@ -723,7 +723,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             List<object> output_objects = new List<object>();
             foreach (object obj in values)
                 output_objects.Add(obj);
-            
+
             return output_objects;
         }
 

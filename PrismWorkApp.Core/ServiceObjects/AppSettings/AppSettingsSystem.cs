@@ -1,20 +1,18 @@
-﻿using PrismWorkApp.OpenWorkLib.Data;
+﻿
+using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
 
 namespace PrismWorkApp.Core
 {
-    public class AppSettingsSystem :BindableBase, INotifyPropertyChanged, IAppSettingsSystem
+    public class AppSettingsSystem : BindableBase, INotifyPropertyChanged, IAppSettingsSystem
     {
         private readonly string appDataPath;
         private AppSettings _appSettings = new AppSettings();
         public string AppSaveDirName = "WorkApp";
-        public string SettingsFaileName  = "user_settings.json";
+        public string SettingsFaileName = "user_settings.json";
         public AppSettings AppSettings
         {
             get { return _appSettings; }
@@ -36,7 +34,7 @@ namespace PrismWorkApp.Core
         {
             string settings_tesx = File.ReadAllText(Path.Combine(appDataPath, SettingsFaileName));
             AppSettings settings = JsonSerializer.Deserialize(settings_tesx, typeof(AppSettings)) as AppSettings;
-           
+
         }
     }
 }

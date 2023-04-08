@@ -1,5 +1,4 @@
-﻿using Prism.Events;
-//using PrismWorkApp.ProjectModel.Data.Models;
+﻿//using PrismWorkApp.ProjectModel.Data.Models;
 
 namespace PrismWorkApp.Core.Events
 {

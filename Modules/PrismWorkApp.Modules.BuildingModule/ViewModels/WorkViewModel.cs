@@ -533,7 +533,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     }
                 }, _dialogService, Id);
         }
-      
+
         private void OnRemovePreviousWork()
         {
 
@@ -566,7 +566,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
 
 
-          private void OnDataGridLostSocus(object obj)
+        private void OnDataGridLostSocus(object obj)
         {
 
             if (obj == SelectedPreviousWork)

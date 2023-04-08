@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
 
-namespace PrismWorkApp.Modules.BuildingModule 
+namespace PrismWorkApp.Modules.BuildingModule
 {
-    public class DataItemCollection:ObservableCollection<DataItem>,INotifyPropertyChanged
+    public class DataItemCollection : ObservableCollection<DataItem>, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
@@ -19,7 +16,7 @@ namespace PrismWorkApp.Modules.BuildingModule
         public DataItemCollection(DataItem owner)
         {
             Owner = owner;
-           
+
         }
         private DataItem _owner;
 
@@ -33,10 +30,10 @@ namespace PrismWorkApp.Modules.BuildingModule
             item.Parent = this.Owner;
             if (this.Owner != null)
             {
-             //   item.AttachedObjectCollectionChanged += this.Owner.AttachedObjectCollectionChanged;
+                //   item.AttachedObjectCollectionChanged += this.Owner.AttachedObjectCollectionChanged;
                 item.DataItemInit += this.Owner.DataItemInit;
-              //  item.MenuItemExpand += this.Owner.MenuItemExpand;
-                
+                //  item.MenuItemExpand += this.Owner.MenuItemExpand;
+
             }
             base.SetItem(index, item);
         }
@@ -47,9 +44,9 @@ namespace PrismWorkApp.Modules.BuildingModule
                 item.Parent = null;
                 if (this.Owner != null)
                 {
-                 //   item.AttachedObjectCollectionChanged -= this.Owner.AttachedObjectCollectionChanged;
-                  //  item.DataItemInit -= this.Owner.DataItemInit;
-                //    item.MenuItemExpand -= this.Owner.MenuItemExpand;
+                    //   item.AttachedObjectCollectionChanged -= this.Owner.AttachedObjectCollectionChanged;
+                    //  item.DataItemInit -= this.Owner.DataItemInit;
+                    //    item.MenuItemExpand -= this.Owner.MenuItemExpand;
                 }
             }
             base.ClearItems();
@@ -59,13 +56,13 @@ namespace PrismWorkApp.Modules.BuildingModule
             item.Parent = this.Owner;
             if (this.Owner != null)
             {
-               // item.AttachedObjectCollectionChanged += this.Owner.AttachedObjectCollectionChanged;
+                // item.AttachedObjectCollectionChanged += this.Owner.AttachedObjectCollectionChanged;
                 item.DataItemInit += this.Owner.DataItemInit;
-            //    item.MenuItemExpand += this.Owner.MenuItemExpand;
+                //    item.MenuItemExpand += this.Owner.MenuItemExpand;
             }
 
-           if(!this.Contains(item))
-              base.InsertItem(index, item);
+            if (!this.Contains(item))
+                base.InsertItem(index, item);
 
         }
         protected override void RemoveItem(int index)
@@ -73,9 +70,9 @@ namespace PrismWorkApp.Modules.BuildingModule
             this[index].Parent = null;
             if (this.Owner != null)
             {
-               // this[index].AttachedObjectCollectionChanged -= this.Owner.AttachedObjectCollectionChanged;
+                // this[index].AttachedObjectCollectionChanged -= this.Owner.AttachedObjectCollectionChanged;
                 this[index].DataItemInit -= this.Owner.DataItemInit;
-              //  this[index].MenuItemExpand -= this.Owner.MenuItemExpand;
+                //  this[index].MenuItemExpand -= this.Owner.MenuItemExpand;
             }
             base.RemoveItem(index);
         }

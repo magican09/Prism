@@ -1,14 +1,13 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
-using System.Collections.Generic;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class RemoveItemCommand<TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand where TEntity: IEntityObject
+    public class RemoveItemCommand<TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand where TEntity : IEntityObject
     {
         private NameableObservableCollection<TEntity> _Collection;
         private TEntity _Item;
-     
+
         public string Name { get; set; } = "Элемент удален";
 
         public event EventHandler CanExecuteChanged;
@@ -43,7 +42,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Remove(this);
             _Collection.JornalingOn();
         }
-        public RemoveItemCommand(TEntity  item, NameableObservableCollection<TEntity> collection)
+        public RemoveItemCommand(TEntity item, NameableObservableCollection<TEntity> collection)
         {
             _Item = item;
             _Collection = collection;

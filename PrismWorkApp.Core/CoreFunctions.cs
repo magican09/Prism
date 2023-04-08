@@ -73,7 +73,7 @@ namespace PrismWorkApp.Core
         public static void RemoveElementFromCollectionWhithDialog<TContainer, T>
                (T element, string element_type_name,
             Action<IDialogResult> elm_erase_action, IDialogService dialogService, Guid current_context_id)
-           where TContainer : ICollection,IList
+           where TContainer : ICollection, IList
            where T : IEntityObject
         {
             var dialog_par = new DialogParameters();
@@ -133,21 +133,21 @@ namespace PrismWorkApp.Core
             });
 
         }
-       public static object GetContainObjectFromParentProperties(object paren_obj,object child_obj)
+        public static object GetContainObjectFromParentProperties(object paren_obj, object child_obj)
         {
             var prop_infoes = paren_obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
 
-            foreach(PropertyInfo propertyInfo in prop_infoes)
+            foreach (PropertyInfo propertyInfo in prop_infoes)
             {
                 var prop_val = propertyInfo.GetValue(paren_obj);
-                if (prop_val == child_obj) 
+                if (prop_val == child_obj)
                     return propertyInfo;
                 if (prop_val is IList coll_prop_val && coll_prop_val.Contains(child_obj))
                     return coll_prop_val;
             }
             return null;
         }
-       
+
         /// <summary>
         /// Функция удаления объекта из родительского из свойств(как типа объект и типа лист) родительского объекта 
         /// </summary>
@@ -163,7 +163,7 @@ namespace PrismWorkApp.Core
             string element_type_name,
             string element_name,
            IDialogService dialogService,
-            Action<IDialogResult> elm_erase_action=null)
+            Action<IDialogResult> elm_erase_action = null)
         {
             var dialog_par = new DialogParameters();
             dialog_par.Add("massege",
@@ -179,9 +179,9 @@ namespace PrismWorkApp.Core
                     {
                         contain_obj_coll.Remove(child_obj);
                     }
-                    else if(contain_obj is PropertyInfo parent_prop_info)
+                    else if (contain_obj is PropertyInfo parent_prop_info)
                     {
-                        parent_prop_info.SetValue(paren_obj,null);
+                        parent_prop_info.SetValue(paren_obj, null);
                     }
                     var res_massage = result.Parameters.GetValue<string>("confirm_dialog_param");
                     var p = new DialogParameters();
@@ -197,7 +197,7 @@ namespace PrismWorkApp.Core
             });
 
         }
-       
+
 
         #endregion
 
@@ -271,12 +271,12 @@ namespace PrismWorkApp.Core
 
         }
         public static void InputTextValueActionDialog
-           (string action_name, string input_text, 
+           (string action_name, string input_text,
          Action<IDialogResult> action, IDialogService dialogService)
         {
             var dialog_par = new DialogParameters();
-            dialog_par.Add("massege",action_name);
-           
+            dialog_par.Add("massege", action_name);
+
             dialogService.ShowDialog(typeof(InputTextValueDialog).Name, dialog_par, action);
 
         }
@@ -369,7 +369,7 @@ namespace PrismWorkApp.Core
                 string currentCollectionName = "",
                 string commonCollectionName = ""
                 )
-            where TContainer : ICollection<T>,  new()
+            where TContainer : ICollection<T>, new()
             where T : INameable
         {
             TContainer current_collection = new TContainer();
@@ -504,7 +504,7 @@ namespace PrismWorkApp.Core
                string message = "",
                string collectionName = "")
            where TContainer : ICollection
-           where T :  new()
+           where T : new()
         {
 
             var dialog_par = new DialogParameters();
@@ -517,7 +517,7 @@ namespace PrismWorkApp.Core
             dialogService.ShowDialog(dialogViewName, dialog_par, action);
 
         }
-        public static void GetElementFromCollectionWhithDialog(IList collection,IEntityObject obj,
+        public static void GetElementFromCollectionWhithDialog(IList collection, IEntityObject obj,
                IDialogService dialogService, Action<IDialogResult> action,
                string dialogViewName,
                string title = "",
@@ -2364,19 +2364,19 @@ namespace PrismWorkApp.Core
         #endregion
         #endregion
         #region Collections func 
-        public static TCollection FindElementInCollection<TEntity,TCollection>(TCollection collection,string prop_name,object finding_val) 
-            where TCollection:IList,ICollection<TEntity>,new()
-            where TEntity:class
+        public static TCollection FindElementInCollection<TEntity, TCollection>(TCollection collection, string prop_name, object finding_val)
+            where TCollection : IList, ICollection<TEntity>, new()
+            where TEntity : class
         {
             TCollection out_collection = new TCollection();
             var prop_info = collection[0].GetType().GetProperty(prop_name);
             if (prop_info == null) return out_collection;
-            foreach(TEntity entity in collection)
+            foreach (TEntity entity in collection)
             {
                 var prop_val = prop_info.GetValue(entity);
 
                 //if (prop_val is string && finding_val is string &&  prop_val.ToString().Contains(finding_val.ToString()))
-                if (prop_val!=null && prop_val.ToString().Contains(finding_val.ToString()))
+                if (prop_val != null && prop_val.ToString().Contains(finding_val.ToString()))
                     out_collection.Add(entity);
                 //else
                 //if(prop_val == finding_val)

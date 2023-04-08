@@ -14,7 +14,7 @@ using System.Runtime.CompilerServices;
 namespace PrismWorkApp.OpenWorkLib.Data
 {
 
-    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableObservableCollection<TEntity>, ICloneable, INotifyCollectionChanged, IEntityObject
+    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableObservableCollection, ICloneable, INotifyCollectionChanged, IEntityObject
         where TEntity : IEntityObject
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -114,7 +114,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public NameableObservableCollection(List<TEntity> list)
         {
-           if (b_jornal_recording_flag)
+            if (b_jornal_recording_flag)
             {
 
                 AddListCommand<TEntity> Command = new AddListCommand<TEntity>(list, this);
@@ -133,38 +133,37 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (b_jornal_recording_flag)
             {
 
-                AddListCommand<TEntity> Command = new AddListCommand<TEntity>(entities,this);
+                AddListCommand<TEntity> Command = new AddListCommand<TEntity>(entities, this);
                 InvokeUnDoReDoCommandCreatedEvent(Command);
             }
             else
             {
 
-                //Type[] types = new Type[1];
-                //types[0] = entities.GetType();
-                //var constructor = this.GetType().BaseType.GetConstructor(types);
-                //var ds  =  constructor.Invoke(new object[] { entities });
                 foreach (TEntity entity in entities)
+                {
                     this.Add(entity);
+                }
             }
         }
 
         #endregion
         #region  IJornaling service
         public event SaveChangesEventHandler SaveChanges;
+         public event SaveChangesEventHandler SaveAllChanges;
         private ObservableCollection<IUnDoReDoSystem> _unDoReDoSystems = new ObservableCollection<IUnDoReDoSystem>();
         [NotMapped]
         [NotJornaling]
         public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems
         {
             get { return _unDoReDoSystems; }
-            set { SetProperty(ref _unDoReDoSystems, value); }
+            set { _unDoReDoSystems = value; }
         }
         private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
         [NotJornaling]
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal
         {
             get { return _changesJornal; }
-            set { SetProperty(ref _changesJornal, value); }
+            set { _changesJornal = value; }
         }
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated = delegate { };
@@ -180,12 +179,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (b_jornal_recording_flag == false && UnDoReDoSystems.Count > 0)
                 b_jornal_recording_flag = true;
         }
-        public void Save(IUnDoReDoSystem unDoReDo)
-        {
+        //public void Save(IUnDoReDoSystem unDoReDo)
+        //{
 
-            int? saved_items = this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
+        //    int? saved_items = this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
 
-        }
+        //}
+        //public void SaveAll(IUnDoReDoSystem unDoReDo)
+        //{
+        //    int? saved_items = this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
+        //}
         #endregion
         public object Clone()
         {
@@ -240,13 +243,24 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NotJornaling]
         public IEntityObject Owner
         {
-            get { return _owner; }
-            set { _owner = value; }
+            get {
+                if (_owner == null)//Если владельца списка нет - он сам свой владелец
+                    return this;
+                return _owner;
+            }
+            set {
+               
+                    if(this.Parents.Contains(Owner)) this.Parents.Remove(Owner);
+                    _owner = value;
+                    if (!this.Parents.Contains(_owner)) this.Parents.Add(_owner);
+               
+                }
         }
         #region  IHierarchical
         public ObservableCollection<IEntityObject> _parents = new ObservableCollection<IEntityObject>();
         [NotMapped]
         [NavigateProperty]
+        [NotJornaling]
         public ObservableCollection<IEntityObject> Parents
         {
             get { return _parents; }
@@ -255,13 +269,21 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 SetProperty(ref _parents, value);
             }
         }
+       
         private ObservableCollection<IEntityObject> _children = new ObservableCollection<IEntityObject>();
         [NotMapped]
         [NavigateProperty]
+        [NotJornaling]
         public ObservableCollection<IEntityObject> Children
         {
-            get { return _children; }
-            set { _children = value; }
+            get
+            {
+                //_children.Clear();
+                //foreach (TEntity item in Items)
+                //    _children.Add(item);
+                return _children;
+            }
+            set { }
         }
         #endregion
 
@@ -274,6 +296,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
+                if (!item.Parents.Contains(this)) item.Parents.Add(this);
+                if (!this.Children.Contains(item)) this.Children.Add(item);
                 base.SetItem(index, item);
             }
         }
@@ -287,6 +311,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
+                if (!item.Parents.Contains(this)) item.Parents.Add(this);
+                if (!this.Children.Contains(item)) this.Children.Add(item);
                 base.InsertItem(index, item);
             }
 
@@ -301,6 +327,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
+                TEntity item =Items[index];
+                if (item.Parents.Contains(this)) item.Parents.Remove(this);
+                if (this.Children.Contains(item)) this.Children.Remove(item); ;
                 base.RemoveItem(index);
             }
         }

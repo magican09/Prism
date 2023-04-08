@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-   public class EntityCategory : BindableBase
+    public class EntityCategory : BindableBase
     {
         public Guid? ParentId { get; set; }
 

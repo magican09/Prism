@@ -55,20 +55,20 @@ namespace PrismWorkApp.Core.Commands
                         _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
                         if (_RegisteredCommandsCanExecuteVal == false) break;
                     }
-                   else if(!notify_command.MonitorCommandActivity && 
-                        RegisteredCommands.Where(cmd=>cmd.MonitorCommandActivity==true).FirstOrDefault()==null)
+                    else if (!notify_command.MonitorCommandActivity &&
+                         RegisteredCommands.Where(cmd => cmd.MonitorCommandActivity == true).FirstOrDefault() == null)
                     {
                         _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
                         if (_RegisteredCommandsCanExecuteVal == false) break;
                     }
-                    
+
                 }
                 else
                 {
                     _RegisteredCommandsCanExecuteVal = command.CanExecute(parameter);
                     if (_RegisteredCommandsCanExecuteVal == false) break;
                 }
-             //   can_execute_val = false;
+                //   can_execute_val = false;
             }
 
             if (_LastCommand != null)
@@ -82,7 +82,7 @@ namespace PrismWorkApp.Core.Commands
             {
                 _TargetCanExecuteMethod_CanExecuteVal = true;
             }
-           
+
             can_execute_val = (RegisteredCommands.Count > 0) & _RegisteredCommandsCanExecuteVal &&
                _LastCommandCanExecuteVal &&
                _TargetCanExecuteMethod_CanExecuteVal;
@@ -96,9 +96,10 @@ namespace PrismWorkApp.Core.Commands
             {
                 if (command is INotifyCommand notify_command && _monitorCommandActivity)
                 {
-                    if (notify_command.IsActive)
+                    if (notify_command.MonitorCommandActivity && notify_command.IsActive)
                         notify_command.Execute(parameter);
-                    else if(!notify_command.MonitorCommandActivity)
+                    else if (!notify_command.MonitorCommandActivity &&
+                         RegisteredCommands.Where(cmd => cmd.MonitorCommandActivity == true).FirstOrDefault() == null)
                         notify_command.Execute(parameter);
                 }
                 else
@@ -124,7 +125,7 @@ namespace PrismWorkApp.Core.Commands
         }
         private void OnIsActivateChaged(object sender, EventArgs e)
         {
-          
+
             RaiseCanExecuteChanged();
         }
         private void RaiseChildrenCanExecuteChanged(object sender, EventArgs e)

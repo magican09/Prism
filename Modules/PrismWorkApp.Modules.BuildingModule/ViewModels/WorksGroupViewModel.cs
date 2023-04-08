@@ -11,7 +11,6 @@ using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -107,7 +106,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> AddLaboratoryReportsCommand { get; private set; }
         public NotifyCommand<object> RemoveLaboratoryReportCommand { get; private set; }
         public CopyCutPasteCommands<bldLaboratoryReport> CopyCutPasteLaboratoryReports { get; private set; }
-        
+
         public ObservableCollection<INotifyCommand> ExecutiveSchemesContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> AddExecutiveSchemesCommand { get; private set; }
         public NotifyCommand<object> RemoveExecutiveSchemeCommand { get; private set; }
@@ -227,7 +226,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveExecutiveSchemeCommand = new NotifyCommand<object>(OnRemoveExecutiveScheme);
             RemoveExecutiveSchemeCommand.Name = "Удалить исполнительную схему";
             CopyCutPasteExecutiveScheme = new CopyCutPasteCommands<bldExecutiveScheme>(
-                (ob) => SelectedExecutiveScheme != null, 
+                (ob) => SelectedExecutiveScheme != null,
                 (ob) => SelectedExecutiveScheme != null,
                 UnDoReDo as UnDoReDoSystem);
             ExecutiveSchemesContextMenuCommands.Add(AddExecutiveSchemesCommand);
@@ -293,7 +292,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         //private void OnCut(object obj)
         //{
         //    if (obj == null) return;
-           
+
         //    bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
         //    _objectsBuffer.Clear();
         //    foreach (object tpl_obj in ((Tuple<object, object>)obj).Item1 as IList)
@@ -505,7 +504,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnDataGridLostFocus(object obj)
         {
             SelectedWorks.Clear();
-           
+
         }
 
         private void OnDataGridSelectionChanged(object works)
@@ -513,8 +512,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SelectedWorks.Clear();
             foreach (bldWork work in (IList)works)
                 SelectedWorks.Add(work);
-          //  SelectedExecutiveScheme = null;
-           // SelectedMaterial = null;
+            //  SelectedExecutiveScheme = null;
+            // SelectedMaterial = null;
         }
 
         private void OnDeleteWork()
@@ -1078,7 +1077,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public virtual void OnSave()
         {
-          
+
             base.OnSave<bldConstruction>(SelectedConstruction);
         }
         public virtual void OnClose(object obj)

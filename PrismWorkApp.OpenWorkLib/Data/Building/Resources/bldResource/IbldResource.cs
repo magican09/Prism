@@ -1,6 +1,6 @@
 ﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldResource : IRegisterable, IMeasurable, IEntityObject,ICostable
+    public interface IbldResource : IRegisterable, IMeasurable, IEntityObject, ICostable
     {
 
 

@@ -1,23 +1,18 @@
 ﻿
-using PrismWorkApp.OpenWorkLib.Data;
-using PrismWorkApp.OpenWorkLib.Data.Service;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
+
+using Prism.Mvvm;
 
 namespace PrismWorkApp.Core
 {
-   public partial class AppSettings: SmallBindableBase
+    public partial class AppSettings : BindableBase
     {
         private string _projectBDConnectionString = @"Data Source ={0}; Initial Catalog = master; Database = {1}; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = False; ApplicationIntent = ReadWrite; MultiSubnetFailover = False ; User Id={2};Password={3}";
         public string ProjectBDConnectionString
         {
-            get { return string.Format(_projectBDConnectionString,DataSource,Database,UserName,Password);}
+            get { return string.Format(_projectBDConnectionString, DataSource, Database, UserName, Password); }
             set { /*SetProperty(ref _projectBDConnectionString, value);*/ }
         }
-        private string _dataSource= /*@"localhost\TEW_SQLEXPRESS";*/ @"M-GEODEZ-01\TEW_SQLEXPRESS";// @"M-RUK-04\TEW_SQLEXPRESS_5";
+        private string _dataSource = @"localhost\TEW_SQLEXPRESS";// @"M-GEODEZ-01\TEW_SQLEXPRESS";// @"M-RUK-04\TEW_SQLEXPRESS_5";
         public string DataSource
         {
             get { return _dataSource; }
@@ -41,6 +36,6 @@ namespace PrismWorkApp.Core
             get { return _password; }
             set { SetProperty(ref _password, value); }
         }
-        
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class bldOrderDocument : bldDocument, IEntityObject,IbldDocument
+    public class bldOrderDocument : bldDocument, IEntityObject, IbldDocument
     {
 
         public bldOrderDocument()

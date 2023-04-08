@@ -6,9 +6,7 @@ using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -26,7 +24,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedMaterial; }
             set { SetProperty(ref _selectedMaterial, value); }
         }
-       
+
         //private bldWork _selectedWork;
         //public bldWork SelectedWork
         //{
@@ -106,7 +104,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             if (navigane_message_material != null)
             {
                 bldMaterial ResivedMaterial = (bldMaterial)navigane_message_material.Object;
-             
+
                 EditMode = navigane_message_material.EditMode;
                 if (SelectedMaterial != null) SelectedMaterial.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedMaterial = ResivedMaterial;

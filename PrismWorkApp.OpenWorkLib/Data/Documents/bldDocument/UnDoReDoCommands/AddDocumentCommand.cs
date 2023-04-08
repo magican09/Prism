@@ -4,7 +4,7 @@ using System;
 namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class AddDocumentCommand<TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand
-        where TEntity:IbldDocument
+        where TEntity : IbldDocument
     {
         private bldDocument _CurrentDoc;
         private TEntity _AddedDoc;
@@ -29,12 +29,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (_CurrentDoc.AttachedDocuments.Contains(_AddedDoc as bldDocument))
                 _CurrentDoc.AttachedDocuments.Remove(_AddedDoc as bldDocument);
         }
-        public AddDocumentCommand(bldDocument current_doc,TEntity new_doc)
+        public AddDocumentCommand(bldDocument current_doc, TEntity new_doc)
         {
             _CurrentDoc = current_doc;
             _AddedDoc = new_doc;
 
-            if(!_CurrentDoc.AttachedDocuments.Contains(_AddedDoc as bldDocument)) 
+            if (!_CurrentDoc.AttachedDocuments.Contains(_AddedDoc as bldDocument))
                 _CurrentDoc.AttachedDocuments.Add(_AddedDoc as bldDocument);
 
 

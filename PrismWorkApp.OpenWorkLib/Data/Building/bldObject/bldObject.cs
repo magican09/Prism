@@ -119,14 +119,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bldObject()
         {
             BuildingObjects.Owner = this;
-            Constructions.Owner =  this;
+            Constructions.Owner = this;
         }
         public bldObject(string name, string short_name)
         {
             Name = name;
             ShortName = short_name;
             BuildingObjects.Owner = this;
-            Constructions.Owner =  this;
+            Constructions.Owner = this;
         }
         #endregion
 

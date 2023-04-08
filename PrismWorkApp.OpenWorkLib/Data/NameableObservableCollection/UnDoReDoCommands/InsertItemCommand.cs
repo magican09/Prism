@@ -1,14 +1,13 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
-using System.Collections.Generic;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class InsertItemCommand<TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand where TEntity: IEntityObject
+    public class InsertItemCommand<TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand where TEntity : IEntityObject
     {
         private NameableObservableCollection<TEntity> _Collection;
         private TEntity _Item;
-        
+
         public string Name { get; set; } = "Элемент добавлен";
 
         public event EventHandler CanExecuteChanged;
@@ -21,7 +20,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void Execute(object parameter = null)
         {
             _Collection.JornalingOff();
-            _Item.Parents.Add(_Collection.Owner); 
+            _Item.Parents.Add(_Collection.Owner);
             _Collection.Add(_Item);
             ChangedObjects.Add(_Item);
             ChangedObjects.Add(_Collection);
@@ -34,7 +33,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void UnExecute()
         {
             _Collection.JornalingOff();
-            _Item.Parents.Remove(_Collection.Owner); 
+            _Item.Parents.Remove(_Collection.Owner);
             _Collection.Remove(_Item);
             ChangedObjects.Remove(_Item);
             ChangedObjects.Remove(_Collection);
@@ -43,7 +42,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Remove(this);
             _Collection.JornalingOn();
         }
-        public InsertItemCommand(int index,TEntity  item, NameableObservableCollection<TEntity> collection)
+        public InsertItemCommand(int index, TEntity item, NameableObservableCollection<TEntity> collection)
         {
             _Item = item;
             _Collection = collection;

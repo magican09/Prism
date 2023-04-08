@@ -10,7 +10,7 @@ using System.ComponentModel;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class BaseViewModel<TEntity> : LocalBindableBase, INotifyPropertyChanged  where TEntity : class
+    public class BaseViewModel<TEntity> : LocalBindableBase, INotifyPropertyChanged where TEntity : class
     {
         protected IDialogService _dialogService;
         protected IRegionManager _regionManager;
@@ -35,9 +35,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
         }
-        
+
         protected IUnDoReDoSystem _unDoReDo;
-         public IUnDoReDoSystem UnDoReDo
+        public IUnDoReDoSystem UnDoReDo
         {
             get { return _unDoReDo; }
             set { SetProperty(ref _unDoReDo, value); }
@@ -65,7 +65,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     UnDoReDo.ClearStacks();
                 }
             });
-               
+
 
         }
         public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IEntityObject
@@ -75,7 +75,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (result.Result == ButtonResult.Yes)
                 {
                     //   CommonUnDoReDo.AddUnDoReDo(UnDoReDo);
-                    UnDoReDo.ClearStacks();
+                    UnDoReDo.SaveAllChages(selected_obj);
                 }
                 if (result.Result == ButtonResult.No)
                 {
@@ -98,14 +98,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     {
                         if (result.Result == ButtonResult.Yes)
                         {
-                            //    CommonUnDoReDo.AddUnDoReDo(UnDoReDo);
-                            UnDoReDo.ClearStacks();
+                            
+                            UnDoReDo.SaveAllChages(selected_obj);
                             if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
                                 _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
                             }
-                            else if(RequestClose!=null)
+                            else if (RequestClose != null)
                             {
                                 var _result = ButtonResult.Yes;
                                 var param = new DialogParameters();
@@ -172,7 +172,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-  
+
 
         /* 
          *    public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase

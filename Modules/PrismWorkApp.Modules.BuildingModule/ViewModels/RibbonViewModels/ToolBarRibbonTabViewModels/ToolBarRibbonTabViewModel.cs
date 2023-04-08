@@ -1,5 +1,4 @@
 ﻿using Prism;
-using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
@@ -19,7 +18,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private IAppSettingsSystem _appSettings;
         private IDialogService _dialogService;
         public NotifyCommand OpenAppSetingsCommand { get; private set; }
-        public ToolBarRibbonTabViewModel(IDialogService dialogService,IApplicationCommands applicationCommands,IAppSettingsSystem appSettings)
+        public ToolBarRibbonTabViewModel(IDialogService dialogService, IApplicationCommands applicationCommands, IAppSettingsSystem appSettings)
         {
             ApplicationCommands = applicationCommands;
             _appSettings = appSettings;
@@ -32,11 +31,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnOpenAppSetings()
         {
             DialogParameters param = new DialogParameters();
-            param.Add("selected_app_settings_system",new ConveyanceObject(_appSettings,false));
+            param.Add("selected_app_settings_system", new ConveyanceObject(_appSettings, false));
             _dialogService.ShowDialog(nameof(UserParametersDialogView), param,
                 (result) =>
                 {
-                    if(result.Result== ButtonResult.Yes)
+                    if (result.Result == ButtonResult.Yes)
                     {
 
                     }
@@ -53,11 +52,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             if (IsActive)
             {
-      
+
             }
             else
             {
-        
+
             }
         }
     }

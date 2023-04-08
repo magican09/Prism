@@ -7,9 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Data.Common;
 using System.Data.Odbc;
-using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -617,7 +615,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             //   // cmd.Parameters.AddWithValue("@id", person.NumberStudents);
                             //    connection.Open();
                             //    var deleted = cmd.ExecuteNonQuery();
-                              
+
                             //}
                         }
                     }

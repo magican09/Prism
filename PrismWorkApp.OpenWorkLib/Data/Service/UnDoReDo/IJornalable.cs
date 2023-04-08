@@ -2,17 +2,20 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public interface IJornalable : IKeyable
+    public interface IJornalable : IKeyable, IHierarchical
     {
         public void JornalingOff();
         public void JornalingOn();
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged;
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
-        public event SaveChangesEventHandler SaveChanges;    
+      //  public event SaveChangesEventHandler SaveChanges;
+      //  public event SaveChangesEventHandler SaveAllChanges;
+
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal { get; set; }
-        public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems{ get; set; }
-        public void Save(IUnDoReDoSystem unDoReDo);
-      //  public void SaveChanges();
+        public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems { get; set; }
+       // public void Save(IUnDoReDoSystem unDoReDo);
+      //   public void SaveAll(IUnDoReDoSystem unDoReDo);
+
     }
     public enum AdjustStatus
     {

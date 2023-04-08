@@ -1,12 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Data.SqlTypes;
-using Microsoft.EntityFrameworkCore;
-using PrismWorkApp.OpenWorkLib.Data;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Transactions;
+﻿using PrismWorkApp.OpenWorkLib.Data;
 
 namespace PrismWorkApp.Services.Repositories
 {

@@ -9,7 +9,7 @@ using System;
 
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
-    public class MaterialDialogViewModel: MaterialViewModel, IDialogAware
+    public class MaterialDialogViewModel : MaterialViewModel, IDialogAware
     {
         private Guid _currentContextId;
 
@@ -78,7 +78,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                 if (SelectedMaterial != null) SelectedMaterial.ErrorsChanged -= RaiseCanExecuteChanged;
                 SelectedMaterial = ResivedMaterial;
                 SelectedMaterial.ErrorsChanged += RaiseCanExecuteChanged;
-               // UnDoReDo.Register(SelectedMaterial);
+                // UnDoReDo.Register(SelectedMaterial);
             }
         }
     }

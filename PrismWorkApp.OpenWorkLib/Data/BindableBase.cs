@@ -19,6 +19,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged = delegate { };
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated = delegate { };
         public event SaveChangesEventHandler SaveChanges;
+        public event SaveChangesEventHandler SaveAllChanges;
         /// <summary>
         /// Вызывается для добалвения UnDoRedo команды в систему UnDoRedo
         /// </summary>
@@ -70,9 +71,25 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
             }
+            T old_member = member;
             member = val;
+            if (member is IEntityObject entity_member)
+            {
+                if(entity_member is INameableObservableCollection nameble_collection_mamber)
+                {
+                    nameble_collection_mamber.Owner = this;
+                }
+                if (!entity_member.Parents.Contains(this)) entity_member.Parents.Add(this);
+                if (!this.Children.Contains(entity_member)) this.Children.Add(entity_member);
+               //foreach(IUnDoReDoSystem unDoReDo in this.UnDoReDoSystems)
+               // {
+               //     if (!unDoReDo._RegistedModels.ContainsKey(entity_member)) unDoReDo.RegisterAll(entity_member);
+               // }
+               
+            }
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
+           
         }
         protected bool SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = null, bool jornal_mode = false)
         {
@@ -118,14 +135,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #endregion
 
         #region IJornaling
-      
+
         private ObservableCollection<IUnDoReDoSystem> _unDoReDoSystems = new ObservableCollection<IUnDoReDoSystem>();
         [NotJornaling]
         [NotMapped]
         public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems
         {
             get { return _unDoReDoSystems; }
-            set { SetProperty(ref _unDoReDoSystems, value); }
+            set { _unDoReDoSystems = value; }
         }
 
         private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
@@ -134,7 +151,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal
         {
             get { return _changesJornal; }
-            set { SetProperty(ref _changesJornal, value); }
+            set { _changesJornal = value; }
         }
 
         private bool b_jornal_recording_flag = false;
@@ -145,13 +162,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void JornalingOn()
         {
-            if (b_jornal_recording_flag == false && UnDoReDoSystems.Count>0)
+            if (b_jornal_recording_flag == false && UnDoReDoSystems.Count > 0)
                 b_jornal_recording_flag = true;
         }
-        public void Save(IUnDoReDoSystem unDoReDo)
-        {
-         int? saved_items=  this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
-        }
+        //public void Save(IUnDoReDoSystem unDoReDo)
+        //{
+        //    int? saved_items = this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
+        //}
+        //public void SaveAll(IUnDoReDoSystem unDoReDo)
+        //{
+        //    int? saved_items = this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
+        //}
         #endregion
         public BindableBase()
         {
@@ -163,22 +184,52 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public ObservableCollection<IEntityObject> _parents = new ObservableCollection<IEntityObject>();
         [NavigateProperty]
         [NotMapped]
+        [NotJornaling]
         public ObservableCollection<IEntityObject> Parents
         {
             get { return _parents; }
-            set
-            {
-                SetProperty(ref _parents, value);
-            }
+            set  {     }
         }
 
         private ObservableCollection<IEntityObject> _children = new ObservableCollection<IEntityObject>();
         [NavigateProperty]
         [NotMapped]
+        [NotJornaling]
         public ObservableCollection<IEntityObject> Children
         {
-            get { return _children; }
-            set { _children = value; }
+            get
+            {
+                //_children.Clear();
+                //var prop_infoes = this.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+
+                //foreach (PropertyInfo propertyInfo in prop_infoes)
+                //{
+
+                //    var atrb = propertyInfo.GetCustomAttribute<NotMappedAttribute>();
+                //    if (atrb == null)
+                //    {
+                //        var prop_val = propertyInfo.GetValue(this);
+                //        if (prop_val is IEntityObject ent_val)
+                //        {
+                //            if (ent_val is IList list_ent_val)
+                //                foreach (IEntityObject element in list_ent_val)
+                //                {
+                //                    _children.Add(element);
+                //                    //if (!element.Parents.Contains(ent_val))
+                //                    //    element.Parents.Add(ent_val);
+                //                }
+                //            else
+                //            {
+                //                _children.Add(ent_val);
+                //                //if (!ent_val.Parents.Contains(ent_val))
+                //                //    ent_val.Parents.Add(ent_val);
+                //            }
+                //        }
+                //    }
+                //}
+                return _children;
+            }
+            set { }
         }
 
         #endregion
@@ -237,7 +288,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             return new_object;
         }
 
-  
+
         //public virtual object Clone()
         //{
         //    BindableBase new_object = (BindableBase)Activator.CreateInstance(this.GetType());

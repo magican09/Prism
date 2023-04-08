@@ -29,15 +29,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { }
         }
-        public override string Name 
-        { get {
-                if (base.Name==null)
+        public override string Name
+        {
+            get
+            {
+                if (base.Name == null)
                 {
                     return ShortName;
                 }
                 return base.Name;
-               }
-          set => base.Name = value;
+            }
+            set => base.Name = value;
         }
         private DateTime _startTime;
         public DateTime StartTime

@@ -23,18 +23,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             _Collection.JornalingOff();
             foreach (TEntity item in _List)
             {
-                if (_Collection.Owner != null)
-                    item.Parents.Add(_Collection.Owner);
-                else
-                    item.Parents.Add(_Collection);
-                _Collection.Add(item);
                 ChangedObjects.Add(item);
                 item.ChangesJornal.Add(this);
-
             }
             ChangedObjects.Add(_Collection);
-            _Collection.ChangesJornal.Add(this);
-            if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Add(this);
+            _Collection.Owner.ChangesJornal.Add(this);
             _Collection.JornalingOn();
 
         }
@@ -43,18 +36,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             _Collection.JornalingOff();
             foreach (TEntity item in _List)
             {
-                if (_Collection.Owner != null)
-                    item.Parents.Remove(_Collection.Owner);
-                else
-                    item.Parents.Remove(_Collection);
-                _Collection.Remove(item);
                 ChangedObjects.Remove(item);
                 item.ChangesJornal.Remove(this);
-
             }
             ChangedObjects.Remove(_Collection);
-            _Collection.ChangesJornal.Remove(this);
-            if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Remove(this);
+            _Collection.Owner.ChangesJornal.Remove(this);
             _Collection.JornalingOn();
         }
         public AddListCommand(IEnumerable<TEntity> list, NameableObservableCollection<TEntity> collection)
@@ -65,18 +51,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             _Collection.JornalingOff();
             foreach (TEntity item in _List)
             {
-                if (_Collection.Owner != null)
-                    item.Parents.Add(_Collection.Owner);
-                else
-                    item.Parents.Add(_Collection);
-                _Collection.Add(item);
                 ChangedObjects.Add(item);
                 item.ChangesJornal.Add(this);
-                
             }
-            ChangedObjects.Add(_Collection);
-            _Collection.ChangesJornal.Add(this);
-            if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Add(this);
+             ChangedObjects.Add(_Collection);
+           _Collection.Owner.ChangesJornal.Add(this);
             _Collection.JornalingOn();
         }
     }

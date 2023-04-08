@@ -38,8 +38,8 @@ namespace PrismWorkApp.Modules.BuildingModule
         private IDialogService _dialogService;
         private IAppSettingsSystem _appSettings;
         private IAppObjectsModel _appObjectsModel;
-        public BuildingModule(IRegionManager regionManager, IEventAggregator eventAggregator, IBuildingUnitsRepository buildingUnitsRepository/*, IbldMaterialsUnitsRepository bldMaterialsUnitsRepository*/, 
-            IDialogService dialogService, IApplicationCommands applicationCommands,IAppSettingsSystem appSettings,IAppObjectsModel appObjectsModel)
+        public BuildingModule(IRegionManager regionManager, IEventAggregator eventAggregator, IBuildingUnitsRepository buildingUnitsRepository/*, IbldMaterialsUnitsRepository bldMaterialsUnitsRepository*/,
+            IDialogService dialogService, IApplicationCommands applicationCommands, IAppSettingsSystem appSettings, IAppObjectsModel appObjectsModel)
         {
 
             ModuleId = 2;
@@ -50,7 +50,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             _buildingUnitsRepository = buildingUnitsRepository;
             _appSettings = appSettings;
             _appObjectsModel = appObjectsModel;
-         //   _bldMaterialsUnitsRepository = bldMaterialsUnitsRepository;
+            //   _bldMaterialsUnitsRepository = bldMaterialsUnitsRepository;
 
         }
 
@@ -62,17 +62,17 @@ namespace PrismWorkApp.Modules.BuildingModule
             //  _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, "ConvertersView");
             _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new DocumentationExplorerView());
             _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new ProjectExplorerView());
-           
+
             var projectManagerRibbonTab = new ProjectManagerRibbonTabView();
-             var dataImportRibbonGroup = new DataImportRibbonGroupView();
-             var currentProjectRibbonGroup = new CurentProjectRibbonGroupView();
+            var dataImportRibbonGroup = new DataImportRibbonGroupView();
+            var currentProjectRibbonGroup = new CurentProjectRibbonGroupView();
             projectManagerRibbonTab.DataContext = new ProjectManagerRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands);
             projectManagerRibbonTab.Items.Add(dataImportRibbonGroup);//
             projectManagerRibbonTab.Items.Add(currentProjectRibbonGroup);//Созадем группу панели инструметов с конвекторами
             _regionManager.Regions[RegionNames.RibbonRegion].Add(projectManagerRibbonTab);
 
             var toolBarRibbonTab = new ToolBarRibbonTabView();
-            var toolBarRibbonTabDataContext = new ToolBarRibbonTabViewModel(_dialogService,_applicationCommands,_appSettings);
+            var toolBarRibbonTabDataContext = new ToolBarRibbonTabViewModel(_dialogService, _applicationCommands, _appSettings);
             toolBarRibbonTab.DataContext = toolBarRibbonTabDataContext;
             var toolBarRibbonGroup = new EditToollsRibbonGroupView();
             toolBarRibbonTab.Items.Add(toolBarRibbonGroup);//
@@ -87,7 +87,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             var materialCertificatesRibbonGroup = new MaterialCertificatesRibbonGroup();
             documentsRibbonTab.Items.Add(materialCertificatesRibbonGroup);
             _regionManager.Regions[RegionNames.RibbonRegion].Add(documentsRibbonTab);
-           
+
             var quickAccessTollBar = new QuickAccessToolBarView();
             quickAccessTollBar.Items.Add(new QuickAccessToolBar());
             quickAccessTollBar.DataContext = toolBarRibbonTabDataContext;
@@ -186,9 +186,9 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterForNavigation<DocumentsGroupView>();
             containerRegistry.RegisterForNavigation<MaterialCertificatesGroupView>();
             containerRegistry.RegisterForNavigation<AggregationDocumentsView>();
-            
+
             containerRegistry.RegisterDialog<UserParametersDialogView, UserParametersDialogViewModel>();
-            
+
             containerRegistry.RegisterDialog<AddbldObjectToCollectionDialogView, AddbldObjectToCollectionViewModel>();
             containerRegistry.RegisterDialog<ObjectDialogView, ObjectDialogViewModel>();
 
@@ -202,7 +202,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<WorkDialogView, WorkDialogViewModel>();
 
             containerRegistry.RegisterDialog<AddUnitOfMeasurementToCollectionFromListDialogView, AddUnitOfMeasurementToCollectionFromListDialogViewModel>();
-           
+
             containerRegistry.RegisterDialog<AddMaterialToCollectionFromListDialogView, AddMaterialToCollectionFromListDialogViewModel>();
             containerRegistry.RegisterDialog<MaterialDialogView, MaterialDialogViewModel>();
 
@@ -226,8 +226,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<SelectAggregationDocumentFromCollectionDialogView, SelectAggregationDocumentFromCollectionDialogViewModel>();
 
             containerRegistry.RegisterDialog<GetObjectFromCollectionDialogVeiw, GetObjectFromCollectionDialogVeiwModel>();
-          
-         //   containerRegistry.RegisterSingleton<IAppObjectsModel,AppObjectsModel>();
+
+            //   containerRegistry.RegisterSingleton<IAppObjectsModel,AppObjectsModel>();
             //  containerRegistry.RegisterForNavigation<ToolBarRibbonTabView, ToolBarRibbonTabViewModel>();
             //   containerRegistry.RegisterDialog<ConfirmCreateDialogViewModel, ConfirmCreateDialogViewModel>();
 

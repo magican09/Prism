@@ -1,9 +1,7 @@
-﻿using System.ComponentModel;
-
-namespace PrismWorkApp.OpenWorkLib.Data
+﻿namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldResourcesGroup : NameableObservableCollection<bldResource>, IbldResourcesGroup
-    { 
+    {
         public bldResourcesGroup()
         {
             Name = "Ресурсы:";

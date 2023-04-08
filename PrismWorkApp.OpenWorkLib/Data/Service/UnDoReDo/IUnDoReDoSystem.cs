@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
@@ -14,8 +14,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         bool CanReDoExecute();
         bool CanUnDoExecute();
         void UnRegister(IJornalable obj);
+        public void UnRegisterAll(IJornalable obj, bool first_itaration = true);
         void Register(IJornalable obj);
-        bool UnDo(int levels, bool without_redo = false);
+        public void RegisterAll(IJornalable obj, bool first_itaration = true);
+       bool UnDo(int levels, bool without_redo = false);
         bool ReDo(int levels, bool without_undo = false);
         void UnDoAll();
         void ClearStacks();
@@ -23,8 +25,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void SetChildrenUnDoReDoSystem(IUnDoReDoSystem children_system);
         public void UnSetChildrenUnDoReDoSystem(IUnDoReDoSystem children_system);
         public IUnDoReDoSystem ParentUnDoReDo { get; set; }
-        public ObservableCollection<IJornalable> _RegistedModels { get; set; }
-        public void SaveAll(Func<object, bool> IsSavedPermission);
+        public Dictionary<IJornalable, IUnDoReDoSystem> _RegistedModels { get; set; }
+        public Dictionary<IJornalable, IUnDoReDoSystem> _ChildrenSystemRegistedModels { get; set; } 
+        public int SaveChages(IJornalable obj);
+        public int SaveAllChages(IJornalable obj, bool first_itaration = true);
 
 
 

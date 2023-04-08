@@ -5,12 +5,10 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 {
-    public class UserParametersDialogViewModel: BaseViewModel<AppSettingsSystem>, IDialogAware
+    public class UserParametersDialogViewModel : BaseViewModel<AppSettingsSystem>, IDialogAware
     {
         private string _title = "Настройки";
         public string Title
@@ -44,27 +42,27 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
 
         }
-        
-    
+
+
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
         {
             SaveCommand.RaiseCanExecuteChanged();
         }
         private bool CanSave()
         {
-            if (SelectedAppSettingsSystem != null)
-                return !SelectedAppSettingsSystem.HasErrors;// && SelectedWork.UnDoReDoSystem.Count > 0;
-            else
+          //  if (SelectedAppSettingsSystem != null)
+             //   return !SelectedAppSettingsSystem.HasErrors;// && SelectedWork.UnDoReDoSystem.Count > 0;
+          //  else
                 return false;
         }
         public virtual void OnSave()
         {
-            base.OnSave<AppSettingsSystem>(SelectedAppSettingsSystem);
+          //  base.OnSave<AppSettingsSystem>(SelectedAppSettingsSystem);
         }
         public virtual void OnClose(object obj)
         {
-            base.OnClose<AppSettingsSystem>(obj, SelectedAppSettingsSystem);
-         
+         //   base.OnClose<AppSettingsSystem>(obj, SelectedAppSettingsSystem);
+
         }
         //override public void OnSave()
         //{
@@ -106,7 +104,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
 
         public void OnDialogClosed()
         {
-           
+
         }
 
         public void OnDialogOpened(IDialogParameters parameters)
@@ -116,10 +114,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Dialogs
             {
                 SelectedAppSettingsSystem = (AppSettingsSystem)navigane_message.Object;
                 EditMode = navigane_message.EditMode;
-                if (SelectedAppSettingsSystem != null) SelectedAppSettingsSystem.ErrorsChanged -= RaiseCanExecuteChanged;
-                SelectedAppSettingsSystem.ErrorsChanged += RaiseCanExecuteChanged;
-                UnDoReDo.Register(SelectedAppSettingsSystem);
-                UnDoReDo.Register(SelectedAppSettingsSystem.AppSettings);
+              //  if (SelectedAppSettingsSystem != null) SelectedAppSettingsSystem.ErrorsChanged -= RaiseCanExecuteChanged;
+              //  SelectedAppSettingsSystem.ErrorsChanged += RaiseCanExecuteChanged;
+               // UnDoReDo.Register(SelectedAppSettingsSystem);
+             //   UnDoReDo.Register(SelectedAppSettingsSystem.AppSettings);
             }
         }
     }

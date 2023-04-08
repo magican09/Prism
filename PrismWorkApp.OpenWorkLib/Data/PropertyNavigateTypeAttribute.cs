@@ -50,7 +50,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public override bool IsValid(object value)
         {
 
-            return false;
+            return true;
         }
     }
 }

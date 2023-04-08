@@ -276,7 +276,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public override object Clone()
         {
-            bldWork work_clone =(bldWork) base.Clone();
+            bldWork work_clone = (bldWork)base.Clone();
             //work_clone.AOSRDocument.Name = Name;
 
             return work_clone;
@@ -319,7 +319,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 new AddNextWorkCommand(this, work);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-    
+
         public void AddMaterial(bldMaterial material)
         {
             AddMaterialCommand Command = new AddMaterialCommand(this, material);
@@ -330,7 +330,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             RemoveMaterialCommand Command = new RemoveMaterialCommand(this, material);
             InvokeUnDoReDoCommandCreatedEvent(Command);
         }
-  
+
         public void AddProjectDocument(bldProjectDocument document)
         {
             AddToCollectionCommand<ICollection<bldProjectDocument>, bldProjectDocument> Command =

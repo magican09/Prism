@@ -1,11 +1,9 @@
 ﻿using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Prism;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
-using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
@@ -16,15 +14,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.GridView;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -95,7 +89,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public ObservableCollection<INotifyCommand> CommonCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand CreateNewCommand { get; private set; }
-        public NotifyCommand<object>CreatedBasedOnCommand { get; private set; }
+        public NotifyCommand<object> CreatedBasedOnCommand { get; private set; }
 
         public ObservableCollection<INotifyCommand> UnitsOfMeasurementContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> SelectUnitOfMeasurementCommand { get; private set; }
@@ -105,13 +99,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> OpenImageFileCommand { get; private set; }
         public NotifyCommand<object> SaveImageFileToDiskCommand { get; private set; }
         public NotifyCommand<object> LoadImageFileFromDiskCommand { get; private set; }
-     
+
         public ObservableCollection<MenuItem> CommonContextMenuItems { get; set; }
 
         public NotifyCommand<object> CopyingCommand { get; private set; }
         public NotifyCommand<object> CopyingCellClipboardContentCommand { get; private set; }
         public NotifyCommand<object> CopyedCommand { get; private set; }
-      
+
         public NotifyCommand<object> PastingCellClipboardContentCommand { get; private set; }
         public NotifyCommand<object> ContextMenuOpeningCommand { get; private set; }
 
@@ -142,7 +136,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CreateNewCommand = new NotifyCommand(OnCreateNewMaterialCertificate);
             CreateNewCommand.Name = "Создать новый документ";
             CreatedBasedOnCommand = new NotifyCommand<object>(OnCreatedBasedOn,
-                                    (ob) => { return SelectedDocument != null; }).ObservesProperty(()=>SelectedDocument);
+                                    (ob) => { return SelectedDocument != null; }).ObservesProperty(() => SelectedDocument);
             CreatedBasedOnCommand.Name = "Создать новый на основании..";
             CommonCommands.Add(CreateNewCommand);
             CommonCommands.Add(CreatedBasedOnCommand);
@@ -179,7 +173,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-          
+
             ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewCommand);
             ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
 
@@ -190,7 +184,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnContextMenuOpening(object obj)
         {
-           List<object> grid_state_objects = obj as List<object>;
+            List<object> grid_state_objects = obj as List<object>;
             SelectedDocument = grid_state_objects[0] as bldMaterialCertificate;
             //   SelectedDocuments = (ObservableCollection<bldMaterialCertificate>) grid_state_objects[1];
             SelectedDocuments.Clear();
@@ -225,13 +219,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnCopyedCommand(object obj)
         {
-           
+
         }
 
         private void OnCopying(object obj)
         {
             GridViewClipboardEventArgs e = obj as GridViewClipboardEventArgs;
-           
+
         }
 
         private void OnLoadImageFileFromDisk(object document)
@@ -265,11 +259,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             selected_certificate = _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
 
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-           
+
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-               
+
                 string BD_FilesDir = dialog.FileName; ;
 
                 if (!Directory.Exists(BD_FilesDir))
@@ -288,10 +282,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldMaterialCertificate selected_certificate = document as bldMaterialCertificate;
             string BD_FilesDir = Path.GetTempPath();
-           
+
             if (!Directory.Exists(BD_FilesDir))
                 Directory.CreateDirectory(BD_FilesDir);
-            selected_certificate = _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id); 
+            selected_certificate = _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.LoadPropertyObjects(selected_certificate.Id);
             string s = Path.Combine(BD_FilesDir, selected_certificate.ImageFile.FileName);
 
             using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
@@ -312,13 +306,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
 
             localUnDoReDoSystem.Register(SelectedDocumentsGroup);
-           // localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
+            // localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
 
             SelectedDocumentsGroup.Add(new_certificate);
-           // FilteredCommonPointersCollection.Add(new_certificate);
+            // FilteredCommonPointersCollection.Add(new_certificate);
 
             localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
-         //   localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
+            //   localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
 
             UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
             UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
@@ -333,13 +327,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
 
             localUnDoReDoSystem.Register(SelectedDocumentsGroup);
-        //    localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
+            //    localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
 
             SelectedDocumentsGroup.Add(new_certificate);
-         //   FilteredCommonPointersCollection.Add(new_certificate);
+            //   FilteredCommonPointersCollection.Add(new_certificate);
 
             localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
-          //  localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
+            //  localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
 
             UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
             UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
@@ -348,10 +342,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnFilterDisable()
         {
-  //          FilteredCommonPointersCollection = new NameableObservableCollection<bldDocument>(SortedCommonPointersCollection);
+            //          FilteredCommonPointersCollection = new NameableObservableCollection<bldDocument>(SortedCommonPointersCollection);
         }
-      
-       
+
+
         #region  Commmands Methods
         private void OnRemoveUnitOfMeasurement(object obj)
         {

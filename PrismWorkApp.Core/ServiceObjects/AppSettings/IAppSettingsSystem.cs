@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
-namespace PrismWorkApp.Core
+﻿namespace PrismWorkApp.Core
 {
     public interface IAppSettingsSystem
     {

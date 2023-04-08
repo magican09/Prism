@@ -3,7 +3,6 @@ using Prism.Regions;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 //using PrismWorkApp.ProjectModel.Data.Models;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -46,7 +45,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         //}
         public AOSRDocumentsTableViewModel()
         {
-         //   CreateAOSRCommand = new NotifyCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedAOSRDocument);
+            //   CreateAOSRCommand = new NotifyCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedAOSRDocument);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {

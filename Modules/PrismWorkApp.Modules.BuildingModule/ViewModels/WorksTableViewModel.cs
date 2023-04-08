@@ -32,11 +32,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-       // public Work SelectedWork { get { return _selectedWork; } set { _selectedWork = value; OnPropertyChanged("SelectedWork"); } }
+        // public Work SelectedWork { get { return _selectedWork; } set { _selectedWork = value; OnPropertyChanged("SelectedWork"); } }
         public WorksTableViewModel(IEventAggregator eventAggregator)
         {
             LoadAllProjectCommand = new NotifyCommand(LoadAllProjects, CanLoadAllProjects);
-         //   CreateAOSRCommand = new NotifyCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
+            //   CreateAOSRCommand = new NotifyCommand(CreateAOSR, CanCreateAOSR).ObservesProperty(() => SelectedWork);
             _eventAggregator = eventAggregator;
             //     _eventAggregator.GetEvent<ProjectSentEvent>().Subscribe(OnBuildingConstructionRecieved);
         }

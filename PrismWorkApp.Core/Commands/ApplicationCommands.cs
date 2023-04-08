@@ -65,7 +65,7 @@
         //{
         //    get { return _deleteWorkCommand; }
         //}
-  
+
         private NotifyCompositeCommand _moveWorkCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand MoveWorkCommand
         {
@@ -76,7 +76,7 @@
         {
             get { return _addWorkCommand; }
         }
-      
+
         private NotifyCompositeCommand _saveExecutiveDocumentsCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand SaveExecutiveDocumentsCommand
         {
@@ -98,7 +98,7 @@
         {
             get { return _openAppSettingsDialogCommand; }
         }
-      
+
         private NotifyCompositeCommand _createNewCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand CreateNewCommand
         {
@@ -116,7 +116,7 @@
         {
             get { return _deleteCommand; }
         }
-   
+
         private NotifyCompositeCommand _moveToCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand MoveToCommand
         {
@@ -132,7 +132,7 @@
         {
             get { return _addCommand; }
         }
-      
+
 
     }
 

@@ -1,11 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PrismWorkApp.OpenWorkLib.Data;
-using System.Collections.Generic;
-using System.Linq;
+﻿using PrismWorkApp.OpenWorkLib.Data;
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class bldDocumentsRepository: Repository<bldDocument> 
+    public class bldDocumentsRepository : Repository<bldDocument>
     {
         public bldProjectDocumentsRepository ProjectDocuments { get; }
         public bldLaboratoryReportsRepository LaboratoryReports { get; }
@@ -14,7 +11,7 @@ namespace PrismWorkApp.Services.Repositories
         public PictureRepository PictureRepository { get; }
         public bldAggregationDocumentsRepository AggregationDocuments { get; }
 
-        public bldDocumentsRepository(bldProjectsPlutoContext _context):base(_context)
+        public bldDocumentsRepository(bldProjectsPlutoContext _context) : base(_context)
         {
             ProjectDocuments = new bldProjectDocumentsRepository(_context);
             LaboratoryReports = new bldLaboratoryReportsRepository(_context);
@@ -26,7 +23,7 @@ namespace PrismWorkApp.Services.Repositories
 
         public void Add(bldDocument document)
         {
-            switch(document.GetType().Name)
+            switch (document.GetType().Name)
             {
                 case (nameof(bldAggregationDocument)):
                     {

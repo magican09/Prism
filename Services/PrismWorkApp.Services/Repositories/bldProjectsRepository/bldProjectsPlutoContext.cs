@@ -12,7 +12,7 @@ namespace PrismWorkApp.Services.Repositories
         {
             _connectionString = connectionString;
             // Database.EnsureDeleted();
-             Database.EnsureCreated();
+            Database.EnsureCreated();
         }
         #region Building Construction
         public virtual DbSet<bldProject> Projects { get; set; }
@@ -33,8 +33,8 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<bldAOSRDocument> AOSRDocuments { get; set; }
         public virtual DbSet<bldExecutiveScheme> ExecutiveSchemes { get; set; }
         public virtual DbSet<bldLaboratoryReport> LaboratoryReports { get; set; }
-        public virtual DbSet<bldOrderDocument>  OrderDocuments{ get; set; }
-       public virtual DbSet<bldMaterialCertificate> MaterialCertificates { get; set; }
+        public virtual DbSet<bldOrderDocument> OrderDocuments { get; set; }
+        public virtual DbSet<bldMaterialCertificate> MaterialCertificates { get; set; }
         public virtual DbSet<bldPasportDocument> PasportDocuments { get; set; }
         public virtual DbSet<bldProjectDocument> ProjectDocuments { get; set; }
         public virtual DbSet<bldRegulationtDocument> RegulationtDocuments { get; set; }
@@ -56,14 +56,14 @@ namespace PrismWorkApp.Services.Repositories
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           // string Conectionstring = @"(localdb)\MSSQLLocalDB;Initial Catalog = master; Database=workappdb;Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            // string Conectionstring = @"(localdb)\MSSQLLocalDB;Initial Catalog = master; Database=workappdb;Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             //string new_con_str = @"Data Source=(localdb)\ProjectsV13;Initial Catalog=master;Database=work_bd;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-          //  string new_con_str = @"Data Source=M-RUK-04\TEW_SQLEXPRESS_5;Initial Catalog=master;Database=work_bd;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            
+            //  string new_con_str = @"Data Source=M-RUK-04\TEW_SQLEXPRESS_5;Initial Catalog=master;Database=work_bd;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
             // optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;;Database=workappdb;Trusted_Connection=True;");
             optionsBuilder.UseSqlServer(_connectionString);
             optionsBuilder.EnableSensitiveDataLogging();
-            
+
             // optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

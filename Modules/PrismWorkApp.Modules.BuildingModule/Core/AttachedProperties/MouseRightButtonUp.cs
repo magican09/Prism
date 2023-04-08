@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -30,12 +27,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
         {
             target.SetValue(CommandParameterProperty, value);
         }
-     
+
         public static object GetCommandParameter(DependencyObject target)
         {
             return target.GetValue(CommandParameterProperty);
         }
- 
+
         private static void CommandChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
         {
             Control control = target as Control;

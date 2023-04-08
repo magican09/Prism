@@ -21,9 +21,9 @@ namespace PrismWorkApp.Services.Repositories
             return PlutoContext.MaterialCertificates.ToList();
         }
 
-        public bldMaterialCertificate  LoadPropertyObjects(Guid id)
+        public bldMaterialCertificate LoadPropertyObjects(Guid id)
         {
-           return  PlutoContext.MaterialCertificates.Where(mc => mc.Id == id).Include(mc => mc.ImageFile).FirstOrDefault();
+            return PlutoContext.MaterialCertificates.Where(mc => mc.Id == id).Include(mc => mc.ImageFile).FirstOrDefault();
         }
 
         public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }

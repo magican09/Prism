@@ -2,24 +2,21 @@
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
-using System.Windows.Input;
 
 namespace PrismWorkApp.Core.Commands
 {
-    public class CopyCutPasteCommands<T> 
+    public class CopyCutPasteCommands<T>
     {
         public NotifyCommand<object> CopyCommand { get; private set; }
         public NotifyCommand<object> CutCommand { get; private set; }
         public NotifyCommand<object> PasteCommand { get; private set; }
         public ObservableCollection<CopiedCutedObject<T>> _objectsBuffer { get; set; } = new ObservableCollection<CopiedCutedObject<T>>();
         private UnDoReDoSystem _unDoReDoSystem;
-        public CopyCutPasteCommands(Func<object, bool> canCopyExecuteMehtod, Func<object, bool> canCutExecuteMehtod,UnDoReDoSystem unDoReDoSystem)
+        public CopyCutPasteCommands(Func<object, bool> canCopyExecuteMehtod, Func<object, bool> canCutExecuteMehtod, UnDoReDoSystem unDoReDoSystem)
         {
             _unDoReDoSystem = unDoReDoSystem;
-            CopyCommand = new NotifyCommand<object>(OnCopy,canCopyExecuteMehtod);
+            CopyCommand = new NotifyCommand<object>(OnCopy, canCopyExecuteMehtod);
             CopyCommand.Name = "Копировать";
             CutCommand = new NotifyCommand<object>(OnCut, canCutExecuteMehtod);
             CutCommand.Name = "Вырезать";

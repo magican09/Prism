@@ -3,7 +3,6 @@ using Prism.Services.Dialogs;
 using PrismWorkApp.Core.Commands;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace PrismWorkApp.Core.Dialogs
 {

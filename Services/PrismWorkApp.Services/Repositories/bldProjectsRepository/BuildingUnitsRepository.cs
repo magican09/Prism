@@ -4,7 +4,7 @@ namespace PrismWorkApp.Services.Repositories
 {
     public class BuildingUnitsRepository : IBuildingUnitsRepository
     {
-        public string ConnectionString { get; set; } 
+        public string ConnectionString { get; set; }
         public bldProjectRepository Projects { get; }
         public bldObjectRepository Objects { get; }
         public bldPacticipantsRepository Pacticipants { get; }
@@ -15,9 +15,9 @@ namespace PrismWorkApp.Services.Repositories
         public bldResponsibleEmployeeRoleRepository ResponsibleEmployeeRoleRepository { get; }
         public bldConstructionCompaniesRepository ConstructionCompanies { get; }
         public bldProjectUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
-         public bldProjectMaterialsRepository Materials { get; }
-     public bldDocumentsRepository DocumentsRepository { get; }
-     
+        public bldProjectMaterialsRepository Materials { get; }
+        public bldDocumentsRepository DocumentsRepository { get; }
+
         private readonly bldProjectsPlutoContext _context;
 
         public BuildingUnitsRepository(IAppSettingsSystem settings)

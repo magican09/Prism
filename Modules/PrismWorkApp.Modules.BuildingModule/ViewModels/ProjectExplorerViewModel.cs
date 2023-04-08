@@ -68,15 +68,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         //private Project _selectedProject;
         //public Project SelectedProject { get { return _selectedProject; } set { _selectedProject = value; SentProjectCommand.RaiseCanExecuteChanged(); OnPropertyChanged("SelectedProject"); } }
-      private IDialogService _dialogService;
+        private IDialogService _dialogService;
 
         public ProjectExplorerViewModel(IEventAggregator eventAggregator, IRegionManager regionManager, IDialogService dialogService)
         {
-          //  Projects = new ObservableCollection<Project>(); ;
+            //  Projects = new ObservableCollection<Project>(); ;
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;
             _dialogService = dialogService;
-          //  SentProjectCommand = new NotifyCommand(SentProject, CanSentProject);
+            //  SentProjectCommand = new NotifyCommand(SentProject, CanSentProject);
             TreeViewItemSelectedCommand = new NotifyCommand<object>(OnTreeViewItemSelected);
             TreeViewItemExpandedCommand = new NotifyCommand<object>(onTreeViewItemExpanded);
             _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,

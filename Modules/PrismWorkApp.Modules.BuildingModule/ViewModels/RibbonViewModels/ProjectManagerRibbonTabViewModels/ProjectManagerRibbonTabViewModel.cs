@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using Prism;
+﻿using Prism;
 using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
@@ -14,16 +13,9 @@ using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Odbc;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -91,7 +83,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public ProjectManagerRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
                                             IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
         {
-           _regionManager = regionManager;
+            _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
@@ -104,8 +96,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SaveDataToDBCommand = new NotifyCommand(SaveDataToDB, CanSaveDataToDB)
                 .ObservesProperty(() => AllChangesIsDone);
             AllChangesIsDone = true;
-          
-           
+
+
             // ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
             IsActiveChanged += OnActiveChanged;
         }
@@ -114,15 +106,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             if (IsActive)
             {
-         
+
             }
             else
             {
-        
+
             }
         }
 
-       
+
 
         private void LoadProjectFromXML()
         {

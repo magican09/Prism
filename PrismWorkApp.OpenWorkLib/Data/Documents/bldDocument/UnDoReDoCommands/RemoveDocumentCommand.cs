@@ -3,8 +3,8 @@ using System;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class RemoveDocumentCommand: UnDoRedoCommandBase, IUnDoRedoCommand
-   {
+    public class RemoveDocumentCommand : UnDoRedoCommandBase, IUnDoRedoCommand
+    {
         private bldDocument _CurrentDoc;
         private bldDocument _RemovedDoc;
 
@@ -26,15 +26,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public void UnExecute()
         {
-           if (!_CurrentDoc.AttachedDocuments.Contains(_RemovedDoc))
-                    _CurrentDoc.AttachedDocuments.Add(_RemovedDoc);
+            if (!_CurrentDoc.AttachedDocuments.Contains(_RemovedDoc))
+                _CurrentDoc.AttachedDocuments.Add(_RemovedDoc);
         }
-        public RemoveDocumentCommand(bldDocument current_doc,IbldDocument removed_doc)
+        public RemoveDocumentCommand(bldDocument current_doc, IbldDocument removed_doc)
         {
             _CurrentDoc = current_doc;
             _RemovedDoc = removed_doc as bldDocument;
 
-            if(_CurrentDoc.AttachedDocuments.Contains(_RemovedDoc)) 
+            if (_CurrentDoc.AttachedDocuments.Contains(_RemovedDoc))
                 _CurrentDoc.AttachedDocuments.Remove(_RemovedDoc);
 
 

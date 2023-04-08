@@ -10,7 +10,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             //oldNode node = (oldNode)values[0];
-            string out_str="!!!!!!!!";
+            string out_str = "!!!!!!!!";
             //var node_value_type = node.Value?.GetType();
             ///*  if (node.NodeName!=""  && node.Value != null && !node_value_type.Name.Contains("ObservableCollection"))
             //      out_str = $"{node.NodeName}: {((IItem)node.Value)?.Name}.";

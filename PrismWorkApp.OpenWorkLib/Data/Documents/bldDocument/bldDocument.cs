@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public abstract class bldDocument : BindableBase, IbldDocument,IEntityObject
+    public abstract class bldDocument : BindableBase, IbldDocument, IEntityObject
     {
 
         private DateTime _date;
@@ -24,8 +24,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _shortName; }
             set { SetProperty(ref _shortName, value); }
         }
-        private bldDocumentsGroup  _attachedDocuments = new bldDocumentsGroup ("Приложения");
-        public bldDocumentsGroup  AttachedDocuments
+        private bldDocumentsGroup _attachedDocuments ;
+        public bldDocumentsGroup AttachedDocuments
         {
             get { return _attachedDocuments; }
             set { SetProperty(ref _attachedDocuments, value); }
@@ -45,13 +45,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bldDocument(string name) : this()
         {
             Name = name;
-            AttachedDocuments.Parents.Add(this);
         }
         public bldDocument()
         {
-            AttachedDocuments.Owner = this;
+           AttachedDocuments = new bldDocumentsGroup("Приложения");
+          ParentDocuments = new ObservableCollection<bldDocument>();
         }
-        private  ObservableCollection<bldDocument> _parentDocuments = new ObservableCollection<bldDocument>();
+        private ObservableCollection<bldDocument> _parentDocuments ;
         public ObservableCollection<bldDocument> ParentDocuments
         {
             get { return _parentDocuments; }
@@ -71,7 +71,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
         #region Commands 
-        public TEntity AddNewDocument<TEntity>() where TEntity:IbldDocument,new()
+        public TEntity AddNewDocument<TEntity>() where TEntity : IbldDocument, new()
         {
             TEntity new_doc = new TEntity();
             AddDocumentCommand<TEntity> Command = new AddDocumentCommand<TEntity>(this, new_doc);
@@ -80,13 +80,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public TEntity AddCreatedBasedOnNewDocument<TEntity>(TEntity sample_doc) where TEntity : IbldDocument, new()
         {
-            TEntity new_doc =(TEntity)sample_doc.Clone();
+            TEntity new_doc = (TEntity)sample_doc.Clone();
             new_doc.Id = Guid.NewGuid();
             AddDocumentCommand<TEntity> Command = new AddDocumentCommand<TEntity>(this, new_doc);
             InvokeUnDoReDoCommandCreatedEvent(Command);
             return new_doc;
         }
-        public void  RemoveDocument(IbldDocument removed_doc) 
+        public void RemoveDocument(IbldDocument removed_doc)
         {
             RemoveDocumentCommand Command = new RemoveDocumentCommand(this, removed_doc);
             InvokeUnDoReDoCommandCreatedEvent(Command);

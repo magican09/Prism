@@ -3,8 +3,6 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
-using PrismWorkApp.Core.Dialogs;
-using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
@@ -34,7 +32,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedGridColumn; }
             set { SetProperty(ref _selectedGridColumn, value); }
         }
-        
+
         private bldDocument _selectedDocument;
         public bldDocument SelectedDocument
         {
@@ -87,11 +85,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> RemoveUnitOfMeasurementCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
-      //  public IbldDocumentsUnitsRepository _bldDocumentsUnitsRepository { get; }
+        //  public IbldDocumentsUnitsRepository _bldDocumentsUnitsRepository { get; }
         public DocumentsGroupViewModel(IDialogService dialogService,
            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands)
         {
-           
+
             UnDoReDo = new UnDoReDoSystem();
             ApplicationCommands = applicationCommands;
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
@@ -102,7 +100,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SortedElementCommand = new NotifyCommand<object>(OnSortingElement);
 
             _buildingUnitsRepository = buildingUnitsRepository;
-        
+
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedDocument);
             CloseCommand = new NotifyCommand<object>(OnClose);
@@ -125,40 +123,40 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnFindElement(object obj)
         {
-            string find_string = ((Tuple<object, object>) obj).Item2 as string;
+            string find_string = ((Tuple<object, object>)obj).Item2 as string;
             DataGrid data_grid = ((Tuple<object, object>)obj).Item1 as DataGrid;
 
 
             var r = SelectedGridColumn.HeaderTemplate;
-             var find_materials = CoreFunctions.FindElementInCollection<bldDocument, ObservableCollection<bldDocument>>(
-                SelectedDocumentsGroup, SelectedGridColumn.SortMemberPath, find_string);
-     
+            var find_materials = CoreFunctions.FindElementInCollection<bldDocument, ObservableCollection<bldDocument>>(
+               SelectedDocumentsGroup, SelectedGridColumn.SortMemberPath, find_string);
+
             if (find_materials.Count > 0)
             {
                 data_grid.SelectedIndex = data_grid.Items.IndexOf(find_materials[0]);
             }
-        
+
 
 
         }
 
         private void OnSortingElement(object obj)
         {
-                //SortedCommonCollection.Clear();
-                //FilteredCommonCollection.Clear();
-                // foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
-                //{
-                //    SortedCommonCollection.Add(element);
-                //    FilteredCommonCollection.Add(element);
-                // }
-                SortedCommonPointersCollection.Clear();
-                FilteredCommonPointersCollection.Clear();
-                foreach (bldDocument material in SelectedDocumentsGroup)
-                {
-                    SortedCommonPointersCollection.Add(material);
-                    FilteredCommonPointersCollection.Add(material);
-                }
-            
+            //SortedCommonCollection.Clear();
+            //FilteredCommonCollection.Clear();
+            // foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
+            //{
+            //    SortedCommonCollection.Add(element);
+            //    FilteredCommonCollection.Add(element);
+            // }
+            SortedCommonPointersCollection.Clear();
+            FilteredCommonPointersCollection.Clear();
+            foreach (bldDocument material in SelectedDocumentsGroup)
+            {
+                SortedCommonPointersCollection.Add(material);
+                FilteredCommonPointersCollection.Add(material);
+            }
+
         }
         #region  Commmands Methods
         private void OnUnitOfMeasurement(object obj)
@@ -214,7 +212,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnDataGridSelectionChanged(object materials)
         {
             SelectedDocuments.Clear();
-            foreach (bldDocument  material in (IList)materials)
+            foreach (bldDocument material in (IList)materials)
                 SelectedDocuments.Add(material);
         }
         private void OnFilteredElement(object obj)
@@ -268,16 +266,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 SelectedDocumentsGroup = (bldDocumentsGroup)navigane_message_works.Object;
                 SelectedDocumentsGroup.ErrorsChanged += RaiseCanExecuteChanged;
                 UnDoReDo.Register(SelectedDocumentsGroup);
-                foreach (bldDocument   document in SelectedDocumentsGroup)
+                foreach (bldDocument document in SelectedDocumentsGroup)
                 {
                     UnDoReDo.Register(document);
-                    foreach(bldDocument attach_document in document.AttachedDocuments)
-                          UnDoReDo.Register(attach_document);
+                    foreach (bldDocument attach_document in document.AttachedDocuments)
+                        UnDoReDo.Register(attach_document);
                 }
                 Title = $"{SelectedDocumentsGroup.Code} {SelectedDocumentsGroup.Name}";
-                SortedCommonPointersCollection = new ObservableCollection<bldDocument>(SelectedDocumentsGroup.Where(el =>el!=null).ToList() as IList<bldDocument>);
+                SortedCommonPointersCollection = new ObservableCollection<bldDocument>(SelectedDocumentsGroup.Where(el => el != null).ToList() as IList<bldDocument>);
                 FilteredCommonPointersCollection = new ObservableCollection<bldDocument>(SortedCommonPointersCollection);
-                
+
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)

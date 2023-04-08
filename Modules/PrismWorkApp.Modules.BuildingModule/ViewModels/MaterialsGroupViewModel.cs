@@ -3,15 +3,12 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
-using PrismWorkApp.Core.Dialogs;
-using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
@@ -34,7 +31,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedGridColumn; }
             set { SetProperty(ref _selectedGridColumn, value); }
         }
-        
+
         private bldMaterial _selectedMaterial;
         public bldMaterial SelectedMaterial
         {
@@ -101,9 +98,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         public IbldMaterialsUnitsRepository _bldMaterialsUnitsRepository { get; }
         public MaterialsGroupViewModel(IDialogService dialogService,
-           IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository,IbldMaterialsUnitsRepository materialsUnitsRepository, IApplicationCommands applicationCommands)
+           IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IbldMaterialsUnitsRepository materialsUnitsRepository, IApplicationCommands applicationCommands)
         {
-           
+
             UnDoReDo = new UnDoReDoSystem();
             ApplicationCommands = applicationCommands;
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
@@ -112,7 +109,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             FindMaterialCommand = new NotifyCommand<object>(OnFindMaterial);
             FilteredElementCommand = new NotifyCommand<object>(OnFilteredElement);
             SortedElementCommand = new NotifyCommand<object>(OnSortingElement);
-          
+
             _bldMaterialsUnitsRepository = materialsUnitsRepository;
             MaterialsCategories = new ObservableCollection<bldResourseCategory>(
                                     _bldMaterialsUnitsRepository.ResourseCategories.GetAll());
@@ -138,40 +135,40 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnFindMaterial(object obj)
         {
-            string find_string = ((Tuple<object, object>) obj).Item2 as string;
+            string find_string = ((Tuple<object, object>)obj).Item2 as string;
             DataGrid data_grid = ((Tuple<object, object>)obj).Item1 as DataGrid;
 
 
             var r = SelectedGridColumn.HeaderTemplate;
-             var find_materials = CoreFunctions.FindElementInCollection<bldMaterial, ObservableCollection<bldMaterial>>(
-                SelectedMaterialsGroup, SelectedGridColumn.SortMemberPath, find_string);
-     
+            var find_materials = CoreFunctions.FindElementInCollection<bldMaterial, ObservableCollection<bldMaterial>>(
+               SelectedMaterialsGroup, SelectedGridColumn.SortMemberPath, find_string);
+
             if (find_materials.Count > 0)
             {
                 data_grid.SelectedIndex = data_grid.Items.IndexOf(find_materials[0]);
             }
-        
+
 
 
         }
 
         private void OnSortingElement(object obj)
         {
-                //SortedCommonCollection.Clear();
-                //FilteredCommonCollection.Clear();
-                // foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
-                //{
-                //    SortedCommonCollection.Add(element);
-                //    FilteredCommonCollection.Add(element);
-                // }
-                SortedCommonPointersCollection.Clear();
-                FilteredCommonPointersCollection.Clear();
-                foreach (bldMaterial material in SelectedMaterialsGroup)
-                {
-                    SortedCommonPointersCollection.Add(material);
-                    FilteredCommonPointersCollection.Add(material);
-                }
-            
+            //SortedCommonCollection.Clear();
+            //FilteredCommonCollection.Clear();
+            // foreach (T element in SelectedPredicate.Predicate.Invoke(CommonCollection))
+            //{
+            //    SortedCommonCollection.Add(element);
+            //    FilteredCommonCollection.Add(element);
+            // }
+            SortedCommonPointersCollection.Clear();
+            FilteredCommonPointersCollection.Clear();
+            foreach (bldMaterial material in SelectedMaterialsGroup)
+            {
+                SortedCommonPointersCollection.Add(material);
+                FilteredCommonPointersCollection.Add(material);
+            }
+
         }
         #region  Commmands Methods
         private void OnUnitOfMeasurement(object obj)
@@ -227,7 +224,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnDataGridSelectionChanged(object materials)
         {
             SelectedMaterials.Clear();
-            foreach (bldMaterial  material in (IList)materials)
+            foreach (bldMaterial material in (IList)materials)
                 SelectedMaterials.Add(material);
         }
         private void OnFilteredElement(object obj)
@@ -288,16 +285,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 //    SelectedMaterialCategory = load_mat_category;
                 //}
                 UnDoReDo.Register(SelectedMaterialsGroup);
-                foreach (bldMaterial  material in SelectedMaterialsGroup)
+                foreach (bldMaterial material in SelectedMaterialsGroup)
                 {
                     UnDoReDo.Register(material);
-                    foreach(bldDocument document in material.Documents)
-                          UnDoReDo.Register(document);
+                    foreach (bldDocument document in material.Documents)
+                        UnDoReDo.Register(document);
                 }
                 Title = $"{SelectedMaterialsGroup.Code} {SelectedMaterialsGroup.Name}";
-                SortedCommonPointersCollection = new ObservableCollection<bldMaterial>(SelectedMaterialsGroup.Where(el =>el!=null).ToList());
+                SortedCommonPointersCollection = new ObservableCollection<bldMaterial>(SelectedMaterialsGroup.Where(el => el != null).ToList());
                 FilteredCommonPointersCollection = new ObservableCollection<bldMaterial>(SortedCommonPointersCollection);
-                
+
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)

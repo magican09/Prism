@@ -1,15 +1,13 @@
-﻿using Prism.Mvvm;
-using Prism.Services.Dialogs;
+﻿using Prism.Services.Dialogs;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace PrismWorkApp.Core.Dialogs
 {
-    public class GetObjectFromCollectionDialogVeiwModel: Prism.Mvvm.BindableBase, IDialogAware
-      
+    public class GetObjectFromCollectionDialogVeiwModel : Prism.Mvvm.BindableBase, IDialogAware
+
     {
         private string _title = "Выбрать";
         public string Title
@@ -57,17 +55,17 @@ namespace PrismWorkApp.Core.Dialogs
         }
         public event Action<IDialogResult> RequestClose;
         public NotifyCommand CloseDialogCommand { get; private set; }
-         public NotifyCommand ConfirmDialogCommand { get; private set; }
-          public GetObjectFromCollectionDialogVeiwModel()
+        public NotifyCommand ConfirmDialogCommand { get; private set; }
+        public GetObjectFromCollectionDialogVeiwModel()
         {
             CloseDialogCommand = new NotifyCommand(CloseDialog);
             ConfirmDialogCommand = new NotifyCommand(ConfirmDialog, CanConfirmDialog).
                 ObservesProperty(() => SelectedElement);
-          
+
 
         }
 
-       
+
 
         private bool CanConfirmDialog()
         {

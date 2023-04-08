@@ -7,7 +7,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
     {
 
         public string Name { get; set; }
-        public ObservableCollection<IJornalable>  ChangedObjects {get;set;}
+        public ObservableCollection<IJornalable> ChangedObjects { get; set; }
         void Execute(object parameter = null);
         public void UnExecute();
     }

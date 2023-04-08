@@ -4,27 +4,16 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
-using PrismWorkApp.Core.Console;
 using PrismWorkApp.Core.Dialogs;
-using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
-using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data;
-using System.Data.Odbc;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -44,7 +33,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private IDialogService _dialogService;
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
-         public IApplicationCommands ApplicationCommands
+        public IApplicationCommands ApplicationCommands
         {
             get { return _applicationCommands; }
             set { SetProperty(ref _applicationCommands, value); }
@@ -67,32 +56,32 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             LoadMaterialCertificatesFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
             LoadMaterialCertificatesFromDBCommand = new NotifyCommand(OnLoadMaterialCertificatesFromDB);
             SaveDataToDBCommand = new NotifyCommand(OnSaveDataToDB);
-        //    ApplicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadMaterialCertificatesFromDBCommand);
+            //    ApplicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadMaterialCertificatesFromDBCommand);
 
         }
 
         private void OnLoadMaterialCertificatesFromDB()
         {
-            bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
+            //bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
 
-            CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
-                      (All_AggregationDocuments, _dialogService, (result) =>
-                      {
-                          if (result.Result == ButtonResult.Yes)
-                          {
-                              bldAggregationDocument selected_catalog = result.Parameters.GetValue<bldAggregationDocument>("element");
+            //CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
+            //          (All_AggregationDocuments, _dialogService, (result) =>
+            //          {
+            //              if (result.Result == ButtonResult.Yes)
+            //              {
+            //                  bldAggregationDocument selected_catalog = result.Parameters.GetValue<bldAggregationDocument>("element");
 
-                              var navParam = new NavigationParameters();
-                              navParam.Add("bld_document", selected_catalog);
-                              _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(DocumentationExplorerView).Name, navParam);
+            //                  var navParam = new NavigationParameters();
+            //                  navParam.Add("bld_document", selected_catalog);
+            //                  _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(DocumentationExplorerView).Name, navParam);
 
 
-                          }
+            //              }
 
-                      }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
-                      "Выберете каталог для сохранения",
-                         "Форма для выбора каталога для загзузки из базы данных."
-                        , "Перечень каталогов");
+            //          }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
+            //          "Выберете каталог для сохранения",
+            //             "Форма для выбора каталога для загзузки из базы данных."
+            //            , "Перечень каталогов");
 
         }
 
@@ -147,9 +136,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                  current_catalog.AttachedDocuments.Add(certificate);
                          if (!_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.Find(ad => ad.Id == current_catalog.Id).Any())
                          {
-                             foreach(bldMaterialCertificate certificate in current_catalog.AttachedDocuments)
+                             foreach (bldMaterialCertificate certificate in current_catalog.AttachedDocuments)
                              {
-                                 if(!_buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Find(mc=>mc.Id==certificate.Id).Any())
+                                 if (!_buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Find(mc => mc.Id == certificate.Id).Any())
                                  {
                                      _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Add(certificate);
                                      _buildingUnitsRepository.Complete();

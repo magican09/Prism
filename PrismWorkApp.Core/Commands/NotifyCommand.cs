@@ -33,7 +33,7 @@ namespace PrismWorkApp.Core.Commands
         {
             RegisterActiveAwareEventHandler(executeMethod);
             _TargetExecuteMetod = executeMethod;
-            
+
         }
 
         private void RegisterActiveAwareEventHandler(Action executeMethod)
@@ -172,7 +172,7 @@ namespace PrismWorkApp.Core.Commands
         {
             CanExecuteChanged(this, EventArgs.Empty);
         }
-        public  void Execute(object parameter)
+        public void Execute(object parameter)
         {
             _Execute(parameter);
         }
@@ -184,7 +184,7 @@ namespace PrismWorkApp.Core.Commands
 
     }
 
-    public class NotifyCommand<T> : NotifyCommandBase,  ICommand, IActiveAware, INotifyCommand
+    public class NotifyCommand<T> : NotifyCommandBase, ICommand, IActiveAware, INotifyCommand
     {
         public string Name { get; set; } = "Имя команды не определено!!!";
         public Uri ImageUri { get; set; }
@@ -315,11 +315,11 @@ namespace PrismWorkApp.Core.Commands
         {
             CanExecuteChanged(this, EventArgs.Empty);
         }
-         public  void Execute(object parameter)
+        public void Execute(object parameter)
         {
             this._Execute(parameter);
         }
-        public  bool CanExecute(object parameter)
+        public bool CanExecute(object parameter)
         {
             return _CanExecute(parameter);
         }

@@ -2,7 +2,7 @@
 {
     public abstract class bldResource : BindableBase, IbldResource, IEntityObject
     {
-      
+
         private string _shortName;
         public string ShortName
         {
@@ -35,7 +35,7 @@
             get { return _unitOfMeasurement; }
             set { SetProperty(ref _unitOfMeasurement, value); }
         }//Ед. изм
-        public  bldResourseCategory Category { get; set; }
+        public bldResourseCategory Category { get; set; }
         private decimal _cost;
         public decimal Cost
         {

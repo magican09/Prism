@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
 
-namespace PrismWorkApp.Modules.BuildingModule 
+namespace PrismWorkApp.Modules.BuildingModule
 {
-    public class MenuItemCollection : ObservableCollection<MenuItem>,INotifyPropertyChanged
+    public class MenuItemCollection : ObservableCollection<MenuItem>, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)

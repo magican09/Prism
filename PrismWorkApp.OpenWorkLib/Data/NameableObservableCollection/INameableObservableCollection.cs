@@ -4,12 +4,10 @@ using System.Collections.Specialized;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface INameableObservableCollection<TEntity> : INotifyCollectionChanged, INotifyJornalableCollectionChanged, ICollection<TEntity>, IEnumerable<TEntity>, IList, ICollection,
-                                                  IEntityObject, INameable where TEntity : IEntityObject
+    public interface INameableObservableCollection : INotifyCollectionChanged, INotifyJornalableCollectionChanged, ICollection, IEnumerable, IList, 
+                                                  IEntityObject, INameable// where TEntity : IEntityObject
     {
-        //  public bool RemoveJournalable(TEntity item);, IEntityObject,
 
-        //   public IJornalable ParentObject { get; set; }
-
+        public IEntityObject Owner { get; set; }
     }
 }

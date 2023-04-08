@@ -5,26 +5,21 @@ using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Core;
+using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Globalization;
-using Telerik.Windows;
-using System.Windows.Controls;
-using Telerik.Windows.Controls;
-using System.Collections;
 using PrismWorkApp.OpenWorkLib.Data.Service;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Data;
 using PrismWorkApp.Services.Repositories;
-using PrismWorkApp.Modules.BuildingModule.Dialogs;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using Telerik.Windows.Controls;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -185,7 +180,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             if (obj is IList list) selected_object = list[0]; else selected_object = obj;
             var command = AppObjectsModel.LoadAggregationDocumentFromDBCommand;
             bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
-         //   All_AggregationDocuments.SaveChanges();
+            //   All_AggregationDocuments.SaveChanges();
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
                       (All_AggregationDocuments, _dialogService, (result) =>
                       {
@@ -196,14 +191,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                               if (loaded_doc != null)
                               {
                                   if (selected_object is bldDocument document) document.AddDocument(document);
-                                  if (selected_object is IList doc_coll) doc_coll.Add(loaded_doc as bldDocument);
-
+                                  if (selected_object is IList doc_coll)
+                                  {
+                                      doc_coll.Add(loaded_doc as bldDocument);
+                                      UnDoReDo.RegisterAll(loaded_doc);
+                                  }
                               }
                           }
                       }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
                       "Выберете каталог для сохранения",
-                         "Форма для загрузки ведомости документации из базы данных."
-                        , "Перечень каталогов");
+                         "Форма для загрузки ведомости документации из базы данных.",
+                         "Перечень каталогов");
 
         }
         public void OnSaveDocumentationToDB()
@@ -329,20 +327,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         {
                             NavigationParameters navParam = new NavigationParameters();
                             bool save_permit = false;
-                            UnDoReDo.SaveAll((udrd_sys) =>
-                            {
-                                var changed_objects = UnDoReDo.ChangedObjects;
-                                CoreFunctions.ConfirmActionDialog("Сохранить все изменения в документации БД?", "Документация",
-                              "Сохранить", "Отмена", (result) =>
-                                                 {
-                                                     if (result.Result == ButtonResult.Yes)
-                                                     {
-                                                         save_permit = true;
-                                                     }
-                                                 }, _dialogService);
-                                return save_permit;
-                            });
-                            if (!save_permit) return;
+                            // aggregationDocument.Save(UnDoReDo);
+
+                            //  CoreFunctions.ConfirmActionDialog("Сохранить все изменения в документации БД?", "Документация",
+                            //"Сохранить", "Отмена", (result) =>
+                            //                   {
+                            //                       if (result.Result == ButtonResult.Yes)
+                            //                       {
+                            //                           aggregationDocument.Save(UnDoReDo);
+                            //                           save_permit = true;
+                            //                       }
+                            //                   }, _dialogService);
+
+                            //  if (!save_permit) return;
                             navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             navParam.Add("parant_undoredo_system", (new ConveyanceObject(UnDoReDo, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);

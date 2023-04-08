@@ -1,15 +1,12 @@
-﻿using System;
+﻿using PrismWorkApp.OpenWorkLib.Data;
+using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Markup;
-
-
-using PrismWorkApp.OpenWorkLib.Data;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
@@ -18,7 +15,7 @@ namespace PrismWorkApp.Modules.BuildingModule
     public delegate void MenuItemExpandDelegateHandler(DataItem dataItem);
 
     [ContentProperty("Children")]
-    public class DataItem : DependencyObject,INotifyPropertyChanged
+    public class DataItem : DependencyObject, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
@@ -59,7 +56,7 @@ namespace PrismWorkApp.Modules.BuildingModule
         {
             this._items = new DataItemCollection(this);
 
-           
+
         }
 
 

@@ -15,15 +15,15 @@ namespace PrismWorkApp.Services.Repositories
         {
             this.Dispose();
         }
-  
+
         public List<bldAggregationDocument> GetAllAsync()
         {
 
             List<bldAggregationDocument> all_arrg_documents =
                 PlutoContext.AggregationDocuments
                 .Include(ad => ad.AttachedDocuments)
-                .Include(ad=>ad.ImageFile).ToList();
-                 return all_arrg_documents;//out_val;
+                .Include(ad => ad.ImageFile).ToList();
+            return all_arrg_documents;//out_val;
         }
         public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }
     }

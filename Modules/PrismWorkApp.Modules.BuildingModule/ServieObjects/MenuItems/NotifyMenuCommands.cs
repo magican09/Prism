@@ -1,22 +1,19 @@
 ﻿using PrismWorkApp.Core.Commands;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
-    public class NotifyMenuCommands: ObservableCollection<INotifyCommand>,INotifyPropertyChanged
+    public class NotifyMenuCommands : ObservableCollection<INotifyCommand>, INotifyPropertyChanged
     {
-		public event PropertyChangedEventHandler PropertyChanged;
-		private void OnPropertyChanged(string propertyName)
-		{
-			if (this.PropertyChanged != null)
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string propertyName)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
 
         private MenuItem _menuItem;
 
@@ -28,7 +25,7 @@ namespace PrismWorkApp.Modules.BuildingModule
         public NotifyMenuCommands()
         {
             MenuItem = new MenuItem();
-           
+
         }
         protected override void SetItem(int index, INotifyCommand item)
         {
@@ -48,7 +45,7 @@ namespace PrismWorkApp.Modules.BuildingModule
                 menuItem.ImageUrl = item.ImageUri;
                 menuItem.Command = item;
                 MenuItem.Items.Add(menuItem);
-             
+
                 base.InsertItem(index, item);
             }
         }

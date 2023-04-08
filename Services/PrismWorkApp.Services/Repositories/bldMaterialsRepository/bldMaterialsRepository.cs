@@ -17,14 +17,14 @@ namespace PrismWorkApp.Services.Repositories
         }
         public List<bldMaterial> GetByName(string name)
         {
-            return  PlutoContext.Materials.Where(m => m.Name == name).ToList();
+            return PlutoContext.Materials.Where(m => m.Name == name).ToList();
         }
         public List<bldMaterial> GetAllAsync()
         {
-            return  PlutoContext.Materials.ToList();
+            return PlutoContext.Materials.ToList();
         }
 
-        public bldMaterialsPlutoContext  PlutoContext { get { return Context as bldMaterialsPlutoContext; } }
+        public bldMaterialsPlutoContext PlutoContext { get { return Context as bldMaterialsPlutoContext; } }
 
     }
 }

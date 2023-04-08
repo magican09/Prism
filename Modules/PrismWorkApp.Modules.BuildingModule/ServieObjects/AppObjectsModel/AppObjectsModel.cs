@@ -3,21 +3,9 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
-using PrismWorkApp.Modules.BuildingModule.Core;
-using PrismWorkApp.Modules.BuildingModule.Dialogs;
-using PrismWorkApp.Modules.BuildingModule.Views;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using Telerik.Windows.Controls;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
@@ -83,7 +71,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             //CreateBasedOnMaterialCertificateCommand = new NotifyCommand<object>(OnCreateBasedOnMaterialCertificate, (ob) => SelectedDocument is bldMaterialCertificate).ObservesProperty(() => SelectedDocument);
             //RemoveMaterialCertificateCommand = new NotifyCommand<object>(OnRemoveMaterialCertificate, (ob) => SelectedDocument is bldMaterialCertificate).ObservesProperty(() => SelectedDocument);
 
-          
+
         }
 
         //private void OnCreateNewMaterialCertificate(object new_cetificate)
@@ -104,7 +92,7 @@ namespace PrismWorkApp.Modules.BuildingModule
 
         #region bldDocumentaation  services
 
-        
+
 
         //public NotifyCommand<object> CreateNewAggregationDocumentCommand { get; set; }
         //public NotifyCommand<object> RemoveAggregationDocumentCommand { get; private set; }
@@ -139,40 +127,40 @@ namespace PrismWorkApp.Modules.BuildingModule
         private void OnLoadAggregationDocumentFromDB(object loaded_object)
         {
 
-            
+
         }
 
-    #endregion
+        #endregion
 
-    #endregion
-    #region Model data 
-    #region Documentation
-    /// <summary>
-    /// Коллекция для хранения документации
-    /// </summary>
-    #endregion
+        #endregion
+        #region Model data 
+        #region Documentation
+        /// <summary>
+        /// Коллекция для хранения документации
+        /// </summary>
+        #endregion
 
-    #endregion
+        #endregion
 
-    #region Save 
-    public void OnSaveDocumentationToDB()
-    {
-        CoreFunctions.ConfirmActionDialog("Сохранить все изменения в документации БД?", "Документация",
-            "Сохранить", "Отмена", (result) =>
-              {
-                  if (result.Result == ButtonResult.Yes)
+        #region Save 
+        public void OnSaveDocumentationToDB()
+        {
+            CoreFunctions.ConfirmActionDialog("Сохранить все изменения в документации БД?", "Документация",
+                "Сохранить", "Отмена", (result) =>
                   {
-                      foreach (bldDocument document in Documentation.AttachedDocuments)
+                      if (result.Result == ButtonResult.Yes)
                       {
-                          if (_buildingUnitsRepository.DocumentsRepository.Get(document.Id) == null)
-                              _buildingUnitsRepository.DocumentsRepository.Add(document);
+                          foreach (bldDocument document in Documentation.AttachedDocuments)
+                          {
+                              if (_buildingUnitsRepository.DocumentsRepository.Get(document.Id) == null)
+                                  _buildingUnitsRepository.DocumentsRepository.Add(document);
+                          }
+                          _buildingUnitsRepository.Complete();
                       }
-                      _buildingUnitsRepository.Complete();
-                  }
-              }, _dialogService);
+                  }, _dialogService);
 
+        }
+
+        #endregion
     }
-
-    #endregion
-}
 }

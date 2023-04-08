@@ -41,20 +41,21 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #region Properties
         private Guid _id = Guid.NewGuid();
+        private Guid _storedId;
+        private string _code;
+        private string _name;
         [CreateNewWhenCopy]
         public Guid Id
         {
             get { return _id; }
             set { SetProperty(ref _id, value); }
         }
-        private Guid _storedId;
-        [CreateNewWhenCopy]
+         [CreateNewWhenCopy]
         public Guid StoredId
         {
             get { return _storedId; }
             set { SetProperty(ref _storedId, value); }
         }
-        private string _code;
         public string Code
         {
             get
@@ -63,7 +64,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { SetProperty(ref _code, value); }
         }//Код
-        private string _name;
         public string Name
         {
             get { return _name; }
@@ -71,8 +71,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #endregion
         #region Validating
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
         private Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
         public IEnumerable GetErrors(string propertyName)
         {
             if (_errors.ContainsKey(propertyName))
@@ -80,7 +80,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             else
                 return null;
         }
-        [NotJornaling]
         public bool HasErrors
         {
             get { return _errors.Count > 0; }
@@ -148,18 +147,19 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         #endregion
         #region  IJornaling service
-        public event SaveChangesEventHandler SaveChanges;
-         public event SaveChangesEventHandler SaveAllChanges;
         private ObservableCollection<IUnDoReDoSystem> _unDoReDoSystems = new ObservableCollection<IUnDoReDoSystem>();
+        private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
+        public event SaveChangesEventHandler SaveChanges;
+        public event SaveChangesEventHandler SaveAllChanges;
         [NotMapped]
-        [NotJornaling]
+        [CreateNewWhenCopy]
         public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems
         {
             get { return _unDoReDoSystems; }
             set { _unDoReDoSystems = value; }
         }
-        private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
-        [NotJornaling]
+         [NotJornaling]
+        [CreateNewWhenCopy]
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal
         {
             get { return _changesJornal; }
@@ -179,16 +179,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (b_jornal_recording_flag == false && UnDoReDoSystems.Count > 0)
                 b_jornal_recording_flag = true;
         }
-        //public void Save(IUnDoReDoSystem unDoReDo)
-        //{
-
-        //    int? saved_items = this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
-
-        //}
-        //public void SaveAll(IUnDoReDoSystem unDoReDo)
-        //{
-        //    int? saved_items = this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
-        //}
         #endregion
         public object Clone()
         {
@@ -198,14 +188,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 var prop_val = prop_info.GetValue(new_collection);
                 var member_info = this.GetType().GetMember(prop_info.Name);
-                object[] no_copy__attributes = member_info[0].GetCustomAttributes(typeof(CreateNewWhenCopyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
-                object[] navigate__attributes = member_info[0].GetCustomAttributes(typeof(NavigatePropertyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
-
+                var create_new_atrb = prop_info.GetCustomAttribute<CreateNewWhenCopyAttribute>();
+                var navigate_atrb = prop_info.GetCustomAttribute<NavigatePropertyAttribute>();
+                
                 if (!prop_info.PropertyType.FullName.Contains("System") && prop_info.SetMethod != null)
                 {
                     if (prop_val != null)
                     {
-                        if (no_copy__attributes.Length == 0 && navigate__attributes.Length == 0) //Если объяет свойство не навигационный и без запрета накопирование  
+                        if (create_new_atrb == null && navigate_atrb  == null) //Если объяет свойство не навигационный и без запрета накопирование  
                         {
                             if (prop_val is ICloneable clonable_prop_val)
                                 prop_info.SetValue(new_collection, clonable_prop_val.Clone());
@@ -213,20 +203,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
                                 prop_info.SetValue(new_collection, prop_val);
 
                         }
-                        if (no_copy__attributes.Length > 0 && navigate__attributes.Length == 0) //Если стоит атрибут "создать новый при копировании"
+                        if (create_new_atrb != null   && navigate_atrb!=null) //Если стоит атрибут "создать новый при копировании"
                         {
                             prop_val = null;
                             prop_val = Activator.CreateInstance(prop_info.PropertyType);
                             prop_info.SetValue(new_collection, prop_val);
                         }
-                        if (navigate__attributes.Length > 0) //Если свойство навигационное 
+                        if (create_new_atrb != null) //Если свойство навигационное 
                         {
                             prop_val = null;
                             prop_info.SetValue(new_collection, prop_val);
                         }
                     }
                     else
-                        if (no_copy__attributes.Length == 0)
+                        if (create_new_atrb == null)
                         prop_info.SetValue(new_collection, prop_val);
                 }
             }
@@ -238,9 +228,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
              ((IKeyable)new_collection).Id = Guid.Empty;
             return new_collection;
         }
+        [CreateNewWhenCopy]
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе с данных объектом по умолчанию
         private IEntityObject _owner;
         [NotJornaling]
+        [CreateNewWhenCopy]
         public IEntityObject Owner
         {
             get {
@@ -257,8 +249,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
         }
         #region  IHierarchical
-        public ObservableCollection<IEntityObject> _parents = new ObservableCollection<IEntityObject>();
-        [NotMapped]
+        private ObservableCollection<IEntityObject> _children = new ObservableCollection<IEntityObject>();
+        private ObservableCollection<IEntityObject> _parents = new ObservableCollection<IEntityObject>();
         [NavigateProperty]
         [NotJornaling]
         public ObservableCollection<IEntityObject> Parents
@@ -269,8 +261,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 SetProperty(ref _parents, value);
             }
         }
-       
-        private ObservableCollection<IEntityObject> _children = new ObservableCollection<IEntityObject>();
         [NotMapped]
         [NavigateProperty]
         [NotJornaling]

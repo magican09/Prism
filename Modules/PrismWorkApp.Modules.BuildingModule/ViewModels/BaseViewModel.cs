@@ -62,10 +62,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             {
                 if (result.Result == ButtonResult.Yes)
                 {
-                    UnDoReDo.ClearStacks();
+                    UnDoReDo.SaveAllChages();
                 }
             });
-
 
         }
         public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IEntityObject
@@ -173,72 +172,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
 
 
-
-        /* 
-         *    public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
-          {
-              CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
-              {
-                  if (result.Result == ButtonResult.Yes)
-                  {
-                      selected_obj.SaveAll(Id);
-                  }
-                  if (result.Result == ButtonResult.No)
-                  {
-                     selected_obj.UnDoAll(Id);
-                  }
-
-              }, _dialogService);
-          }
-
-         * public virtual void OnClose<T>(object view, T selected_obj, string object_name = "") where T : IJornalable, INameable, IRegisterable, IBindableBase
-          {
-              if (selected_obj != null && !selected_obj.IsUnDoReDoSystemIsEmpty(Id))//selected_obj!=null&&добавлено 27,10,22
-              {
-                  CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
-                  {
-                      if (view != null)
-                      {
-                          if (result.Result == ButtonResult.Yes)
-                          {
-                              selected_obj.SaveAll(Id);
-                              if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
-                              {
-                                  _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
-                                  _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
-                              }
-                              OnWindowClose();
-                          }
-                          else if (result.Result == ButtonResult.No)
-                          {
-                              selected_obj.UnDoAll(Id);
-                              if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
-                              {
-                                  _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
-                                  _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
-                              }
-                              OnWindowClose();
-                          }
-                          else if (result.Result == ButtonResult.Cancel)
-                          {
-
-                          }
-                      }
-                  }, _dialogService);
-
-              }
-              else
-              {
-                  if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
-                  {
-                      _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
-                      _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
-                  }
-                  OnWindowClose();
-              }
-
-          }
-          */
         #region on Activate event  
         //private void OnActiveChanged(object sender, EventArgs e)
         //{

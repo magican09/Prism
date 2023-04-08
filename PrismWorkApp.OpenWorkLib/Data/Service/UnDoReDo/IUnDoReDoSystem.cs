@@ -29,7 +29,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public Dictionary<IJornalable, IUnDoReDoSystem> _ChildrenSystemRegistedModels { get; set; } 
         public int SaveChages(IJornalable obj);
         public int SaveAllChages(IJornalable obj, bool first_itaration = true);
-
+        public int SaveAllChages();
 
 
     }

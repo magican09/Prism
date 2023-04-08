@@ -23,7 +23,7 @@ using Telerik.Windows.Controls;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class DocumentationExplorerViewModel : LocalBindableBase, INotifyPropertyChanged, INavigationAware//, IConfirmNavigationRequest
+    public class DocumentationExplorerViewModel : BaseViewModel<object>, INotifyPropertyChanged, INavigationAware//, IConfirmNavigationRequest
     {
 
 
@@ -87,9 +87,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         private IApplicationCommands _applicationCommands;
-        private IUnDoReDoSystem UnDoReDo;
-        protected IDialogService _dialogService;
-        protected IRegionManager _regionManager;
         IBuildingUnitsRepository _buildingUnitsRepository;
         public DocumentationExplorerViewModel(IEventAggregator eventAggregator,
                             IRegionManager regionManager, IDialogService dialogService,
@@ -145,6 +142,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveDocumentationToDBCommand);
             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
         }
 
         private void OnRemoveAggregationDocument(object obj)
@@ -167,6 +165,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             if (obj is IList list) selected_object = list[0]; else selected_object = obj;
             if (selected_object is bldDocument document)
             {
+                document.AddNewDocument<bldAggregationDocument>();
                 UnDoReDo.Register(document.AddNewDocument<bldAggregationDocument>());
             }
             else if (selected_object is bldDocumentsGroup documents_coll)
@@ -194,7 +193,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                   if (selected_object is IList doc_coll)
                                   {
                                       doc_coll.Add(loaded_doc as bldDocument);
-                                      UnDoReDo.RegisterAll(loaded_doc);
+                                      UnDoReDo.Register(loaded_doc);
                                   }
                               }
                           }
@@ -326,20 +325,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         if (aggregationDocument.AttachedDocuments.Count > 0 && aggregationDocument.AttachedDocuments[0] is bldMaterialCertificate)
                         {
                             NavigationParameters navParam = new NavigationParameters();
-                            bool save_permit = false;
-                            // aggregationDocument.Save(UnDoReDo);
-
-                            //  CoreFunctions.ConfirmActionDialog("Сохранить все изменения в документации БД?", "Документация",
-                            //"Сохранить", "Отмена", (result) =>
-                            //                   {
-                            //                       if (result.Result == ButtonResult.Yes)
-                            //                       {
-                            //                           aggregationDocument.Save(UnDoReDo);
-                            //                           save_permit = true;
-                            //                       }
-                            //                   }, _dialogService);
-
-                            //  if (!save_permit) return;
                             navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             navParam.Add("parant_undoredo_system", (new ConveyanceObject(UnDoReDo, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
@@ -397,7 +382,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public virtual void OnSave()
         {
-            //  base.OnSave("документации");
+             base.OnSave("документации");
         }
         private void NavgationCoplete(NavigationResult obj)
         {

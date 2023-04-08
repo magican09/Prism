@@ -118,6 +118,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
             UnDoReDo = new UnDoReDoSystem();
+            UnDoReDo.Register(AggregationDocuments);
             ApplicationCommands = applicationCommands;
             _appObjectsModel = appObjectsModel as AppObjectsModel;
             _dialogService = dialogService;
@@ -125,7 +126,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _regionManager = regionManager;
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
-
+           
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedDocument);
             CloseCommand = new NotifyCommand<object>(OnClose);
@@ -312,48 +313,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldMaterialCertificate new_certificate = SelectedDocument.Clone() as bldMaterialCertificate;
             new_certificate.IsHaveImageFile = false;
-            new_certificate.ImageFile = null;
-            //UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
-            //UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
-
-            //localUnDoReDoSystem.Register(SelectedDocumentsGroup);
-            // localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
-
             SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
-            // FilteredCommonPointersCollection.Add(new_certificate);
-
-            // localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
-            //   localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
-
-            //UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
-            // UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
             UnDoReDo.Register(new_certificate);
 
         }
 
         private void OnCreateNewMaterialCertificate()
         {
-            bldMaterialCertificate new_certificate;
-            //if(_appObjectsModel.CreateNewMaterialCertificateCommand.CanExecute())
-            //_appObjectsModel.CreateNewMaterialCertificateCommand(new_certificate)
-
-            //bldMaterialCertificate new_certificate = new bldMaterialCertificate();
-            //UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
-            ////UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
-
-            ////localUnDoReDoSystem.Register(SelectedDocumentsGroup);
-            ////    localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
-
-            //UnDoReDo.Register(SelectedAggregationDocument.AttachedDocuments);
-            //SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
-            ////   FilteredCommonPointersCollection.Add(new_certificate);
-
-            ////localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
-            ////  localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
-
-            ////UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
-            ////UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
-            //UnDoReDo.Register(new_certificate);
+            bldMaterialCertificate new_certificate = new bldMaterialCertificate();
+            SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
+            UnDoReDo.Register(new_certificate);
         }
 
 
@@ -363,7 +332,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             bldMaterialCertificate selected_certificate = SelectedDocument as bldMaterialCertificate;
             UnDoReDo.Register(selected_certificate);
-            selected_certificate.UnitOfMeasurement = new bldUnitOfMeasurement("-");
+            //selected_certificate.UnitOfMeasurement = new bldUnitOfMeasurement("-");
 
         }
 
@@ -388,7 +357,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                   {
                       foreach (bldUnitOfMeasurement unit_of_measurement in units_for_add_collection)
                       {
-                          UnDoReDo.Register(selected_certificate);
                           selected_certificate.UnitOfMeasurement = unit_of_measurement;
                           break;
                       }
@@ -419,18 +387,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private bool CanSave()
         {
             if (SelectedAggregationDocument != null)
-                return !SelectedAggregationDocument.HasErrors;// && SelectedWork.UnDoReDoSystem.Count > 0;
+                return !SelectedAggregationDocument.HasErrors;
             else
                 return false;
         }
         public virtual void OnSave()
         {
-            foreach (bldDocument document in AggregationDocuments)
-            {
-                if (UnDoReDo.ChangedObjects.Contains(document))
-                    base.OnSave<bldDocument>(document);
-            }
-
+            base.OnSave<bldDocumentsGroup>(AggregationDocuments);
         }
         public virtual void OnClose(object obj)
         {
@@ -455,38 +418,32 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 UnDoReDoSystem parent_undoredo_sys = (UnDoReDoSystem)parent_undoredo_navigane_message.Object;
 
                 EditMode = navigane_message.EditMode;
-
                 if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
                 {
                     AggregationDocuments.Add(arg_document);
                     if (parent_undoredo_sys != null && !parent_undoredo_sys.ChildrenSystems.Contains(UnDoReDo))
                     {
-                        //parent_undoredo_sys.SetChildrenUnDoReDoSystem(UnDoReDo);
-                        parent_undoredo_sys.AddUnDoReDo(UnDoReDo);
+                        parent_undoredo_sys.SetChildrenUnDoReDoSystem(UnDoReDo);
+                        // parent_undoredo_sys.AddUnDoReDo(UnDoReDo);
+                        //parent_undoredo_sys.UnRegisterAll(arg_document);
                     }
-                    parent_undoredo_sys.UnRegisterAll(arg_document);
                     UnDoReDo.RegisterAll(arg_document);
-                    //UnDoReDo.Register(arg_document);
-                    //UnDoReDo.Register(arg_document.AttachedDocuments);
-                    //foreach (bldDocument document in arg_document.AttachedDocuments)
-                    //    UnDoReDo.Register(document);
                 }
                 if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
                 AggregationDocuments.ErrorsChanged += RaiseCanExecuteChanged;
-                //  Title = $"{AggregationDocuments.Code} {AggregationDocuments.Name}";
+                Title = $"Сертификаты/Паспорта";
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            //ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_material_certificates_agrregation"];
-            //bldAggregationDocument document =(bldAggregationDocument)navigane_message.Object;
-            //if (AggregationDocuments.Where(ad=>ad.Id==document.Id).FirstOrDefault()!=null)
-            //{
-
-            //    return false;
-            //}
-            //else
-            return true;
+            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_agrregation_document"];
+            bldAggregationDocument arg_document = (bldAggregationDocument)navigane_message.Object;
+            if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
+            {
+                return false;
+            }
+            else
+                return true;
         }
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {

@@ -81,11 +81,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
                 if (!entity_member.Parents.Contains(this)) entity_member.Parents.Add(this);
                 if (!this.Children.Contains(entity_member)) this.Children.Add(entity_member);
-               //foreach(IUnDoReDoSystem unDoReDo in this.UnDoReDoSystems)
-               // {
-               //     if (!unDoReDo._RegistedModels.ContainsKey(entity_member)) unDoReDo.RegisterAll(entity_member);
-               // }
-               
             }
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
@@ -165,14 +160,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (b_jornal_recording_flag == false && UnDoReDoSystems.Count > 0)
                 b_jornal_recording_flag = true;
         }
-        //public void Save(IUnDoReDoSystem unDoReDo)
-        //{
-        //    int? saved_items = this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
-        //}
-        //public void SaveAll(IUnDoReDoSystem unDoReDo)
-        //{
-        //    int? saved_items = this.SaveChanges?.Invoke(this, new JornalEventsArgs() { UnDoReDo = unDoReDo });
-        //}
         #endregion
         public BindableBase()
         {
@@ -199,34 +186,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get
             {
-                //_children.Clear();
-                //var prop_infoes = this.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
-
-                //foreach (PropertyInfo propertyInfo in prop_infoes)
-                //{
-
-                //    var atrb = propertyInfo.GetCustomAttribute<NotMappedAttribute>();
-                //    if (atrb == null)
-                //    {
-                //        var prop_val = propertyInfo.GetValue(this);
-                //        if (prop_val is IEntityObject ent_val)
-                //        {
-                //            if (ent_val is IList list_ent_val)
-                //                foreach (IEntityObject element in list_ent_val)
-                //                {
-                //                    _children.Add(element);
-                //                    //if (!element.Parents.Contains(ent_val))
-                //                    //    element.Parents.Add(ent_val);
-                //                }
-                //            else
-                //            {
-                //                _children.Add(ent_val);
-                //                //if (!ent_val.Parents.Contains(ent_val))
-                //                //    ent_val.Parents.Add(ent_val);
-                //            }
-                //        }
-                //    }
-                //}
                 return _children;
             }
             set { }
@@ -245,15 +204,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 var prop_val = prop_info.GetValue(this);
                 var new_object_prop_val = prop_info.GetValue(new_object);
                 var member_info = this.GetType().GetMember(prop_info.Name);
-                object[] no_copy__attributes = member_info[0].GetCustomAttributes(typeof(CreateNewWhenCopyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
-                object[] navigate__attributes = member_info[0].GetCustomAttributes(typeof(NavigatePropertyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
-
+                var create_new_atrb = prop_info.GetCustomAttribute<CreateNewWhenCopyAttribute>();
+                var navigate_atrb = prop_info.GetCustomAttribute<NavigatePropertyAttribute>();
 
                 if (!prop_info.PropertyType.FullName.Contains("System"))
                 {
                     if (prop_val != null)
                     {
-                        if (no_copy__attributes.Length == 0 && navigate__attributes.Length == 0) //Если объяет свойство не навигационный и без запрета накопирование  
+                        if (create_new_atrb == null && navigate_atrb== null) //Если объяет свойство не навигационный и без запрета накопирование  
                         {
                             if (prop_val is ICloneable clonable_prop_val && prop_info.SetMethod != null)
                                 prop_info.SetValue(new_object, clonable_prop_val.Clone());
@@ -268,19 +226,19 @@ namespace PrismWorkApp.OpenWorkLib.Data
                                if (prop_info.SetMethod != null) prop_info.SetValue(new_object, prop_val);
 
                         }
-                        if (no_copy__attributes.Length != 0 && navigate__attributes.Length == 0 && prop_info.SetMethod != null) //Если стоит атрибут "создать новый при копировании"
+                        if (create_new_atrb != null && navigate_atrb == null && prop_info.SetMethod != null) //Если стоит атрибут "создать новый при копировании"
                         {
                             prop_val = Activator.CreateInstance(prop_info.PropertyType);
                             prop_info.SetValue(new_object, prop_val);
                         }
-                        if (navigate__attributes.Length != 0 && prop_info.SetMethod != null) //Если свойство навигационное 
+                        if (navigate_atrb != null && prop_info.SetMethod != null) //Если свойство навигационное 
                         {
                             prop_info.SetValue(new_object, null);
                         }
                     }
                 }
                 else
-                    if (no_copy__attributes.Length == 0 && prop_info.SetMethod != null)
+                    if (create_new_atrb == null && prop_info.SetMethod != null)
                     prop_info.SetValue(new_object, prop_val);
 
 

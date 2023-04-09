@@ -1,11 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
-    public interface IUnDoRedoCommand : ICommand
+    public interface IUnDoRedoCommand : ICommand,IKeyable
     {
-
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public ObservableCollection<IJornalable> ChangedObjects { get; set; }
         /// <summary>

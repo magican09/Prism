@@ -7,6 +7,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public interface IUnDoReDoSystem : INotifyPropertyChanged, IUnDoRedoCommand
     {
+        public Stack<IUnDoRedoCommand> _UnDoCommands { get; set; }
+        public  Stack<IUnDoRedoCommand> _ReDoCommands { get; set; }
         event PropertyChangedEventHandler PropertyChanged;
         /// <summary>
         /// Уникальный Id системы
@@ -48,7 +50,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// уже зарегисрированный объект.
         /// </summary>
         /// <param name="obj"> Регистрируемый объект IJornalable</param>
-        void Register(IJornalable obj);
+        public void Register(IJornalable obj, bool enable_outo_registration = false);
         /// <summary>
         /// Метод регистрирует все дерево объектов по иерахии внурь перескакивая и череp уже зарегисрированные, если 
         /// таковые встречаются.

@@ -18,8 +18,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
     /// </summary>
     public class UnDoReDoSystem : IUnDoReDoSystem, IActiveAware
     {
-        private Stack<IUnDoRedoCommand> _UnDoCommands = new Stack<IUnDoRedoCommand>();
-        private Stack<IUnDoRedoCommand> _ReDoCommands = new Stack<IUnDoRedoCommand>();
+        public  Stack<IUnDoRedoCommand> _UnDoCommands { get; set; } = new Stack<IUnDoRedoCommand>();
+        public Stack<IUnDoRedoCommand> _ReDoCommands { get; set; } = new Stack<IUnDoRedoCommand>();
         private bool _monitorCommandActivity = false;
         private int _UnDoCounter = 0;
         private int _ReDoCounter = 0;
@@ -69,7 +69,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 {
                     IUnDoRedoCommand command = _UnDoCommands.Pop();
                     command.UnExecute();
-                    AllExecutedCommands.Remove(command);
+                    //AllExecutedCommands.Remove(command);
                     var objcs_for_remove = ChangedObjects.Where(cho => !_UnDoCommands.Where(cm => cm.ChangedObjects.Contains(cho)).Any()).ToList();
                     foreach (IJornalable j_obj in objcs_for_remove)
                         ChangedObjects.Remove(j_obj);
@@ -100,7 +100,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 {
                     IUnDoRedoCommand command = _ReDoCommands.Pop();
                     command.Execute();
-                    AllExecutedCommands.Add(command);
+                    //AllExecutedCommands.Add(command);
                     //foreach (IJornalable obj in command.ChangedObjects)
                     //    obj.ChangesJornal.Add(command);
                     if (!without_undo)
@@ -202,8 +202,11 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// уже зарегисрированный объект.
         /// </summary>
         /// <param name="obj"> Регистрируемый объект IJornalable</param>
-        public void Register(IJornalable obj)
+        /// <param name="enable_outo_registration"> Влючает функую авторегистрации в объекте..</param>
+        public void Register(IJornalable obj,bool enable_outo_registration = false)
         {
+            
+
             if (obj == null) { throw new Exception("Попытка регистрации в системе UnDoReDo объекта со значением null"); }
             if (_RegistedModels.ContainsKey(obj) || _ChildrenSystemRegistedModels.ContainsKey(obj))//Если объект зарегисприван в данной или в дочерней системе - выходим
                 return;
@@ -230,15 +233,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
                     this.Register(jornable_prop);
             }
+            
             obj.JornalingOff(); //На всякий случай выключаем журналирование в объекте
-            if (obj.UnDoReDoSystem != this)
+            if (obj.UnDoReDoSystem != this)//Если объект был в друной системе - выписываемся из нее...
             {
                 obj.UnDoReDoSystem?.UnRegisterAll(obj);
-                obj.UnDoReDoSystem = this;//Добавляем систему в коллекцию наблюдающи за объектом систем
+                obj.UnDoReDoSystem = this;//Устанавливаем текущую систему в объекте .
             }
             obj.PropertyBeforeChanged += OnModelPropertyBeforeChanged;//Событие возникающее в региструемом объекте перед изменением свойства
             obj.UnDoReDoCommandCreated += OnObservedCommandCreated;//Событие возникающее в региструемом коллекции  при применение любой команды IUnDoReDoCommand
-
+            obj.IsAutoRegistrateInUnDoReDo = enable_outo_registration;
 
             obj.JornalingOn();
 
@@ -445,46 +449,70 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public int SaveChages(IJornalable obj)
         {
             IJornalable saved_obj = obj;
-            if (this.ChangedObjects.Contains(saved_obj))///Если в текущей системе объект числится как измененный ...
-            {///Получаем из  поля самого объекта IJornalable все команды которые были к нему применены - хранятся в его свойстве ChangesJornal
-                List<IUnDoRedoCommand> obj_chg_commands = new List<IUnDoRedoCommand>(saved_obj.ChangesJornal);
-                foreach (IUnDoRedoCommand command in obj_chg_commands.Where(cm => this.AllExecutedCommands.Contains(cm))) //Проходим по всем командам, которые были зарегистрирована данной текущей системой
-                {///В каждой команда находим все объекты, которые эти команды затронули (изменили), кроме текущего объекта
-                    List<IJornalable> chgd_objects = command.ChangedObjects.Where(ob => ob != saved_obj).ToList();
-                    foreach (IJornalable chgd_obj in chgd_objects)
-                    {
-                        chgd_obj.ChangesJornal.Remove(command);///Удаляем в найденных объектах информацию о найденных командах
-                        if (!chgd_obj.ChangesJornal.Where(cm => cm.UnDoReDo_System == this).Any())//Если в текущей системе больше нет 
-                            this.ChangedObjects.Remove(chgd_obj);
-                    }
-                    saved_obj.ChangesJornal.Remove(command);//Удаляем команды в текущем объекте
-                    this.AllExecutedCommands.Remove(command);//Удаляем команды из списка зарегистрированныйх текущйе системы
-                    this._UnDoCommands.Remove(command); //Удаляем команду из   стека UnDo ...
-
-                    this._ReDoCommands.Clear();///Очищаем стек  ReDo
+            foreach (IUnDoReDoSystem unDoReDo in ChildrenSystems.Where(s =>
+                s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(saved_obj)).Any()))
+            {
+                unDoReDo.SaveChages(saved_obj);
+            }
+            var commands_list = this._UnDoCommands.Union(_ReDoCommands).Where(cm => cm.ChangedObjects.Contains(saved_obj)).ToList(); // Все команды текущей системы в которых содержится сохраняемый объект
+            foreach (IUnDoRedoCommand command in commands_list)///Проходим по командам 
+            {
+                List<IJornalable> chgd_objects = command.ChangedObjects.Where(ob => ob != saved_obj).ToList();//Находим в командах все объекты с которыми он был связан
+                foreach (IJornalable chgd_obj in chgd_objects)
+                {
+                    chgd_obj.ChangesJornal.Remove(command);///Удаляем в найденных объектах информацию о найденных командах
+                    if (!chgd_obj.ChangesJornal.Where(cm => cm.UnDoReDo_System == this).Any())//Если в текущей системе больше нет 
+                        this.ChangedObjects.Remove(chgd_obj);
                 }
+                saved_obj.ChangesJornal.Remove(command);//Удаляем команду в текущем объекте
+                this.AllExecutedCommands.Remove(command);//Удаляем команды из списка зарегистрированныйх текущйе системы
+                this._UnDoCommands.Remove(command); //Удаляем команду из   стека UnDo ...
+                this._ReDoCommands.Clear();///Очищаем стек  ReDo
+            }
+            if (this.ChangedObjects.Contains(saved_obj))
                 this.ChangedObjects.Remove(saved_obj);///Удаляем объект из журнала системы, где хараняться наблюдаемые объекты 
                                                       ///в которых были зафиксированы изменения
-            }
+
+            
+            ///Получаем из  поля самого объекта IJornalable все команды которые были к нему применены - хранятся в его свойстве ChangesJornal
+            //if (this.ChangedObjects.Contains(saved_obj))///Если в текущей  системе объект числится как измененный ...
+            //{///Получаем из  поля самого объекта IJornalable все команды которые были к нему применены - хранятся в его свойстве ChangesJornal
+            //   List<IUnDoRedoCommand> obj_chg_commands = new List<IUnDoRedoCommand>(saved_obj.ChangesJornal);
+            //    foreach (IUnDoRedoCommand command in obj_chg_commands.Where(cm => this.AllExecutedCommands.Contains(cm))) //Проходим по всем командам, которые были зарегистрирована данной текущей системой
+            //    {///В каждой команда находим все объекты, которые эти команды затронули (изменили), кроме текущего объекта
+            //        List<IJornalable> chgd_objects = command.ChangedObjects.Where(ob => ob != saved_obj).ToList();
+            //        foreach (IJornalable chgd_obj in chgd_objects)
+            //        {
+            //            chgd_obj.ChangesJornal.Remove(command);///Удаляем в найденных объектах информацию о найденных командах
+            //            if (!chgd_obj.ChangesJornal.Where(cm => cm.UnDoReDo_System == this).Any())//Если в текущей системе больше нет 
+            //                this.ChangedObjects.Remove(chgd_obj);
+            //        }
+            //        saved_obj.ChangesJornal.Remove(command);//Удаляем команды в текущем объекте
+            //        this.AllExecutedCommands.Remove(command);//Удаляем команды из списка зарегистрированныйх текущйе системы
+            //        this._UnDoCommands.Remove(command); //Удаляем команду из   стека UnDo ...
+
+            //        this._ReDoCommands.Clear();///Очищаем стек  ReDo
+            //    }
+            //    this.ChangedObjects.Remove(saved_obj);///Удаляем объект из журнала системы, где хараняться наблюдаемые объекты 
+            //                                          ///в которых были зафиксированы изменения
+            //}
 
             return 1;
         }
 
         private IJornalable firstSavedObject = null; //Переменная для хранения объекта с которого мы воли в рекурсивную фунцию
         /// <summary>
-        /// Метод сохораняем все изменения по дереву объектов внурь объекта в текущей системе(удаляет информацию об изменениях в системе) 
+        /// Метод сохораняет все изменения по дереву объектов внурь объекта в текущей  и в дочерних системах (удаляет информацию об изменениях в системе) 
         /// то ксть метод .SaveChanges(obj) применяется ко всех объектам внутри obj
         /// </summary>
-        /// <param name="obj">Объкт измененения котророго будет стеры из системы</param>
+        /// <param name="obj">Объкт измененения котророго будет стеры из системы и дочерних систем</param>
         /// <param name="first_itaration">Служебный флаг регистрации выхода из рекурсивной функции. Не изменять! </param>
         /// <returns>В проекте будет возращать количество объетов изменения котороых сохранили </returns>
         public int SaveAllChagesInCurrentSys(IJornalable obj, bool first_itaration = true)
         {
-             if (!first_itaration && obj == firstSavedObject) return 0;
+            if (!first_itaration && obj == firstSavedObject) return 0;
             if (first_itaration) firstSavedObject = obj;
-            //foreach (IUnDoReDoSystem unDoReDo in this.ChildrenSystems)///Сохраняем изменения объекта в дочерних системах
-            //    unDoReDo.SaveAllChagesInCurrentSys(obj, false);
-            foreach (IJornalable child in obj.Children)
+           foreach (IJornalable child in obj.Children)
             {
                 this.SaveAllChagesInCurrentSys(child, false);
             }
@@ -492,22 +520,25 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             if (obj == firstSavedObject) firstSavedObject = null;
             return 1;
         }
-      ///
+        /// <summary>
+        /// Метод сохораняет все изменения по дереву объектов внурь объекта в текущей  и в дочерних системах
+        /// (обертка для рекурсивоной  SaveAllChagesInCurrentSys(IJornalable obj, bool first_itaration = true))
+        /// </summary>
+        /// <param name="obj">Объкт измененения котророго будет стеры из системы и дочерних систем</param>
+        /// <returns>В проекте будет возращать количество объетов изменения котороых сохранили</returns>
         public int SaveAllChages(IJornalable obj)
         {
-            //int saved_objects_count;
-            foreach (IUnDoReDoSystem unDoReDo in this.ChildrenSystems)
-                unDoReDo.SaveAllChages(obj);
-            this.SaveAllChagesInCurrentSys(obj);
-            ParentUnDoReDo?.SaveAllChagesInCurrentSys(obj);
-            return 1;
+            ////int saved_objects_count;
+           this.SaveAllChagesInCurrentSys(obj);
+             return 1;
         }
-
+        /// <summary>
+        /// Мето проходт по всем зарегисрированным объектам и сохраняет все изменения в них
+        /// </summary>
+        /// <returns></returns>
         public int SaveAllChages()
         {
-            //foreach (IUnDoReDoSystem child_unDoReDo in ChildrenSystems)
-            //    child_unDoReDo.SaveAllChages();
-            foreach (IJornalable obj in _RegistedModels.Keys)
+                foreach (IJornalable obj in _RegistedModels.Keys)
             {
                 this.SaveAllChages(obj);
             }
@@ -550,6 +581,27 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public IUnDoReDoSystem UnDoReDo_System { get; protected set; }
         #endregion
 
+        public void AdjustChangedProperty(
+            bool b_jornal_recording_flag,
+            string  propertyName,
+            ref object member,
+            object val,
+            PropertyBeforeChangeEventHandler PropertyBeforeChanged, IEntityObject entity)
+        {
+            if (b_jornal_recording_flag)
+                PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
+            
+            if (member is IEntityObject entity_member)
+            {
+                if (entity_member is INameableObservableCollection nameble_collection_mamber)
+                {
+                    nameble_collection_mamber.Owner = entity;
+                }
+                if (!entity_member.Parents.Contains(entity)) entity_member.Parents.Add(entity);
+                if (!entity.Children.Contains(entity_member)) entity.Children.Add(entity_member);
+                if (entity.IsAutoRegistrateInUnDoReDo) entity.UnDoReDoSystem?.RegisterAll(entity_member);
+            }
+        }
 
         /// <summary>
         /// Коструктор UnDoReDoSystem   

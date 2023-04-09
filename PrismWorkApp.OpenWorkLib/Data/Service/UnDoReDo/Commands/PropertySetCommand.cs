@@ -54,6 +54,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             Name = propName;
             _Value = new_value;
             _LastValue = last_value;
+            UnDoReDo_System = model.UnDoReDoSystem;
             ///Стои обратить внимание, что в отличии от других типовый IUnDoRedoCommand в этой команде в конструкторе
             ///лишь фиксируются значения, так как само действеие превый раз будет выполенено в самом объекте IJornable 
             ///после возврата из события IJornalable.PropertyBeforeChanged

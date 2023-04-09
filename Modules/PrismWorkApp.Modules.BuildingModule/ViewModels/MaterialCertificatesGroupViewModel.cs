@@ -299,45 +299,45 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnCreatedBasedOn(object obj)
         {
-            bldMaterialCertificate new_certificate = SelectedDocument.Clone() as bldMaterialCertificate;
-            new_certificate.IsHaveImageFile = false;
-            new_certificate.ImageFile = null;
-            UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
-            UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+            //bldMaterialCertificate new_certificate = SelectedDocument.Clone() as bldMaterialCertificate;
+            //new_certificate.IsHaveImageFile = false;
+            //new_certificate.ImageFile = null;
+            //UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
+            //UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
 
-            localUnDoReDoSystem.Register(SelectedDocumentsGroup);
-            // localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
+            //localUnDoReDoSystem.Register(SelectedDocumentsGroup);
+            //// localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
 
-            SelectedDocumentsGroup.Add(new_certificate);
-            // FilteredCommonPointersCollection.Add(new_certificate);
+            //SelectedDocumentsGroup.Add(new_certificate);
+            //// FilteredCommonPointersCollection.Add(new_certificate);
 
-            localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
-            //   localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
+            //localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
+            ////   localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
 
-            UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
-            UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
-            UnDoReDo.Register(new_certificate);
+            //UnDoReDo.UnSetUnDoReDoSystemAsChildren(localUnDoReDoSystem);
+            //UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDoSystem);
+            //UnDoReDo.Register(new_certificate);
 
         }
 
         private void OnCreateNewMaterialCertificate()
         {
-            bldMaterialCertificate new_certificate = new bldMaterialCertificate();
-            UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
-            UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
+            //bldMaterialCertificate new_certificate = new bldMaterialCertificate();
+            //UnDoReDoSystem localUnDoReDoSystem = new UnDoReDoSystem();
+            //UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDoSystem);
 
-            localUnDoReDoSystem.Register(SelectedDocumentsGroup);
-            //    localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
+            //localUnDoReDoSystem.Register(SelectedDocumentsGroup);
+            ////    localUnDoReDoSystem.Register(FilteredCommonPointersCollection);
 
-            SelectedDocumentsGroup.Add(new_certificate);
-            //   FilteredCommonPointersCollection.Add(new_certificate);
+            //SelectedDocumentsGroup.Add(new_certificate);
+            ////   FilteredCommonPointersCollection.Add(new_certificate);
 
-            localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
-            //  localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
+            //localUnDoReDoSystem.UnRegister(SelectedDocumentsGroup);
+            ////  localUnDoReDoSystem.UnRegister(FilteredCommonPointersCollection);
 
-            UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDoSystem);
-            UnDoReDo.AddUnDoReDo(localUnDoReDoSystem);
-            UnDoReDo.Register(new_certificate);
+            //UnDoReDo.UnSetUnDoReDoSystemAsChildren(localUnDoReDoSystem);
+            //UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDoSystem);
+            //UnDoReDo.Register(new_certificate);
         }
 
         private void OnFilterDisable()

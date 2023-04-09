@@ -81,6 +81,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
                 if (!entity_member.Parents.Contains(this)) entity_member.Parents.Add(this);
                 if (!this.Children.Contains(entity_member)) this.Children.Add(entity_member);
+                if (IsAutoRegistrateInUnDoReDo) UnDoReDoSystem?.RegisterAll(entity_member);
             }
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
@@ -131,15 +132,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         #region IJornaling
 
-        private ObservableCollection<IUnDoReDoSystem> _unDoReDoSystems = new ObservableCollection<IUnDoReDoSystem>();
+        private IUnDoReDoSystem _unDoReDoSystem;
         [NotJornaling]
         [NotMapped]
-        public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems
+        public IUnDoReDoSystem UnDoReDoSystem
         {
-            get { return _unDoReDoSystems; }
-            set { _unDoReDoSystems = value; }
+            get { return _unDoReDoSystem; }
+            set { _unDoReDoSystem = value; }
         }
-
+        [NotJornaling]
+        [NotMapped]
+        public bool IsAutoRegistrateInUnDoReDo { get; set; } = false;
         private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
         [NotJornaling]
         [NotMapped]
@@ -157,7 +160,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void JornalingOn()
         {
-            if (b_jornal_recording_flag == false && UnDoReDoSystems.Count > 0)
+            if (b_jornal_recording_flag == false && UnDoReDoSystem!=null)
                 b_jornal_recording_flag = true;
         }
         #endregion

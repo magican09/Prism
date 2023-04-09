@@ -4,17 +4,31 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public interface IJornalable : IKeyable, IHierarchical
     {
+        /// <summary>
+        /// Включение жруналирования объекта
+        /// </summary>
         public void JornalingOff();
+        /// <summary>
+        /// Выкдючение журналирования объектка
+        /// </summary>
         public void JornalingOn();
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged;
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
-      //  public event SaveChangesEventHandler SaveChanges;
-      //  public event SaveChangesEventHandler SaveAllChanges;
 
+        /// <summary>
+        /// Журнал хранящий историю изменявших объект команд
+        /// </summary>
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal { get; set; }
-        public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems { get; set; }
-       // public void Save(IUnDoReDoSystem unDoReDo);
-      //   public void SaveAll(IUnDoReDoSystem unDoReDo);
+        //public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems { get; set; }
+        /// <summary>
+        /// UnDoReDoSystem сисестема в которой в данный момени зарегистрирован объект
+        /// </summary>
+        public IUnDoReDoSystem UnDoReDoSystem { get; set; }
+        /// <summary>
+        /// Флад включающий функцию авторегисрации добаляемых в тейкущй объект объектов
+        /// </summary>
+        public bool IsAutoRegistrateInUnDoReDo { get; set; }
+
 
     }
     public enum AdjustStatus

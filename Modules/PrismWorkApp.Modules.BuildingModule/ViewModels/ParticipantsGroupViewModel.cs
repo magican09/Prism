@@ -165,7 +165,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                            SelectedProject.AddParticipant(participant);
                        }
                        SaveCommand.RaiseCanExecuteChanged();
-                       //UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                       //UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
                        //UnDoReDo.Register(SelectedWork);
                    }
                    if (result.Result == ButtonResult.No)

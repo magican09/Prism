@@ -361,8 +361,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         //    _objectsBuffer.Clear();
-        //    UnDoReDo.AddUnDoReDo(localUnDoReDo);
-        //    UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDo);
+        //    UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
+        //    UnDoReDo.UnSetUnDoReDoSystemAsChildren(localUnDoReDo);
         //    SaveCommand.RaiseCanExecuteChanged();
         //}
 
@@ -391,7 +391,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             if (obj == null) return;
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
-            UnDoReDo.SetChildrenUnDoReDoSystem(localUnDoReDo);
+            UnDoReDo.SetUnDoReDoSystemAsChildren(localUnDoReDo);
             localUnDoReDo.Register(selected_work);
             if (_objectsBuffer.Count == 0)
                 ;
@@ -412,8 +412,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             }
             _objectsBuffer.Clear();
-            UnDoReDo.AddUnDoReDo(localUnDoReDo);
-            UnDoReDo.UnSetChildrenUnDoReDoSystem(localUnDoReDo);
+            UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
+            UnDoReDo.UnSetUnDoReDoSystemAsChildren(localUnDoReDo);
             SaveCommand.RaiseCanExecuteChanged();
 
         }
@@ -466,7 +466,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                       foreach (bldWork bld_work in works_for_add_collection)
                           SelectedConstruction.AddWork(bld_work);
 
-                      UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                      UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
                       SaveCommand.RaiseCanExecuteChanged();
                   }
                   if (result.Result == ButtonResult.No)
@@ -525,7 +525,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             foreach (bldWork work in works_for_delete)
                 if (SelectedConstruction.Works.Contains(work))
                     SelectedConstruction.RemoveWork(work);
-            UnDoReDo.AddUnDoReDo(localUnDoReDo);
+            UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
             UnDoReDo.Register(SelectedConstruction);
 
         }
@@ -549,7 +549,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         localUnDoReDo.Register(construction_for_work_adding);
                         construction_for_work_adding.AddWorkGroup(works_for_move);
                         SaveCommand.RaiseCanExecuteChanged();
-                        UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                        UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
                     }
                 });
         }
@@ -591,7 +591,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          break;
                      }
                      SaveCommand.RaiseCanExecuteChanged();
-                     UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                     UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
                  }
                  if (result.Result == ButtonResult.No)
                  {
@@ -674,7 +674,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                        foreach (bldExecutiveScheme scheme in schemes_for_add_collection)
                            scheme_work.AddExecutiveScheme(scheme);
                        SaveCommand.RaiseCanExecuteChanged();
-                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                       UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
                    }
                    if (result.Result == ButtonResult.No)
                    {
@@ -732,7 +732,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                        foreach (bldLaboratoryReport report in reports_for_add_collection)
                            selected_work.AddLaboratoryReport(report);
                        SaveCommand.RaiseCanExecuteChanged();
-                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                       UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
                    }
                    if (result.Result == ButtonResult.No)
                    {
@@ -837,7 +837,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                        foreach (bldMaterial bld_material in materials_for_add_collection)
                            selected_work.AddMaterial(bld_material);
                        SaveCommand.RaiseCanExecuteChanged();
-                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                       UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
                    }
                    if (result.Result == ButtonResult.No)
                    {
@@ -971,7 +971,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                        foreach (bldWork bld_work in works_for_add_collection)
                            selected_work.AddPreviousWork(bld_work);
                        SaveCommand.RaiseCanExecuteChanged();
-                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                       UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
                    }
                    if (result.Result == ButtonResult.No)
                    {
@@ -1035,7 +1035,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                        foreach (bldWork bld_work in works_for_add_collection)
                            selected_work.AddNextWork(bld_work);
                        SaveCommand.RaiseCanExecuteChanged();
-                       UnDoReDo.AddUnDoReDo(localUnDoReDo);
+                       UnDoReDo.AddUnDoReDoSysAsCommand(localUnDoReDo);
                    }
                    if (result.Result == ButtonResult.No)
                    {

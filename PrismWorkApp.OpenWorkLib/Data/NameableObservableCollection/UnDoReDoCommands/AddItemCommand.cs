@@ -41,7 +41,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             _Item = item;
             _Collection = collection;
-         
+            UnDoReDo_System = collection.UnDoReDoSystem;
+
+
             _Collection.JornalingOff();
             _Collection.Add(_Item);
             _Item.ChangesJornal.Add(this);

@@ -150,7 +150,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     if (result.Result == ButtonResult.Yes)
                     {
                         UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
-                        UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                        UnDoReDo.AddUnDoReDoSysAsCommand(undoredu_from_editDialog);
                         SaveCommand.RaiseCanExecuteChanged();
                     }
                 }, _dialogService, typeof(ObjectDialogView).Name, "Редактировать", UnDoReDo);
@@ -164,7 +164,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                      if (result.Result == ButtonResult.Yes)
                      {
                          UnDoReDoSystem undoredu_from_editDialog = result.Parameters.GetValues<UnDoReDoSystem>("undo_redo").FirstOrDefault();
-                         UnDoReDo.AddUnDoReDo(undoredu_from_editDialog);
+                         UnDoReDo.AddUnDoReDoSysAsCommand(undoredu_from_editDialog);
                          SaveCommand.RaiseCanExecuteChanged();
                      }
                  }, _dialogService, typeof(ParticipantDialogView).Name, "Редактировать", UnDoReDo);

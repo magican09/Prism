@@ -63,6 +63,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (result.Result == ButtonResult.Yes)
                 {
                     UnDoReDo.SaveAllChages();
+                   
                 }
             });
 
@@ -73,7 +74,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             {
                 if (result.Result == ButtonResult.Yes)
                 {
-                    //   CommonUnDoReDo.AddUnDoReDo(UnDoReDo);
+                    //   CommonUnDoReDo.AddUnDoReDoSysAsCommand(UnDoReDo);
                     UnDoReDo.SaveAllChages(selected_obj);
                 }
                 if (result.Result == ButtonResult.No)
@@ -116,7 +117,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         else if (result.Result == ButtonResult.No)
                         {
                             UnDoReDo.UnDoAll();
-                            UnDoReDo.ClearStacks();
+                            UnDoReDo.SaveAllChages();
                             if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);

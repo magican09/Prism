@@ -32,6 +32,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             _ExecuteAction = execute;
             _UnExecuteAction = unExecute;
             _canExecuteAction = canExecute;
+           
         }
 
     }

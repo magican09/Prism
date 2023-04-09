@@ -1,0 +1,509 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PrismWorkApp.Modules.BuildingModule</name>
+    </assembly>
+    <members>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Dialogs.AddElementsToCollectionFromListDialogView">
+            <summary>
+            Interaction logic for AddElementToCollectionFromListDialogView.xaml
+            </summary>
+            <summary>
+            AddElementsToCollectionFromListDialogView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Dialogs.AddElementsToCollectionFromListDialogView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Dialogs.AddElementToCollectionDialog">
+            <summary>
+            Interaction logic for AddElementToCollectionDialog.xaml
+            </summary>
+            <summary>
+            AddElementToCollectionDialog
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Dialogs.AddElementToCollectionDialog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Dialogs.ConstructionDialogs.ContructionsSelectTreeVeiw">
+            <summary>
+            Interaction logic for ContructionsSelectTreeVeiw.xaml
+            </summary>
+            <summary>
+            ContructionsSelectTreeVeiw
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Dialogs.ConstructionDialogs.ContructionsSelectTreeVeiw.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Dialogs.GetObjectFromCollectionDialogVeiw">
+            <summary>
+            Interaction logic for SelectElementFromCollectionDialog.xaml
+            </summary>
+            <summary>
+            GetObjectFromCollectionDialogVeiw
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Dialogs.GetObjectFromCollectionDialogVeiw.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Dialogs.SelectElementFromCollectionDialog">
+            <summary>
+            Interaction logic for SelectElementFromCollectionDialog.xaml
+            </summary>
+            <summary>
+            SelectElementFromCollectionDialog
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Dialogs.SelectElementFromCollectionDialog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Dialogs.SelectElementFromCollectionTreeViewDialog">
+            <summary>
+            Interaction logic for SelectElementFromCollectionTreeViewDialog.xaml
+            </summary>
+            <summary>
+            SelectElementFromCollectionTreeViewDialog
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Dialogs.SelectElementFromCollectionTreeViewDialog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Dialogs.UserParametersDialogView">
+            <summary>
+            Interaction logic for UserParametersDialogView.xaml
+            </summary>
+            <summary>
+            UserParametersDialogView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Dialogs.UserParametersDialogView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:PrismWorkApp.Modules.BuildingModule.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:PrismWorkApp.Modules.BuildingModule.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.AppObjectsModel.OnSaveDocumentationToDB">
+            <summary>
+            Коллекция для хранения документации
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.ViewModels.DocumentationExplorerViewModel.OnDataItemInit(PrismWorkApp.Modules.BuildingModule.DataItem,System.Object,System.ComponentModel.PropertyChangedEventArgs)">
+            <summary>
+            Шаблон построения дерева DataItems для TreeView в форме метода, который вызываеся каждый при инициализации или 
+            обновления DataItem или вызове IPropertyChanged, ICollectionChanged прикрепленных к DataItem объектов.
+            DataItem.DataItemInit+=OnDataItemInit;
+            </summary>
+            <param name="dataItem">Передается объект DataItem который необходимо инициализировать содержанием</param>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.AggregationDocumentsView">
+            <summary>
+            Interaction logic for AggregationDocumentsView.xaml
+            </summary>
+            <summary>
+            AggregationDocumentsView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.AggregationDocumentsView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.AOSRDocumentsTableView">
+            <summary>
+            Interaction logic for UserControl1.xaml
+            </summary>
+            <summary>
+            AOSRDocumentsTableView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.AOSRDocumentsTableView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.AOSRDocumentView">
+            <summary>
+            Interaction logic for AOSRDocumentView.xaml
+            </summary>
+            <summary>
+            AOSRDocumentView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.AOSRDocumentView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.ConstructionView">
+            <summary>
+            Interaction logic for ObjectView.xaml
+            </summary>
+            <summary>
+            ConstructionView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.ConstructionView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.DocumentationExplorerView">
+            <summary>
+            Interaction logic for DocumentationExplorerView.xaml
+            </summary>
+            <summary>
+            DocumentationExplorerView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.DocumentationExplorerView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.DocumentsGroupView">
+            <summary>
+            Interaction logic for DocumentsGroupView.xaml
+            </summary>
+            <summary>
+            DocumentsGroupView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.DocumentsGroupView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.MaterialCertificatesGroupView">
+            <summary>
+            Interaction logic for MaterialCertificatesGroupView.xaml
+            </summary>
+            <summary>
+            MaterialCertificatesGroupView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.MaterialCertificatesGroupView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.MaterialsGroupView">
+            <summary>
+            Interaction logic for MaterialsGroupView.xaml
+            </summary>
+            <summary>
+            MaterialsGroupView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.MaterialsGroupView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.MaterialView">
+            <summary>
+            Interaction logic for MaterialView.xaml
+            </summary>
+            <summary>
+            MaterialView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.MaterialView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.ObjectView">
+            <summary>
+            Interaction logic for ObjectView.xaml
+            </summary>
+            <summary>
+            ObjectView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.ObjectView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.ParticipantsGroupView">
+            <summary>
+            Interaction logic for PartisipantsView.xaml
+            </summary>
+            <summary>
+            ParticipantsGroupView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.ParticipantsGroupView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.ParticipantView">
+            <summary>
+            Interaction logic for ParticipateView.xaml
+            </summary>
+            <summary>
+            ParticipantView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.ParticipantView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.ProjectExplorerView">
+            <summary>
+            Interaction logic for ProjectExplorerView.xaml
+            </summary>
+            <summary>
+            ProjectExplorerView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.ProjectExplorerView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.ProjectManagerRibbonTabView_S">
+            <summary>
+            Interaction logic for ConvertersView.xaml
+            </summary>
+            <summary>
+            ProjectManagerRibbonTabView_S
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.ProjectManagerRibbonTabView_S.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.ProjectView">
+            <summary>
+            Interaction logic for ProjectView.xaml
+            </summary>
+            <summary>
+            ProjectView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.ProjectView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.QuickAccessToolBarView">
+            <summary>
+            Interaction logic for ConvertersView.xaml
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.ResponsibleEmployeeView">
+            <summary>
+            Interaction logic for ResponsibleEmployeeView.xaml
+            </summary>
+            <summary>
+            ResponsibleEmployeeView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.ResponsibleEmployeeView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.DocumentsRibbonGroupView">
+            <summary>
+            Interaction logic for DocumentsRibbonGroupView.xaml
+            </summary>
+            <summary>
+            DocumentsRibbonGroupView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.DocumentsRibbonGroupView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.DocumentsRibbonTabView">
+            <summary>
+            Interaction logic for MaterialsToolBar.xaml
+            </summary>
+            <summary>
+            DocumentsRibbonTabView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.DocumentsRibbonTabView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.MaterialCertificatesRibbonGroup">
+            <summary>
+            Interaction logic for MaterialCertificatesRibbonGroup.xaml
+            </summary>
+            <summary>
+            MaterialCertificatesRibbonGroup
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.MaterialCertificatesRibbonGroup.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.MaterialsRibbonGroupView">
+            <summary>
+            Interaction logic for AllMaterialsRibbonGroupView.xaml
+            </summary>
+            <summary>
+            MaterialsRibbonGroupView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.MaterialsRibbonGroupView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.CurentProjectRibbonGroupView">
+            <summary>
+            Interaction logic for ConvertersView.xaml
+            </summary>
+            <summary>
+            CurentProjectRibbonGroupView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.CurentProjectRibbonGroupView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.DataImportRibbonGroupView">
+            <summary>
+            Interaction logic for DataImportRibbonGroupView.xaml
+            </summary>
+            <summary>
+            DataImportRibbonGroupView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.DataImportRibbonGroupView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.ProjectManagerRibbonTabView">
+            <summary>
+            Interaction logic for ToolBarRibbonTab.xaml
+            </summary>
+            <summary>
+            ProjectManagerRibbonTabView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.ProjectManagerRibbonTabView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.EditToollsRibbonGroupView">
+            <summary>
+            Interaction logic for ToolBarRibbonGroupView.xaml
+            </summary>
+            <summary>
+            EditToollsRibbonGroupView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.EditToollsRibbonGroupView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.ToolBarRibbonTabView">
+            <summary>
+            Interaction logic for ToolBarRibbonTab.xaml
+            </summary>
+            <summary>
+            ToolBarRibbonTabView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.ToolBarRibbonTabView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.WorksGroupView">
+            <summary>
+            Interaction logic for WorksGroupView.xaml
+            </summary>
+            <summary>
+            WorksGroupView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.WorksGroupView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.WorksTableView">
+            <summary>
+            Interaction logic for WorkView.xaml
+            </summary>
+            <summary>
+            WorksTableView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.WorksTableView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.WorkView">
+            <summary>
+            Interaction logic for WorkView.xaml
+            </summary>
+            <summary>
+            WorkView
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.WorkView.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:PrismWorkApp.Modules.BuildingModule.Views.QuickAccessToolBar">
+            <summary>
+            QuickAccessToolBar
+            </summary>
+        </member>
+        <member name="M:PrismWorkApp.Modules.BuildingModule.Views.QuickAccessToolBar.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+    </members>
+</doc>

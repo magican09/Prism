@@ -29,7 +29,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
             }
+            T old_member = member;
             member = val;
+            if (member is IEntityObject entity_member)///Если какой либос свойство будет IEntityObject(IJornables)
+            {
+                if (entity_member is INameableObservableCollection nameble_collection_mamber)
+                {
+                    nameble_collection_mamber.Owner = this;
+                }
+                if (!entity_member.Parents.Contains(this)) entity_member.Parents.Add(this);
+                if (!this.Children.Contains(entity_member)) this.Children.Add(entity_member);
+                if (IsAutoRegistrateInUnDoReDo) UnDoReDoSystem?.RegisterAll(entity_member);
+            }
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
         }
@@ -147,16 +158,19 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         #endregion
         #region  IJornaling service
-        private ObservableCollection<IUnDoReDoSystem> _unDoReDoSystems = new ObservableCollection<IUnDoReDoSystem>();
+        private IUnDoReDoSystem _unDoReDoSystem;
         private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
         public event SaveChangesEventHandler SaveChanges;
         public event SaveChangesEventHandler SaveAllChanges;
+        [NotJornaling]
+        [NotMapped]
+        public bool IsAutoRegistrateInUnDoReDo { get; set; } = false;
         [NotMapped]
         [CreateNewWhenCopy]
-        public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems
+        public IUnDoReDoSystem UnDoReDoSystem
         {
-            get { return _unDoReDoSystems; }
-            set { _unDoReDoSystems = value; }
+            get { return _unDoReDoSystem; }
+            set { _unDoReDoSystem = value; }
         }
          [NotJornaling]
         [CreateNewWhenCopy]
@@ -176,7 +190,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void JornalingOn()
         {
-            if (b_jornal_recording_flag == false && UnDoReDoSystems.Count > 0)
+            if (b_jornal_recording_flag == false && UnDoReDoSystem!=null)
                 b_jornal_recording_flag = true;
         }
         #endregion
@@ -290,6 +304,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 if (!this.Children.Contains(item)) this.Children.Add(item);
                 base.SetItem(index, item);
             }
+            if (IsAutoRegistrateInUnDoReDo) UnDoReDoSystem?.RegisterAll(item);
         }
         protected override void InsertItem(int index, TEntity item)
         {
@@ -305,7 +320,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 if (!this.Children.Contains(item)) this.Children.Add(item);
                 base.InsertItem(index, item);
             }
-
+            if (IsAutoRegistrateInUnDoReDo) UnDoReDoSystem?.RegisterAll(item);
         }
 
         protected override void RemoveItem(int index)

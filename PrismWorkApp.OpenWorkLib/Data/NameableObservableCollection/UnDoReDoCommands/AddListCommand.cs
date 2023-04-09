@@ -47,6 +47,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             _List = list;
             _Collection = collection;
+            UnDoReDo_System = collection.UnDoReDoSystem;
 
             _Collection.JornalingOff();
             foreach (TEntity item in _List)

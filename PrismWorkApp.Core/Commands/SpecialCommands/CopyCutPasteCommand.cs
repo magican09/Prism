@@ -52,7 +52,7 @@ namespace PrismWorkApp.Core.Commands
             if (obj == null) return;
             bldWork selected_work = ((Tuple<object, object>)obj).Item2 as bldWork;
             UnDoReDoSystem localUnDoReDo = new UnDoReDoSystem();
-            _unDoReDoSystem.SetChildrenUnDoReDoSystem(localUnDoReDo);
+            _unDoReDoSystem.SetUnDoReDoSystemAsChildren(localUnDoReDo);
             localUnDoReDo.Register(selected_work);
             foreach (CopiedCutedObject<T> copy_cut_obj in _objectsBuffer)
             {
@@ -104,8 +104,8 @@ namespace PrismWorkApp.Core.Commands
 
             }
             _objectsBuffer.Clear();
-            _unDoReDoSystem.AddUnDoReDo(localUnDoReDo);
-            _unDoReDoSystem.UnSetChildrenUnDoReDoSystem(localUnDoReDo);
+            _unDoReDoSystem.AddUnDoReDoSysAsCommand(localUnDoReDo);
+            _unDoReDoSystem.UnSetUnDoReDoSystemAsChildren(localUnDoReDo);
         }
     }
 }

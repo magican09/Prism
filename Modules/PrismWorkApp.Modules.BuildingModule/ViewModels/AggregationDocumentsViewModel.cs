@@ -398,7 +398,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public virtual void OnClose(object obj)
         {
             base.OnClose<bldDocumentsGroup>(obj, AggregationDocuments);
-            UnDoReDo.ParentUnDoReDo?.UnSetChildrenUnDoReDoSystem(UnDoReDo);
+            UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
         }
         public override void OnWindowClose()
         {
@@ -423,8 +423,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     AggregationDocuments.Add(arg_document);
                     if (parent_undoredo_sys != null && !parent_undoredo_sys.ChildrenSystems.Contains(UnDoReDo))
                     {
-                        parent_undoredo_sys.SetChildrenUnDoReDoSystem(UnDoReDo);
-                        // parent_undoredo_sys.AddUnDoReDo(UnDoReDo);
+                        parent_undoredo_sys.SetUnDoReDoSystemAsChildren(UnDoReDo);
+                        // parent_undoredo_sys.AddUnDoReDoSysAsCommand(UnDoReDo);
                         //parent_undoredo_sys.UnRegisterAll(arg_document);
                     }
                     UnDoReDo.RegisterAll(arg_document);

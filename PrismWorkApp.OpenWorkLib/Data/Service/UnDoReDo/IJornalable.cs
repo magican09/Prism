@@ -29,6 +29,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// </summary>
         public bool IsAutoRegistrateInUnDoReDo { get; set; }
 
+        
 
     }
     public enum AdjustStatus

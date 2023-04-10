@@ -13,9 +13,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         public static int Remove<TEntity>(this Stack<TEntity> stack, TEntity item) where TEntity:IKeyable
         {
-            if (!stack.Contains(item))
-                ;//  throw new Exception("Eroor when Remove from Stack - elemtn nt found in Stack!!");
-            Stack<TEntity> buffer_stack = new Stack<TEntity>();
+                Stack<TEntity> buffer_stack = new Stack<TEntity>();
             TEntity buffer_obj;
             int removed_items_counts = 0;
             int stack_count = stack.Count;
@@ -34,6 +32,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 stack.Push(buffer_stack.Pop());
             }
+            if (removed_items_counts==0)
+                 throw new Exception("Eroor when Remove from Stack - elemtn not found in Stack!!");
+
             return removed_items_counts;
         }
     }

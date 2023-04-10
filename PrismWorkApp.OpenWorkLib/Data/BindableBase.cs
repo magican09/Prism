@@ -81,7 +81,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
                 if (!entity_member.Parents.Contains(this)) entity_member.Parents.Add(this);
                 if (!this.Children.Contains(entity_member)) this.Children.Add(entity_member);
-                if (IsAutoRegistrateInUnDoReDo) UnDoReDoSystem?.RegisterAll(entity_member);
+                if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(entity_member)) 
+                        UnDoReDoSystem.Register(entity_member,true);
             }
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
@@ -163,6 +164,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (b_jornal_recording_flag == false && UnDoReDoSystem!=null)
                 b_jornal_recording_flag = true;
         }
+
+       
         #endregion
         public BindableBase()
         {

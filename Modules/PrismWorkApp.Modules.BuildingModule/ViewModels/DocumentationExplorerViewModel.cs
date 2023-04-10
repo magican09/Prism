@@ -3,6 +3,7 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
+using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Core.Events;
 using PrismWorkApp.Modules.BuildingModule.Core;
 using PrismWorkApp.Modules.BuildingModule.Dialogs;
@@ -20,6 +21,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Telerik.Windows.Controls;
+using DialogParameters = Prism.Services.Dialogs.DialogParameters;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -100,8 +102,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _buildingUnitsRepository = buildingUnitsRepository;
             UnDoReDo = unDoReDoSystem;
             Documentation = AppObjectsModel.Documentation.AttachedDocuments;
-            UnDoReDo.Register(Documentation);
-
+           
             UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
                                    () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
@@ -133,12 +134,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             Items.Add(root);
             root.AttachedObject = Documentation;
 
-
-
-            _eventAggregator.GetEvent<MessageConveyEvent>().Subscribe(OnGetMessage,
-             ThreadOption.PublisherThread, false,
-             message => message.Recipient == "DocumentationExplorer");
-
+            UnDoReDo.Register(Documentation, true);
             _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveDocumentationToDBCommand);
             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
@@ -151,11 +147,52 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             if (obj is IList list) selected_object = list[0]; else selected_object = obj;
             if (selected_object is bldDocument document)
             {
-                foreach (object parent in new List<object>(document.Parents))
+                int ch_namber = UnDoReDo.GetChangesNamber(document); //Отнимает 1, так как в изменениях 
+                if (ch_namber != 0)
                 {
-                    if (parent is bldDocument parent_doc) parent_doc.RemoveDocument(document);
-                    if (parent is IList list_parent) list_parent.Remove(document);
+                    CoreFunctions.ConfirmChangesDialog(_dialogService, "документе",
+                        (result) =>
+                        {
+                            if(result.Result==ButtonResult.Yes|| result.Result == ButtonResult.No)
+                            {
+                                foreach (object parent in new List<object>(document.Parents))
+                                {
+                                    if (parent is bldDocument parent_doc)
+                                        parent_doc.RemoveDocument(document);
+                                    if (parent is IList list_parent)
+                                        list_parent.Remove(document);
+                                }
+                                if (result.Result == ButtonResult.Yes)
+                                {
+                                    UnDoReDo.Save(document);
+                                    UnDoReDo.UnRegister(document);
+                                    var dialog_par = new DialogParameters();
+                                    dialog_par.Add("message", $"{ch_namber.ToString()} изменения(й) сохранено!");
+                                    _dialogService.ShowDialog(nameof(MessageDialog), dialog_par, (result) => { });
+                                }
+                                else
+                                {
+                                   // UnDoReDo.UnDoAll(document);
+                                    UnDoReDo.UnRegister(document);
+                                    UnDoReDo.UnRegister(document);
+                                    var dialog_par = new DialogParameters();
+                                    dialog_par.Add("message", $"{ch_namber.ToString()} изменения(й) сохранено!");
+                                    _dialogService.ShowDialog(nameof(MessageDialog), dialog_par, (result) => { });
+                                }
+                              
+                            }
+                            if (result.Result == ButtonResult.Cancel)
+                            { 
+
+                            }
+                        });
+
                 }
+                    
+               
+               
+             
+              
             }
         }
 
@@ -166,7 +203,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             if (selected_object is bldDocument document)
             {
                 document.AddNewDocument<bldAggregationDocument>();
-                UnDoReDo.Register(document.AddNewDocument<bldAggregationDocument>());
+             //   UnDoReDo.Register(document.AddNewDocument<bldAggregationDocument>());
             }
             else if (selected_object is bldDocumentsGroup documents_coll)
                 documents_coll.Add(new bldAggregationDocument("Новый перечень документации"));
@@ -178,7 +215,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             object selected_object = null;
             if (obj is IList list) selected_object = list[0]; else selected_object = obj;
             var command = AppObjectsModel.LoadAggregationDocumentFromDBCommand;
-            bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
+            bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(
+                _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
             //   All_AggregationDocuments.SaveChanges();
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
                       (All_AggregationDocuments, _dialogService, (result) =>
@@ -189,12 +227,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                               bldAggregationDocument loaded_doc = selected_aggregation_doc;
                               if (loaded_doc != null)
                               {
-                                  if (selected_object is bldDocument document) document.AddDocument(document);
-                                  if (selected_object is IList doc_coll)
-                                  {
+                                  if (selected_object is bldDocument document 
+                                  && !document.AttachedDocuments.Where(d=>d.Id==document.Id).Any()) 
+                                      document.AddDocument(document);
+                                  if (selected_object is bldDocumentsGroup doc_coll 
+                                  && !doc_coll.Where(el=>el.Id==loaded_doc.Id).Any())
                                       doc_coll.Add(loaded_doc as bldDocument);
-                                      UnDoReDo.Register(loaded_doc);
-                                  }
+                                  UnDoReDo.Save(loaded_doc); //Сохраняемся после довбалвения в коллецию
                               }
                           }
                       }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
@@ -250,7 +289,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         /// <param name="e"></param>
         public void OnDataItemInit(DataItem dataItem, object sender, PropertyChangedEventArgs e)
         {
-            UnDoReDo.Register(dataItem.AttachedObject as IJornalable);
+           // UnDoReDo.Register(dataItem.AttachedObject as IJornalable);
             switch (dataItem.AttachedObject.GetType().Name)
             {
                 case (nameof(bldMaterialCertificate)):
@@ -304,13 +343,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         }
                         break;
                     }
-                    //case (nameof(bldMaterialCertificate)):
-                    //    {
-                    //        bldMaterialCertificate document = ((bldMaterialCertificate)dataItem.AttachedObject);
-                    //        dataItem.Text = document.MaterialName;
-                    //        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
-                    //        break;
-                    //    }
+                 
             }
         }
         #endregion
@@ -370,16 +403,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         #endregion
 
-        private void OnGetMessage(EventMessage event_message)
-        {
-            //bldAggregationDocument bld_document = (bldAggregationDocument)event_message.Value;
-            ////  if (bld_project != null && bld_Projects.Where(pr => pr.Id == bld_project.Id).FirstOrDefault() == null && bld_project != null)
-            //bldAggregationDocument doc = AggregationDocuments.Where(doc => doc.Id == bld_document.Id).FirstOrDefault();
-            //if (bld_document != null && doc == null)
-            //{
-            //    AggregationDocuments.Add(bld_document);
-            //}
-        }
+       
         public virtual void OnSave()
         {
              base.OnSave("документации");

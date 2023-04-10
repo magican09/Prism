@@ -4,8 +4,7 @@ using System.Collections.Specialized;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface INameableObservableCollection : INotifyCollectionChanged, INotifyJornalableCollectionChanged, ICollection, IEnumerable, IList, 
-                                                  IEntityObject, INameable// where TEntity : IEntityObject
+    public interface INameableObservableCollection : IList, IEntityObject, INotifyCollectionChanged, INotifyJornalableCollectionChanged  
     {
 
         public IEntityObject Owner { get; set; }

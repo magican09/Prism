@@ -62,11 +62,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             {
                 if (result.Result == ButtonResult.Yes)
                 {
-                    UnDoReDo.SaveAllChages();
+                    UnDoReDo.SaveAll();
                    
                 }
             });
 
+        }
+        public virtual void OnSave<T>(T selected_obj,Action<IDialogResult> result, string object_name = "") where T : IEntityObject
+        {
+            CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена",
+            result, _dialogService);
         }
         public virtual void OnSave<T>(T selected_obj, string object_name = "") where T : IEntityObject
         {
@@ -75,7 +80,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (result.Result == ButtonResult.Yes)
                 {
                     //   CommonUnDoReDo.AddUnDoReDoSysAsCommand(UnDoReDo);
-                    UnDoReDo.SaveAllChages(selected_obj);
+                    UnDoReDo.Save(selected_obj);
                 }
                 if (result.Result == ButtonResult.No)
                 {
@@ -85,6 +90,91 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public virtual void OnWindowClose()
         {
+
+        }
+        public virtual void OnClose<T>(object view, T selected_obj, Action<IDialogResult> result_action, string object_name = "") where T : IEntityObject
+        {
+            if (UnDoReDo != null && !UnDoReDo.IsSatcksEmpty())//selected_obj!=null&&добавлено 27,10,22
+            {
+                CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
+                {
+                   
+                    if (view != null)
+                    {
+                        result_action.Invoke(result);
+                        if (result.Result == ButtonResult.Yes)
+                        {
+
+                          //  UnDoReDo.SaveAllChages(selected_obj);
+                            if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
+                            {
+                                _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
+                                _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
+                            }
+                            else if (RequestClose != null)
+                            {
+                                var _result = ButtonResult.Yes;
+                                var param = new DialogParameters();
+                                param.Add("confirm_dialog_param", "Подтверждено пользователем!");
+                                RequestClose.Invoke(new DialogResult(_result, param));
+                            }
+                            OnWindowClose();
+                        }
+                        else if (result.Result == ButtonResult.No)
+                        {
+                         //   UnDoReDo.UnDoAll();
+                         //   UnDoReDo.SaveAllChages();
+                            if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
+                            {
+                                _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
+                                _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
+                            }
+                            else if (RequestClose != null)
+                            {
+                                var _result = ButtonResult.No;
+                                var param = new DialogParameters();
+                                param.Add("cancel_dialog_param", "Отменено пользователем!");
+                                RequestClose.Invoke(new DialogResult(_result, param));
+                            }
+                            OnWindowClose();
+                        }
+                        else if (result.Result == ButtonResult.Cancel)
+                        {
+                            if (RequestClose != null)
+                            {
+                                var _result = ButtonResult.Cancel;
+                                var param = new DialogParameters();
+                                param.Add("cancel_dialog_param", "Отменено пользователем!");
+                                RequestClose.Invoke(new DialogResult(_result, param));
+                            }
+                           // OnWindowClose();
+                        }
+                        else
+                        {
+                            throw new Exception("_regionManager==null and RequestClose=null! in BaseViewModel<T>.OnClose<T>(object view, T selected_obj, string object_name)");
+
+                        }
+                    }
+                }, _dialogService);
+
+            }
+            else
+            {
+                if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
+                {
+                    _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
+                    _regionManager.Regions[RegionNames.ContentRegion].Remove(view);
+                }
+                else
+                    if (RequestClose != null)
+                {
+                    var _result = ButtonResult.No;
+                    var param = new DialogParameters();
+                    param.Add("cancel_dialog_param", "Отменено пользователем!");
+                    RequestClose.Invoke(new DialogResult(_result, param));
+                }
+                OnWindowClose();
+            }
 
         }
 
@@ -99,7 +189,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         if (result.Result == ButtonResult.Yes)
                         {
                             
-                            UnDoReDo.SaveAllChages(selected_obj);
+                            UnDoReDo.Save(selected_obj);
                             if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
@@ -117,7 +207,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         else if (result.Result == ButtonResult.No)
                         {
                             UnDoReDo.UnDoAll();
-                            UnDoReDo.SaveAllChages();
+                            UnDoReDo.SaveAll();
                             if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);

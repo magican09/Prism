@@ -43,7 +43,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// Метод удаляет регистрацию объекта и всего дерерва объектов по иерархии внурь.
         /// </summary>
         /// <param name="obj"></param>
-        public void UnRegisterAll(IJornalable obj);
+      //  public void UnRegisterAll(IJornalable obj);
         /// <summary>
         /// Метод для регистрации объекта  реализуещго IJornalable в системе. В системе регистрируются как сам объект,
         /// так и все его IJornalable свойства на всю глубину цепочек объектов IJornalable, пока не встретит 
@@ -57,7 +57,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// </summary>
         /// <param name="obj">Объект IJornalable, который будет зарегисрирована в сисиеме </param>
         /// <param name="first_itaration">Служебный флаг регистрации выхода из рекурсивной функции. Не изменять!</param>
-        public void RegisterAll(IJornalable obj, bool first_itaration = true);
+       // public void RegisterAll(IJornalable obj, bool first_itaration = true);
         /// <summary>
         /// Метод отменяет ("откатывает назад") произвольное количество последних изменений
         /// </summary>
@@ -114,14 +114,14 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// <summary>
         /// Коллекция храниит все объекты, который зарегистрированы в дочерних системах.
         /// </summary>
-         Dictionary<IJornalable, IUnDoReDoSystem> _ChildrenSystemRegistedModels { get; set; }
+      //   Dictionary<IJornalable, IUnDoReDoSystem> _ChildrenSystemRegistedModels { get; set; }
         /// <summary>
         /// Метод сохраняет изменения только в конкретном объекте в текущей системе (удаляет информацию об изменениях в системе и участвоваваших
         /// в изменнеии данного объектв других объектах) 
         /// </summary>
         /// <param name="obj"> Объкт,измененения котророго будут стеры из системы</param>
         /// <returns></returns>
-         int SaveChages(IJornalable obj);
+         int Save(IJornalable obj);
         /// <summary>
         /// Метод сохораняем все изменения по дереву объектов внурь объекта в текущей системе(удаляет информацию об изменениях в системе) 
         /// то ксть метод .SaveChanges(obj) применяется ко всех объектам внутри obj
@@ -129,17 +129,21 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// <param name="obj">Объкт измененения котророго будет стеры из системы</param>
         /// <param name="first_itaration">Служебный флаг регистрации выхода из рекурсивной функции. Не изменять! </param>
         /// <returns>В проекте будет возращать количество объетов изменения котороых сохранили </returns>
-        int SaveAllChagesInCurrentSys(IJornalable obj, bool first_itaration = true);
+        //int SaveAllChagesInCurrentSys(IJornalable obj, bool first_itaration = true);
         /// <summary>
         /// Сохраняет все изменения для объекта IJornable во всю глубины иерахии внутрь объекта во всех системах
         /// в котрой зарегистрирована объектв. И в дочерних, и в текущей и в родииельской.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        int SaveAllChages(IJornalable obj);
+        //int SaveAllChages(IJornalable obj);
+        //int SaveAllChages();
+        public ObservableCollection<IJornalable> _AllChangedObjects { get; }
+        public int SaveAll();
+        public bool IsAnyChildSystemRegistered(IJornalable obj);
+        public bool IsRegistered(IJornalable obj);
 
-         int SaveAllChages();
-
+        public int GetChangesNamber(IJornalable obj, bool first_itr = true);
 
     }
 }

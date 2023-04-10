@@ -126,7 +126,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _regionManager = regionManager;
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
-           
             SaveCommand = new NotifyCommand(OnSave, CanSave)
                 .ObservesProperty(() => SelectedDocument);
             CloseCommand = new NotifyCommand<object>(OnClose);
@@ -314,7 +313,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldMaterialCertificate new_certificate = SelectedDocument.Clone() as bldMaterialCertificate;
             new_certificate.IsHaveImageFile = false;
             SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
-            UnDoReDo.Register(new_certificate);
+          //  UnDoReDo.Register(new_certificate);
 
         }
 
@@ -322,7 +321,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldMaterialCertificate new_certificate = new bldMaterialCertificate();
             SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
-            UnDoReDo.Register(new_certificate);
+            //UnDoReDo.Register(new_certificate);
         }
 
 
@@ -331,7 +330,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
             bldMaterialCertificate selected_certificate = SelectedDocument as bldMaterialCertificate;
-            UnDoReDo.Register(selected_certificate);
+           // UnDoReDo.Register(selected_certificate);
             //selected_certificate.UnitOfMeasurement = new bldUnitOfMeasurement("-");
 
         }
@@ -393,12 +392,32 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public virtual void OnSave()
         {
-            base.OnSave<bldDocumentsGroup>(AggregationDocuments);
+            base.OnSave<bldDocumentsGroup>(AggregationDocuments,
+                 (result) =>
+                 {
+                     if (result.Result == ButtonResult.Yes)
+                     {
+                         UnDoReDo.ParentUnDoReDo.Save(AggregationDocuments);
+                     }
+
+                 });
         }
         public virtual void OnClose(object obj)
         {
-            base.OnClose<bldDocumentsGroup>(obj, AggregationDocuments);
-            UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
+            base.OnClose<bldDocumentsGroup>(obj, AggregationDocuments,
+                (result)=>
+                {
+                    if (result.Result == ButtonResult.Yes)
+                    {
+                        UnDoReDo.ParentUnDoReDo.Save(AggregationDocuments);
+                    //    UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
+                    }
+                    if (result.Result == ButtonResult.No)
+                    {
+                      //  UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
+                    }
+                });
+           
         }
         public override void OnWindowClose()
         {
@@ -407,6 +426,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
             ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewCommand);
             ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
+            UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -421,13 +441,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
                 {
                     AggregationDocuments.Add(arg_document);
-                    if (parent_undoredo_sys != null && !parent_undoredo_sys.ChildrenSystems.Contains(UnDoReDo))
-                    {
-                        parent_undoredo_sys.SetUnDoReDoSystemAsChildren(UnDoReDo);
-                        // parent_undoredo_sys.AddUnDoReDoSysAsCommand(UnDoReDo);
-                        //parent_undoredo_sys.UnRegisterAll(arg_document);
-                    }
-                    UnDoReDo.RegisterAll(arg_document);
+                    parent_undoredo_sys.SetUnDoReDoSystemAsChildren(UnDoReDo);
+                    UnDoReDo.Register(arg_document);
                 }
                 if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
                 AggregationDocuments.ErrorsChanged += RaiseCanExecuteChanged;

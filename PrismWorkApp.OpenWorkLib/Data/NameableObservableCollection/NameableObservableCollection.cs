@@ -14,7 +14,7 @@ using System.Runtime.CompilerServices;
 namespace PrismWorkApp.OpenWorkLib.Data
 {
 
-    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableObservableCollection, ICloneable, INotifyCollectionChanged, IEntityObject
+    public class NameableObservableCollection<TEntity> : ObservableCollection<TEntity>, INameableObservableCollection, ICloneable
         where TEntity : IEntityObject
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -39,7 +39,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 }
                 if (!entity_member.Parents.Contains(this)) entity_member.Parents.Add(this);
                 if (!this.Children.Contains(entity_member)) this.Children.Add(entity_member);
-                if (IsAutoRegistrateInUnDoReDo) UnDoReDoSystem?.RegisterAll(entity_member);
+                if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(entity_member))
+                    UnDoReDoSystem.Register(entity_member,true);
             }
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
@@ -304,7 +305,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 if (!this.Children.Contains(item)) this.Children.Add(item);
                 base.SetItem(index, item);
             }
-            if (IsAutoRegistrateInUnDoReDo) UnDoReDoSystem?.RegisterAll(item);
+            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
+                UnDoReDoSystem.Register(item,true);
         }
         protected override void InsertItem(int index, TEntity item)
         {
@@ -320,7 +322,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 if (!this.Children.Contains(item)) this.Children.Add(item);
                 base.InsertItem(index, item);
             }
-            if (IsAutoRegistrateInUnDoReDo) UnDoReDoSystem?.RegisterAll(item);
+            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
+                UnDoReDoSystem.Register(item,true);
         }
 
         protected override void RemoveItem(int index)
@@ -336,6 +339,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 if (item.Parents.Contains(this)) item.Parents.Remove(this);
                 if (this.Children.Contains(item)) this.Children.Remove(item); ;
                 base.RemoveItem(index);
+              //  if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
+                //    UnDoReDoSystem.UnRegister(item);
             }
         }
 

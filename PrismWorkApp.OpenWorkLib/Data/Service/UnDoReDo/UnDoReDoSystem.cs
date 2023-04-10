@@ -18,7 +18,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
     /// </summary>
     public class UnDoReDoSystem : IUnDoReDoSystem, IActiveAware
     {
-        public  Stack<IUnDoRedoCommand> _UnDoCommands { get; set; } = new Stack<IUnDoRedoCommand>();
+        public Stack<IUnDoRedoCommand> _UnDoCommands { get; set; } = new Stack<IUnDoRedoCommand>();
         public Stack<IUnDoRedoCommand> _ReDoCommands { get; set; } = new Stack<IUnDoRedoCommand>();
         private bool _monitorCommandActivity = false;
         private int _UnDoCounter = 0;
@@ -41,17 +41,35 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// <summary>
         /// Коллекция хранит все зарегистрированные в данной системе объекты IJornalable
         /// </summary>
+        public ObservableCollection<IJornalable> _AllChangedObjects
+        {
+            get
+            {
+                IEnumerable<IJornalable> all_models = new ObservableCollection<IJornalable>(ChangedObjects); 
+                 foreach(IUnDoReDoSystem system in ChildrenSystems)
+                {
+                    all_models = all_models.Union(system.ChangedObjects);
+                }
+                return  new ObservableCollection<IJornalable>(all_models);
+            } 
+            } //Все зарегистрированые в системе и в дочерних системах объекты объекты 
+        /// <summary>
+        /// Коллекция хранит все зарегистрированные в данной системе объекты IJornalable
+        /// </summary>
         public Dictionary<IJornalable, IUnDoReDoSystem> _RegistedModels { get; set; } = new Dictionary<IJornalable, IUnDoReDoSystem>();//Все зарегистрированые в системе объекты 
         /// <summary>
         /// Коллекция храниит все объекты, который зарегистрированы в дочерних системах.
         /// </summary>
-        public Dictionary<IJornalable, IUnDoReDoSystem> _ChildrenSystemRegistedModels { get; set; } = new Dictionary<IJornalable, IUnDoReDoSystem>();//Все зарегисрированные в дочерних системах объекты
+      //  public Dictionary<IJornalable, IUnDoReDoSystem> _ChildrenSystemRegistedModels { get; set; } = new Dictionary<IJornalable, IUnDoReDoSystem>();//Все зарегисрированные в дочерних системах объекты
         /// <summary>
         /// Коллекция хранит ссылки на все зарегистрированые в данной системе дочерние системы
         /// </summary>
         public ObservableCollection<IUnDoReDoSystem> ChildrenSystems { get; set; } = new ObservableCollection<IUnDoReDoSystem>();//Дочерние системы
+        /// <summary>
+        /// Коллекция хранит ссылки на объекты на которыйе  в системе имеются зарегистрированные измененеия
+        /// </summary>
         public ObservableCollection<IJornalable> ChangedObjects { get; set; } = new ObservableCollection<IJornalable>();//Все объекты в которых произошли  изменения
-        public ObservableCollection<IUnDoRedoCommand> AllExecutedCommands { get; set; } = new ObservableCollection<IUnDoRedoCommand>();//Все созданных команды по всем измененеиям во всез зарегистированных объектах
+
         #region Main Methods 
         /// <summary>
         /// Метод отменяет ("откатывает назад") произвольное количество последних изменений
@@ -69,10 +87,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 {
                     IUnDoRedoCommand command = _UnDoCommands.Pop();
                     command.UnExecute();
-                    //AllExecutedCommands.Remove(command);
-                    var objcs_for_remove = ChangedObjects.Where(cho => !_UnDoCommands.Where(cm => cm.ChangedObjects.Contains(cho)).Any()).ToList();
-                    foreach (IJornalable j_obj in objcs_for_remove)
-                        ChangedObjects.Remove(j_obj);
+                    //var objcs_for_remove = ChangedObjects.Where(cho => !_UnDoCommands.Where(cm => cm.ChangedObjects.Contains(cho)).Any()).ToList();
+                    //foreach (IJornalable j_obj in objcs_for_remove)
+                    //    ChangedObjects.Remove(j_obj);
                     if (!without_redo)
                     {
                         _ReDoCommands.Push(command);
@@ -100,7 +117,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 {
                     IUnDoRedoCommand command = _ReDoCommands.Pop();
                     command.Execute();
-                    //AllExecutedCommands.Add(command);
                     //foreach (IJornalable obj in command.ChangedObjects)
                     //    obj.ChangesJornal.Add(command);
                     if (!without_undo)
@@ -125,6 +141,14 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             {
                 UnDo(1);
             }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnDoAll"));
+        }
+        public void UnDoAll(IJornalable obj)
+        {
+
+
+
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("UnDoAll"));
         }
         /// <summary>
@@ -195,6 +219,17 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             }
         }
         #endregion
+
+        public bool IsAnyChildSystemRegistered(IJornalable obj)
+        {
+            bool is_in_child_system = ChildrenSystems?.Where(s => s._RegistedModels.ContainsKey(obj)).FirstOrDefault() != null;
+
+            return is_in_child_system;
+        }
+        public bool IsRegistered(IJornalable obj)
+        {
+            return this._RegistedModels.ContainsKey(obj) || this.IsAnyChildSystemRegistered(obj);
+        }
         #region Registration 
         /// <summary>
         /// Метод для регистрации объекта  реализуещго IJornalable в системе. В системе регистрируются как сам объект,
@@ -203,144 +238,96 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// </summary>
         /// <param name="obj"> Регистрируемый объект IJornalable</param>
         /// <param name="enable_outo_registration"> Влючает функую авторегистрации в объекте..</param>
-        public void Register(IJornalable obj,bool enable_outo_registration = false)
+        public void Register(IJornalable obj, bool enable_outo_registration = false)
         {
-            
-
             if (obj == null) { throw new Exception("Попытка регистрации в системе UnDoReDo объекта со значением null"); }
-            if (_RegistedModels.ContainsKey(obj) || _ChildrenSystemRegistedModels.ContainsKey(obj))//Если объект зарегисприван в данной или в дочерней системе - выходим
+            if (this.IsRegistered(obj))//Если объект зарегисприван в данной или в дочерней системе - выходим
                 return;
-            else
+
+            if (ParentUnDoReDo != null) //Если существует родительская система..
             {
-                if (ParentUnDoReDo != null)
-                {
-                    if (ParentUnDoReDo._ChildrenSystemRegistedModels.ContainsKey(obj)) //Если вы данный момент объект уже используется в другой системе
-                        throw new Exception($"Объект занять другой стистемой UnDoReDo {obj.ToString()}");
-                    if (ParentUnDoReDo._RegistedModels.ContainsKey(obj)) //Если регистрируем объект, которые уже был зарегистирован в родительской системе
-                    {
-                        ParentUnDoReDo.UnRegister(obj);//то удаляем его из родительской системы
-                        ParentUnDoReDo._ChildrenSystemRegistedModels.Add(obj, this);
-                    }
-                }
-                _RegistedModels.Add(obj, this);
+                if (ParentUnDoReDo.IsAnyChildSystemRegistered(obj)) //Если вы данный момент объект уже используется в другой, смежной дочерней системе..
+                    throw new Exception($"Объект занять другой стистемой UnDoReDo {obj.ToString()}");
+                if (ParentUnDoReDo._RegistedModels.ContainsKey(obj)) //Если  объект зарегистрирован в родительской системе.. 
+                    ParentUnDoReDo.UnRegister(obj);//то удаляем его из родительской системы
             }
-            ///Пробегаемся по свойствам и регистрируем свойства, который тоже IJornalable
+            obj.JornalingOff(); //На всякий случай выключаем журналирование в объекте
+            if (obj.UnDoReDoSystem != this)//Если объект был в друной системе - выписываемся из нее...
+            {
+                obj.UnDoReDoSystem?.UnRegister(obj);
+                obj.UnDoReDoSystem = this;//Устанавливаем текущую систему в объекте .
+            }
+            if (obj is IList list_obj) //Если регистрируемый элемент сам  является коллекцией
+                foreach (IJornalable element in list_obj)
+                    this.Register(element);
+            obj.PropertyBeforeChanged += OnModelPropertyBeforeChanged;//Событие возникающее в региструемом объекте перед изменением свойства
+            obj.UnDoReDoCommandCreated += OnObservedCommandCreated;//Событие возникающее в региструемом коллекции  при применение любой команды IUnDoReDoCommand
+            obj.IsAutoRegistrateInUnDoReDo = enable_outo_registration;
+            _RegistedModels.Add(obj, this);
+            obj.JornalingOn();
+            ///Пробегаемся по свойствам и рекурсивно регистрируем все свойства, которые тоже IJornalable
             var props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
             foreach (PropertyInfo propertyInfo in props_infoes)
             {
                 var prop_val = propertyInfo.GetValue(obj);
                 var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
                 if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
+                {
                     this.Register(jornable_prop);
-            }
-            
-            obj.JornalingOff(); //На всякий случай выключаем журналирование в объекте
-            if (obj.UnDoReDoSystem != this)//Если объект был в друной системе - выписываемся из нее...
-            {
-                obj.UnDoReDoSystem?.UnRegisterAll(obj);
-                obj.UnDoReDoSystem = this;//Устанавливаем текущую систему в объекте .
-            }
-            obj.PropertyBeforeChanged += OnModelPropertyBeforeChanged;//Событие возникающее в региструемом объекте перед изменением свойства
-            obj.UnDoReDoCommandCreated += OnObservedCommandCreated;//Событие возникающее в региструемом коллекции  при применение любой команды IUnDoReDoCommand
-            obj.IsAutoRegistrateInUnDoReDo = enable_outo_registration;
+                    if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
+                        foreach (object element in list_jornable_prop)
+                            if (element is IJornalable jornable_element)
+                                this.Register(jornable_element);
 
-            obj.JornalingOn();
-
+                }
+            }
         }
         private IJornalable firstRegistredObject = null;//Переменная для хранения объекта с которого мы воли в рекурсивную фунцию
         /// <summary>
-        /// Метод регистрирует все дерево объектов по иерахии внурь перескакивая и черех уже зарегисрированные, если 
-        /// таковые встречаются.
+        /// Метод удаляет регистрацию объекта и всего дерерва объектов по иерархии внурь.
         /// </summary>
-        /// <param name="obj">Объект IJornalable, который будет зарегисрирована в сисиеме </param>
+        /// <param name="obj"></param>
         /// <param name="first_itaration">Служебный флаг регистрации выхода из рекурсивной функции. Не изменять!</param>
-        public void RegisterAll(IJornalable obj, bool first_itaration = true)
-        {
-            if (!first_itaration && obj == firstRegistredObject) return;
-            if (first_itaration) firstRegistredObject = obj;
-            foreach (IJornalable child in obj.Children)
-                this.RegisterAll(child, false);
-            this.Register(obj);
-            if (obj == firstRegistredObject) firstRegistredObject = null;
-        }
-
-        /// <summary>
-        /// Метод удаляет регистрацию объекта из ткущей системы .
-        /// </summary>
-        /// <param name="obj">Удаляемы из системы объект</param>
         public void UnRegister(IJornalable obj)
         {
-            if (_RegistedModels.ContainsKey(obj))
+
+            if (obj == null) { throw new Exception("Попытка удаления регистрации в системе UnDoReDo объекта со значением null"); }
+            if (!this.IsRegistered(obj))//Если объект не зарегисприван в данной или в дочерней системе - выходим
+                return;
+            if (this.IsAnyChildSystemRegistered(obj)) //Если существует  дорених системах 
             {
-                obj.JornalingOff();
-                obj.PropertyBeforeChanged -= OnModelPropertyBeforeChanged;
-                obj.UnDoReDoCommandCreated -= OnObservedCommandCreated;
-                if (obj.UnDoReDoSystem == this)
-                    obj.UnDoReDoSystem = null;
-
-                _RegistedModels.Remove(obj);
-                if (ParentUnDoReDo != null)
-                {
-                    //if (ParentUnDoReDo._ChildrenSystemRegistedModels.ContainsKey(obj))
-                    //    ParentUnDoReDo._ChildrenSystemRegistedModels.Remove(obj);
-                    if (!ParentUnDoReDo._RegistedModels.ContainsKey(obj)) //Если регистрируем объект, которые уже был зарегистирован в родительской системе
-                    {
-                        ParentUnDoReDo.Register(obj);//то удаляем его из родительской системы
-                        ParentUnDoReDo._ChildrenSystemRegistedModels.Remove(obj);
-                    }
-                }
-                ///Пробегаемся по свойствам и регистрируем свойства, который тоже IJornalable
-                var props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
-                foreach (PropertyInfo propertyInfo in props_infoes)
-                {
-                    var prop_val = propertyInfo.GetValue(obj);
-                    var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
-                    if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
-                        this.UnRegister(jornable_prop);
-                }
-
-                ///Пока не понятно зачем все это...
-                //if (obj is IUnDoReDoSystem child_system) //Если в системе регистриуюется дочерняя система, то объекты которые зарегирированы в дочерней системе
-                //{//регистриуем в родительской   системе
-                //    child_system.ParentUnDoReDo = null;
-                //    foreach (IJornalable reg_obj in child_system._RegistedModels.Keys)
-                //    {
-                //        if (!_RegistedModels.ContainsKey(reg_obj)) 
-                //            this.Register(reg_obj);
-                //        child_system.UnRegister(reg_obj);
-                //    }
-                //}
-                obj.JornalingOn();
+                ///Удаляем в ней регистрацию объекта рекурсивно...
+                foreach (IUnDoReDoSystem system in this.ChildrenSystems.Where(s => s._RegistedModels.ContainsKey(obj)).ToList())
+                    system.UnRegister(obj);
             }
-        }
-        private IJornalable firstUnRegisteredObject = null;//Переменная для хранения объекта с которого мы воли в рекурсивную фунцию
-        /// <summary>
-        /// Метод удаляет регистрацию объекта и всего дерерва объектов по иерархии внурь.
-        /// </summary>
-        /// <param name="obj"></param>
-        public void UnRegisterAll(IJornalable obj)
-        {
-
-        }
-        /// <summary>
-        /// Метод удаляет регистрацию объекта и всего дерерва объектов по иерархии внурь.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="first_itaration">Служебный флаг регистрации выхода из рекурсивной функции. Не изменять!</param>
-
-        private void UnRegisterAll_recursive(IJornalable obj, bool first_itaration = true)
-        {
-            if (!first_itaration && obj == firstUnRegisteredObject) return;
-            if (first_itaration) firstUnRegisteredObject = obj;
-            foreach (IJornalable child in obj.Children)
+            ///Пробегаемся по свойствам и рекурсивно удаляем регистрацию всех свойств, которые тоже IJornalable
+            var props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            foreach (PropertyInfo propertyInfo in props_infoes)
             {
-                this.UnRegisterAll_recursive(child, false);
+                var prop_val = propertyInfo.GetValue(obj);
+                var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
+                if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
+                {
+                    this.UnRegister(jornable_prop);
+                    if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
+                        foreach (object element in list_jornable_prop)
+                            if (element is IJornalable jornable_element)
+                                this.UnRegister(jornable_element);
+
+                }
             }
-            this.UnRegisterAll_recursive(obj);
-            if (obj == firstUnRegisteredObject) firstUnRegisteredObject = null;
+            obj.JornalingOff(); //На всякий случай выключаем журналирование в объекте
+            obj.UnDoReDoSystem = null;//Удаляем текущую систему в объекте .
+            obj.PropertyBeforeChanged -= OnModelPropertyBeforeChanged;//Событие возникающее в региструемом объекте перед изменением свойства
+            obj.UnDoReDoCommandCreated -= OnObservedCommandCreated;//Событие возникающее в региструемом коллекции  при применение любой команды IUnDoReDoCommand
+            obj.IsAutoRegistrateInUnDoReDo = false;
+            _RegistedModels.Remove(obj);
+            obj.JornalingOn();
+            if (obj is IList list_obj) //Если регистрируемый элемент сам является коллекцией
+                foreach (IJornalable element in list_obj)
+                    this.UnRegister(element);
         }
 
-        //private Dictionary<IUnDoReDoSystem,IJornalable> unregisted_for_child_object = new Dictionary<IUnDoReDoSystem, IJornalable>)();
         /// <summary>
         /// Метод устанавливает передаваемую в аргументе систему в качетве дочерней для текущей системы.
         /// </summary>
@@ -349,13 +336,13 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             ///Если в системе регистриуюется дочерняя система, то объекты которые зарегирированы в дочерней системе
             ///удаляем регистрацию в родительской системе, что бы не дублировались записи об изменениях в двух системах
-            if (!ChildrenSystems.Contains(children_system))
+            if (!ChildrenSystems.Contains(children_system) && children_system.ParentUnDoReDo != this)
             {
-                if (children_system.ParentUnDoReDo != null && children_system.ParentUnDoReDo != this)
-                    children_system.UnSetUnDoReDoSystemAsChildren(children_system.ParentUnDoReDo);
+                if (children_system.ParentUnDoReDo != null)///Если регистрируемая система уже имела родительскую систему
+                    children_system.UnSetUnDoReDoSystemAsChildren(children_system.ParentUnDoReDo);//удяляем регисрацию из родительской системы
                 foreach (IJornalable reg_obj in children_system._RegistedModels.Keys)   ///Проходим по всем зарегистрированным в дочернией
-                    if (_RegistedModels.ContainsKey(reg_obj))                           ///системе объектам и если если объекты, которые зарегистрирована в родительской системе
-                        this.UnRegisterAll(reg_obj);                                    ///удаляем регисраци в родительской системе
+                    if (_RegistedModels.ContainsKey(reg_obj))                           ///системе объектам и если находим  объекты, которые зарегистрирована в родительской системе
+                        this.UnRegister(reg_obj);                                    ///удаляем регисрацию в родительской системе
                 children_system.ParentUnDoReDo = this;
                 ChildrenSystems.Add(children_system);                                   ///Доавляем дочернюю систему в коллекцию дочерних систему родтельской системы
 
@@ -371,16 +358,13 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             /// регистриуем их в родительской системе
             if (ChildrenSystems.Contains(child_system))
             {
-
                 foreach (IJornalable reg_obj in child_system._RegistedModels.Keys)///Перерегистрируем все объекты бывшей дочерней сисемы
                 {                                                                 /// в текущей
-                    child_system.UnRegisterAll(reg_obj);
-                    //this._ChildrenSystemRegistedModels.Remove(reg_obj);
-                    this.RegisterAll(reg_obj);
+                    child_system.UnRegister(reg_obj);
+                    this.Register(reg_obj);
                 }
                 child_system.ParentUnDoReDo = null;
                 ChildrenSystems.Remove(child_system);
-
             }
         }
         #endregion
@@ -399,8 +383,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             IJornalable changed_obj = sender as IJornalable;
             IUnDoRedoCommand command = e.Command;
             _UnDoCommands.Push(command);
-            AllExecutedCommands.Add(command);
-
             foreach (IJornalable ch_obj in command.ChangedObjects)
                 if (!ChangedObjects.Contains(ch_obj)) ChangedObjects.Add(ch_obj);
 
@@ -420,8 +402,6 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             PropertySetCommand command =
                 new PropertySetCommand(changed_obj, e.PropertyName, e.NewValue, e.LastValue);//Созданем команду изменения свойства объекта
             _UnDoCommands.Push(command);
-            AllExecutedCommands.Add(command);
-
             foreach (IJornalable ch_obj in command.ChangedObjects)
                 if (!ChangedObjects.Contains(ch_obj)) ChangedObjects.Add(ch_obj);
 
@@ -437,27 +417,29 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void AddUnDoReDoSysAsCommand(IUnDoReDoSystem unDoReDo)
         {
             _UnDoCommands.Push((UnDoReDoSystem)unDoReDo);
-            AllExecutedCommands.Add(unDoReDo);
+            foreach (IJornalable element in unDoReDo.ChangedObjects)
+                if (!this.ChangedObjects.Contains(element))
+                    this.ChangedObjects.Add(element);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AddUnDoReDo"));
         }
         /// <summary>
-        /// Метод сохраняет изменения только в конкретном объекте в текущей системе (удаляет информацию об изменениях в системе и участвоваваших
+        /// Метод сохраняет изменения только в конкретном объекте в текущей и дочерних системах (удаляет информацию об изменениях в системе и участвоваваших
         /// в изменнеии данного других объектах) 
         /// </summary>
         /// <param name="obj"> Объкт,измененения котророго будут стеры из системы</param>
         /// <returns></returns>
-        public int SaveChages(IJornalable obj)
+        public int Save(IJornalable obj)
         {
             IJornalable saved_obj = obj;
-            foreach (IUnDoReDoSystem unDoReDo in ChildrenSystems.Where(s =>
-                s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(saved_obj)).Any()))
+            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(saved_obj)).Any());
+            foreach (IUnDoReDoSystem unDoReDo in all_objects_systems)//Если объект зарегисрирован в дочених системах...
             {
-                unDoReDo.SaveChages(saved_obj);
+                unDoReDo.Save(saved_obj);//Сохраняем объект во всех дочерних системах
             }
             var commands_list = this._UnDoCommands.Union(_ReDoCommands).Where(cm => cm.ChangedObjects.Contains(saved_obj)).ToList(); // Все команды текущей системы в которых содержится сохраняемый объект
             foreach (IUnDoRedoCommand command in commands_list)///Проходим по командам 
             {
-                List<IJornalable> chgd_objects = command.ChangedObjects.Where(ob => ob != saved_obj).ToList();//Находим в командах все объекты с которыми он был связан
+                List<IJornalable> chgd_objects = command.ChangedObjects.Where(ob => ob.Id != saved_obj.Id).ToList();//Находим в командах все объекты с которыми он был связан
                 foreach (IJornalable chgd_obj in chgd_objects)
                 {
                     chgd_obj.ChangesJornal.Remove(command);///Удаляем в найденных объектах информацию о найденных командах
@@ -465,82 +447,76 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                         this.ChangedObjects.Remove(chgd_obj);
                 }
                 saved_obj.ChangesJornal.Remove(command);//Удаляем команду в текущем объекте
-                this.AllExecutedCommands.Remove(command);//Удаляем команды из списка зарегистрированныйх текущйе системы
                 this._UnDoCommands.Remove(command); //Удаляем команду из   стека UnDo ...
                 this._ReDoCommands.Clear();///Очищаем стек  ReDo
             }
             if (this.ChangedObjects.Contains(saved_obj))
                 this.ChangedObjects.Remove(saved_obj);///Удаляем объект из журнала системы, где хараняться наблюдаемые объекты 
                                                       ///в которых были зафиксированы изменения
+            if (obj is IList list_obj) //Если регистрируемый элемент является коллекцией
+                foreach (IJornalable element in list_obj)
+                    this.Save(element);
+            var props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
 
-            
-            ///Получаем из  поля самого объекта IJornalable все команды которые были к нему применены - хранятся в его свойстве ChangesJornal
-            //if (this.ChangedObjects.Contains(saved_obj))///Если в текущей  системе объект числится как измененный ...
-            //{///Получаем из  поля самого объекта IJornalable все команды которые были к нему применены - хранятся в его свойстве ChangesJornal
-            //   List<IUnDoRedoCommand> obj_chg_commands = new List<IUnDoRedoCommand>(saved_obj.ChangesJornal);
-            //    foreach (IUnDoRedoCommand command in obj_chg_commands.Where(cm => this.AllExecutedCommands.Contains(cm))) //Проходим по всем командам, которые были зарегистрирована данной текущей системой
-            //    {///В каждой команда находим все объекты, которые эти команды затронули (изменили), кроме текущего объекта
-            //        List<IJornalable> chgd_objects = command.ChangedObjects.Where(ob => ob != saved_obj).ToList();
-            //        foreach (IJornalable chgd_obj in chgd_objects)
-            //        {
-            //            chgd_obj.ChangesJornal.Remove(command);///Удаляем в найденных объектах информацию о найденных командах
-            //            if (!chgd_obj.ChangesJornal.Where(cm => cm.UnDoReDo_System == this).Any())//Если в текущей системе больше нет 
-            //                this.ChangedObjects.Remove(chgd_obj);
-            //        }
-            //        saved_obj.ChangesJornal.Remove(command);//Удаляем команды в текущем объекте
-            //        this.AllExecutedCommands.Remove(command);//Удаляем команды из списка зарегистрированныйх текущйе системы
-            //        this._UnDoCommands.Remove(command); //Удаляем команду из   стека UnDo ...
-
-            //        this._ReDoCommands.Clear();///Очищаем стек  ReDo
-            //    }
-            //    this.ChangedObjects.Remove(saved_obj);///Удаляем объект из журнала системы, где хараняться наблюдаемые объекты 
-            //                                          ///в которых были зафиксированы изменения
-            //}
-
-            return 1;
-        }
-
-        private IJornalable firstSavedObject = null; //Переменная для хранения объекта с которого мы воли в рекурсивную фунцию
-        /// <summary>
-        /// Метод сохораняет все изменения по дереву объектов внурь объекта в текущей  и в дочерних системах (удаляет информацию об изменениях в системе) 
-        /// то ксть метод .SaveChanges(obj) применяется ко всех объектам внутри obj
-        /// </summary>
-        /// <param name="obj">Объкт измененения котророго будет стеры из системы и дочерних систем</param>
-        /// <param name="first_itaration">Служебный флаг регистрации выхода из рекурсивной функции. Не изменять! </param>
-        /// <returns>В проекте будет возращать количество объетов изменения котороых сохранили </returns>
-        public int SaveAllChagesInCurrentSys(IJornalable obj, bool first_itaration = true)
-        {
-            if (!first_itaration && obj == firstSavedObject) return 0;
-            if (first_itaration) firstSavedObject = obj;
-           foreach (IJornalable child in obj.Children)
+            foreach (PropertyInfo propertyInfo in props_infoes)
             {
-                this.SaveAllChagesInCurrentSys(child, false);
+                var prop_val = propertyInfo.GetValue(obj);
+                var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
+                if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
+                {
+                    this.Save(jornable_prop);
+                    if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
+                        foreach (object element in list_jornable_prop)
+                            if (element is IJornalable jornable_element)
+                                this.Save(jornable_element);
+
+                }
             }
-            this.SaveChages(obj);
-            if (obj == firstSavedObject) firstSavedObject = null;
             return 1;
         }
-        /// <summary>
-        /// Метод сохораняет все изменения по дереву объектов внурь объекта в текущей  и в дочерних системах
-        /// (обертка для рекурсивоной  SaveAllChagesInCurrentSys(IJornalable obj, bool first_itaration = true))
-        /// </summary>
-        /// <param name="obj">Объкт измененения котророго будет стеры из системы и дочерних систем</param>
-        /// <returns>В проекте будет возращать количество объетов изменения котороых сохранили</returns>
-        public int SaveAllChages(IJornalable obj)
+
+        //private IJornalable firstSavedObject = null; //Переменная для хранения объекта с которого мы воли в рекурсивную фунцию
+        ///// <summary>
+        ///// Метод сохораняет все изменения по дереву объектов внурь объекта в текущей  и в дочерних системах (удаляет информацию об изменениях в системе) 
+        ///// то ксть метод .SaveChanges(obj) применяется ко всех объектам внутри obj
+        ///// </summary>
+        ///// <param name="obj">Объкт измененения котророго будет стеры из системы и дочерних систем</param>
+        ///// <param name="first_itaration">Служебный флаг регистрации выхода из рекурсивной функции. Не изменять! </param>
+        ///// <returns>В проекте будет возращать количество объетов изменения котороых сохранили </returns>
+        //public int SaveAllChagesInCurrentSys(IJornalable obj, bool first_itaration = true)
+        //{
+        //    if (!first_itaration && obj == firstSavedObject) return 0;
+        //    if (first_itaration) firstSavedObject = obj;
+        //    foreach (IJornalable child in obj.Children)
+        //    {
+        //        this.SaveAllChagesInCurrentSys(child, false);
+        //    }
+        //    this.SaveChages(obj);
+        //    if (obj == firstSavedObject) firstSavedObject = null;
+        //    return 1;
+        //}
+        ///// <summary>
+        ///// Метод сохораняет все изменения по дереву объектов внурь объекта в текущей  и в дочерних системах
+        ///// (обертка для рекурсивоной  SaveAllChagesInCurrentSys(IJornalable obj, bool first_itaration = true))
+        ///// </summary>
+        ///// <param name="obj">Объкт измененения котророго будет стеры из системы и дочерних систем</param>
+        ///// <returns>В проекте будет возращать количество объетов изменения котороых сохранили</returns>
+        //public int SaveAllChages(IJornalable obj)
+        //{
+        //    ////int saved_objects_count;
+        //    this.SaveAllChagesInCurrentSys(obj);
+        //    return 1;
+        //}
+        ///// <summary>
+        ///// Мето проходт по всем зарегисрированным объектам и сохраняет все изменения в них
+        ///// </summary>
+        ///// <returns></returns>
+        public int SaveAll()
         {
-            ////int saved_objects_count;
-           this.SaveAllChagesInCurrentSys(obj);
-             return 1;
-        }
-        /// <summary>
-        /// Мето проходт по всем зарегисрированным объектам и сохраняет все изменения в них
-        /// </summary>
-        /// <returns></returns>
-        public int SaveAllChages()
-        {
-                foreach (IJornalable obj in _RegistedModels.Keys)
+
+            foreach (IJornalable obj in this._AllChangedObjects)
             {
-                this.SaveAllChages(obj);
+                this.Save(obj);
             }
 
             return 1;
@@ -583,14 +559,14 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
         public void AdjustChangedProperty(
             bool b_jornal_recording_flag,
-            string  propertyName,
+            string propertyName,
             ref object member,
             object val,
             PropertyBeforeChangeEventHandler PropertyBeforeChanged, IEntityObject entity)
         {
             if (b_jornal_recording_flag)
                 PropertyBeforeChanged(this, new PropertyBeforeChangeEvantArgs(propertyName, member, val));
-            
+
             if (member is IEntityObject entity_member)
             {
                 if (entity_member is INameableObservableCollection nameble_collection_mamber)
@@ -599,8 +575,44 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 }
                 if (!entity_member.Parents.Contains(entity)) entity_member.Parents.Add(entity);
                 if (!entity.Children.Contains(entity_member)) entity.Children.Add(entity_member);
-                if (entity.IsAutoRegistrateInUnDoReDo) entity.UnDoReDoSystem?.RegisterAll(entity_member);
+                if (entity.IsAutoRegistrateInUnDoReDo) entity.UnDoReDoSystem?.Register(entity_member, true);
             }
+        }
+
+        private int i_changes_namber = 0;
+        public int GetChangesNamber(IJornalable obj, bool first_itr = true)
+        {
+            if(first_itr) i_changes_namber = 0;
+
+            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(obj)).Any());
+            foreach (IUnDoReDoSystem unDoReDo in all_objects_systems)//Если объект зарегисрирован в дочених системах...
+            {
+                i_changes_namber +=unDoReDo.GetChangesNamber(obj,false);
+            }
+
+            var props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+
+            foreach (PropertyInfo propertyInfo in props_infoes)
+            {
+                var prop_val = propertyInfo.GetValue(obj);
+                var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
+                if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
+                {
+                    i_changes_namber+= this.GetChangesNamber(jornable_prop,false);
+                    if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
+                        foreach (object element in list_jornable_prop)
+                            if (element is IJornalable jornable_element)
+                                i_changes_namber+=this.GetChangesNamber(jornable_element, false);
+                }
+            }
+           
+            if (obj is IList list_obj) //Если регистрируемый элемент является коллекцией
+                foreach (IJornalable element in list_obj)
+                    i_changes_namber+=this.GetChangesNamber(element, false);
+           
+            i_changes_namber += obj.ChangesJornal.Count();
+
+            return i_changes_namber;
         }
 
         /// <summary>

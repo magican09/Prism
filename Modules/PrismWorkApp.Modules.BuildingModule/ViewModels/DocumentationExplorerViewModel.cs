@@ -187,7 +187,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                         list_parent.Remove(document);
                                 }
                                 if (result.Result == ButtonResult.Yes)
-                                {
+                                { 
                                     UnDoReDo.Save(document);
                                     UnDoReDo.UnRegister(document);
                                     var dialog_par = new DialogParameters();

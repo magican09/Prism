@@ -118,7 +118,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
             UnDoReDo = new UnDoReDoSystem();
-            UnDoReDo.Register(AggregationDocuments);
+           // UnDoReDo.Register(AggregationDocuments,true);
             ApplicationCommands = applicationCommands;
             _appObjectsModel = appObjectsModel as AppObjectsModel;
             _dialogService = dialogService;
@@ -385,8 +385,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         private bool CanSave()
         {
-            if (SelectedAggregationDocument != null)
-                return !SelectedAggregationDocument.HasErrors;
+            if (AggregationDocuments != null)
+                return !AggregationDocuments.HasErrors;
             else
                 return false;
         }
@@ -440,6 +440,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 EditMode = navigane_message.EditMode;
                 if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
                 {
+
                     AggregationDocuments.Add(arg_document);
                     parent_undoredo_sys.SetUnDoReDoSystemAsChildren(UnDoReDo);
                     UnDoReDo.Register(arg_document);

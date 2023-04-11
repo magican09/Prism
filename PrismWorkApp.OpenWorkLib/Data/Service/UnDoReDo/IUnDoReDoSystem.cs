@@ -144,6 +144,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public bool IsRegistered(IJornalable obj);
 
         public int GetChangesNamber(IJornalable obj, bool first_itr = true);
-
+        public IEnumerable<IUnDoRedoCommand> GetAllCommandsByObject(IJornalable obj, bool firs_itaration = true);
+        public int Level { get; set; }
+        public void UnDoAll(IJornalable obj);
+        public event UnDoReDoSystemEventHandler SystemHaveNotSavedObjects;
+        public bool HasAnyChangedObjectInAllSystems();
     }
 }

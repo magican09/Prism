@@ -308,7 +308,13 @@ namespace PrismWorkApp.Core
             });
 
         }
-        
+
+        /// <summary>
+        /// Вызов диалогового откна для подтвержания изменией в чем либо..
+        /// </summary>
+        /// <param name="dialogService"></param>
+        /// <param name="object_name">"Вы действительно хотите  в {object_name}?></param>
+        /// <param name="elm_save_action"></param>
         public static void ConfirmChangesDialog
              (IDialogService dialogService,string object_name,Action<IDialogResult> elm_save_action)
         {
@@ -316,7 +322,7 @@ namespace PrismWorkApp.Core
             dialog_par.Add("massege",
                $"Вы действительно хотите  в {object_name} ?!");
             dialog_par.Add("confirm_button_content", "Сохранить");
-            dialog_par.Add("refuse_button_content", "Сохранять");
+            dialog_par.Add("refuse_button_content", "Не сохранять");
             dialog_par.Add("cancel_button_content", "Отмена");
 
             dialogService.ShowDialog(typeof(ConfirmActionWhithoutCancelDialog).Name,

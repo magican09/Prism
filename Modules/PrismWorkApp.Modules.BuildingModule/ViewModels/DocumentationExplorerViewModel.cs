@@ -101,6 +101,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands = applicationCommands;
             _buildingUnitsRepository = buildingUnitsRepository;
             UnDoReDo = unDoReDoSystem;
+           // UnDoReDo.SystemHaveNotSavedObjects += OnUnDoReDoSystemEvents;
             Documentation = AppObjectsModel.Documentation.AttachedDocuments;
            
             UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
@@ -113,7 +114,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SaveDocumentationToDBCommand = new NotifyCommand(OnSaveDocumentationToDB);
             SaveDocumentationToDBCommand.MonitorCommandActivity = false;
 
-            SaveCommand = new NotifyCommand(OnSave);
+            SaveCommand = new NotifyCommand(OnSave,()=> { return UnDoReDo.HasAnyChangedObjectInAllSystems(); }).ObservesPropertyChangedEvent(UnDoReDo);
+            SaveCommand.MonitorCommandActivity = false;
 
             ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
             MouseDoubleClickCommand = new NotifyCommand<object>(OnMouseDoubleClick);
@@ -134,11 +136,33 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             Items.Add(root);
             root.AttachedObject = Documentation;
 
-            UnDoReDo.Register(Documentation, true);
+             UnDoReDo.Register(Documentation, true);
             _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveDocumentationToDBCommand);
             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+        }
+
+        private void OnUnDoReDoSystemEvents(IUnDoReDoSystem unDoReDosys, UnDoReDoSystemEventArgs e)
+        {
+            string out_str = "";
+            foreach (IJornalable obj in e.ObjectsList)
+                if (obj is INameable n_obj) out_str += $"{n_obj.Name}\n";
+            CoreFunctions.ConfirmChangesDialog(_dialogService, out_str,
+ 
+                (result)=>
+                {
+                    if(result.Result==ButtonResult.Yes)
+                    {
+                        foreach (IJornalable obj in e.ObjectsList)
+                            obj.UnDoReDoSystem.Save(obj);
+                    }
+                    if(result.Result== ButtonResult.No)
+                    {
+
+                    }
+                }
+                );
         }
 
         private void OnRemoveAggregationDocument(object obj)
@@ -170,11 +194,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                     dialog_par.Add("message", $"{ch_namber.ToString()} изменения(й) сохранено!");
                                     _dialogService.ShowDialog(nameof(MessageDialog), dialog_par, (result) => { });
                                 }
-                                else
+                                if (result.Result == ButtonResult.No)
                                 {
-                                   // UnDoReDo.UnDoAll(document);
-                                    UnDoReDo.UnRegister(document);
-                                    UnDoReDo.UnRegister(document);
+                                   UnDoReDo.UnDoAll(document);
+                                   UnDoReDo.UnRegister(document);
+                                    Documentation.Remove(document);
                                     var dialog_par = new DialogParameters();
                                     dialog_par.Add("message", $"{ch_namber.ToString()} изменения(й) сохранено!");
                                     _dialogService.ShowDialog(nameof(MessageDialog), dialog_par, (result) => { });

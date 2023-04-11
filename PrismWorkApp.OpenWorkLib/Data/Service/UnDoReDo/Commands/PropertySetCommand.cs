@@ -7,17 +7,16 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
     /// </summary>
     public class PropertySetCommand : UnDoRedoCommandBase, IUnDoRedoCommand
     {
-        public string Name { get; set; }
         private IJornalable _ModelObject { get; set; }
         private object _Value;
         private object _LastValue;
         private object _Buffer;
-        public event EventHandler CanExecuteChanged;
-
+       
         public bool CanExecute(object parameter)
         {
             throw new NotImplementedException();
         }
+
 
         public void Execute(object parameter = null)
         {

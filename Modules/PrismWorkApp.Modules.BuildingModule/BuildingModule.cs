@@ -227,6 +227,7 @@ namespace PrismWorkApp.Modules.BuildingModule
 
             containerRegistry.RegisterDialog<GetObjectFromCollectionDialogVeiw, GetObjectFromCollectionDialogVeiwModel>();
 
+           // containerRegistry.RegisterSingleton<IbldCommands, bldCommandMethods>();
             //   containerRegistry.RegisterSingleton<IAppObjectsModel,AppObjectsModel>();
             //  containerRegistry.RegisterForNavigation<ToolBarRibbonTabView, ToolBarRibbonTabViewModel>();
             //   containerRegistry.RegisterDialog<ConfirmCreateDialogViewModel, ConfirmCreateDialogViewModel>();

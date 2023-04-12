@@ -21,8 +21,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-        private SimpleEditableBldProject _selectedProject;
-        public SimpleEditableBldProject SelectedProject
+        private bldProject _selectedProject;
+        public bldProject SelectedProject
         {
             get { return _selectedProject; }
             set { SetProperty(ref _selectedProject, value); }

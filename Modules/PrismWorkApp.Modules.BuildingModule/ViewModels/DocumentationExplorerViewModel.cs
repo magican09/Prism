@@ -168,7 +168,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnRemoveAggregationDocument(object obj)
         {
             object selected_object = null;
-            if (obj is IList list) selected_object = list[0]; else selected_object = obj;
+            if (obj is IList list) selected_object =((DataItem)list[0]).AttachedObject; else selected_object = ((DataItem)obj).AttachedObject;
             if (selected_object is bldDocument document)
             {
                 int ch_namber = UnDoReDo.GetChangesNamber(document); //Отнимает 1, так как в изменениях 
@@ -198,9 +198,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                 {
                                    UnDoReDo.UnDoAll(document);
                                    UnDoReDo.UnRegister(document);
-                                    Documentation.Remove(document);
+                                   Documentation.Remove(document);
                                     var dialog_par = new DialogParameters();
-                                    dialog_par.Add("message", $"{ch_namber.ToString()} изменения(й) сохранено!");
+                                    dialog_par.Add("message", $"{ch_namber.ToString()} изменения(й) сброшено!");
                                     _dialogService.ShowDialog(nameof(MessageDialog), dialog_par, (result) => { });
                                 }
                               
@@ -211,6 +211,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             }
                         });
 
+                }
+                else
+                {
+                    Documentation.Remove(document);
                 }
                     
                
@@ -223,7 +227,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnCreateNewAggregationDocument(object obj)
         {
             object selected_object = null;
-            if (obj is IList list) selected_object = list[0]; else selected_object = obj;
+            if (obj is IList list) selected_object = ((DataItem)list[0]).AttachedObject; else selected_object = ((DataItem)obj).AttachedObject;
             if (selected_object is bldDocument document)
             {
                 document.AddNewDocument<bldAggregationDocument>();
@@ -237,11 +241,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnLoadAggregationDocumentFromDB(object obj)
         {
             object selected_object = null;
-            if (obj is IList list) selected_object = list[0]; else selected_object = obj;
+            if (obj is IList list) selected_object = (list[0] as DataItem)?.AttachedObject; else selected_object = (obj as DataItem)?.AttachedObject;
             var command = AppObjectsModel.LoadAggregationDocumentFromDBCommand;
             bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(
                 _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
-            //   All_AggregationDocuments.SaveChanges();
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
                       (All_AggregationDocuments, _dialogService, (result) =>
                       {
@@ -383,7 +386,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         {
                             NavigationParameters navParam = new NavigationParameters();
                             navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
-                            navParam.Add("parant_undoredo_system", (new ConveyanceObject(UnDoReDo, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+         //                   navParam.Add("parant_undoredo_system", (new ConveyanceObject(UnDoReDo, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
 
                         }
@@ -394,6 +397,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnContextMenuOpened(object obj)
         {
+
             DataItem clicked_dataItem = ((IList)obj)[1] as DataItem;
             ContextMenu contextMenu = ((IList)obj)[0] as ContextMenu;
             NotifyMenuCommands context_menu_item_commands = null;

@@ -2,15 +2,27 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                     xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
                     xmlns:obj_lib="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib">
+    <ResourceDictionary.MergedDictionaries>
 
-    <!--<telerik:RadContextMenu x:Key="TreeViewItemRadContextMenu">
-            <telerik:RadMenuItem Header="11111"/>
-            <telerik:RadMenuItem Header="11111"/>
-            <telerik:RadMenuItem Header="11111"/>
-     </telerik:RadContextMenu>-->
-    <Style x:Key="MainGridViewColumsStyle" TargetType="{x:Type telerik:GridViewColumn}">
-        <!--<Setter Property="TextBlock.FontSize" Value="10"/>
-        <Setter Property="TextBlock.FontWeight" Value="3"/>-->
-        <!--<Setter Property="ContextMenu"   Value="{StaticResource TreeViewItemRadContextMenu}"/>-->
-    </Style>
+        <ResourceDictionary
+                            Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/MenuItemsTheme.xaml"/>
+
+    </ResourceDictionary.MergedDictionaries>
+
+    <ContextMenu x:Key="GridViewItemContextMenu"  Style="{StaticResource  CuntextMenuStyle}">
+        <telerik:EventToCommandBehavior.EventBindings>
+            <telerik:EventBinding EventName="Opened" 
+                                  Command="{Binding DataContext.ContextMenuOpenedCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}">
+                <telerik:EventBinding.CommandParameter>
+                    <MultiBinding Converter="{StaticResource     ObjectsToListMultiConverter}">
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}"/>
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}" Path="DataContext"/>
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:GridViewCell}"/>
+
+                    </MultiBinding>
+                </telerik:EventBinding.CommandParameter>
+            </telerik:EventBinding>
+        </telerik:EventToCommandBehavior.EventBindings>
+    </ContextMenu>
+    
 </ResourceDictionary>

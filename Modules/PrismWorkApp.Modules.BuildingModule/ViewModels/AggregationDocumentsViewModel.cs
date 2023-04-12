@@ -10,6 +10,7 @@ using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -19,7 +20,9 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Telerik.Windows.Controls;
+using Telerik.Windows.Controls.GridView;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -81,6 +84,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _selectedAggregationDocument, value); }
         }
 
+        public NotifyCommand<object> ContextMenuOpenedCommand { get; private set; }
+
         public NotifyCommand<object> DataGridLostFocusCommand { get; private set; }
         public NotifyCommand<object> DataGridSelectionChangedCommand { get; private set; }
         public NotifyCommand UnDoCommand { get; protected set; }
@@ -88,9 +93,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand SaveCommand { get; protected set; }
         public NotifyCommand<object> CloseCommand { get; protected set; }
 
-        public ObservableCollection<INotifyCommand> CommonCommands { get; set; } = new ObservableCollection<INotifyCommand>();
-        public NotifyCommand CreateNewCommand { get; private set; }
-        public NotifyCommand<object> CreatedBasedOnCommand { get; private set; }
+        public NotifyCommand CreateNewMaterialCertificateCommand { get; private set; }
+        public NotifyCommand<object> CreatedBasedOnMaterialCertificateCommand { get; private set; }
 
         public ObservableCollection<INotifyCommand> UnitsOfMeasurementContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
         public NotifyCommand<object> SelectUnitOfMeasurementCommand { get; private set; }
@@ -108,7 +112,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> CopyedCommand { get; private set; }
 
         public NotifyCommand<object> PastingCellClipboardContentCommand { get; private set; }
-        public NotifyCommand<object> ContextMenuOpeningCommand { get; private set; }
         public NotifyCommand<object> GridViewSelectionChangedCommand { get; private set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
@@ -124,6 +127,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
+            ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
+         
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
             DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
             SaveCommand = new NotifyCommand(OnSave, CanSave)
@@ -137,13 +142,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ReDoCommand.Name = "ReDoCommand";
             #region ContextMenu Commands
 
-            CreateNewCommand = new NotifyCommand(OnCreateNewMaterialCertificate, () => SelectedAggregationDocument != null).ObservesProperty(() => SelectedAggregationDocument);
-            CreateNewCommand.Name = "Создать новый документ";
-            CreatedBasedOnCommand = new NotifyCommand<object>(OnCreatedBasedOn,
-                                    (ob) => { return SelectedDocument != null; }).ObservesProperty(() => SelectedDocument);
-            CreatedBasedOnCommand.Name = "Создать новый на основании..";
-            CommonCommands.Add(CreateNewCommand);
-            CommonCommands.Add(CreatedBasedOnCommand);
+            CreateNewMaterialCertificateCommand = new NotifyCommand(OnCreateNewMaterialCertificate, () => SelectedAggregationDocument != null).ObservesProperty(() => SelectedAggregationDocument);
+            CreateNewMaterialCertificateCommand.Name = "Создать новый документ";
+            CreatedBasedOnMaterialCertificateCommand = new NotifyCommand<object>(OnCreatedBasedOnMaterialCertificate,
+                                    (ob) => { return SelectedDocument is bldMaterialCertificate; }).ObservesProperty(() => SelectedDocument);
+            CreatedBasedOnMaterialCertificateCommand.Name = "Создать новый на основании..";
+          
 
             SelectUnitOfMeasurementCommand = new NotifyCommand<object>(OnSelectUnitOfMeasurement);
             SelectUnitOfMeasurementCommand.Name = "Установить";
@@ -160,8 +164,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CopyingCellClipboardContentCommand = new NotifyCommand<object>(OnCopyingCellClipboardContent);
             PastingCellClipboardContentCommand = new NotifyCommand<object>(OnPastingCellClipboardContent);
             CopyedCommand = new NotifyCommand<object>(OnCopyedCommand);
-            ContextMenuOpeningCommand = new NotifyCommand<object>(OnContextMenuOpening);
-
+           
             CommonContextMenuItems = new ObservableCollection<MenuItem>();
             MenuItem addItem = new MenuItem();
             addItem.Text = "Add";
@@ -179,21 +182,55 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-            ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewCommand);
-            ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
+
+            ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewMaterialCertificateCommand);
+            ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnMaterialCertificateCommand);
             AllUnitsOfMeasurements = new ObservableCollection<bldUnitOfMeasurement>(_buildingUnitsRepository.UnitOfMeasurementRepository.GetAllAsync());
 
         }
-
-        private void OnContextMenuOpening(object obj)
+        #region Mouse methods
+      
+        private void OnContextMenuOpened(object obj)
         {
 
+            ContextMenu contextMenu = ((IList)obj)[0] as ContextMenu;
+            object clicked_document = ((IList)obj)[1];
+            GridViewCell grid_cell = (GridViewCell)((IList)obj)[2];
+            var selected_doc = (bldMaterialCertificate)clicked_document;
+            SelectedDocument = selected_doc;
+            NotifyMenuCommands context_menu_item_commands = null;
+            switch (clicked_document.GetType().Name)
+            {
+                case (nameof(bldMaterialCertificate)):
+                    {
+                        context_menu_item_commands = new NotifyMenuCommands()
+                            {
+                             CreateNewMaterialCertificateCommand,
+                             CreatedBasedOnMaterialCertificateCommand};
+                        break;
+                    }
+                case (nameof(bldDocument)):
+                case (nameof(bldAggregationDocument)):
+
+                    {
+                        context_menu_item_commands = new NotifyMenuCommands()
+                            {
+                             
+                            };
+                        break;
+
+                    }
+            }
+            contextMenu.ItemsSource = context_menu_item_commands;
+
         }
+        #endregion
+
 
         private void OnDataGridSelectionChanged(object obj)
         {
             List<object> grid_state_objects = obj as List<object>;
-            SelectedDocument = grid_state_objects[0] as bldMaterialCertificate;
+          //  SelectedDocument = grid_state_objects[0] as bldMaterialCertificate;
             //   SelectedDocuments = (ObservableCollection<bldMaterialCertificate>) grid_state_objects[1];
             SelectedDocuments.Clear();
             var selected_items = (ObservableCollection<object>)grid_state_objects[1];
@@ -308,7 +345,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             using (var proc = Process.Start(info)) { }
         }
 
-        private void OnCreatedBasedOn(object obj)
+        private void OnCreatedBasedOnMaterialCertificate(object obj)
         {
             bldMaterialCertificate new_certificate = SelectedDocument.Clone() as bldMaterialCertificate;
             new_certificate.IsHaveImageFile = false;
@@ -409,12 +446,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 {
                     if (result.Result == ButtonResult.Yes)
                     {
-                        UnDoReDo.ParentUnDoReDo.Save(AggregationDocuments);
+                        UnDoReDo.Save(AggregationDocuments);
                     //    UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
                     }
                     if (result.Result == ButtonResult.No)
                     {
-                      //  UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
+                        UnDoReDo.UnDoAll(AggregationDocuments);
                     }
                 });
            
@@ -424,25 +461,23 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
-            ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewCommand);
-            ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
+            ApplicationCommands.CreateNewCommand.RegisterCommand(CreatedBasedOnMaterialCertificateCommand);
+            ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnMaterialCertificateCommand);
             UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_agrregation_document"];
-            ConveyanceObject parent_undoredo_navigane_message = (ConveyanceObject)navigationContext.Parameters["parant_undoredo_system"];
             if (navigane_message != null)
             {
                 bldAggregationDocument arg_document = (bldAggregationDocument)navigane_message.Object;
-                UnDoReDoSystem parent_undoredo_sys = (UnDoReDoSystem)parent_undoredo_navigane_message.Object;
-
+ 
                 EditMode = navigane_message.EditMode;
                 if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
                 {
 
                     AggregationDocuments.Add(arg_document);
-                    parent_undoredo_sys.SetUnDoReDoSystemAsChildren(UnDoReDo);
+                    arg_document.UnDoReDoSystem.SetUnDoReDoSystemAsChildren(UnDoReDo);
                     UnDoReDo.Register(arg_document);
                 }
                 if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
@@ -452,14 +487,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_agrregation_document"];
-            bldAggregationDocument arg_document = (bldAggregationDocument)navigane_message.Object;
-            if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
-            {
-                return false;
-            }
-            else
-                return true;
+            //ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_agrregation_document"];
+            //bldAggregationDocument arg_document = (bldAggregationDocument)navigane_message.Object;
+            //if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
+            //{
+            //    return false;
+            //}
+            //else
+            //    return true;
+
+            return true;
         }
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {

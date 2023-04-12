@@ -7,141 +7,25 @@
                      xmlns:prism="http://prismlibrary.com/">
 
     <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
-    <!--<Style x:Key="MenuItemContainerStyle_1" TargetType="MenuItem">
-        <Setter Property="Header" Value="{Binding Name}"/>
-        <Setter Property="ItemsSource" Value="{Binding }"/>
-        <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
-        <Setter Property="Command" Value="{Binding}"/>
-        <Setter Property="CommandParameter" 
-                Value="{Binding Path=DataContext , RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewRow}}}"/>
-    </Style>
-
-    <Style x:Key="MenuItemContainerStyle" TargetType="MenuItem">
-        <Setter Property="Header" Value="{Binding Name}"/>
-        <Setter Property="ItemsSource" Value="{Binding }"/>
-        <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
-        <Setter Property="Command" Value="{Binding}"/>
-        <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"/>
-        <Setter Property="CommandParameter" 
-                Value="{Binding Tag,  RelativeSource={RelativeSource Mode=Self }}"/>
-        <Setter Property="Template" >
-            <Setter.Value>
-                <DataTemplate>
-                    
-                </DataTemplate>
-            </Setter.Value>
-        </Setter>
-      </Style>
-   
-
-
-    <Style x:Key="RadMenuItemContainerStyle" TargetType="telerik:RadMenuItem">
-        <Setter Property="Icon" Value="{Binding IconUrl}"/>
-        <Setter Property="IconTemplate">
-            <Setter.Value>
-                <DataTemplate>
-                    <Image Source="{Binding}" Stretch="None"/>
-                </DataTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="IsSeparator" Value="{Binding IsSeparator}"/>
-        <Setter Property="Header" Value="{Binding Name}"/>
-        <Setter Property="ItemsSource" Value="{Binding SubItems}"/>
-        <Setter Property="Command" Value="{Binding }"/>
-    </Style>-->
-      <!--<Style x:Key="RadMenuItemContainerStyle" TargetType="{x:Type telerik:RadMenuItem}">
-        <Setter Property="Header" Value="{Binding Name}"/>
-        <Setter Property="ItemsSource" Value="{Binding SubItems}"/>
-        <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding RelativeSource={RelativeSource DataContext, Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"
-                         Value="{x:Type obj_lib:bldUnitOfMeasurement}">
-                <Setter  TargetName="GridContextMenu" Property="ItemsSourse" Value="{Binding DataContext.UnitsOfMeasurementContextMenuCommands,
-                    RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}"/>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-    <Style x:Key="CommonMenuItemStyle" TargetType="telerik:RadMenuItem">
-        <Setter Property="Icon" Value="{Binding IconUrl}"/>
-        <Setter Property="IconTemplate">
-            <Setter.Value>
-                <DataTemplate>
-                    <Image Source="{Binding}" Stretch="None"/>
-                </DataTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="IsSeparator" Value="{Binding IsSeparator}"/>
-        <Setter Property="Header" Value="{Binding Text}"/>
-        <Setter Property="ItemsSource" Value="{Binding SubItems}"/>
-        <Setter Property="Command" Value="{Binding Command}"/>
-    </Style>
-    <Style x:Key="RadMenuItemContainerStyle" TargetType="telerik:RadMenuItem">
-        <Setter Property="Header" Value="{Binding Text}"/>
-        <Setter Property="ItemsSource" Value="{Binding SubItems}"/>
-        <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
-    </Style>
-  
-    <Style x:Key="DataGridContextMenuItemStyle" TargetType="{x:Type MenuItem}">
-        <Setter Property="Header" Value="{Binding Name}"/>
-        <Setter Property="Command" Value="{Binding}"/>
-    </Style>
-
-   
-
-
-    <ContextMenu x:Key="cm2" >
-        <MenuItem Header="Context Menu for the FirstName column"/>
-    </ContextMenu>
-    <Style TargetType="{x:Type telerik:GridViewCell}" x:Key="AgeCellStyle" >
-        <Setter Property="ContextMenu" Value="{StaticResource cm1}" />
-    </Style>
-    <Style TargetType="{x:Type telerik:GridViewCell}" x:Key="FirstNameCellStyle" >
-        <Setter Property="ContextMenu" Value="{StaticResource cm2}" />
-    </Style>
-    <Style TargetType="telerik:Bar" x:Key="AgeCellStyle" >
-        <Setter Property="Template" >
-            <Setter.Value>
-                <ControlTemplate TargetType="telerik:Bar">
-                    <Canvas Opacity="0" x:Name="PART_MainContainer">
-                        <telerik:RadContextMenu>
-                            <telerik:RadMenuItem ItemsSource="{Binding UnitsOfMeasurementContextMenuCommands}"/>
-                        </telerik:RadContextMenu>
-
-                    </Canvas>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>-->
-   
-    <!--<loc_core:Triggers x:Key="ContextMenuTriggers" x:Shared="False">
-        <i:EventTrigger   EventName="Opened">
-            <prism:InvokeCommandAction Command="{Binding DataContext.ContextMenuOpeningCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
-                  <prism:InvokeCommandAction.CommandParameter>
-                <MultiBinding Converter="{StaticResource     ObjectsToListMultiConverter}">
-                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewRow}}" Path="DataContext"/>
-                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
-                    <Binding  RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="DataContext"/>
-                </MultiBinding>
-                </prism:InvokeCommandAction.CommandParameter>
-            </prism:InvokeCommandAction>
-        </i:EventTrigger>
-    </loc_core:Triggers>-->
     
-    <!--Style x:Key="MenuItemContainerStyle" TargetType="telerik:RadMenuItem">
-        <Setter Property="Header" Value="{Binding Text}"/>
+    <Style x:Key="MenuItemContainerStyle" TargetType="MenuItem">
+        <Setter Property="Header" Value="{Binding Name,Mode=TwoWay}"/>
         <Setter Property="ItemsSource" Value="{Binding Items}"/>
         <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
-        <Setter Property="Command" Value="{Binding Command}"/>
+        <Setter Property="Command" Value="{Binding }"/>
         <Setter Property="CommandParameter">
             <Setter.Value>
-                --><!--<MultiBinding Converter="{StaticResource ObjectsToListMultiConverter}">--><!--
-                <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadContextMenu}"/>
-
-                --><!--</MultiBinding>--><!--
+                <MultiBinding Converter="{StaticResource ObjectsToListMultiConverter}">
+                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}" Path="DataContext"/>
+                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}"/>
+                </MultiBinding>
             </Setter.Value>
         </Setter>
         <Setter Property="CommandTarget" Value="{Binding RelativeSource={RelativeSource Mode=Self}}"/>
-    </Style>-->
+    </Style>
 
-
+    <Style x:Key="CuntextMenuStyle" TargetType="{x:Type ContextMenu}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource MenuItemContainerStyle}"/>
+    </Style>
+   
 </ResourceDictionary>

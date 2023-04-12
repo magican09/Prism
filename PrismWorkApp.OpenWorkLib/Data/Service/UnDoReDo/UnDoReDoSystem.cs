@@ -364,6 +364,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 if (ParentUnDoReDo.IsRegistered(obj)) //Если  объект зарегистрирован в родительской системе.. 
                 {
                     var all_chages_in_obj =  new List<IJornalable>(obj.GetAllChangedObjects()); //Получаем внутренние объкеты объкта, в которых были несохраненые изменения
+                   ////Выполнятеся когда пытаются зарегистрировать объект имеющий изменения в дочерней системе... 
                     if (all_chages_in_obj.Count > 0 && this.SystemHaveNotSavedObjects != null) //Если в обработчик наличия в регистриуемом объекте несохранненых подобъектов влючен - вызывем его...
                         this.SystemHaveNotSavedObjects?.Invoke(this, new UnDoReDoSystemEventArgs(all_chages_in_obj));
                     else if (all_chages_in_obj.Count > 0) //Если обработчика нет  - то автоматически сохраняем все изменнеия в объекте.
@@ -396,10 +397,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
                 {
                     this.Register(jornable_prop);
-                    if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
-                        foreach (object element in list_jornable_prop)
-                            if (element is IJornalable jornable_element)
-                                this.Register(jornable_element);
+                    //if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
+                    //    foreach (object element in list_jornable_prop)
+                    //        if (element is IJornalable jornable_element)
+                    //            this.Register(jornable_element);
                }
             }
             OnPropertyChanged("Register");
@@ -432,10 +433,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
                 {
                     this.UnRegister(jornable_prop);
-                    if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
-                        foreach (object element in list_jornable_prop)
-                            if (element is IJornalable jornable_element)
-                                this.UnRegister(jornable_element);
+                    //if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
+                    //    foreach (object element in list_jornable_prop)
+                    //        if (element is IJornalable jornable_element)
+                    //            this.UnRegister(jornable_element);
 
                 }
             }
@@ -599,7 +600,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 foreach (IJornalable element in list_obj)
                     this.Save(element);
             var props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
-
+           
             foreach (PropertyInfo propertyInfo in props_infoes)
             {
                 var prop_val = propertyInfo.GetValue(obj);
@@ -607,10 +608,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
                 {
                     this.Save(jornable_prop);
-                    if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
-                        foreach (object element in list_jornable_prop)
-                            if (element is IJornalable jornable_element)
-                                this.Save(jornable_element);
+                    //if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
+                    //    foreach (object element in list_jornable_prop)
+                    //        if (element is IJornalable jornable_element)
+                    //            this.Save(jornable_element);
                 }
             }
          
@@ -692,7 +693,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             }
         }
 
-        private int i_changes_namber = 0;
+       
         /// <summary>
         /// Метод возращает количство объектов внутри объекта, у которых были зарегистрированные в системе изменения 
         /// </summary>
@@ -701,6 +702,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// <returns></returns>
         public int GetChangesNamber(IJornalable obj, bool first_itr = true)
         {
+            int i_changes_namber = 0;
             if (first_itr) i_changes_namber = 0;
 
             var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(obj)).Any());
@@ -718,10 +720,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
                 {
                     i_changes_namber += this.GetChangesNamber(jornable_prop, false);
-                    if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
-                        foreach (object element in list_jornable_prop)
-                            if (element is IJornalable jornable_element)
-                                i_changes_namber += this.GetChangesNamber(jornable_element, false);
+                    //if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
+                    //    foreach (object element in list_jornable_prop)
+                    //        if (element is IJornalable jornable_element)
+                    //            i_changes_namber += this.GetChangesNamber(jornable_element, false);
                 }
             }
 

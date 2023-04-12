@@ -17,17 +17,14 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary    Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/MenuItemsTheme.xaml"/>
                 <ResourceDictionary    Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/GridViewsTheme.xaml"/>
-               
-                <!--<ResourceDictionary    Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/Core/Converters.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 
     </UserControl.Resources>
     <Grid>
         <Grid.Resources>
-            <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
+            <!--<loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
             <Style x:Key="ContextMenuBaseStyle" TargetType="{x:Type ContextMenu}">
                 <Setter Property="loc_core:SupplementaryInteraction.Triggers" Value="{StaticResource ContextMenuTriggers}"/>
             </Style>
@@ -35,10 +32,10 @@
                                             ItemContainerStyle="{StaticResource MenuItemContainerStyle}"
                                             ItemsSource="{Binding DataContext.CommonCommands,
                 RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}"  >
-            </ContextMenu>
+            </ContextMenu>-->
 
             <Style x:Key="CommonCellStyle" TargetType="{x:Type telerik:GridViewCell}" >
-                <!--<Setter Property="ContextMenu" Value="{StaticResource Common_ContextMenu}"/>-->
+                <Setter Property="ContextMenu" Value="{StaticResource   GridViewItemContextMenu}"/>
             </Style>
 
         </Grid.Resources>
@@ -61,12 +58,12 @@
 
             <telerik:RadGridView  x:Name="mainGridView" telerik:StyleManager.Theme="VisualStudio2019"
                                   ItemsSource="{Binding AggregationDocuments}"
-                                  SelectedItem="{Binding SelectedAggregationDocument}"
+                                  SelectedItem="{Binding SelectedAggregationDocument,Mode=TwoWay}"
                                   
                      AutoGenerateColumns="False" VerticalAlignment="Stretch" >
           
                 <telerik:RadGridView.Columns>
-                    <telerik:GridViewDataColumn DataMemberBinding="{Binding Name}" Header="Наименование каталога" Width="30*" Style="{StaticResource MainGridViewColumsStyle}"   />
+                    <telerik:GridViewDataColumn DataMemberBinding="{Binding Name}" Header="Наименование каталога" Width="30*"  />
                     <telerik:GridViewDataColumn DataMemberBinding="{Binding AttachedDocuments.Count,Mode=OneWay}" Width="70*"
                                                 IsReadOnly="True" Header="Количество документов в каталоге" />
                 </telerik:RadGridView.Columns>
@@ -78,25 +75,14 @@
                       
                         <telerik:RadGridView x:Name="childGridView" telerik:StyleManager.Theme="VisualStudio2019" 
                                              ItemsSource="{Binding AttachedDocuments}" 
-                                             SelectedItem="{Binding DataContext.SelectedDocument, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"  
+                                             SelectedItem="{Binding DataContext.SelectedDocument, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl},Mode=TwoWay}"  
                                              AutoGenerateColumns="False"
                                              RowIndicatorVisibility="Visible" 
                                              SelectionMode="Single"
                                              CanUserSelect="True"
                                              CanUserDeleteRows="False"
-                                             ShowGroupPanel="False" >
-                       
-                            <telerik:RadContextMenu.ContextMenu>
-                                <telerik:RadContextMenu     ItemsSource="{Binding DataContext.CommonContextMenuItems,
-                RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}">
-                                    <telerik:RadContextMenu.ItemContainerStyle>
-                                        <Style TargetType="{x:Type telerik:RadMenuItem}">
-                                            <Setter Property="Header" Value="{Binding Name}"/>
-                                        </Style>
-                                    </telerik:RadContextMenu.ItemContainerStyle>
-
-                                </telerik:RadContextMenu>
-                            </telerik:RadContextMenu.ContextMenu>
+                                             ShowGroupPanel="False"
+                                            >
                             
                             <telerik:EventToCommandBehavior.EventBindings>
                                 <telerik:EventBinding  Command="{Binding DataContext.DataGridSelectionChangedCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
@@ -112,10 +98,11 @@
                                 </telerik:EventBinding>
                                 <telerik:EventBinding Command="{Binding DataContext.DataGridLostFocusCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
                                          EventName="LostFocus"/>
+                                
                             </telerik:EventToCommandBehavior.EventBindings>
 
                             <telerik:RadGridView.Columns>
-                                <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code}" Width="25" CellStyle="{StaticResource CommonCellStyle}"/>
+                                <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code}" Width="45" CellStyle="{StaticResource CommonCellStyle}"/>
                                 <telerik:GridViewDataColumn Header="Наминование материала" DataMemberBinding = "{Binding MaterialName}" Width="350" CellStyle="{StaticResource CommonCellStyle}"/>
                                 <telerik:GridViewDataColumn Header="Геом. парам." DataMemberBinding = "{Binding GeometryParameters}" Width="50" CellStyle="{StaticResource CommonCellStyle}"/>
                                 <telerik:GridViewDataColumn Header="Кол-во." DataMemberBinding = "{Binding Quantity}" Width="50" CellStyle="{StaticResource CommonCellStyle}"/>

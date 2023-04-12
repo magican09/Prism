@@ -34,6 +34,11 @@ namespace PrismWorkApp.Core
                 return FindParent<T>(parentObject);
         }
 
+        public static void ConfirmChangesDialog(object dialogService, string v, Action<IDialogResult> p)
+        {
+            throw new NotImplementedException();
+        }
+
         public static T GetLogicalParent<T>(DependencyObject p_oElement)
     where T : DependencyObject
         {

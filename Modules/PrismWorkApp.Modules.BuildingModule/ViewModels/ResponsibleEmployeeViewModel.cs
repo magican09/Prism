@@ -153,7 +153,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 ResivedResposibleEmployee = (bldResponsibleEmployee)navigate_message.Object;
                 EditMode = navigate_message.EditMode;
                 if (SelectedResposibleEmployee != null) SelectedResposibleEmployee.ErrorsChanged -= RaiseCanExecuteChanged;
-                SelectedResposibleEmployee = new SimpleEditableResposibleEmployee();
+                SelectedResposibleEmployee = new bldResponsibleEmployee();
                 SelectedResposibleEmployee.ErrorsChanged += RaiseCanExecuteChanged;
                 AllParticipants = new ObservableCollection<bldParticipant>(
                       _buildingUnitsRepository.Pacticipants.GetAllParticipants());

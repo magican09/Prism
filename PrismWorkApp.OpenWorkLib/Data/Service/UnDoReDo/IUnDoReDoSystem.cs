@@ -147,6 +147,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public IEnumerable<IUnDoRedoCommand> GetAllCommandsByObject(IJornalable obj, bool firs_itaration = true);
         public int Level { get; set; }
         public void UnDoAll(IJornalable obj);
+      //  public int SystemHaveNotSavedObjectsMethodsNamber { get; set; }
         public event UnDoReDoSystemEventHandler SystemHaveNotSavedObjects;
         public bool HasAnyChangedObjectInAllSystems();
     }

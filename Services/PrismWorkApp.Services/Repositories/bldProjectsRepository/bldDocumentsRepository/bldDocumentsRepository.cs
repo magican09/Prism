@@ -30,6 +30,12 @@ namespace PrismWorkApp.Services.Repositories
                         AggregationDocuments.Add(document as bldAggregationDocument);
                         break;
                     }
+                case (nameof(bldMaterialCertificate)):
+                    {
+                        MaterialCertificates.Add(document as bldMaterialCertificate);
+                        break;
+                    }
+
             }
         }
         public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }

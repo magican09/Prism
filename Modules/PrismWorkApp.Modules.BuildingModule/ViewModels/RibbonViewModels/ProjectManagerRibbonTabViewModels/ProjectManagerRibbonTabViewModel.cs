@@ -37,6 +37,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand UnDoCommand { get; private set; }
         public NotifyCommand LoadMaterialsFromAccessCommand { get; private set; }
 
+        public NotifyCommand LoadUnitsOfMeasurementsFromDBCommand { get; private set; }
+        public NotifyCommand SaveUnitsOfMeasurementsFromDBCommand { get; private set; }
+
         private const int CURRENT_MODULE_ID = 2;
         public IBuildingUnitsRepository _buildingUnitsRepository;
 
@@ -66,7 +69,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
 
         private IApplicationCommands _applicationCommands;
-
+        private AppObjectsModel _appObjectsModel;
 
         //public ProjectManagerRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
         //                                    IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
@@ -81,14 +84,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
         }
         public ProjectManagerRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
-                                            IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands)
+                                            IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _applicationCommands = applicationCommands;
-
+            _appObjectsModel = appObjectsModel as AppObjectsModel;
             LoadProjectFromExcelCommand = new NotifyCommand(LoadProjectFromExcel, CanLoadAllProjects);
             LoadProjectFromARPCommand = new NotifyCommand(LoadProjectFromARP, CanLoadAllProjects);
             LoadProjectFromXMLCommand = new NotifyCommand(LoadProjectFromXML, CanLoadProjectFromXML);
@@ -97,9 +100,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 .ObservesProperty(() => AllChangesIsDone);
             AllChangesIsDone = true;
 
-
+            LoadUnitsOfMeasurementsFromDBCommand = new NotifyCommand(LoadUnitsOfMeasurementsFromDB);
+          //  _applicationCommands.LoadUnitsOfMeasurementsCommand.RegisterCommand(LoadUnitsOfMeasurementsFromDBCommand);
             // ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
-            IsActiveChanged += OnActiveChanged;
+          //  IsActiveChanged += OnActiveChanged;
         }
 
         private void OnActiveChanged(object sender, EventArgs e)
@@ -145,6 +149,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(ProjectExplorerView).Name, navParam);
             //  _buildingUnitsRepository.Complete();
 
+        }
+        private void LoadUnitsOfMeasurementsFromDB()
+        {
+
+            if (!_appObjectsModel.AllModels.Where(el => el.Name == "Ед.изм.").Any())
+                _appObjectsModel.AllModels.Add(new NameableObservableCollection<bldUnitOfMeasurement>("Ед.изм."));
+            var units_of_measurement = (NameableObservableCollection<bldUnitOfMeasurement>)_appObjectsModel.AllModels.Where(el => el.Name == "Ед.изм.").FirstOrDefault();
+            var units_of_measurement_from_db = _buildingUnitsRepository.UnitOfMeasurementRepository.GetAllAsync();
+            foreach (bldUnitOfMeasurement unitOfMeasurement in units_of_measurement_from_db)
+                if (!units_of_measurement.Where(um => um.Id == unitOfMeasurement.Id).Any())
+                    units_of_measurement.Add(unitOfMeasurement);
+
+            units_of_measurement.UnDoReDoSystem.Save(units_of_measurement);
         }
 
 

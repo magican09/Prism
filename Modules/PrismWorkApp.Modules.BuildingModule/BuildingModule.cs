@@ -66,9 +66,11 @@ namespace PrismWorkApp.Modules.BuildingModule
             var projectManagerRibbonTab = new ProjectManagerRibbonTabView();
             var dataImportRibbonGroup = new DataImportRibbonGroupView();
             var currentProjectRibbonGroup = new CurentProjectRibbonGroupView();
-            projectManagerRibbonTab.DataContext = new ProjectManagerRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands);
+            var unitUfMeasurementsGroup = new UnitOfMeasurementGroupView();
+            projectManagerRibbonTab.DataContext = new ProjectManagerRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands, _appObjectsModel);
             projectManagerRibbonTab.Items.Add(dataImportRibbonGroup);//
             projectManagerRibbonTab.Items.Add(currentProjectRibbonGroup);//Созадем группу панели инструметов с конвекторами
+            projectManagerRibbonTab.Items.Add(unitUfMeasurementsGroup);
             _regionManager.Regions[RegionNames.RibbonRegion].Add(projectManagerRibbonTab);
 
             var toolBarRibbonTab = new ToolBarRibbonTabView();
@@ -84,6 +86,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             // documentsRibbonTab.Items.Add(materialsRibbonGroup);
             var documentsRibbonGroup = new DocumentsRibbonGroupView();
             documentsRibbonTab.Items.Add(documentsRibbonGroup);
+           
+
             var materialCertificatesRibbonGroup = new MaterialCertificatesRibbonGroup();
             documentsRibbonTab.Items.Add(materialCertificatesRibbonGroup);
             _regionManager.Regions[RegionNames.RibbonRegion].Add(documentsRibbonTab);
@@ -186,6 +190,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterForNavigation<DocumentsGroupView>();
             containerRegistry.RegisterForNavigation<MaterialCertificatesGroupView>();
             containerRegistry.RegisterForNavigation<AggregationDocumentsView>();
+            containerRegistry.RegisterForNavigation<UnitsOfMeasurementsView>();
 
             containerRegistry.RegisterDialog<UserParametersDialogView, UserParametersDialogViewModel>();
 

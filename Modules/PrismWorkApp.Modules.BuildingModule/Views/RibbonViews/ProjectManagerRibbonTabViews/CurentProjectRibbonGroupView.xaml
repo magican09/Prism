@@ -38,11 +38,11 @@
                 Command="{Binding SaveDataToDBCommand}"/>
         <RibbonButton Label ="Сохранить"  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/save_to_db.jpg" 
                 Command="{Binding ApplicationCommands.SaveAllCommand}"/>
-        <cc:BldTaskDataGrid ItemsSource="{StaticResource  Constructions}" >
+        <!--<cc:BldTaskDataGrid ItemsSource="{StaticResource  Constructions}" >
             <cc:BldTaskDataGrid.Columns>
                 <cc:BldTaskDataGridTextColumn  Header="Код"  Binding="{Binding Name}"  />
             </cc:BldTaskDataGrid.Columns>
-        </cc:BldTaskDataGrid>
+        </cc:BldTaskDataGrid>-->
         
     </StackPanel>
 </RibbonGroup>

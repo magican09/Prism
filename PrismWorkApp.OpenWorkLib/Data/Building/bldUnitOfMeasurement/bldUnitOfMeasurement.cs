@@ -1,13 +1,10 @@
-﻿namespace PrismWorkApp.OpenWorkLib.Data
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class bldUnitOfMeasurement : BindableBase, IbldUnitOfMeasurement, IEntityObject
     {
-        //private string _name = "ед.изм.";
-        //public string Name
-        //{
-        //    get { return _name; }
-        //    set { SetProperty(ref _name, value); }
-        //}
+
         private string _shortName;
         public string ShortName
         {
@@ -29,5 +26,23 @@
         {
 
         }
+        private double _conversionCoefficient;
+        
+        [NotMapped]
+        public double ConversionCoefficient
+        {
+            get { return _conversionCoefficient; }
+            set { _conversionCoefficient = value; }
+        }
+
+
+
+    }
+
+    public enum MeasureType
+    {
+        MASS,
+        TIME,
+        LENGHT
     }
 }

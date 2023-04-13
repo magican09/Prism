@@ -43,12 +43,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _items, value); }
         }
 
-        private string _title = "Документация";
+        private string _title = "Менеджер проектов";
         public string Title
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
+        private NameableObservableCollection<IEntityObject> _allModels = new NameableObservableCollection<IEntityObject>();
+
+        public NameableObservableCollection<IEntityObject> AllModels
+        {
+            get { return _allModels; }
+            set { _allModels = value; }
+        }
+
         private bldDocumentsGroup _documentation;
         public bldDocumentsGroup Documentation
         {
@@ -101,9 +109,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands = applicationCommands;
             _buildingUnitsRepository = buildingUnitsRepository;
             UnDoReDo = unDoReDoSystem;
-           // UnDoReDo.SystemHaveNotSavedObjects += OnUnDoReDoSystemEvents;
-            Documentation = AppObjectsModel.Documentation.AttachedDocuments;
-           
+            // UnDoReDo.SystemHaveNotSavedObjects += OnUnDoReDoSystemEvents;
+            AllModels = AppObjectsModel.AllModels;
+            Documentation = AppObjectsModel.Documentation;
             UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
                                    () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
@@ -129,15 +137,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveAggregationDocumentCommand = new NotifyCommand<object>(OnRemoveAggregationDocument);
             RemoveAggregationDocumentCommand.Name = "Удалить ведомость документов";
 
-
+            AllModels.Add(Documentation);
             Items = new DataItemCollection(null);
             DataItem root = new DataItem();
             root.DataItemInit += OnDataItemInit;
             Items.Add(root);
-            root.AttachedObject = Documentation;
+            root.AttachedObject = AllModels;
 
-             UnDoReDo.Register(Documentation, true);
+              UnDoReDo.SaveAll();
             _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveDocumentationToDBCommand);
+            _applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadAggregationDocumentFromDBCommand);
             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
             _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
             _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
@@ -169,6 +178,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             object selected_object = null;
             if (obj is IList list) selected_object =((DataItem)list[0]).AttachedObject; else selected_object = ((DataItem)obj).AttachedObject;
+           
             if (selected_object is bldDocument document)
             {
                 int ch_namber = UnDoReDo.GetChangesNamber(document); //Отнимает 1, так как в изменениях 
@@ -242,7 +252,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             object selected_object = null;
             if (obj is IList list) selected_object = (list[0] as DataItem)?.AttachedObject; else selected_object = (obj as DataItem)?.AttachedObject;
-            var command = AppObjectsModel.LoadAggregationDocumentFromDBCommand;
+            if (selected_object == null) 
+                selected_object = Documentation;
             bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(
                 _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
@@ -316,9 +327,22 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         /// <param name="e"></param>
         public void OnDataItemInit(DataItem dataItem, object sender, PropertyChangedEventArgs e)
         {
-           // UnDoReDo.Register(dataItem.AttachedObject as IJornalable);
+            // UnDoReDo.Register(dataItem.AttachedObject as IJornalable);
+
+            string type_name = dataItem.AttachedObject.GetType().Name;
             switch (dataItem.AttachedObject.GetType().Name)
             {
+                case (nameof(bldUnitOfMeasurement)):
+                    {
+                        bldUnitOfMeasurement unit_of_measurement = ((bldUnitOfMeasurement)dataItem.AttachedObject);
+                        Binding binding = new Binding("Name");
+                        binding.Source = unit_of_measurement;
+                        binding.Path = new PropertyPath("Name");
+                        binding.Mode = BindingMode.OneWay;
+                        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
+                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                        break;
+                    }
                 case (nameof(bldMaterialCertificate)):
                     {
                         bldMaterialCertificate document = ((bldMaterialCertificate)dataItem.AttachedObject);
@@ -360,7 +384,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         binding.Mode = BindingMode.TwoWay;
                         // binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
                         BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
-                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(new NameableObservableCollection<IEntityObject>(), null, null, CultureInfo.CurrentCulture);
                         foreach (bldDocument doc in documents)
                         {
                             DataItem atch_doc_item = new DataItem();
@@ -368,6 +392,25 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             atch_doc_item.AttachedObject = doc;
 
                         }
+                        break;
+                    }
+ 
+                case ("NameableObservableCollection`1"): //Если тип объекта NameableObservableCollection<IEntityObject>
+                    {
+                        IList entity_collection = (IList)dataItem.AttachedObject;
+                        Binding binding = new Binding("Name");
+                        binding.Source = entity_collection;
+                        binding.Path = new PropertyPath("Name");
+                        binding.Mode = BindingMode.TwoWay;
+                        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
+
+                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                        foreach(IEntityObject entity in entity_collection)
+                        {
+                            DataItem ent_item = new DataItem();
+                            dataItem.Items.Add(ent_item);
+                            ent_item.AttachedObject = entity;
+                        }    
                         break;
                     }
                  
@@ -379,6 +422,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             switch (d_clicked_object?.GetType().Name)
             {
+               
+
                 case (nameof(bldAggregationDocument)):
                     {
                         bldAggregationDocument aggregationDocument = d_clicked_object as bldAggregationDocument;

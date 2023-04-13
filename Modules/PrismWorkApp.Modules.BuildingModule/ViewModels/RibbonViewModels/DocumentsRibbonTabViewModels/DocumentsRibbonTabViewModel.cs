@@ -17,11 +17,14 @@ using System.Linq;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class DocumentsRibbonTabViewModel : LocalBindableBase, IActiveAware
+    public class DocumentsRibbonTabViewModel : BaseViewModel<IEntityObject>, IActiveAware
     {
 
         public NotifyCommand LoadMaterialCertificatesFromAccessCommand { get; private set; }
         public NotifyCommand LoadMaterialCertificatesFromDBCommand { get; private set; }
+        
+        
+
         public NotifyCommand SaveDataToDBCommand { get; private set; }
         private string _title = "Материалы";
         public string Title
@@ -52,13 +55,17 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _applicationCommands = applicationCommands;
             _appObjectsModel = appObjectsModel as AppObjectsModel;
             _eventAggregator = eventAggregator;
-            IsActiveChanged += OnActiveChanged;
+              IsActiveChanged += OnActiveChanged;
             LoadMaterialCertificatesFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
             LoadMaterialCertificatesFromDBCommand = new NotifyCommand(OnLoadMaterialCertificatesFromDB);
-            SaveDataToDBCommand = new NotifyCommand(OnSaveDataToDB);
-            //    ApplicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadMaterialCertificatesFromDBCommand);
+          
 
+           SaveDataToDBCommand = new NotifyCommand(OnSaveDataToDB);
+            //    ApplicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadMaterialCertificatesFromDBCommand);
+          
         }
+
+     
 
         private void OnLoadMaterialCertificatesFromDB()
         {

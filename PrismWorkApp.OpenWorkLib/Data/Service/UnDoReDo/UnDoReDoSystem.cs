@@ -351,7 +351,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// </summary>
         /// <param name="obj"> Регистрируемый объект IJornalable</param>
         /// <param name="enable_outo_registration"> Влючает функую авторегистрации в объекте..</param>
-        public void Register(IJornalable obj, bool enable_outo_registration = false)
+        public void Register(IJornalable obj, bool enable_outo_registration = true)
         {
             if (obj == null) { throw new Exception("Попытка регистрации в системе UnDoReDo объекта со значением null"); }
             if (this.IsRegistered(obj))//Если объект зарегисприван в данной или в дочерней системе - выходим
@@ -382,7 +382,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             }
             if (obj is IList list_obj) //Если регистрируемый элемент сам  является коллекцией
                 foreach (IJornalable element in list_obj)
-                    this.Register(element);
+                    this.Register(element, enable_outo_registration);
             obj.PropertyBeforeChanged += OnModelPropertyBeforeChanged;//Событие возникающее в региструемом объекте перед изменением свойства
             obj.UnDoReDoCommandCreated += OnObservedCommandCreated;//Событие возникающее в региструемом коллекции  при применение любой команды IUnDoReDoCommand
             obj.IsAutoRegistrateInUnDoReDo = enable_outo_registration;
@@ -395,13 +395,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 var prop_val = propertyInfo.GetValue(obj);
                 var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
                 if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
-                {
-                    this.Register(jornable_prop);
-                    //if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
-                    //    foreach (object element in list_jornable_prop)
-                    //        if (element is IJornalable jornable_element)
-                    //            this.Register(jornable_element);
-               }
+                    this.Register(jornable_prop, enable_outo_registration);
             }
             OnPropertyChanged("Register");
        

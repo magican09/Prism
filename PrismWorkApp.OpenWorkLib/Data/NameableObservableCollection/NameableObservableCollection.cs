@@ -34,13 +34,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             if (member is IEntityObject entity_member)///Если какой либос свойство будет IEntityObject(IJornables)
             {
                 if (entity_member is INameableObservableCollection nameble_collection_mamber)
-                {
                     nameble_collection_mamber.Owner = this;
-                }
-                if (!entity_member.Parents.Contains(this)) entity_member.Parents.Add(this);
+                if (!entity_member.Parents.Contains(this))entity_member.Parents.Add(this);
+            
                 if (!this.Children.Contains(entity_member)) this.Children.Add(entity_member);
                 if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(entity_member))
-                    UnDoReDoSystem.Register(entity_member,true);
+                    UnDoReDoSystem.Register(entity_member, true);
             }
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
@@ -62,7 +61,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _id; }
             set { SetProperty(ref _id, value); }
         }
-         [CreateNewWhenCopy]
+        [CreateNewWhenCopy]
         public Guid StoredId
         {
             get { return _storedId; }
@@ -173,7 +172,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _unDoReDoSystem; }
             set { _unDoReDoSystem = value; }
         }
-         [NotJornaling]
+        [NotJornaling]
         [CreateNewWhenCopy]
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal
         {
@@ -191,7 +190,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void JornalingOn()
         {
-            if (b_jornal_recording_flag == false && UnDoReDoSystem!=null)
+            if (b_jornal_recording_flag == false && UnDoReDoSystem != null)
                 b_jornal_recording_flag = true;
         }
         #endregion
@@ -205,12 +204,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 var member_info = this.GetType().GetMember(prop_info.Name);
                 var create_new_atrb = prop_info.GetCustomAttribute<CreateNewWhenCopyAttribute>();
                 var navigate_atrb = prop_info.GetCustomAttribute<NavigatePropertyAttribute>();
-                
+
                 if (!prop_info.PropertyType.FullName.Contains("System") && prop_info.SetMethod != null)
                 {
                     if (prop_val != null)
                     {
-                        if (create_new_atrb == null && navigate_atrb  == null) //Если объяет свойство не навигационный и без запрета накопирование  
+                        if (create_new_atrb == null && navigate_atrb == null) //Если объяет свойство не навигационный и без запрета накопирование  
                         {
                             if (prop_val is ICloneable clonable_prop_val)
                                 prop_info.SetValue(new_collection, clonable_prop_val.Clone());
@@ -218,7 +217,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                                 prop_info.SetValue(new_collection, prop_val);
 
                         }
-                        if (create_new_atrb != null   && navigate_atrb!=null) //Если стоит атрибут "создать новый при копировании"
+                        if (create_new_atrb != null && navigate_atrb != null) //Если стоит атрибут "создать новый при копировании"
                         {
                             prop_val = null;
                             prop_val = Activator.CreateInstance(prop_info.PropertyType);
@@ -250,18 +249,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [CreateNewWhenCopy]
         public IEntityObject Owner
         {
-            get {
+            get
+            {
                 if (_owner == null)//Если владельца списка нет - он сам свой владелец
                     return this;
                 return _owner;
             }
-            set {
-               
-                    if(this.Parents.Contains(Owner)) this.Parents.Remove(Owner);
-                    _owner = value;
-                    if (!this.Parents.Contains(_owner)) this.Parents.Add(_owner);
-               
-                }
+            set
+            {
+                if (this.Parents.Contains(Owner)) this.Parents.Remove(Owner);
+                _owner = value;
+                if (!this.Parents.Contains(_owner)) this.Parents.Add(_owner);
+            }
         }
         #region  IHierarchical
         private ObservableCollection<IEntityObject> _children = new ObservableCollection<IEntityObject>();
@@ -271,10 +270,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public ObservableCollection<IEntityObject> Parents
         {
             get { return _parents; }
-            set
-            {
-                SetProperty(ref _parents, value);
-            }
         }
         [NotMapped]
         [NavigateProperty]
@@ -288,12 +283,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 //    _children.Add(item);
                 return _children;
             }
-            set { }
+
         }
         #endregion
 
         protected override void SetItem(int index, TEntity item)
         {
+            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
+                UnDoReDoSystem.Register(item, true);
+            if (!item.Parents.Contains(this)) item.Parents.Add(this);
+            if (!this.Children.Contains(item)) this.Children.Add(item);
+
             if (b_jornal_recording_flag)
             {
                 AddItemCommand<TEntity> Command = new AddItemCommand<TEntity>(item, this);
@@ -301,15 +301,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
-                if (!item.Parents.Contains(this)) item.Parents.Add(this);
-                if (!this.Children.Contains(item)) this.Children.Add(item);
-                base.SetItem(index, item);
+                   base.SetItem(index, item);
             }
-            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
-                UnDoReDoSystem.Register(item,true);
+
         }
         protected override void InsertItem(int index, TEntity item)
         {
+            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
+                UnDoReDoSystem.Register(item, true);
+            if (!item.Parents.Contains(this)) item.Parents.Add(this);
+            if (!this.Children.Contains(item)) this.Children.Add(item);
 
             if (b_jornal_recording_flag)
             {
@@ -318,12 +319,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
-                if (!item.Parents.Contains(this)) item.Parents.Add(this);
-                if (!this.Children.Contains(item)) this.Children.Add(item);
-                base.InsertItem(index, item);
+                  base.InsertItem(index, item);
             }
-            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
-                UnDoReDoSystem.Register(item,true);
+
         }
 
         protected override void RemoveItem(int index)
@@ -335,11 +333,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
-                TEntity item =Items[index];
+                TEntity item = Items[index];
                 if (item.Parents.Contains(this)) item.Parents.Remove(this);
                 if (this.Children.Contains(item)) this.Children.Remove(item); ;
                 base.RemoveItem(index);
-              //  if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
+                //  if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
                 //    UnDoReDoSystem.UnRegister(item);
             }
         }

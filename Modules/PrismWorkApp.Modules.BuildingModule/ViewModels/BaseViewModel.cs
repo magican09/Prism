@@ -12,6 +12,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
     public class BaseViewModel<TEntity> : LocalBindableBase, INotifyPropertyChanged where TEntity : class
     {
+        private string _title = "______";
+        public string Title
+        {
+            get { return _title; }
+            set { SetProperty(ref _title, value); }
+        }
         protected IDialogService _dialogService;
         protected IRegionManager _regionManager;
         public event Action<IDialogResult> RequestClose;
@@ -22,12 +28,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _keepAlive; }
             set { _keepAlive = value; }
         }
-        //protected IUnDoReDoSystem _commonUnDoReDo;
-        //public IUnDoReDoSystem CommonUnDoReDo
-        //{
-        //    get { return _commonUnDoReDo; }
-        //    set { SetProperty(ref _commonUnDoReDo, value); }
-        //}
 
         private IApplicationCommands _applicationCommands;
         public IApplicationCommands ApplicationCommands
@@ -43,7 +43,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _unDoReDo, value); }
         }
 
-        public string Title => throw new NotImplementedException();
+       
 
         public BaseViewModel()
         {

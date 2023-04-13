@@ -24,7 +24,9 @@
         NotifyCompositeCommand LoadAggregationDocumentsFromDBCommand { get; }
         NotifyCompositeCommand OpenAppSettingsDialogCommand { get; }
 
-
+        NotifyCompositeCommand LoadUnitsOfMeasurementsCommand { get; }
+        NotifyCompositeCommand SaveUnitsOfMeasurementsCommand { get; }
+        
     }
     public class ApplicationCommands : IApplicationCommands
     {
@@ -132,8 +134,17 @@
         {
             get { return _addCommand; }
         }
-
-
+        private NotifyCompositeCommand _loadUnitsOfMeasurementsCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand LoadUnitsOfMeasurementsCommand
+        {
+            get { return _loadUnitsOfMeasurementsCommand; }
+        }
+        private NotifyCompositeCommand _saveUnitsOfMeasurementsCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand SaveUnitsOfMeasurementsCommand
+        {
+            get { return _saveUnitsOfMeasurementsCommand; }
+        }
+        
     }
 
 

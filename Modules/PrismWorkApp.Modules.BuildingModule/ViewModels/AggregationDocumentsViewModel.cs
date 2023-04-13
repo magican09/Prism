@@ -28,30 +28,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
     public class AggregationDocumentsViewModel : BaseViewModel<bldMaterialCertificate>, INotifyPropertyChanged, INavigationAware
     {
-        private string _title = "Список каталогов";
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
-        private DataGridColumn _selectedGridColumn;
-        public DataGridColumn SelectedGridColumn
-        {
-            get { return _selectedGridColumn; }
-            set { SetProperty(ref _selectedGridColumn, value); }
-        }
-
+ 
+ 
         private bldMaterialCertificate _selectedDocument;
         public bldMaterialCertificate SelectedDocument
         {
             get { return _selectedDocument; }
             set { SetProperty(ref _selectedDocument, value); }
-        }
-        private bldDocumentsGroup _selectedDocumentsGroup;
-        public bldDocumentsGroup SelectedDocumentsGroup
-        {
-            get { return _selectedDocumentsGroup; }
-            set { SetProperty(ref _selectedDocumentsGroup, value); }
         }
         private ObservableCollection<bldMaterialCertificate> _selectedDocuments = new ObservableCollection<bldMaterialCertificate>();
         public ObservableCollection<bldMaterialCertificate> SelectedDocuments
@@ -59,12 +42,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _selectedDocuments; }
             set { SetProperty(ref _selectedDocuments, value); }
         }
-        private bool _filterEnable = false;
-        public bool FilterEnable
-        {
-            get { return _filterEnable; }
-            set { SetProperty(ref _filterEnable, value); }
-        }
+      
         private ObservableCollection<bldUnitOfMeasurement> _allUnitsOfMeasurements;
         public ObservableCollection<bldUnitOfMeasurement> AllUnitsOfMeasurements
         {
@@ -96,10 +74,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand CreateNewMaterialCertificateCommand { get; private set; }
         public NotifyCommand<object> CreatedBasedOnMaterialCertificateCommand { get; private set; }
 
-        public ObservableCollection<INotifyCommand> UnitsOfMeasurementContextMenuCommands { get; set; } = new ObservableCollection<INotifyCommand>();
-        public NotifyCommand<object> SelectUnitOfMeasurementCommand { get; private set; }
-        public NotifyCommand<object> RemoveUnitOfMeasurementCommand { get; private set; }
-
 
         public NotifyCommand<object> OpenImageFileCommand { get; private set; }
         public NotifyCommand<object> SaveImageFileToDiskCommand { get; private set; }
@@ -107,12 +81,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public ObservableCollection<MenuItem> CommonContextMenuItems { get; set; }
 
-        public NotifyCommand<object> CopyingCommand { get; private set; }
-        public NotifyCommand<object> CopyingCellClipboardContentCommand { get; private set; }
-        public NotifyCommand<object> CopyedCommand { get; private set; }
-
-        public NotifyCommand<object> PastingCellClipboardContentCommand { get; private set; }
-        public NotifyCommand<object> GridViewSelectionChangedCommand { get; private set; }
+      
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         AppObjectsModel _appObjectsModel;
@@ -121,9 +90,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
             UnDoReDo = new UnDoReDoSystem();
-           // UnDoReDo.Register(AggregationDocuments,true);
-            ApplicationCommands = applicationCommands;
-            _appObjectsModel = appObjectsModel as AppObjectsModel;
+             ApplicationCommands = applicationCommands;
+          
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
@@ -147,35 +115,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CreatedBasedOnMaterialCertificateCommand = new NotifyCommand<object>(OnCreatedBasedOnMaterialCertificate,
                                     (ob) => { return SelectedDocument is bldMaterialCertificate; }).ObservesProperty(() => SelectedDocument);
             CreatedBasedOnMaterialCertificateCommand.Name = "Создать новый на основании..";
-          
-
-            SelectUnitOfMeasurementCommand = new NotifyCommand<object>(OnSelectUnitOfMeasurement);
-            SelectUnitOfMeasurementCommand.Name = "Установить";
-            RemoveUnitOfMeasurementCommand = new NotifyCommand<object>(OnRemoveUnitOfMeasurement);
-            RemoveUnitOfMeasurementCommand.Name = "Удалить";
-            UnitsOfMeasurementContextMenuCommands.Add(SelectUnitOfMeasurementCommand);
-            UnitsOfMeasurementContextMenuCommands.Add(RemoveUnitOfMeasurementCommand);
 
             OpenImageFileCommand = new NotifyCommand<object>(OnOpenImageFile);
             SaveImageFileToDiskCommand = new NotifyCommand<object>(OnSaveImageFileToDisk);
             LoadImageFileFromDiskCommand = new NotifyCommand<object>(OnLoadImageFileFromDisk);
-
-            CopyingCommand = new NotifyCommand<object>(OnCopying);
-            CopyingCellClipboardContentCommand = new NotifyCommand<object>(OnCopyingCellClipboardContent);
-            PastingCellClipboardContentCommand = new NotifyCommand<object>(OnPastingCellClipboardContent);
-            CopyedCommand = new NotifyCommand<object>(OnCopyedCommand);
-           
-            CommonContextMenuItems = new ObservableCollection<MenuItem>();
-            MenuItem addItem = new MenuItem();
-            addItem.Text = "Add";
-            addItem.IsEnabled = true;
-            CommonContextMenuItems.Add(addItem);
-            MenuItem editItem = new MenuItem();
-            editItem.Text = "Edit";
-            CommonContextMenuItems.Add(editItem);
-            MenuItem deleteItem = new MenuItem();
-            deleteItem.Text = "Delete";
-            CommonContextMenuItems.Add(deleteItem);
 
             #endregion
 

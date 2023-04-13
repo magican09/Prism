@@ -9,6 +9,6 @@
         <RibbonButton Label="Импорт из Access"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/access_icon.png"
                       Command="{Binding LoadMaterialCertificatesFromAccessCommand}"/>
         <RibbonButton Label ="Загрузить из БД" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/Load_from_db.jpg" 
-                Command="{Binding LoadMaterialCertificatesFromDBCommand}"/>
+                Command="{Binding ApplicationCommands.LoadAggregationDocumentsFromDBCommand}"/>
     </StackPanel>
 </RibbonGroup>

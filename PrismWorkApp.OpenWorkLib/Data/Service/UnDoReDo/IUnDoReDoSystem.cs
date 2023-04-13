@@ -50,7 +50,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// уже зарегисрированный объект.
         /// </summary>
         /// <param name="obj"> Регистрируемый объект IJornalable</param>
-        public void Register(IJornalable obj, bool enable_outo_registration = false);
+        public void Register(IJornalable obj, bool enable_outo_registration = true);
         /// <summary>
         /// Метод регистрирует все дерево объектов по иерахии внурь перескакивая и череp уже зарегисрированные, если 
         /// таковые встречаются.

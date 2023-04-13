@@ -181,7 +181,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public ObservableCollection<IEntityObject> Parents
         {
             get { return _parents; }
-            set  {     }
         }
 
         private ObservableCollection<IEntityObject> _children = new ObservableCollection<IEntityObject>();

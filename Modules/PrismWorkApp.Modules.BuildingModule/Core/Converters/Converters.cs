@@ -92,6 +92,12 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
 
             switch (node_object_type.Name)
             {
+                case (nameof(NameableObservableCollection<IEntityObject>)):
+                {
+
+
+                        break;
+                }
                 case nameof(bldParticipant):
                     {
                         bldParticipant participant = (bldParticipant)value;
@@ -113,7 +119,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                                 img_suffix = "_NONE";
                                 break;
                         }
-
                         break;
                     }
                 case nameof(bldResponsibleEmployee):

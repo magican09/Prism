@@ -376,7 +376,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 case (nameof(bldDocumentsGroup)):
                 case (nameof(bldAggregationDocumentsGroup)):
                 case (nameof(bldMaterialCertificatesGroup)):
-                    {
+                    { 
                         bldDocumentsGroup documents = ((bldDocumentsGroup)dataItem.AttachedObject);
                         Binding binding = new Binding("Name");
                         binding.Source = documents;

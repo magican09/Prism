@@ -14,7 +14,11 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void JornalingOn();
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged;
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
-
+      //  public event UnDoReDoCommandEventHandler UnDoReDoCommandCreated;
+        /// <summary>
+        /// 
+        /// </summary>
+        public ObservableCollection<IUnDoRedoCommand> AllChangesJornal { get; set; }
         /// <summary>
         /// Журнал хранящий историю изменявших объект команд
         /// </summary>

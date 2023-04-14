@@ -144,6 +144,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NotJornaling]
         [NotMapped]
         public bool IsAutoRegistrateInUnDoReDo { get; set; } = false;
+        [NotJornaling]
+        [NotMapped]
+        public ObservableCollection<IUnDoRedoCommand> AllChangesJornal { get; set; } = new ObservableCollection<IUnDoRedoCommand>();
         private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
         [NotJornaling]
         [NotMapped]

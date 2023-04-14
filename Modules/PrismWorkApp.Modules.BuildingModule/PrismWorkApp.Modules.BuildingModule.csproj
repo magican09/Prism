@@ -14,6 +14,7 @@
         <None Remove="Resourses\Images\bldProjectImages\bldAOSRDocument.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldConstruction.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldConstructionsGroup.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldDocumentsGroup.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldExecutiveScheme.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldLaboratoryReport.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldMaterial.png" />
@@ -34,8 +35,11 @@
         <None Remove="Resourses\Images\bldProjectImages\bldResponsibleEmployee_GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldResponsibleEmployee_WORK_PERFORMER.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldResponsibleEmployee__OTHER.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldUnitOfMeasurement.png" />
+        <None Remove="Resourses\Images\bldProjectImages\bldUnitOfMeasurementsGroup.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldWork.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
+        <None Remove="Resourses\Images\bldProjectImages\NameableObservableCollection`1.png" />
         <None Remove="Resourses\Images\close-icon.png" />
         <None Remove="Resourses\Images\Interface\collapse.gif" />
         <None Remove="Resourses\Images\Interface\expand.gif" />
@@ -47,8 +51,10 @@
         <None Remove="Resourses\Images\Ribbon\32x32\wand.png" />
         <None Remove="Resourses\Images\Ribbon\access_icon.png" />
         <None Remove="Resourses\Images\Ribbon\grand_smeta_file.png" />
+        <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_AggregationDocument.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
+        <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_UOMGroup.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
         <None Remove="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\48x48\32.png" />
@@ -90,6 +96,7 @@
     </Resource>
     <Resource Include="Resourses\Images\bldProjectImages\bldConstruction.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldConstructionsGroup.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldDocumentsGroup.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldExecutiveScheme.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldLaboratoryReport.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldMaterial.png" />
@@ -109,8 +116,11 @@
     <Resource Include="Resourses\Images\bldProjectImages\bldResponsibleEmployee_GENERAL_CONTRACTOR_CONSTRUCTION_QUALITY_CONTROLLER.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldResponsibleEmployee_WORK_PERFORMER.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldResponsibleEmployee__OTHER.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldUnitOfMeasurement.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\bldUnitOfMeasurementsGroup.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldWork.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\NameableObservableCollection`1.png" />
     <Resource Include="Resourses\Images\Interface\close-icon.png" />
     <Resource Include="Resourses\Images\Interface\collapse.gif" />
     <Resource Include="Resourses\Images\Interface\expand.gif" />
@@ -122,8 +132,10 @@
     <Resource Include="Resourses\Images\Ribbon\32x32\wand.png" />
     <Resource Include="Resourses\Images\Ribbon\access_icon.png" />
     <Resource Include="Resourses\Images\Ribbon\grand_smeta_file.png" />
+    <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_AggregationDocument.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_exel.jpg" />
+    <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_UOMGroup.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\save_to_db.jpg" />
     <Resource Include="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\48x48\32.png" />

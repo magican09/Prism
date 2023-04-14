@@ -26,6 +26,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 ChangedObjects.Add(item);
                 item.ChangesJornal.Add(this);
             }
+            _Collection.ChangesJornal.Add(this);
             ChangedObjects.Add(_Collection);
             _Collection.Owner.ChangesJornal.Add(this);
             _Collection.JornalingOn();
@@ -39,6 +40,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 ChangedObjects.Remove(item);
                 item.ChangesJornal.Remove(this);
             }
+            _Collection.ChangesJornal.Remove(this);
             ChangedObjects.Remove(_Collection);
             _Collection.Owner.ChangesJornal.Remove(this);
             _Collection.JornalingOn();
@@ -55,6 +57,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 ChangedObjects.Add(item);
                 item.ChangesJornal.Add(this);
             }
+            _Collection.ChangesJornal.Add(this);
              ChangedObjects.Add(_Collection);
            _Collection.Owner.ChangesJornal.Add(this);
             _Collection.JornalingOn();

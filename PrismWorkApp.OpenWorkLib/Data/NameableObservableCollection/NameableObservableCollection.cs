@@ -117,7 +117,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #region Constructors
         public NameableObservableCollection()
         {
+            ChangesJornal.CollectionChanged += OnChangesJornalChanged;
         }
+
+        private void OnChangesJornalChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+                ;
+        }
+
         public NameableObservableCollection(string name) : this()
         {
             Name = name;
@@ -159,6 +167,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #endregion
         #region  IJornaling service
         private IUnDoReDoSystem _unDoReDoSystem;
+        [NotJornaling]
+        [NotMapped]
+        public ObservableCollection<IUnDoRedoCommand> AllChangesJornal { get; set; } = new ObservableCollection<IUnDoRedoCommand>();
         private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
         public event SaveChangesEventHandler SaveChanges;
         public event SaveChangesEventHandler SaveAllChanges;
@@ -326,19 +337,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         protected override void RemoveItem(int index)
         {
+            TEntity item = Items[index];
+            if (item.Parents.Contains(this)) item.Parents.Remove(this);
+            if (this.Children.Contains(item)) this.Children.Remove(item);
             if (b_jornal_recording_flag)
             {
-                RemoveItemCommand<TEntity> Command = new RemoveItemCommand<TEntity>(this[index], this);
+                RemoveItemCommand<TEntity> Command = new RemoveItemCommand<TEntity>(item, index, this);
                 InvokeUnDoReDoCommandCreatedEvent(Command);
             }
             else
             {
-                TEntity item = Items[index];
-                if (item.Parents.Contains(this)) item.Parents.Remove(this);
-                if (this.Children.Contains(item)) this.Children.Remove(item); ;
-                base.RemoveItem(index);
-                //  if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
-                //    UnDoReDoSystem.UnRegister(item);
+               base.RemoveItem(index);
             }
         }
 

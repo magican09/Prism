@@ -205,6 +205,7 @@ namespace PrismWorkApp.Core.Commands
             _TargetExecuteMetod = executeMethod;
             _TargetCanExecuteMethod = canExecuteMehtod;
         }
+       
         private void RegisterActiveAwareEventHandler(Action<T> executeMethod)
         {
             var command_parent_object = executeMethod.Target;

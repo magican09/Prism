@@ -153,9 +153,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void LoadUnitsOfMeasurementsFromDB()
         {
 
-            if (!_appObjectsModel.AllModels.Where(el => el.Name == "Ед.изм.").Any())
-                _appObjectsModel.AllModels.Add(new NameableObservableCollection<bldUnitOfMeasurement>("Ед.изм."));
-            var units_of_measurement = (NameableObservableCollection<bldUnitOfMeasurement>)_appObjectsModel.AllModels.Where(el => el.Name == "Ед.изм.").FirstOrDefault();
+            if (!_appObjectsModel.AllModels.Where(el => el is bldUnitOfMeasurementsGroup).Any())
+                _appObjectsModel.AllModels.Add(new bldUnitOfMeasurementsGroup("Ед.изм."));
+            var units_of_measurement = (bldUnitOfMeasurementsGroup)_appObjectsModel.AllModels.Where(el => el is bldUnitOfMeasurementsGroup).FirstOrDefault();
             var units_of_measurement_from_db = _buildingUnitsRepository.UnitOfMeasurementRepository.GetAllAsync();
             foreach (bldUnitOfMeasurement unitOfMeasurement in units_of_measurement_from_db)
                 if (!units_of_measurement.Where(um => um.Id == unitOfMeasurement.Id).Any())

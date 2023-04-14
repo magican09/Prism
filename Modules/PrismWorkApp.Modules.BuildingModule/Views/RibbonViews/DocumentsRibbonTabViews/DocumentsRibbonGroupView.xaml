@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views"
              mc:Ignorable="d" Header="Общие функции">
     <StackPanel Orientation="Horizontal">
-        <RibbonButton Label="Импорт из Access"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/access_icon.png"
+        <RibbonButton Label="Импорт серт. пасп. из Access"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/access_icon.png"
                       Command="{Binding LoadMaterialCertificatesFromAccessCommand}"/>
-        <RibbonButton Label ="Загрузить из БД" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/Load_from_db.jpg" 
+        <RibbonButton Label ="Загрузить перечень из БД" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/load_AggregationDocument.png" 
                 Command="{Binding ApplicationCommands.LoadAggregationDocumentsFromDBCommand}"/>
     </StackPanel>
 </RibbonGroup>

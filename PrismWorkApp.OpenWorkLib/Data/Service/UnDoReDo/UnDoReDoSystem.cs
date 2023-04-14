@@ -353,27 +353,53 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// <param name="enable_outo_registration"> Влючает функую авторегистрации в объекте..</param>
         public void Register(IJornalable obj, bool enable_outo_registration = true)
         {
+            
             if (obj == null) { throw new Exception("Попытка регистрации в системе UnDoReDo объекта со значением null"); }
-            if (this.IsRegistered(obj))//Если объект зарегисприван в данной или в дочерней системе - выходим
-                return;
+            //if (this.IsRegistered(obj))//Если объект зарегисприван в данной или в дочерней системе - выходим
+                     //obj.UnDoReDoSystem.UnRegister(obj);//Если объект и меет регисрацию в другой системе - удаляем эту регисрацию.. это противорчечи   циклу  ниже, но посмотрим..
 
-            if (ParentUnDoReDo != null) //Если существует родительская система..
+            if (this._RegistedModels.ContainsKey(obj))//Если объект зарегисприван в данной  системе - выходим
+                return;
+          
+            //var all_object_systems = this.ChildrenSystems.Where(s => s._UnDoCommands.Where(cm => cm.ChangedObjects.Where(ob => ob.Id == obj.Id).Any()).Any()).ToList();
+            //if (obj.UnDoReDoSystem != null && obj.UnDoReDoSystem.Id != this.Id && all_object_systems.Count == 0)
+            //    obj.UnDoReDoSystem.UnRegister(obj);//Если объект и меет регисрацию в другой системе - удаляем эту регисрацию.. это противорчечи   циклу  ниже, но посмотрим..
+            //                                       //throw new Exception("Попытка регистрации в системе  объекта с уже выполенной регистрацией в другой системе.!\n" +
+            //                                       //  "Уберите регисрацию объекта в дрной системе UnDoReDoSystem и после регистрируйте его в этой системе.");
+
+            //foreach (IUnDoReDoSystem unDoReDo in all_object_systems)//Если объект зарегисрирован в дочених системах...
+            //     unDoReDo.UnRegister(obj); //Удаляем регисрацию в дочерних системах, и регисрируем объект в текущей
+           
+            if (obj.UnDoReDoSystem != null && obj.UnDoReDoSystem.Id != this.Id ) //Если существует если объект зарегисрирован в другой системе..
             {
-                if (ParentUnDoReDo.IsAnyChildSystemRegistered(obj)) //Если вы данный момент объект уже используется в другой, смежной дочерней системе..
-                    throw new Exception($"Объект занять другой стистемой UnDoReDo {obj.ToString()}");
-                if (ParentUnDoReDo.IsRegistered(obj)) //Если  объект зарегистрирован в родительской системе.. 
-                {
-                    var all_chages_in_obj =  new List<IJornalable>(obj.GetAllChangedObjects()); //Получаем внутренние объкеты объкта, в которых были несохраненые изменения
-                   ////Выполнятеся когда пытаются зарегистрировать объект имеющий изменения в дочерней системе... 
+                    var all_chages_in_obj = new List<IJornalable>(obj.GetAllChangedObjects()); //Получаем внутренние объкеты объкта, в которых были несохраненые изменения
+                                                                                               ////Выполнятеся когда пытаются зарегистрировать объект имеющий изменения в дочерней системе... 
                     if (all_chages_in_obj.Count > 0 && this.SystemHaveNotSavedObjects != null) //Если в обработчик наличия в регистриуемом объекте несохранненых подобъектов влючен - вызывем его...
                         this.SystemHaveNotSavedObjects?.Invoke(this, new UnDoReDoSystemEventArgs(all_chages_in_obj));
                     else if (all_chages_in_obj.Count > 0) //Если обработчика нет  - то автоматически сохраняем все изменнеия в объекте.
                         foreach (IJornalable non_save_object in all_chages_in_obj)
-                            this.ParentUnDoReDo.Save(non_save_object);
-                  
-                    ParentUnDoReDo.UnRegister(obj);//то удаляем его из родительской системы
-                }
+                        obj.UnDoReDoSystem.Save(non_save_object);
+                obj.UnDoReDoSystem.UnRegister(obj);//то удаляем его из родительской системы
+                
             }
+
+            //if (ParentUnDoReDo != null) //Если существует родительская система..
+            //{
+            //    if (ParentUnDoReDo.IsAnyChildSystemRegistered(obj)) //Если вы данный момент объект уже используется в другой, смежной дочерней системе..
+            //        throw new Exception($"Объект занять другой стистемой UnDoReDo {obj.ToString()}");
+            //    if (ParentUnDoReDo.IsRegistered(obj)) //Если  объект зарегистрирован в родительской системе.. 
+            //    {
+            //        var all_chages_in_obj =  new List<IJornalable>(obj.GetAllChangedObjects()); //Получаем внутренние объкеты объкта, в которых были несохраненые изменения
+            //       ////Выполнятеся когда пытаются зарегистрировать объект имеющий изменения в дочерней системе... 
+            //        if (all_chages_in_obj.Count > 0 && this.SystemHaveNotSavedObjects != null) //Если в обработчик наличия в регистриуемом объекте несохранненых подобъектов влючен - вызывем его...
+            //            this.SystemHaveNotSavedObjects?.Invoke(this, new UnDoReDoSystemEventArgs(all_chages_in_obj));
+            //        else if (all_chages_in_obj.Count > 0) //Если обработчика нет  - то автоматически сохраняем все изменнеия в объекте.
+            //            foreach (IJornalable non_save_object in all_chages_in_obj)
+            //                this.ParentUnDoReDo.Save(non_save_object);
+
+            //        ParentUnDoReDo.UnRegister(obj);//то удаляем его из родительской системы
+            //    }
+            //}
             obj.JornalingOff(); //На всякий случай выключаем журналирование в объекте
             if (obj.UnDoReDoSystem != this)//Если объект был в друной системе - выписываемся из нее...
             {
@@ -394,7 +420,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             {
                 var prop_val = propertyInfo.GetValue(obj);
                 var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
-                if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
+                if (prop_val is IJornalable jornable_prop && attr == null )//Если свойтво IJornable и не помчено атрибутом 
                     this.Register(jornable_prop, enable_outo_registration);
             }
             OnPropertyChanged("Register");
@@ -424,14 +450,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             {
                 var prop_val = propertyInfo.GetValue(obj);
                 var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
-                if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
+                if (prop_val is IJornalable jornable_prop && attr == null )//Если свойтво IJornable и не помчено атрибутом 
                 {
                     this.UnRegister(jornable_prop);
-                    //if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
-                    //    foreach (object element in list_jornable_prop)
-                    //        if (element is IJornalable jornable_element)
-                    //            this.UnRegister(jornable_element);
-
                 }
             }
             obj.JornalingOff(); //На всякий случай выключаем журналирование в объекте
@@ -599,13 +620,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             {
                 var prop_val = propertyInfo.GetValue(obj);
                 var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
-                if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
+                if (prop_val is IJornalable jornable_prop && attr == null )//Если свойтво IJornable и не помчено атрибутом 
                 {
                     this.Save(jornable_prop);
-                    //if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
-                    //    foreach (object element in list_jornable_prop)
-                    //        if (element is IJornalable jornable_element)
-                    //            this.Save(jornable_element);
                 }
             }
          
@@ -687,18 +704,53 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             }
         }
 
-       
+        /// <summary>
+        /// Метод возращает количство объектов внутри объекта, у которых были зарегистрированные в системе изменения 
+        /// </summary>
+        /// <param name="obj">Проверяемый объект </param>
+        /// <returns></returns>
+        public int GetChangesNamber(IJornalable obj, bool first_itr = true)
+        {
+            IJornalable saved_obj = obj;
+            int changes_number = 0;
+            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(saved_obj)).Any());
+            foreach (IUnDoReDoSystem unDoReDo in all_objects_systems)//Если объект зарегисрирован в дочених системах...
+            {
+                changes_number+= unDoReDo.GetChangesNamber(saved_obj);//Сохраняем объект во всех дочерних системах
+            }
+            if (obj is IList list_obj) //Если регистрируемый элемент является коллекцией
+                foreach (IJornalable element in list_obj)
+                    changes_number += this.GetChangesNamber(element);
+
+            var props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            foreach (PropertyInfo propertyInfo in props_infoes)
+            {
+                var prop_val = propertyInfo.GetValue(obj);
+                var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
+                if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
+                {
+                    changes_number += this.GetChangesNamber(jornable_prop);
+                }
+            }
+            changes_number += saved_obj.ChangesJornal.Count;
+            return changes_number;
+        }
+        private object first_object;
         /// <summary>
         /// Метод возращает количство объектов внутри объекта, у которых были зарегистрированные в системе изменения 
         /// </summary>
         /// <param name="obj">Проверяемый объект </param>
         /// <param name="first_itr">Служебный параметрт рекурсии. Не  определять!</param>
         /// <returns></returns>
-        public int GetChangesNamber(IJornalable obj, bool first_itr = true)
+        public int GetChangesNamber_1(IJornalable obj, bool first_itr = true)
         {
             int i_changes_namber = 0;
-            if (first_itr) i_changes_namber = 0;
-
+            if (first_itr) first_object = obj;
+            if(!first_itr&& obj==first_object)
+            {
+                first_object = null;
+                return 0;
+            }
             var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(obj)).Any());
             foreach (IUnDoReDoSystem unDoReDo in all_objects_systems)//Если объект зарегисрирован в дочених системах...
             {
@@ -706,24 +758,21 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             }
 
             var props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
-
+         
+            if (obj is IList list_obj) //Если регистрируемый элемент является коллекцией
+                foreach (IJornalable element in list_obj)
+                    i_changes_namber += this.GetChangesNamber(element, false);
             foreach (PropertyInfo propertyInfo in props_infoes)
             {
                 var prop_val = propertyInfo.GetValue(obj);
                 var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
-                if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
+                if (prop_val is IJornalable jornable_prop && attr == null )//Если свойтво IJornable и не помчено атрибутом 
                 {
                     i_changes_namber += this.GetChangesNamber(jornable_prop, false);
-                    //if (jornable_prop is IList list_jornable_prop) //Если свойтво еще является и списком
-                    //    foreach (object element in list_jornable_prop)
-                    //        if (element is IJornalable jornable_element)
-                    //            i_changes_namber += this.GetChangesNamber(jornable_element, false);
                 }
             }
 
-            if (obj is IList list_obj) //Если регистрируемый элемент является коллекцией
-                foreach (IJornalable element in list_obj)
-                    i_changes_namber += this.GetChangesNamber(element, false);
+          
 
             i_changes_namber += obj.ChangesJornal.Count();
 

@@ -7,6 +7,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
     {
         private NameableObservableCollection<TEntity> _Collection;
         private TEntity _Item;
+        private int _Index;
 
         public string Name { get; set; } = "Элемент удален";
 
@@ -20,42 +21,40 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void Execute(object parameter = null)
         {
             _Collection.JornalingOff();
-            _Item.Parents.Remove(_Collection.Owner);
             _Collection.Remove(_Item);
             ChangedObjects.Add(_Item);
             ChangedObjects.Add(_Collection);
             _Item.ChangesJornal.Add(this);
             _Collection.ChangesJornal.Add(this);
-            if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Add(this);
+          //  if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Add(this);
             _Collection.JornalingOn();
 
         }
         public void UnExecute()
         {
             _Collection.JornalingOff();
-            _Item.Parents.Add(_Collection.Owner);
-            _Collection.Add(_Item);
+            _Collection.Insert(_Index, _Item);
             ChangedObjects.Remove(_Item);
             ChangedObjects.Remove(_Collection);
             _Item.ChangesJornal.Remove(this);
             _Collection.ChangesJornal.Remove(this);
-            if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Remove(this);
+           // if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Remove(this);
             _Collection.JornalingOn();
         }
-        public RemoveItemCommand(TEntity item, NameableObservableCollection<TEntity> collection)
+        public RemoveItemCommand(TEntity item, int index, NameableObservableCollection<TEntity> collection)
         {
             _Item = item;
+            _Index = index;
             _Collection = collection;
             UnDoReDo_System = collection.UnDoReDoSystem;
 
             _Collection.JornalingOff();
-            _Item.Parents.Remove(_Collection.Owner);
             _Collection.Remove(_Item);
             ChangedObjects.Add(_Item);
             ChangedObjects.Add(_Collection);
             _Item.ChangesJornal.Add(this);
             _Collection.ChangesJornal.Add(this);
-            if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Add(this);
+            //if (_Collection.Owner != null) _Collection.Owner.ChangesJornal.Add(this);
             _Collection.JornalingOn();
         }
     }

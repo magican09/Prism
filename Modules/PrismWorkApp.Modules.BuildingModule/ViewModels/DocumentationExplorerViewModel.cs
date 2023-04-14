@@ -81,11 +81,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         public NotifyCommand<object> EditInTreeViewItemCommand { get; private set; }
-        public NotifyCommand<object> LoadAggregationDocumentFromDBCommand { get; set; }
-        public NotifyCommand SaveDocumentationToDBCommand { get; private set; }
+         public NotifyCommand SaveDocumentationToDBCommand { get; private set; }
 
+        public NotifyCommand<object> LoadAggregationDocumentFromDBCommand { get; set; }
         public NotifyCommand<object> CreateNewAggregationDocumentCommand { get; set; }
         public NotifyCommand<object> RemoveAggregationDocumentCommand { get; private set; }
+
+        public NotifyCommand<object> LoadUnitOfMeasurementFromDBCommand { get; set; }
+        public NotifyCommand<object> CreateNewUnitOfMeasurementCommand { get; set; }
+        public NotifyCommand<object> CreateBasedOnUnitOfMeasurementCommand { get; set; }
+        public NotifyCommand<object> RemoveUnitOfMeasurementCommand { get; private set; }
 
         private readonly IEventAggregator _eventAggregator;
         private AppObjectsModel _appObjectsModel;
@@ -136,6 +141,26 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             CreateNewAggregationDocumentCommand.Name = "Добавить новую ведомость документов";
             RemoveAggregationDocumentCommand = new NotifyCommand<object>(OnRemoveAggregationDocument);
             RemoveAggregationDocumentCommand.Name = "Удалить ведомость документов";
+          
+            CreateNewUnitOfMeasurementCommand = new NotifyCommand<object>(OnCreateNewUnitOfMeasurement);
+            CreateNewUnitOfMeasurementCommand.Name = "Добавить новую ед.изм.";
+            CreateBasedOnUnitOfMeasurementCommand = new NotifyCommand<object>(OnCreateBasedOnUnitOfMeasurement);
+            CreateBasedOnUnitOfMeasurementCommand.Name = "Создать новую ед.изм. на основании..";
+            RemoveUnitOfMeasurementCommand = new NotifyCommand<object>(OnRemoveUnitOfMeasurement);
+            RemoveUnitOfMeasurementCommand.Name = "Удалить ед.изм.";
+       
+            
+            
+            
+            _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveDocumentationToDBCommand);
+            _applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadAggregationDocumentFromDBCommand);
+           
+            
+            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+
+
 
             AllModels.Add(Documentation);
             Items = new DataItemCollection(null);
@@ -143,13 +168,40 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             root.DataItemInit += OnDataItemInit;
             Items.Add(root);
             root.AttachedObject = AllModels;
+            UnDoReDo.SaveAll();
+          
+        }
 
-              UnDoReDo.SaveAll();
-            _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveDocumentationToDBCommand);
-            _applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadAggregationDocumentFromDBCommand);
-            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
-            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+        private void OnRemoveUnitOfMeasurement(object obj)
+        {
+            DataItem selected_dataItem = ((IList)obj)[0] as DataItem;
+            bldUnitOfMeasurement selected_UOM = selected_dataItem.AttachedObject as bldUnitOfMeasurement;
+            bldUnitOfMeasurementsGroup UOM_Group = selected_dataItem.Parent.AttachedObject as bldUnitOfMeasurementsGroup;
+            if (UOM_Group != null)
+                UOM_Group.Remove(selected_UOM);
+        }
+
+        private void OnCreateBasedOnUnitOfMeasurement(object obj)
+        {
+            DataItem selected_dataItem = ((IList)obj)[0] as DataItem;
+            bldUnitOfMeasurement selected_UOM = selected_dataItem.AttachedObject as bldUnitOfMeasurement;
+            bldUnitOfMeasurementsGroup UOM_Group = selected_dataItem.Parent.AttachedObject as bldUnitOfMeasurementsGroup;
+            if(UOM_Group!=null)
+            {
+                bldUnitOfMeasurement new_UOM = selected_UOM.Clone() as bldUnitOfMeasurement;
+                UOM_Group.Add(new_UOM);
+            }
+
+        }
+
+        private void OnCreateNewUnitOfMeasurement(object obj)
+        {
+            DataItem selected_dataItem = ((IList)obj)[0] as DataItem;
+            bldUnitOfMeasurementsGroup selected_UOMGroup  = selected_dataItem.AttachedObject as bldUnitOfMeasurementsGroup;
+            if(selected_UOMGroup!=null)
+            {
+                selected_UOMGroup.Add(new bldUnitOfMeasurement("-"));
+            }
         }
 
         private void OnUnDoReDoSystemEvents(IUnDoReDoSystem unDoReDosys, UnDoReDoSystemEventArgs e)
@@ -197,7 +249,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                         list_parent.Remove(document);
                                 }
                                 if (result.Result == ButtonResult.Yes)
-                                { 
+                                {
                                     UnDoReDo.Save(document);
                                     UnDoReDo.UnRegister(document);
                                     var dialog_par = new DialogParameters();
@@ -332,17 +384,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             string type_name = dataItem.AttachedObject.GetType().Name;
             switch (dataItem.AttachedObject.GetType().Name)
             {
-                case (nameof(bldUnitOfMeasurement)):
-                    {
-                        bldUnitOfMeasurement unit_of_measurement = ((bldUnitOfMeasurement)dataItem.AttachedObject);
-                        Binding binding = new Binding("Name");
-                        binding.Source = unit_of_measurement;
-                        binding.Path = new PropertyPath("Name");
-                        binding.Mode = BindingMode.OneWay;
-                        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
-                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
-                        break;
-                    }
+               
                 case (nameof(bldMaterialCertificate)):
                     {
                         bldMaterialCertificate document = ((bldMaterialCertificate)dataItem.AttachedObject);
@@ -384,7 +426,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         binding.Mode = BindingMode.TwoWay;
                         // binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
                         BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
-                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(new NameableObservableCollection<IEntityObject>(), null, null, CultureInfo.CurrentCulture);
+                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(new bldDocumentsGroup(), null, null, CultureInfo.CurrentCulture);
                         foreach (bldDocument doc in documents)
                         {
                             DataItem atch_doc_item = new DataItem();
@@ -394,8 +436,18 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         }
                         break;
                     }
- 
-                case ("NameableObservableCollection`1"): //Если тип объекта NameableObservableCollection<IEntityObject>
+                case (nameof(bldUnitOfMeasurement)):
+                    {
+                        bldUnitOfMeasurement unit_of_measurement = ((bldUnitOfMeasurement)dataItem.AttachedObject);
+                        Binding binding = new Binding("Name");
+                        binding.Source = unit_of_measurement;
+                        binding.Path = new PropertyPath("Name");
+                        binding.Mode = BindingMode.TwoWay;
+                        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
+                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                        break;
+                    }
+                case (nameof(bldUnitOfMeasurementsGroup)): 
                     {
                         IList entity_collection = (IList)dataItem.AttachedObject;
                         Binding binding = new Binding("Name");
@@ -405,6 +457,24 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
 
                         dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                        foreach (IEntityObject entity in entity_collection)
+                        {
+                            DataItem ent_item = new DataItem();
+                            dataItem.Items.Add(ent_item);
+                            ent_item.AttachedObject = entity;
+                        }
+                        break;
+                    }
+                case ("NameableObservableCollection`1"): //Если тип объекта NameableObservableCollection<IEntityObject>
+                    {
+                        IList entity_collection = (IList)dataItem.AttachedObject;
+                        Binding binding = new Binding("Name");
+                        binding.Source = entity_collection;
+                        binding.Path = new PropertyPath("Name");
+                        binding.Mode = BindingMode.TwoWay;
+                        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
+
+                        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(new NameableObservableCollection<IEntityObject>(), null, null, CultureInfo.CurrentCulture);
                         foreach(IEntityObject entity in entity_collection)
                         {
                             DataItem ent_item = new DataItem();
@@ -455,7 +525,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         context_menu_item_commands = new NotifyMenuCommands()
                             {
                              CreateNewAggregationDocumentCommand,
-                             LoadAggregationDocumentFromDBCommand};
+                             LoadAggregationDocumentFromDBCommand
+                            };
                         break;
                     }
                 case (nameof(bldDocument)):
@@ -468,6 +539,25 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             };
                         break;
 
+                    }
+                case(nameof(bldUnitOfMeasurement)):
+                    {
+                        context_menu_item_commands = new NotifyMenuCommands()
+                            {
+                               CreateBasedOnUnitOfMeasurementCommand,
+                               RemoveUnitOfMeasurementCommand
+                            };
+                       
+                        break;
+                    }
+                case (nameof(bldUnitOfMeasurementsGroup)):
+                    {
+                        context_menu_item_commands = new NotifyMenuCommands()
+                            {
+                               CreateNewUnitOfMeasurementCommand
+                            };
+
+                        break;
                     }
             }
             context_menu_item_commands?.Add(EditInTreeViewItemCommand);

@@ -19,7 +19,8 @@
     <loc_core:DataTypeConverter x:Key="dataTypeConverter"/>
     <loc_core:IsCollectionEmpty x:Key="isCollectionEmpty"/>
 
-    <ContextMenu x:Key="TreeViewItemContextMenu"  Style="{StaticResource  CuntextMenuStyle}">
+    <ContextMenu x:Key="TreeViewItemContextMenu"  
+                 ItemContainerStyle="{StaticResource TreeViewMenuItemContainerStyle}">
         <telerik:EventToCommandBehavior.EventBindings>
             <telerik:EventBinding EventName="Opened" 
                                   Command="{Binding DataContext.ContextMenuOpenedCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}">

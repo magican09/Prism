@@ -84,8 +84,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
         }
         public ProjectManagerRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
-                                            IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel)
+                                            IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel)//, IUnDoReDoSystem unDoReDoSystem)
         {
+          //  UnDoReDo = unDoReDoSystem;
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
@@ -157,10 +158,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 _appObjectsModel.AllModels.Add(new bldUnitOfMeasurementsGroup("Ед.изм."));
             var units_of_measurement = (bldUnitOfMeasurementsGroup)_appObjectsModel.AllModels.Where(el => el is bldUnitOfMeasurementsGroup).FirstOrDefault();
             var units_of_measurement_from_db = _buildingUnitsRepository.UnitOfMeasurementRepository.GetAllAsync();
+
             foreach (bldUnitOfMeasurement unitOfMeasurement in units_of_measurement_from_db)
                 if (!units_of_measurement.Where(um => um.Id == unitOfMeasurement.Id).Any())
+                {
+                    unitOfMeasurement.IsDbBranch = true;
                     units_of_measurement.Add(unitOfMeasurement);
-
+                    unitOfMeasurement.State = EntityState.Unchanged;
+                }
+            
             units_of_measurement.UnDoReDoSystem.Save(units_of_measurement);
         }
 

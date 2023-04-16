@@ -81,7 +81,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         public NotifyCommand<object> EditInTreeViewItemCommand { get; private set; }
-         public NotifyCommand SaveDocumentationToDBCommand { get; private set; }
+      
 
         public NotifyCommand<object> LoadAggregationDocumentFromDBCommand { get; set; }
         public NotifyCommand<object> CreateNewAggregationDocumentCommand { get; set; }
@@ -124,8 +124,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoCommand.MonitorCommandActivity = false;
             ReDoCommand.MonitorCommandActivity = false;
 
-            SaveDocumentationToDBCommand = new NotifyCommand(OnSaveDocumentationToDB);
-            SaveDocumentationToDBCommand.MonitorCommandActivity = false;
+       
+           
 
             SaveCommand = new NotifyCommand(OnSave,()=> { return UnDoReDo.HasAnyChangedObjectInAllSystems(); }).ObservesPropertyChangedEvent(UnDoReDo);
             SaveCommand.MonitorCommandActivity = false;
@@ -151,8 +151,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
        
             
             
-            
-            _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveDocumentationToDBCommand);
+           
             _applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadAggregationDocumentFromDBCommand);
            
             
@@ -185,11 +184,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             DataItem selected_dataItem = ((IList)obj)[0] as DataItem;
             bldUnitOfMeasurement selected_UOM = selected_dataItem.AttachedObject as bldUnitOfMeasurement;
-            bldUnitOfMeasurementsGroup UOM_Group = selected_dataItem.Parent.AttachedObject as bldUnitOfMeasurementsGroup;
-            if(UOM_Group!=null)
+            bldUnitOfMeasurementsGroup selected_UOMGroup = selected_dataItem.Parent.AttachedObject as bldUnitOfMeasurementsGroup;
+            if(selected_UOMGroup != null)
             {
                 bldUnitOfMeasurement new_UOM = selected_UOM.Clone() as bldUnitOfMeasurement;
-                UOM_Group.Add(new_UOM);
+                if (!selected_UOMGroup.Owner.IsDbBranch)
+                {
+                    _buildingUnitsRepository.UnitOfMeasurementRepository.Add(new_UOM);
+                    new_UOM.IsDbBranch = true;
+                }
+                selected_UOMGroup.Add(new_UOM);
             }
 
         }
@@ -200,7 +204,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldUnitOfMeasurementsGroup selected_UOMGroup  = selected_dataItem.AttachedObject as bldUnitOfMeasurementsGroup;
             if(selected_UOMGroup!=null)
             {
-                selected_UOMGroup.Add(new bldUnitOfMeasurement("-"));
+                bldUnitOfMeasurement new_UOM = new bldUnitOfMeasurement("-");
+                if(!selected_UOMGroup.Owner.IsDbBranch)
+                {
+                    _buildingUnitsRepository.UnitOfMeasurementRepository.Add(new_UOM);
+                    new_UOM.IsDbBranch = true;
+                }
+                selected_UOMGroup.Add(new_UOM);
             }
         }
 
@@ -328,7 +338,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             if (selected_object == null) 
                 selected_object = Documentation;
             bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(
-                _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
+                _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync()
+                .Where(d=>d.AttachedDocuments.Count>0 && d.AttachedDocuments[0].GetType()== typeof(bldMaterialCertificate)).ToList());
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
                       (All_AggregationDocuments, _dialogService, (result) =>
                       {
@@ -361,23 +372,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          "Перечень каталогов");
 
         }
-        public void OnSaveDocumentationToDB()
-        {
-            CoreFunctions.ConfirmActionDialog("Сохранить все изменения в БД?", "Проект",
-                "Сохранить", "Отмена", (result) =>
-                {
-                    if (result.Result == ButtonResult.Yes)
-                    {
-                        foreach (bldDocument document in Documentation)
-                        {
-                            if (_buildingUnitsRepository.DocumentsRepository.Get(document.Id) == null)
-                                _buildingUnitsRepository.DocumentsRepository.Add(document);
-                        }
-                        _buildingUnitsRepository.Complete();
-                    }
-                }, _dialogService);
-
-        }
+        
 
         private void OnEditInTreeViewItem(object obj)
         {

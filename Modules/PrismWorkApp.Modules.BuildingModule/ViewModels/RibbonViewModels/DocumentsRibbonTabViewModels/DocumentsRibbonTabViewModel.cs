@@ -57,8 +57,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _eventAggregator = eventAggregator;
               IsActiveChanged += OnActiveChanged;
             LoadMaterialCertificatesFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
-            LoadMaterialCertificatesFromDBCommand = new NotifyCommand(OnLoadMaterialCertificatesFromDB);
-          
+            
 
            SaveDataToDBCommand = new NotifyCommand(OnSaveDataToDB);
             //    ApplicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadMaterialCertificatesFromDBCommand);

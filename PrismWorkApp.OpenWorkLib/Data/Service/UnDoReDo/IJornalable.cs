@@ -63,6 +63,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         //     The entity is being tracked by the context but does not yet exist in the database.
         Added = 4,
         Removed =5,
+        Created=6
        
 
     }

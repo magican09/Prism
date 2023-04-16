@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public class AddListCommand<TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand where TEntity : IEntityObject
+    public class ClearCommand<TEntity> : UnDoRedoCommandBase, IUnDoRedoCommand where TEntity : IEntityObject
     {
         private NameableObservableCollection<TEntity> _Collection;
-        private IEnumerable<TEntity> _List;
+        private IList<TEntity> _RemovedItemsCollection;
         private EntityState _CollectionState;
         private Dictionary<TEntity, EntityState> _ItemStateDict = new Dictionary<TEntity, EntityState>();
         private EntityState _OwnerState;
@@ -24,18 +24,24 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void Execute(object parameter = null)
         {
             _Collection.JornalingOff();
-            foreach (TEntity item in _List)
+            _RemovedItemsCollection = new List<TEntity>(_Collection);
+            _Collection.Clear();
+
+            foreach (TEntity item in _RemovedItemsCollection)
             {
-                ChangedObjects.Add(item);
-                item.ChangesJornal.Add(this);
                 if (UnDoReDo_System.Contains(item))
                     item.State = EntityState.Modified;
                 else
-                    item.State = EntityState.Added;
+                    item.State = EntityState.Removed;
+
+                ChangedObjects.Add(item);
+                item.ChangesJornal.Add(this);
                 _ItemStateDict.Add(item, item.State);
             }
-           // _CollectionState = _Collection.State;
-            //_OwnerState = _Collection.Owner.State;
+
+            //_CollectionState = _Collection.State;
+           // _OwnerState = _Collection.Owner.State;
+
             _Collection.ChangesJornal.Add(this);
             ChangedObjects.Add(_Collection);
             _Collection.JornalingOn();
@@ -44,39 +50,48 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void UnExecute()
         {
             _Collection.JornalingOff();
-            foreach (TEntity item in _List)
+
+            foreach (TEntity item in _RemovedItemsCollection)
             {
-                ChangedObjects.Remove(item);
+                item.ChangesJornal.Add(this);
                 item.State = _ItemStateDict[item];
-                item.ChangesJornal.Remove(this);
+
+                _Collection.Add(item);
+                ChangedObjects.Remove(item);
             }
+
            // _Collection.State = _CollectionState;
-            //_Collection.Owner.State = _OwnerState;
-            
+           // _Collection.Owner.State = _OwnerState;
+
             _Collection.ChangesJornal.Remove(this);
             ChangedObjects.Remove(_Collection);
-          
             _Collection.JornalingOn();
         }
-        public AddListCommand(IEnumerable<TEntity> list, NameableObservableCollection<TEntity> collection)
+        public ClearCommand(NameableObservableCollection<TEntity> collection)
         {
-            _List = list;
+
             _Collection = collection;
             UnDoReDo_System = collection.UnDoReDoSystem;
 
             _Collection.JornalingOff();
-            foreach (TEntity item in _List)
+            _RemovedItemsCollection = new List<TEntity>(_Collection);
+            _Collection.Clear();
+
+            foreach (TEntity item in _RemovedItemsCollection)
             {
-                ChangedObjects.Add(item);
-                item.ChangesJornal.Add(this);
                 if (UnDoReDo_System.Contains(item))
                     item.State = EntityState.Modified;
                 else
-                    item.State = EntityState.Added;
+                    item.State = EntityState.Removed;
+
+                ChangedObjects.Add(item);
+                item.ChangesJornal.Add(this);
                 _ItemStateDict.Add(item, item.State);
             }
-            //_CollectionState = _Collection.State;
+
+           // _CollectionState = _Collection.State;
            // _OwnerState = _Collection.Owner.State;
+
             _Collection.ChangesJornal.Add(this);
             ChangedObjects.Add(_Collection);
             _Collection.JornalingOn();

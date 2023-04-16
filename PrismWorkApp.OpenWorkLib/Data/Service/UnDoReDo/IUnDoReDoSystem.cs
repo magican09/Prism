@@ -50,7 +50,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// уже зарегисрированный объект.
         /// </summary>
         /// <param name="obj"> Регистрируемый объект IJornalable</param>
-        public void Register(IJornalable obj, bool enable_outo_registration = true);
+        public void Register(IJornalable obj, bool enable_outo_registration = true, bool is_db_branch = false);
         /// <summary>
         /// Метод регистрирует все дерево объектов по иерахии внурь перескакивая и череp уже зарегисрированные, если 
         /// таковые встречаются.
@@ -142,7 +142,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public int SaveAll();
         public bool IsAnyChildSystemRegistered(IJornalable obj);
         public bool IsRegistered(IJornalable obj);
-
+        public bool Contains(IJornalable obj);
         public int GetChangesNamber(IJornalable obj, bool first_itr = true);
         public IEnumerable<IUnDoRedoCommand> GetAllCommandsByObject(IJornalable obj, bool firs_itaration = true);
         public int Level { get; set; }

@@ -71,9 +71,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
         #region Commands 
-        public TEntity AddNewDocument<TEntity>() where TEntity : IbldDocument, new()
+        public TEntity AddNewDocument<TEntity>(TEntity new_doc) where TEntity : IbldDocument, new()
         {
-            TEntity new_doc = new TEntity();
             AddDocumentCommand<TEntity> Command = new AddDocumentCommand<TEntity>(this, new_doc);
             InvokeUnDoReDoCommandCreatedEvent(Command);
             return new_doc;

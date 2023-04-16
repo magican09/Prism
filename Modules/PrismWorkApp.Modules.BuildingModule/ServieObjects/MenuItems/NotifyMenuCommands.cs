@@ -1,11 +1,13 @@
 ﻿using PrismWorkApp.Core.Commands;
+using PrismWorkApp.OpenWorkLib.Data;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
-    public class NotifyMenuCommands : ObservableCollection<INotifyCommand>, INotifyPropertyChanged
+    public class NotifyMenuCommands : ObservableCollection<INotifyCommand>, INotifyPropertyChanged,INameable
     {
+        public string Name { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {

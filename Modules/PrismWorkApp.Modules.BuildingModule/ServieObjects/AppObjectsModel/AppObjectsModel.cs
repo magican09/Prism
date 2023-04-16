@@ -6,6 +6,7 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
+using System.Linq;
 
 namespace PrismWorkApp.Modules.BuildingModule
 {
@@ -32,7 +33,7 @@ namespace PrismWorkApp.Modules.BuildingModule
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private readonly IRegionManager _regionManager;
         private IDialogService _dialogService;
-        public NotifyCommand SaveDocumentationToDBCommand { get; set; }
+        public NotifyCommand SaveAllToDBCommand { get; set; }
         IUnDoReDoSystem UnDoReDo;
         public AppObjectsModel(IRegionManager regionManager, IEventAggregator eventAggregator,
                                            IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands, IUnDoReDoSystem unDoReDoSystem)
@@ -46,7 +47,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             
             //    UnDoReDo = unDoReDoSystem;
             Documentation.Name = "Документация";
-            SaveDocumentationToDBCommand = new NotifyCommand(OnSaveDocumentationToDB);
+            SaveAllToDBCommand = new NotifyCommand(OnSaveAllToDB);
             //LoadAggregationDocumentFromDBCommand = new NotifyCommand<object>(OnLoadAggregationDocumentFromDB);
             //LoadAggregationDocumentFromDBCommand.Name = "Загрузить ведомость документов из БД";
             // CreateNewAggregationDocumentCommand = new NotifyCommand<object>(OnCreateNewAggregationDocument);
@@ -58,7 +59,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             //CreateBasedOnMaterialCertificateCommand = new NotifyCommand<object>(OnCreateBasedOnMaterialCertificate, (ob) => SelectedDocument is bldMaterialCertificate).ObservesProperty(() => SelectedDocument);
             //RemoveMaterialCertificateCommand = new NotifyCommand<object>(OnRemoveMaterialCertificate, (ob) => SelectedDocument is bldMaterialCertificate).ObservesProperty(() => SelectedDocument);
 
-            _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveDocumentationToDBCommand);
+            _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveAllToDBCommand);
         }
 
    
@@ -74,19 +75,16 @@ namespace PrismWorkApp.Modules.BuildingModule
         #endregion
 
         #region Save 
-        public void OnSaveDocumentationToDB()
+        public void OnSaveAllToDB()
         {
-            CoreFunctions.ConfirmActionDialog("Сохранить все изменения в документации БД?", "Документация",
+            CoreFunctions.ConfirmActionDialog("Сохранить все изменения в БД?", "",
                 "Сохранить", "Отмена", (result) =>
                   {
                       if (result.Result == ButtonResult.Yes)
                       {
-                          foreach (bldDocument document in Documentation)
-                          {
-                              if (_buildingUnitsRepository.DocumentsRepository.Get(document.Id) == null)
-                                  _buildingUnitsRepository.DocumentsRepository.Add(document);
-                          }
-                          _buildingUnitsRepository.Complete();
+                          var all_changed_objects = UnDoReDo._RegistedModels.Keys.Where(ob => ob.IsDbBranch && ob.State != EntityState.Unchanged).ToList();
+                          UnDoReDo.SaveAll();
+                          _buildingUnitsRepository.Complete(UnDoReDo);
                       }
                   }, _dialogService);
 

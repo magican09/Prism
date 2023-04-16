@@ -35,11 +35,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             {
                 if (entity_member is INameableObservableCollection nameble_collection_mamber)
                     nameble_collection_mamber.Owner = this;
-                if (!entity_member.Parents.Contains(this))entity_member.Parents.Add(this);
-            
+                if (!entity_member.Parents.Contains(this)) entity_member.Parents.Add(this);
+
                 if (!this.Children.Contains(entity_member)) this.Children.Add(entity_member);
                 if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(entity_member))
-                    UnDoReDoSystem.Register(entity_member, true);
+                    UnDoReDoSystem.Register(entity_member, true, entity_member.IsDbBranch|this.IsDbBranch);
             }
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
@@ -91,6 +91,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             else
                 return null;
         }
+        [NotMapped]
         public bool HasErrors
         {
             get { return _errors.Count > 0; }
@@ -167,11 +168,24 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #endregion
         #region  IJornaling service
         private IUnDoReDoSystem _unDoReDoSystem;
-        [NotJornaling]
-        [NotMapped]
-        public ObservableCollection<IUnDoRedoCommand> AllChangesJornal { get; set; } = new ObservableCollection<IUnDoRedoCommand>();
         private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
-        public event SaveChangesEventHandler SaveChanges;
+        private bool _isDbBranch = false;
+        [NotMapped]
+        [NotJornaling]
+        public bool IsDbBranch
+        {
+            get { return _isDbBranch; }
+            set { SetProperty(ref _isDbBranch, value); }
+        }
+        public EntityState _state;
+        [NotMapped]
+        [NotJornaling]
+        public EntityState State
+        {
+            get { return _state; }
+            set { SetProperty(ref _state, value); }
+        }
+         public event SaveChangesEventHandler SaveChanges;
         public event SaveChangesEventHandler SaveAllChanges;
         [NotJornaling]
         [NotMapped]
@@ -300,10 +314,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         protected override void SetItem(int index, TEntity item)
         {
-            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
-                UnDoReDoSystem.Register(item, true);
-            if (!item.Parents.Contains(this)) item.Parents.Add(this);
-            if (!this.Children.Contains(item)) this.Children.Add(item);
+           
 
             if (b_jornal_recording_flag)
             {
@@ -312,16 +323,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
-                   base.SetItem(index, item);
+                base.SetItem(index, item);
             }
+            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
+                UnDoReDoSystem.Register(item, true, item.IsDbBranch|this.IsDbBranch);
+            if (!item.Parents.Contains(this)) item.Parents.Add(this);
+            if (!this.Children.Contains(item)) this.Children.Add(item);
 
         }
         protected override void InsertItem(int index, TEntity item)
         {
-            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
-                UnDoReDoSystem.Register(item, true);
-            if (!item.Parents.Contains(this)) item.Parents.Add(this);
-            if (!this.Children.Contains(item)) this.Children.Add(item);
+           
 
             if (b_jornal_recording_flag)
             {
@@ -330,16 +342,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
-                  base.InsertItem(index, item);
+                base.InsertItem(index, item);
+                if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
+                    UnDoReDoSystem.Register(item, true, item.IsDbBranch|this.IsDbBranch);
+                if (!item.Parents.Contains(this)) item.Parents.Add(this);
+                if (!this.Children.Contains(item)) this.Children.Add(item);
             }
+           
 
         }
 
         protected override void RemoveItem(int index)
         {
             TEntity item = Items[index];
-            if (item.Parents.Contains(this)) item.Parents.Remove(this);
-            if (this.Children.Contains(item)) this.Children.Remove(item);
+            
             if (b_jornal_recording_flag)
             {
                 RemoveItemCommand<TEntity> Command = new RemoveItemCommand<TEntity>(item, index, this);
@@ -347,10 +363,34 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
-               base.RemoveItem(index);
+                base.RemoveItem(index);
+                if (item.Parents.Contains(this)) item.Parents.Remove(this);
+                if (this.Children.Contains(item)) this.Children.Remove(item);
             }
+           
         }
 
+        protected override void ClearItems()
+        {
+           
+            if (b_jornal_recording_flag)
+            {
+                ClearCommand<TEntity> Command = new ClearCommand<TEntity>( this);
+                InvokeUnDoReDoCommandCreatedEvent(Command);
+            }
+            else
+            {
+                base.ClearItems();
+
+                if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null)
+                    foreach (IEntityObject item in this)
+                    {
+                        if (item.Parents.Contains(this)) item.Parents.Remove(this);
+                        if (this.Children.Contains(item)) this.Children.Remove(item);
+                    }
+            }
+
+        }
 
     }
 }

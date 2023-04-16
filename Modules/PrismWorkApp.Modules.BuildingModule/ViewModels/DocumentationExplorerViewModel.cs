@@ -229,9 +229,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnRemoveAggregationDocument(object obj)
         {
             object selected_object = null;
-            if (obj is IList list) selected_object =((DataItem)list[0]).AttachedObject; else selected_object = ((DataItem)obj).AttachedObject;
+            object parent_object = null;
+            if (obj is IList list) 
+            {
+                selected_object = ((DataItem)list[0]).AttachedObject;
+                parent_object = ((DataItem)list[0]).Parent.AttachedObject;
+            }
+            else selected_object = ((DataItem)obj).AttachedObject;
            
-            if (selected_object is bldDocument document)
+            if (selected_object is bldDocument document && parent_object is INameableObservableCollection parent_coll )
             {
                 int ch_namber = UnDoReDo.GetChangesNamber(document); //Отнимает 1, так как в изменениях 
                 if (ch_namber != 0)
@@ -241,13 +247,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         {
                             if(result.Result==ButtonResult.Yes|| result.Result == ButtonResult.No)
                             {
-                                foreach (object parent in new List<object>(document.Parents))
-                                {
-                                    if (parent is bldDocument parent_doc)
-                                        parent_doc.RemoveDocument(document);
-                                    if (parent is IList list_parent)
-                                        list_parent.Remove(document);
-                                }
+                                if (parent_coll.Owner is bldDocument parent_document)
+                                    parent_document.AttachedDocuments.Remove(document);
+                                else parent_coll.Remove(document);
+
                                 if (result.Result == ButtonResult.Yes)
                                 {
                                     UnDoReDo.Save(document);
@@ -276,13 +279,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                 else
                 {
-                    Documentation.Remove(document);
+                    if (parent_coll.Owner is bldDocument parent_document)
+                        parent_document.AttachedDocuments.Remove(document);
+                    else parent_coll.Remove(document);
+
                 }
-                    
-               
-               
-             
-              
+
+
+
+
+
             }
         }
 
@@ -290,13 +296,28 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             object selected_object = null;
             if (obj is IList list) selected_object = ((DataItem)list[0]).AttachedObject; else selected_object = ((DataItem)obj).AttachedObject;
+           
             if (selected_object is bldDocument document)
             {
-                document.AddNewDocument<bldAggregationDocument>();
-             //   UnDoReDo.Register(document.AddNewDocument<bldAggregationDocument>());
+                bldAggregationDocument new_AGDocument = new bldAggregationDocument("Новый перечень документации");
+               if(document.IsDbBranch==false)
+                {
+                    _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.Add(new_AGDocument);
+                    new_AGDocument.IsDbBranch = true;
+                }
+                document.AddNewDocument<bldAggregationDocument>(new_AGDocument);
+                //   UnDoReDo.Register(document.AddNewDocument<bldAggregationDocument>());
             }
             else if (selected_object is bldDocumentsGroup documents_coll)
-                documents_coll.Add(new bldAggregationDocument("Новый перечень документации"));
+            {
+                bldAggregationDocument new_AGDocument = new bldAggregationDocument("Новый перечень документации");
+                if (documents_coll.Owner.IsDbBranch == false)
+                {
+                    _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.Add(new_AGDocument);
+                    new_AGDocument.IsDbBranch = true;
+                }
+                documents_coll.Add(new_AGDocument);
+            }
 
         }
 
@@ -317,13 +338,21 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                               bldAggregationDocument loaded_doc = selected_aggregation_doc;
                               if (loaded_doc != null)
                               {
-                                  if (selected_object is bldDocument document 
-                                  && !document.AttachedDocuments.Where(d=>d.Id==document.Id).Any()) 
-                                      document.AddDocument(document);
-                                  if (selected_object is bldDocumentsGroup doc_coll 
-                                  && !doc_coll.Where(el=>el.Id==loaded_doc.Id).Any())
+
+                                  if (selected_object is bldDocument document
+                                  && !document.AttachedDocuments.Where(d => d.Id == loaded_doc.Id).Any())
+                                  {
+                                      loaded_doc.IsDbBranch = true;
+                                      document.AddDocument(loaded_doc);
+                                  }
+                                  if (selected_object is bldDocumentsGroup doc_coll
+                                  && !doc_coll.Where(el => el.Id == loaded_doc.Id).Any())
+                                  {
+                                      loaded_doc.IsDbBranch = true;
                                       doc_coll.Add(loaded_doc as bldDocument);
+                                  }
                                   UnDoReDo.Save(loaded_doc); //Сохраняемся после довбалвения в коллецию
+                                  loaded_doc.State = EntityState.Unchanged;
                               }
                           }
                       }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
@@ -334,7 +363,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public void OnSaveDocumentationToDB()
         {
-            CoreFunctions.ConfirmActionDialog("Сохранить все изменения в документации БД?", "Документация",
+            CoreFunctions.ConfirmActionDialog("Сохранить все изменения в БД?", "Проект",
                 "Сохранить", "Отмена", (result) =>
                 {
                     if (result.Result == ButtonResult.Yes)

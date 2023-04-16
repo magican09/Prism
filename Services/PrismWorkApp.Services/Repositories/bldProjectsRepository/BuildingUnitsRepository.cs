@@ -1,4 +1,7 @@
-﻿using PrismWorkApp.Core;
+﻿using Microsoft.EntityFrameworkCore;
+using PrismWorkApp.Core;
+using PrismWorkApp.OpenWorkLib.Data;
+using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
@@ -38,10 +41,27 @@ namespace PrismWorkApp.Services.Repositories
         }
         public int Complete()
         {
+         
             //    _context.Attach(obj).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             return _context.SaveChanges();
         }
+        public int Complete(OpenWorkLib.Data.Service.IUnDoReDoSystem unDoReDo)
+        {
 
+            var all_changed_objects = unDoReDo._RegistedModels.Keys.Where(ob =>
+            (!(ob is INameableObservableCollection) &ob.IsDbBranch && ob.State != OpenWorkLib.Data.Service.EntityState.Unchanged)||
+            (ob is INameableObservableCollection coll_ob && coll_ob.Owner.IsDbBranch && coll_ob.Owner.State != OpenWorkLib.Data.Service.EntityState.Unchanged)
+            ).ToList();
+
+            var DB_all_changed_objects = _context.ChangeTracker.Entries<IEntityObject>()
+               .Where(p => p.State != EntityState.Unchanged)
+            .Select(p => p.Entity);
+            var needed_add_to_DB = all_changed_objects.Where(ent => !DB_all_changed_objects.Contains(ent)
+            |(ent is INameableObservableCollection coll_ent && !DB_all_changed_objects.Contains(coll_ent.Owner)));
+            
+
+            return this.Complete();
+        }
         public void Dispose()
         {
             _context.Dispose();

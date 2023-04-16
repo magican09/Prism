@@ -43,6 +43,7 @@
         <None Remove="Resourses\Images\close-icon.png" />
         <None Remove="Resourses\Images\Interface\collapse.gif" />
         <None Remove="Resourses\Images\Interface\expand.gif" />
+        <None Remove="Resourses\Images\MainTreeView\need_save_to_db.png" />
         <None Remove="Resourses\Images\MainTreeView\object_changed.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\add.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\arrow_down.png" />
@@ -124,6 +125,7 @@
     <Resource Include="Resourses\Images\Interface\close-icon.png" />
     <Resource Include="Resourses\Images\Interface\collapse.gif" />
     <Resource Include="Resourses\Images\Interface\expand.gif" />
+    <Resource Include="Resourses\Images\MainTreeView\need_save_to_db.png" />
     <Resource Include="Resourses\Images\MainTreeView\object_changed.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\add.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\arrow_down.png" />

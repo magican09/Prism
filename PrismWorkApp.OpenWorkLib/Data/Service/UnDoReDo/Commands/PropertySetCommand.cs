@@ -11,7 +11,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         private object _Value;
         private object _LastValue;
         private object _Buffer;
-       
+        private EntityState _ModelObjectState;
         public bool CanExecute(object parameter)
         {
             throw new NotImplementedException();
@@ -27,6 +27,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             _ModelObject.GetType().GetProperty(Name).SetValue(_ModelObject, _Value);
             _ModelObject.ChangesJornal.Add(this);
             ChangedObjects.Add(_ModelObject);
+            _ModelObjectState = _ModelObject.State;
+            _ModelObject.State = EntityState.Modified;
             _ModelObject.JornalingOn();
         }
         public void UnExecute()
@@ -38,6 +40,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             _ModelObject.GetType().GetProperty(Name).SetValue(_ModelObject, _Value);
             _ModelObject.ChangesJornal.Remove(this);
             ChangedObjects.Remove(_ModelObject);
+            _ModelObject.State = _ModelObjectState;
             _ModelObject.JornalingOn();
         }
         /// <summary>
@@ -54,12 +57,15 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             _Value = new_value;
             _LastValue = last_value;
             UnDoReDo_System = model.UnDoReDoSystem;
+
             ///Стои обратить внимание, что в отличии от других типовый IUnDoRedoCommand в этой команде в конструкторе
             ///лишь фиксируются значения, так как само действеие превый раз будет выполенено в самом объекте IJornable 
             ///после возврата из события IJornalable.PropertyBeforeChanged
             _ModelObject.JornalingOff();
             _ModelObject.ChangesJornal.Add(this);
             ChangedObjects.Add(_ModelObject);
+            _ModelObjectState = _ModelObject.State;
+            _ModelObject.State = EntityState.Modified;
             _ModelObject.JornalingOn();
         }
 

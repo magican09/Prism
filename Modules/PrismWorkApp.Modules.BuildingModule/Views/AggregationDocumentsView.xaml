@@ -82,11 +82,14 @@
                                              ItemsSource="{Binding AttachedDocuments}" 
                                              SelectedItem="{Binding DataContext.SelectedDocument, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl},Mode=TwoWay}"  
                                              AutoGenerateColumns="False"
+                                             IsFilteringAllowed="True"
                                              RowIndicatorVisibility="Visible" 
                                              SelectionMode="Single"
                                              CanUserSelect="True"
                                              CanUserDeleteRows="False"
                                              ShowGroupPanel="False" 
+                                             ClipboardCopyMode="None"
+                                             ClipboardPasteMode="None"
                                              >
 
                             <telerik:RadGridView.InputBindings>
@@ -95,23 +98,42 @@
                                         <MultiBinding Converter="{StaticResource ObjectsToListMultiConverter}">
                                             <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="SelectedItem"/>
                                             <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="DataContext"/>
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
                                         </MultiBinding>
                                     </KeyBinding.CommandParameter>
-                                    
                                 </KeyBinding>
+                                <KeyBinding  Key="C" Modifiers="Ctrl" Command="{Binding DataContext.CopyMaterialCertificateCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}">
+                                    <KeyBinding.CommandParameter>
+                                        <MultiBinding Converter="{StaticResource ObjectsToListMultiConverter}">
+                                            <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="SelectedItem"/>
+                                            <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="DataContext"/>
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
+                                        </MultiBinding>
+                                    </KeyBinding.CommandParameter>
+                                </KeyBinding>
+                                <KeyBinding  Key="V" Modifiers="Ctrl" Command="{Binding DataContext.PasteMaterialCertificateCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}">
+                                    <KeyBinding.CommandParameter>
+                                        <MultiBinding Converter="{StaticResource ObjectsToListMultiConverter}">
+                                            <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="SelectedItem"/>
+                                            <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="DataContext"/>
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
+                                        </MultiBinding>
+                                    </KeyBinding.CommandParameter>
+                                </KeyBinding>
+
                             </telerik:RadGridView.InputBindings>
                             <telerik:EventToCommandBehavior.EventBindings>
-                                <!--<telerik:EventBinding  EventName="SelectionChanged"  Command="{Binding DataContext.DataGridSelectionChangedCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
+                                <telerik:EventBinding  EventName="SelectionChanged"  Command="{Binding DataContext.DataGridSelectionChangedCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
                                            RaiseOnHandledEvents="True"  >
                                     <telerik:EventBinding.CommandParameter>
                                         <MultiBinding Converter="{StaticResource    ObjectsToListMultiConverter}">
                                             <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItem"/>
-                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
                                             <Binding  RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="DataContext"/>
-                                        </MultiBinding>
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
+                                         </MultiBinding>
                                     </telerik:EventBinding.CommandParameter>
                                 </telerik:EventBinding>
-                                <telerik:EventBinding  EventName="LostFocus" Command="{Binding DataContext.DataGridLostFocusCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"/>-->
+                                <telerik:EventBinding  EventName="LostFocus" Command="{Binding DataContext.DataGridLostFocusCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"/>
                              
                                 <!--<telerik:EventBinding EventName="Copying" Command="{Binding DataContext.DataGridCopyingCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
                                                      RaiseOnHandledEvents="True"  PassEventArgsToCommand="True"   />

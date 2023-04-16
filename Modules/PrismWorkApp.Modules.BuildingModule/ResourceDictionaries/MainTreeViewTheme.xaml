@@ -18,7 +18,7 @@
     <loc_core:StringToUriConverter x:Key="stringToUriConverter"/>
     <loc_core:DataTypeConverter x:Key="dataTypeConverter"/>
     <loc_core:IsCollectionEmpty x:Key="isCollectionEmpty"/>
-
+    <loc_core:EntityStateConverter x:Key="entityStateConverter"/>
     <ContextMenu x:Key="TreeViewItemContextMenu"  
                  ItemContainerStyle="{StaticResource TreeViewMenuItemContainerStyle}">
         <telerik:EventToCommandBehavior.EventBindings>
@@ -46,6 +46,7 @@
     <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}">
         <StackPanel Orientation="Horizontal">
             <Image x:Name="imageObjectHaveChanges" Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/MainTreeView/object_changed.png"/>
+            <Image x:Name="imageObjectNeedSaveToDB"  Visibility="Collapsed"  Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/MainTreeView/need_save_to_db.png"/>
             <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
             <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding Text}" Margin="5 0 0 0" />
         </StackPanel>
@@ -54,6 +55,13 @@
             <DataTrigger Binding="{Binding AttachedObject.ChangesJornal.Count}" Value="0">
                 <Setter TargetName="imageObjectHaveChanges" Property="Visibility" Value="Collapsed" />
             </DataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding AttachedObject.IsDbBranch}"  Value="True"/>
+                    <Condition Binding="{Binding AttachedObject.State,Converter={StaticResource entityStateConverter}}"  Value="True"/>
+                </MultiDataTrigger.Conditions>
+                <Setter TargetName="imageObjectNeedSaveToDB" Property="Visibility" Value="Visible" />
+            </MultiDataTrigger>
         </HierarchicalDataTemplate.Triggers>
     </HierarchicalDataTemplate>
 

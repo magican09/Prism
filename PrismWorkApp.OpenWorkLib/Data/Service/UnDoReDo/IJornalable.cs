@@ -14,14 +14,15 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void JornalingOn();
         public event PropertyBeforeChangeEventHandler PropertyBeforeChanged;
         public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
-      //  public event UnDoReDoCommandEventHandler UnDoReDoCommandCreated;
+      
         /// <summary>
-        /// 
+        /// Cостояние объектв в системе UNDoRedu
         /// </summary>
-        public ObservableCollection<IUnDoRedoCommand> AllChangesJornal { get; set; }
+        public EntityState  State { get; set; }
         /// <summary>
-        /// Журнал хранящий историю изменявших объект команд
+        /// Является ли объект частью дерева объектов сохраняемых в базу даннных
         /// </summary>
+        public bool IsDbBranch { get; set; }
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal { get; set; }
         //public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems { get; set; }
         /// <summary>
@@ -36,7 +37,36 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         
 
     }
-    public enum AdjustStatus
+    public enum EntityState
+    {
+        //
+        // Summary:
+        //     The entity is not being tracked by the context.
+        Detached = 0,
+        //
+        // Summary:
+        //     The entity is being tracked by the context and exists in the database. Its property
+        //     values have not changed from the values in the database.
+        Unchanged = 1,
+        //
+        // Summary:
+        //     The entity is being tracked by the context and exists in the database. It has
+        //     been marked for deletion from the database.
+        Deleted = 2,
+        //
+        // Summary:
+        //     The entity is being tracked by the context and exists in the database. Some or
+        //     all of its property values have been modified.
+        Modified = 3,
+        //
+        // Summary:
+        //     The entity is being tracked by the context but does not yet exist in the database.
+        Added = 4,
+        Removed =5,
+       
+
+    }
+    public  enum AdjustStatus
     {
 
         UNADJUSTED

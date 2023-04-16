@@ -82,7 +82,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 if (!entity_member.Parents.Contains(this)) entity_member.Parents.Add(this);
                 if (!this.Children.Contains(entity_member)) this.Children.Add(entity_member);
                 if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(entity_member)) 
-                        UnDoReDoSystem.Register(entity_member,true);
+                        UnDoReDoSystem.Register(entity_member,true, entity_member.IsDbBranch|this.IsDbBranch);
             }
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
@@ -133,6 +133,24 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         #region IJornaling
 
+       
+        private bool _isDbBranch=false;
+        [NotMapped]
+        [NotJornaling]
+        public bool IsDbBranch
+        {
+            get { return _isDbBranch; }
+            set { SetProperty(ref _isDbBranch, value); }
+        }
+
+        public EntityState _state;
+        [NotMapped]
+        [NotJornaling]
+        public EntityState State
+        {
+            get { return _state; }
+            set { SetProperty(ref _state, value); }
+        }
         private IUnDoReDoSystem _unDoReDoSystem;
         [NotJornaling]
         [NotMapped]
@@ -144,9 +162,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NotJornaling]
         [NotMapped]
         public bool IsAutoRegistrateInUnDoReDo { get; set; } = false;
-        [NotJornaling]
-        [NotMapped]
-        public ObservableCollection<IUnDoRedoCommand> AllChangesJornal { get; set; } = new ObservableCollection<IUnDoRedoCommand>();
         private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
         [NotJornaling]
         [NotMapped]

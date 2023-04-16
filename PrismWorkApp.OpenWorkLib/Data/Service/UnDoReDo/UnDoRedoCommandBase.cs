@@ -42,5 +42,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             
         }
+        public UnDoRedoCommandBase()
+        {
+                
+        }
     }
 }

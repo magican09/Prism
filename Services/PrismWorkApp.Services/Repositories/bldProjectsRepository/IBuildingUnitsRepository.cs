@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PrismWorkApp.OpenWorkLib.Data.Service;
+using System;
 
 namespace PrismWorkApp.Services.Repositories
 {
@@ -19,5 +20,6 @@ namespace PrismWorkApp.Services.Repositories
         public bldProjectMaterialsRepository Materials { get; }
         public bldDocumentsRepository DocumentsRepository { get; }
         public int Complete();
+        public int Complete(IUnDoReDoSystem unDoReDo);
     }
 }

@@ -218,6 +218,15 @@ namespace PrismWorkApp.Services.Repositories
             var deletedAuditedEntities = ChangeTracker.Entries<IEntityObject>()
                   .Where(p => p.State == EntityState.Deleted)
                   .Select(p => p.Entity);
+            
+            foreach (IEntityObject entity in addedAuditedEntities)
+                entity.State = OpenWorkLib.Data.Service.EntityState.Unchanged;
+            
+            foreach (IEntityObject entity in modifiedAuditedEntities)
+                entity.State = OpenWorkLib.Data.Service.EntityState.Unchanged;
+            
+            foreach (IEntityObject entity in deletedAuditedEntities)
+                entity.State = OpenWorkLib.Data.Service.EntityState.Unchanged;
 
             var now = DateTime.UtcNow;
             int save_result = 0; ;

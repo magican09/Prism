@@ -144,6 +144,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public bool IsRegistered(IJornalable obj);
         public bool Contains(IJornalable obj);
         public int GetChangesNamber(IJornalable obj, bool first_itr = true);
+        public int GetUnChangesObjectsNamber(IJornalable obj, bool first_itr = true);
         public IEnumerable<IUnDoRedoCommand> GetAllCommandsByObject(IJornalable obj, bool firs_itaration = true);
         public int Level { get; set; }
         public void UnDoAll(IJornalable obj);

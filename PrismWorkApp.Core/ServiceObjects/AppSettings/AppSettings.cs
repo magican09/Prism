@@ -12,7 +12,7 @@ namespace PrismWorkApp.Core
             get { return string.Format(_projectBDConnectionString, DataSource, Database, UserName, Password); }
             set { /*SetProperty(ref _projectBDConnectionString, value);*/ }
         }
-        private string _dataSource = @"localhost\TEW_SQLEXPRESS";//@"M-GEODEZ-01\TEW_SQLEXPRESS";// @"M-RUK-04\TEW_SQLEXPRESS_5";
+        private string _dataSource =/* @"localhost\TEW_SQLEXPRESS";//*/@"M-GEODEZ-01\TEW_SQLEXPRESS";// @"M-RUK-04\TEW_SQLEXPRESS_5";
         public string DataSource
         {
             get { return _dataSource; }

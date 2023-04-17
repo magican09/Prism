@@ -213,6 +213,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             var all_object_systems = this.ChildrenSystems.Where(s => s._UnDoCommands.Where(cm => cm.ChangedObjects.Where(ob => ob.Id == obj.Id).Any()).Any());
             foreach (IUnDoReDoSystem unDoReDo in all_object_systems)//Если объект зарегисрирован в дочених системах...
             {
+                
+                
                 all_commands = all_commands.Union(unDoReDo.GetAllCommandsByObject(obj, false));
             }
             all_commands = all_commands.Union(this._UnDoCommands.Where(cm => cm.ChangedObjects.Where(ob => ob.Id == obj.Id).Any()));
@@ -726,6 +728,39 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 if (!entity.Children.Contains(entity_member)) entity.Children.Add(entity_member);
                 if (entity.IsAutoRegistrateInUnDoReDo) entity.UnDoReDoSystem?.Register(entity_member, true);
             }
+        }
+        /// <summary>
+        /// Метод возращает количство объектов внутри объекта, у которых были зарегистрированные в системе иземенения 
+        /// и которые не сохранены в БД
+        /// </summary>
+        /// <param name="obj">Проверяемый объект </param>
+        /// <returns></returns>
+        public int GetUnChangesObjectsNamber(IJornalable obj, bool first_itr = true)
+        {
+            IJornalable saved_obj = obj;
+            int changes_number = 0;
+            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(saved_obj)).Any());
+            foreach (IUnDoReDoSystem unDoReDo in all_objects_systems)//Если объект зарегисрирован в дочених системах...
+            {
+                changes_number += unDoReDo.GetUnChangesObjectsNamber(saved_obj);//Сохраняем объект во всех дочерних системах
+            }
+            if (obj is IList list_obj) //Если регистрируемый элемент является коллекцией
+                foreach (IJornalable element in list_obj)
+                    changes_number += this.GetUnChangesObjectsNamber(element);
+
+            var props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+            foreach (PropertyInfo propertyInfo in props_infoes)
+            {
+                var prop_val = propertyInfo.GetValue(obj);
+                var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
+                if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
+                {
+                    changes_number += this.GetUnChangesObjectsNamber(jornable_prop);
+                }
+            }
+            if(saved_obj.IsDbBranch&& saved_obj.State!= EntityState.Unchanged )
+                 changes_number ++;
+            return changes_number;
         }
 
         /// <summary>

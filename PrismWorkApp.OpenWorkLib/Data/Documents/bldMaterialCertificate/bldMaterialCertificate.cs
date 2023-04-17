@@ -60,11 +60,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }//Чистое время выполнения
         public bldMaterialCertificate(string name) : base(name)
         {
-
+            this.Code = "мат_серт";
         }
         public bldMaterialCertificate()
         {
-
+            this.Code = "мат_серт";
         }
 
     }

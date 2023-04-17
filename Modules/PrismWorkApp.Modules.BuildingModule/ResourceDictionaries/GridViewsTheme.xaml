@@ -6,7 +6,8 @@
 
         <ResourceDictionary
                             Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/MenuItemsTheme.xaml"/>
-
+        <!--<ResourceDictionary
+                            Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/FilteringControlTheme.xaml"/>-->
     </ResourceDictionary.MergedDictionaries>
 
     <ContextMenu x:Key="GridViewItemContextMenu"  
@@ -25,5 +26,9 @@
             </telerik:EventBinding>
         </telerik:EventToCommandBehavior.EventBindings>
     </ContextMenu>
+
+    <!--<Style x:Key="FilteringControlStyle" TargetType="{x:Type telerik:FilteringControl}">
+        
+    </Style>-->
     
 </ResourceDictionary>

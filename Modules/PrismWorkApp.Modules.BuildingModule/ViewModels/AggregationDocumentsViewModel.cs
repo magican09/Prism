@@ -167,35 +167,23 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnPasteMaterialCertificate(object obj)
         {
-            //bldMaterialCertificate selected_certificate = ((IList)obj)[0] as bldMaterialCertificate;
-            //bldAggregationDocument selected_aggr_document = ((IList)obj)[1] as bldAggregationDocument;
-            //SelectedAggregationDocument = selected_aggr_document;
-            //SelectedDocument = selected_certificate;
-            int insert_index = SelectedAggregationDocument.AttachedDocuments.IndexOf(SelectedDocument)+1;
+                  int insert_index = SelectedAggregationDocument.AttachedDocuments.IndexOf(SelectedDocument)+1;
             if(insert_index >SelectedAggregationDocument.AttachedDocuments.Count)
                 foreach (bldDocument document in MaterialCertificatesBuffer)
                     SelectedAggregationDocument.AttachedDocuments.Add(document);
             foreach (bldDocument document in MaterialCertificatesBuffer)
                 SelectedAggregationDocument.AttachedDocuments.Insert(insert_index, document);
-          //  MaterialCertificatesBuffer.Clear();
-        }
+         }
 
         private void OnCopyMaterialCertificate(object obj)
         {
-            //bldMaterialCertificate selected_certificate = ((IList)obj)[0] as bldMaterialCertificate;
-            //bldAggregationDocument selected_aggr_document = ((IList)obj)[1] as bldAggregationDocument;
-            ////SelectedDocuments.Clear();
-            ////foreach (object elm in ((IList)obj)[2] as IList)
-            ////    SelectedDocuments.Add(elm as bldMaterialCertificate);
-
-            //SelectedAggregationDocument = selected_aggr_document;
-            //SelectedDocument = selected_certificate;
-           
+         
             MaterialCertificatesBuffer.Clear();
             foreach (bldDocument document in SelectedDocuments)
             {
                 bldMaterialCertificate new_certificate = document.Clone() as bldMaterialCertificate;
                 new_certificate.IsHaveImageFile = false;
+             
                 MaterialCertificatesBuffer.Add(new_certificate);
             }
         }
@@ -205,6 +193,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             bldAggregationDocument selected_AGDocument = SelectedAggregationDocument;
 
             int changes_number = selected_AGDocument.UnDoReDoSystem.GetChangesNamber(selected_AGDocument);
+            int un_changed_to_DB_namber = selected_AGDocument.UnDoReDoSystem.GetUnChangesObjectsNamber(selected_AGDocument);
             if (changes_number > 0)
             {
                 CoreFunctions.ConfirmActionOnElementDialog<bldAggregationDocument>(SelectedAggregationDocument, "Сохранить", SelectedAggregationDocument.Name, "Сохранить", "Не сохранять", "Отмена",
@@ -225,6 +214,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                  , _dialogService);
             }
+         
            else
             AggregationDocuments.Remove(SelectedAggregationDocument);
            
@@ -409,11 +399,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
       
         private void OnCreatedBasedOnMaterialCertificate(object obj)
         {
-            //bldMaterialCertificate selected_certificate = ((IList)obj)[0] as bldMaterialCertificate;
-            //bldAggregationDocument selected_aggr_document = ((IList)obj)[1] as bldAggregationDocument;
-            //SelectedDocument = selected_certificate;
-            //SelectedAggregationDocument = selected_aggr_document;
-         
             bldMaterialCertificate new_certificate = SelectedDocument.Clone() as bldMaterialCertificate;
             new_certificate.IsHaveImageFile = false;
             if (!SelectedAggregationDocument.IsDbBranch)
@@ -429,11 +414,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         private void OnCreateNewMaterialCertificate(object obj)
         {
 
-            //bldMaterialCertificate selected_certificate = ((IList)obj)[0] as bldMaterialCertificate;
-            //bldAggregationDocument selected_aggr_document = ((IList)obj)[1] as bldAggregationDocument;
-            //SelectedDocument = selected_certificate;
-            //SelectedAggregationDocument = selected_aggr_document;
-            bldMaterialCertificate new_certificate = new bldMaterialCertificate();
+             bldMaterialCertificate new_certificate = new bldMaterialCertificate();
             if(!SelectedAggregationDocument.IsDbBranch)
             {
                 _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Add(new_certificate);

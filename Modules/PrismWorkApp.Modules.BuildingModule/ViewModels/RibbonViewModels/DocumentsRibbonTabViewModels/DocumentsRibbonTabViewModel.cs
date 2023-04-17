@@ -165,7 +165,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             Functions.OnLoadMaterialCertificatesFromAccess(certificates);
 
             ObservableCollection<bldUnitOfMeasurement> units = new ObservableCollection<bldUnitOfMeasurement>();
-            EntityCategory category = new EntityCategory();
+            bldAggregationDocument aggregationDocument = new bldAggregationDocument("Загруженные сертификаты");
+
             foreach (bldMaterialCertificate certificate in certificates)
             {
                 bldUnitOfMeasurement measurement =
@@ -176,14 +177,15 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                 else
                     certificate.UnitOfMeasurement = measurement;
-                //   Catalog.AttachedDocuments.Add(certificate);
+                aggregationDocument.AttachedDocuments.Add(certificate);
             }
-            _buildingUnitsRepository.Complete();
-            TempCatalog.AttachedDocuments = (bldDocumentsGroup)certificates;
-            TempCatalog.Name = "Загруженные документы";
-            var navParam = new NavigationParameters();
-            navParam.Add("bld_document", TempCatalog);
-            _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(DocumentationExplorerView).Name, navParam);
+            _appObjectsModel.Documentation.Add(aggregationDocument);
+            //_buildingUnitsRepository.Complete();
+            //TempCatalog.AttachedDocuments = (bldDocumentsGroup)certificates;
+            //TempCatalog.Name = "Загруженные документы";
+            //var navParam = new NavigationParameters();
+            //navParam.Add("bld_document", TempCatalog);
+            //_regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(DocumentationExplorerView).Name, navParam);
             //  navParam.Add("bld_documents", new ConveyanceObject(certificates, ConveyanceObjectModes.EditMode.FOR_EDIT));
             //_regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificatesGroupView).Name, navParam);
             //EventMessage event_massage = new EventMessage();

@@ -125,7 +125,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoCommand.MonitorCommandActivity = false;
             ReDoCommand.MonitorCommandActivity = false;
 
-       
+        
            
 
             SaveCommand = new NotifyCommand(OnSave,()=> { return UnDoReDo.HasAnyChangedObjectInAllSystems(); }).ObservesPropertyChangedEvent(UnDoReDo);

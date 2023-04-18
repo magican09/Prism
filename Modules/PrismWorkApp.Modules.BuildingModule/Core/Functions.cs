@@ -516,8 +516,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 access_file_name = openFileDialog.FileName;
             string ConnectionString = @"Driver={Microsoft Access Driver (*.mdb, *.accdb)}; Dbq=" +
                  openFileDialog.FileName + "; Uid = Admin; Pwd =; ";
-         //   string table_name = "Таблица_1";
-            string table_name = openFileDialog.SafeFileName.Replace(".accdb","");
+             string table_name = "Таблица1";
+            //string table_name = openFileDialog.SafeFileName.Replace(".accdb","");
 
             string query = $"SELECT * FROM [{table_name}]";
             //    string query_2 = $"select MSysObjects.name from MSysObjects where    MSysObjects.type In(1, 4, 6) and MSysObjects.name not like '~*' and MSysObjects.name not like 'MSys*' order by MSysObjects.name";

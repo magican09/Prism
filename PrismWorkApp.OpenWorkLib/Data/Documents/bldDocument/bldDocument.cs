@@ -6,7 +6,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public abstract class bldDocument : BindableBase, IbldDocument, IEntityObject
     {
 
-        private DateTime _date;
+        private DateTime _date = DateTime.Now;
         public DateTime Date
         {
             get { return _date; }

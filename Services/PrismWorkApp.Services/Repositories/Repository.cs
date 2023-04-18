@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PrismWorkApp.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,10 @@ namespace PrismWorkApp.Services.Repositories
         public void RemoveRange(IEnumerable<TEntity> entities)
         {
             Context.Set<TEntity>().RemoveRange(entities);
+        }
+        public void SetAsDetached(TEntity entity)
+        {
+             Context.Entry(entity).State= EntityState.Detached;
         }
     }
 }

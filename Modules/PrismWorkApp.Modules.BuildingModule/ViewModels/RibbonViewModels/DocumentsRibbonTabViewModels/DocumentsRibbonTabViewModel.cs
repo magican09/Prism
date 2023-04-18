@@ -179,6 +179,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     certificate.UnitOfMeasurement = measurement;
                 aggregationDocument.AttachedDocuments.Add(certificate);
             }
+            _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.Add(aggregationDocument);
+            aggregationDocument.IsDbBranch = true;
             _appObjectsModel.Documentation.Add(aggregationDocument);
             //_buildingUnitsRepository.Complete();
             //TempCatalog.AttachedDocuments = (bldDocumentsGroup)certificates;

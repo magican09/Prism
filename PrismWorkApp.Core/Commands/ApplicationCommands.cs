@@ -10,7 +10,7 @@
         NotifyCompositeCommand CreateBasedOnCommand { get; }
         NotifyCompositeCommand DeleteCommand { get; }
         NotifyCompositeCommand MoveToCommand { get; }
-        NotifyCompositeCommand MoveFromCommand { get; }
+        NotifyCompositeCommand AddFromCommand { get; }
         NotifyCompositeCommand AddCommand { get; }
 
         //NotifyCompositeCommand CreateWorkCommand { get; }
@@ -124,10 +124,10 @@
         {
             get { return _moveToCommand; }
         }
-        private NotifyCompositeCommand _moveFromCommand = new NotifyCompositeCommand(true);
-        public NotifyCompositeCommand MoveFromCommand
+        private NotifyCompositeCommand _addFromCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand AddFromCommand
         {
-            get { return _moveFromCommand; }
+            get { return _addFromCommand; }
         }
         private NotifyCompositeCommand _addCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand AddCommand

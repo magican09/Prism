@@ -77,7 +77,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand SaveCommand { get; protected set; }
         public NotifyCommand<object> CloseCommand { get; protected set; }
 
-        public NotifyCommand<object> RemoveAggregationDocumentCommand { get; private set; }
+        public NotifyCommand<object> CloseAggregationDocumentCommand { get; private set; }
 
         public NotifyCommand<object> CreateNewMaterialCertificateCommand { get; private set; }
         public NotifyCommand<object> CreatedBasedOnMaterialCertificateCommand { get; private set; }
@@ -109,7 +109,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
          
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
-           DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
+            DataGridLostFocusCommand = new NotifyCommand<object>(OnDataGridLostFocus);
             
             //DataGridCopyingCommand = new NotifyCommand<object>(OnDataGridCopying);
             //DataGridCopyingCellClipboardContentCommand = new NotifyCommand<object>(OnDataGridCopyingCellClipboardContent);
@@ -127,18 +127,23 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                () => { return UnDoReDo.CanReDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             ReDoCommand.Name = "ReDoCommand";
             #region ContextMenu Commands
-            RemoveAggregationDocumentCommand = new NotifyCommand<object>(OnRemoveAggregationDocument,
+         
+            CloseAggregationDocumentCommand = new NotifyCommand<object>(OnCloseAggregationDocument,
                                     (ob) => { return SelectedAggregationDocument != null; } ).ObservesProperty(() => SelectedAggregationDocument);
-            RemoveAggregationDocumentCommand.Name = "Удалить";
+            CloseAggregationDocumentCommand.Name = "Удалить";
 
             CreateNewMaterialCertificateCommand = new NotifyCommand<object>(OnCreateNewMaterialCertificate, (ob) =>
             SelectedAggregationDocument != null).ObservesProperty(() => SelectedAggregationDocument);
+           
             CreateNewMaterialCertificateCommand.Name = "Создать новый документ";
             CreatedBasedOnMaterialCertificateCommand = new NotifyCommand<object>(OnCreatedBasedOnMaterialCertificate,(ob) => 
             { return SelectedDocument is bldMaterialCertificate && SelectedAggregationDocument !=null; })
                 .ObservesProperty(() => SelectedDocument).ObservesProperty(()=>SelectedAggregationDocument);
             CreatedBasedOnMaterialCertificateCommand.Name = "Создать новый на основании..";
-            RemoveMaterialCertificateCommand = new NotifyCommand<object>(OnRemoveMaterialCertificate, CanRemoveMaterialCertificate).ObservesProperty(() => SelectedDocument);
+            
+            RemoveMaterialCertificateCommand = new NotifyCommand<object>(OnRemoveMaterialCertificate, (ob)=>
+            SelectedDocument is bldMaterialCertificate && SelectedAggregationDocument!=null)
+                .ObservesProperty(() => SelectedDocument).ObservesProperty(() => SelectedAggregationDocument); ;
             RemoveMaterialCertificateCommand.Name = "Удалить";
 
             CopyMaterialCertificateCommand = new NotifyCommand<object>(OnCopyMaterialCertificate, (ob) =>
@@ -160,6 +165,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewMaterialCertificateCommand);
             ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnMaterialCertificateCommand);
+            ApplicationCommands.DeleteCommand.RegisterCommand(RemoveMaterialCertificateCommand);
          
             AllUnitsOfMeasurements = new ObservableCollection<bldUnitOfMeasurement>(_buildingUnitsRepository.UnitOfMeasurementRepository.GetAllAsync());
 
@@ -167,19 +173,32 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnPasteMaterialCertificate(object obj)
         {
-                  int insert_index = SelectedAggregationDocument.AttachedDocuments.IndexOf(SelectedDocument)+1;
-            if(insert_index >SelectedAggregationDocument.AttachedDocuments.Count)
+           // bldMaterialCertificate selected_certificate = ((IList)obj)[0] as bldMaterialCertificate;
+           // bldAggregationDocument selected_aggr_document = ((IList)obj)[1] as bldAggregationDocument;
+            bldMaterialCertificate selected_certificate = SelectedDocument;
+            bldAggregationDocument selected_aggr_document = SelectedAggregationDocument;
+
+            int insert_index = selected_aggr_document.AttachedDocuments.IndexOf(SelectedDocument)+1;
+            if(insert_index > selected_aggr_document.AttachedDocuments.Count)
                 foreach (bldDocument document in MaterialCertificatesBuffer)
-                    SelectedAggregationDocument.AttachedDocuments.Add(document);
+                    selected_aggr_document.AttachedDocuments.Add(document);
             foreach (bldDocument document in MaterialCertificatesBuffer)
-                SelectedAggregationDocument.AttachedDocuments.Insert(insert_index, document);
+                selected_aggr_document.AttachedDocuments.Insert(insert_index, document);
          }
 
         private void OnCopyMaterialCertificate(object obj)
         {
-         
+            // bldMaterialCertificate selected_certificate = ((IList)obj)[0] as bldMaterialCertificate;
+            // bldAggregationDocument selected_aggr_document = ((IList)obj)[1] as bldAggregationDocument;
+            bldMaterialCertificate selected_certificate = SelectedDocument;
+            bldAggregationDocument selected_aggr_document = SelectedAggregationDocument;
+
+            List<bldMaterialCertificate> selected_aggr_documents = new List<bldMaterialCertificate>();
+            foreach (bldMaterialCertificate certificae in ((IList)obj)[2] as IList)
+                selected_aggr_documents.Add(certificae);
+
             MaterialCertificatesBuffer.Clear();
-            foreach (bldDocument document in SelectedDocuments)
+            foreach (bldDocument document in selected_aggr_documents)
             {
                 bldMaterialCertificate new_certificate = document.Clone() as bldMaterialCertificate;
                 new_certificate.IsHaveImageFile = false;
@@ -188,7 +207,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             }
         }
 
-        private void OnRemoveAggregationDocument(object obj)
+        private void OnCloseAggregationDocument(object obj)
         {
             bldAggregationDocument selected_AGDocument = SelectedAggregationDocument;
 
@@ -217,7 +236,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
          
            else
             AggregationDocuments.Remove(SelectedAggregationDocument);
-           
+           if(AggregationDocuments.Count>0) 
+                SelectedAggregationDocument = AggregationDocuments[AggregationDocuments.Count-1] as bldAggregationDocument;
         }
 
 
@@ -229,10 +249,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             ContextMenu contextMenu = ((IList)obj)[0] as ContextMenu;
             object clicked_document = ((IList)obj)[1];
-            GridViewCell grid_cell = (GridViewCell)((IList)obj)[2];
+        //   GridViewCell grid_cell = (GridViewCell)((IList)obj)[2];
             var selected_doc = (bldMaterialCertificate)clicked_document;
-            SelectedDocument = selected_doc;
-             IEnumerable items_sourse = contextMenu.ItemsSource;
+          //  SelectedDocument = selected_doc;
+            IEnumerable items_sourse = contextMenu.ItemsSource;
 
           
             switch (clicked_document.GetType().Name)
@@ -274,13 +294,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldMaterialCertificate selected_certificate = ((IList)obj)[0] as bldMaterialCertificate;
             bldAggregationDocument selected_aggr_document = ((IList)obj)[1] as bldAggregationDocument;
-            SelectedDocument = selected_certificate;
-            SelectedAggregationDocument = selected_aggr_document;
-          
+
+            if (_selectedDocument != selected_certificate) SelectedDocument = selected_certificate;
+            if (_selectedAggregationDocument != selected_aggr_document) SelectedAggregationDocument = selected_aggr_document;
+
             SelectedDocuments.Clear();
             foreach (object elm in ((IList)obj)[2] as IList)
                 SelectedDocuments.Add(elm as bldMaterialCertificate);
-           
+
 
         }
 
@@ -382,46 +403,50 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             info.UseShellExecute = true;
             using (var proc = Process.Start(info)) { }
         }
-        private bool CanRemoveMaterialCertificate(object obj)
-        { 
-
-            return SelectedDocument!=null;
-        }
+       
         private void OnRemoveMaterialCertificate(object obj)
-        {
-            bldMaterialCertificate selected_certificate =((IList)obj)[0] as bldMaterialCertificate;
-            bldAggregationDocument selected_aggr_document = ((IList)obj)[1] as bldAggregationDocument;
-            SelectedDocument = selected_certificate;
-            SelectedAggregationDocument = selected_aggr_document;
+        {// bldMaterialCertificate selected_certificate = ((IList)obj)[0] as bldMaterialCertificate;
+         // bldAggregationDocument selected_aggr_document = ((IList)obj)[1] as bldAggregationDocument;
+            bldMaterialCertificate selected_certificate = SelectedDocument;
+            bldAggregationDocument selected_aggr_document = SelectedAggregationDocument;
             if (selected_certificate != null && selected_aggr_document != null)
                 selected_aggr_document.AttachedDocuments.Remove(selected_certificate);
         }
       
         private void OnCreatedBasedOnMaterialCertificate(object obj)
         {
+            // bldMaterialCertificate selected_certificate = ((IList)obj)[0] as bldMaterialCertificate;
+            // bldAggregationDocument selected_aggr_document = ((IList)obj)[1] as bldAggregationDocument;
+            bldMaterialCertificate selected_certificate = SelectedDocument;
+            bldAggregationDocument selected_aggr_document = SelectedAggregationDocument;
+
             bldMaterialCertificate new_certificate = SelectedDocument.Clone() as bldMaterialCertificate;
             new_certificate.IsHaveImageFile = false;
-            if (!SelectedAggregationDocument.IsDbBranch)
+            if (!selected_aggr_document.IsDbBranch)
             {
                 _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Add(new_certificate);
                 new_certificate.IsDbBranch = true;
             }
-            if (SelectedDocument != null && SelectedAggregationDocument != null)
-                SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
+            if (selected_certificate != null && selected_aggr_document != null)
+                selected_aggr_document.AttachedDocuments.Add(new_certificate);
         }
 
 
         private void OnCreateNewMaterialCertificate(object obj)
         {
+            // bldMaterialCertificate selected_certificate = ((IList)obj)[0] as bldMaterialCertificate;
+            // bldAggregationDocument selected_aggr_document = ((IList)obj)[1] as bldAggregationDocument;
+            bldMaterialCertificate selected_certificate = SelectedDocument;
+            bldAggregationDocument selected_aggr_document = SelectedAggregationDocument;
 
-             bldMaterialCertificate new_certificate = new bldMaterialCertificate();
-            if(!SelectedAggregationDocument.IsDbBranch)
+            bldMaterialCertificate new_certificate = new bldMaterialCertificate();
+            if(!selected_aggr_document.IsDbBranch)
             {
                 _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Add(new_certificate);
                 new_certificate.IsDbBranch = true;
             }
-            if (SelectedAggregationDocument != null)
-                SelectedAggregationDocument.AttachedDocuments.Add(new_certificate);
+            if (selected_aggr_document != null)
+                selected_aggr_document.AttachedDocuments.Add(new_certificate);
             
         }
 
@@ -474,9 +499,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         #endregion
         private void OnDataGridLostFocus(object obj)
         {
-            SelectedDocuments.Clear();
-            SelectedDocument = null;
-            SelectedAggregationDocument = null;
+            //SelectedDocuments.Clear();
+            //SelectedDocument = null;
+            //SelectedAggregationDocument = null;
 
         }
 
@@ -527,6 +552,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
             ApplicationCommands.CreateNewCommand.RegisterCommand(CreatedBasedOnMaterialCertificateCommand);
             ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnMaterialCertificateCommand);
+            ApplicationCommands.DeleteCommand.RegisterCommand(RemoveMaterialCertificateCommand);
             UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -543,6 +569,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     AggregationDocuments.Add(arg_document);
                     arg_document.UnDoReDoSystem.SetUnDoReDoSystemAsChildren(UnDoReDo);
                     UnDoReDo.Register(arg_document);
+                    if (SelectedAggregationDocument == null) SelectedAggregationDocument = arg_document;
                 }
                 if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
                 AggregationDocuments.ErrorsChanged += RaiseCanExecuteChanged;

@@ -19,16 +19,20 @@
                     <MultiBinding Converter="{StaticResource     ObjectsToListMultiConverter}">
                         <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}"/>
                         <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=ContextMenu}" Path="DataContext"/>
-                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:GridViewCell}"/>
-
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="DataContext"/>
                     </MultiBinding>
                 </telerik:EventBinding.CommandParameter>
             </telerik:EventBinding>
         </telerik:EventToCommandBehavior.EventBindings>
     </ContextMenu>
-
-    <!--<Style x:Key="FilteringControlStyle" TargetType="{x:Type telerik:FilteringControl}">
-        
-    </Style>-->
     
+    <Style TargetType="TextBox"
+       x:Key="TextBoxEditorStyle">
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style  x:Key="GridViewDataColumnStyle" TargetType="telerik:GridViewDataColumn">
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="EditorStyle" Value="{StaticResource TextBoxEditorStyle}"/>
+    </Style>
 </ResourceDictionary>

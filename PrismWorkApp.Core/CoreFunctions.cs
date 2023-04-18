@@ -34,10 +34,7 @@ namespace PrismWorkApp.Core
                 return FindParent<T>(parentObject);
         }
 
-        public static void ConfirmChangesDialog(object dialogService, string v, Action<IDialogResult> p)
-        {
-            throw new NotImplementedException();
-        }
+     
 
         public static T GetLogicalParent<T>(DependencyObject p_oElement)
     where T : DependencyObject
@@ -321,13 +318,14 @@ namespace PrismWorkApp.Core
         /// <param name="object_name">"Вы действительно хотите  в {object_name}?></param>
         /// <param name="elm_save_action"></param>
         public static void ConfirmChangesDialog
-             (IDialogService dialogService,string object_name,Action<IDialogResult> elm_save_action)
+             (IDialogService dialogService,string object_name,Action<IDialogResult> elm_save_action
+            ,string confirm_but_caption = "Сохранить", string refuse_but_caption = "Не сохранять")
         {
             var dialog_par = new DialogParameters();
             dialog_par.Add("massege",
                $"Вы действительно хотите  в {object_name} ?!");
-            dialog_par.Add("confirm_button_content", "Сохранить");
-            dialog_par.Add("refuse_button_content", "Не сохранять");
+            dialog_par.Add("confirm_button_content", confirm_but_caption);
+            dialog_par.Add("refuse_button_content", refuse_but_caption);
             dialog_par.Add("cancel_button_content", "Отмена");
 
             dialogService.ShowDialog(typeof(ConfirmActionWhithoutCancelDialog).Name,

@@ -516,8 +516,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 access_file_name = openFileDialog.FileName;
             string ConnectionString = @"Driver={Microsoft Access Driver (*.mdb, *.accdb)}; Dbq=" +
                  openFileDialog.FileName + "; Uid = Admin; Pwd =; ";
-            string table_name = "Таблица_1";
-            string query = $"SELECT * FROM {table_name}";
+         //   string table_name = "Таблица_1";
+            string table_name = openFileDialog.SafeFileName.Replace(".accdb","");
+
+            string query = $"SELECT * FROM [{table_name}]";
             //    string query_2 = $"select MSysObjects.name from MSysObjects where    MSysObjects.type In(1, 4, 6) and MSysObjects.name not like '~*' and MSysObjects.name not like 'MSys*' order by MSysObjects.name";
             string BD_FilesDir = Directory.GetCurrentDirectory();
 
@@ -533,7 +535,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 //DataSet dataSet = new DataSet();
                 // var sheme =  connection.GetSchema("Tables").AsEnumerable().Where(r => r.Field<string>("TABLE_TYPE") == "TABLE");
                 //DataTable tableschema = connection.GetSchema(OdbcMetaDataCollectionNames.Tables);
-                string stmt = "SELECT COUNT(*) FROM " + table_name;
+                string stmt = $"SELECT COUNT(*) FROM [{table_name}]";
                 //OdbcCommand command_2 = connection.CreateCommand();
                 //command_2.CommandText = query_2;
 
@@ -547,6 +549,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 OdbcDataReader row = command.ExecuteReader();
                 int file_count = 0;
                 //foreach (DataRow row in dataTable.Rows)
+                string last_material_name = "";
                 while (row.Read())
                 {
                     file_count++;
@@ -554,8 +557,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     {
                         if (row.HasRows)
                         {
+                           
                             bldMaterialCertificate materialCertificate = new bldMaterialCertificate();
-                            var fdf = row["Наименование _материала"];
+                             last_material_name = row["Наименование _материала"].ToString();
                             if (row["Наименование _материала"].ToString() == "") break;
                             materialCertificate.MaterialName = row["Наименование _материала"].ToString();
                             materialCertificate.GeometryParameters = row["Геометрические_параметры"].ToString();
@@ -621,7 +625,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show("Обнаружено не обработанное исключение: " + e.Message, $"Ошибка записи данных:{row["Наименование _материала"]}", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Обнаружено не обработанное исключение: " + e.Message, $"Ошибка записи данных:{last_material_name}", MessageBoxButton.OK, MessageBoxImage.Error);
                         //     break;
                     }
                     // System.Threading.Thread.Sleep(100);

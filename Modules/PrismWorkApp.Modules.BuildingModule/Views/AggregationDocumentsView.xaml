@@ -59,13 +59,14 @@
 
             <telerik:RadGridView  x:Name="mainGridView" telerik:StyleManager.Theme="VisualStudio2019"
                                   ItemsSource="{Binding AggregationDocuments}"
-                                  SelectedItem="{Binding SelectedAggregationDocument,Mode=TwoWay}"
+                                  SelectedItem="{Binding SelectedAggregationDocument, Mode=OneWay}"
                                   ClipboardCopyMode="Default"
                                   AutoGenerateColumns="False" 
-                                  VerticalAlignment="Stretch" >
+                                  VerticalAlignment="Stretch"
+                                   ShowGroupPanel="False" >
 
                 <telerik:RadGridView.InputBindings>
-                    <KeyBinding  Key="Delete" Command="{Binding DataContext.RemoveAggregationDocumentCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"/>
+                    <KeyBinding  Key="Delete" Command="{Binding DataContext.CloseAggregationDocumentCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"/>
                 </telerik:RadGridView.InputBindings>
                 
                 <telerik:RadGridView.Columns>
@@ -91,7 +92,7 @@
                                              ClipboardCopyMode="None"
                                              ClipboardPasteMode="None"
                                              >
-
+ 
                            
                         
                         <telerik:RadGridView.InputBindings>
@@ -150,9 +151,9 @@
                             </telerik:EventToCommandBehavior.EventBindings>
 
                             <telerik:RadGridView.Columns>
-                                <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code}" Width="45" CellStyle="{StaticResource CommonCellStyle}" />
-                                <telerik:GridViewDataColumn Header="Наминование материала" DataMemberBinding = "{Binding MaterialName}" Width="350" CellStyle="{StaticResource CommonCellStyle}"/>
-                                <telerik:GridViewDataColumn Header="Геом. парам." DataMemberBinding = "{Binding GeometryParameters}" Width="50" CellStyle="{StaticResource CommonCellStyle}"/>
+                                <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code}" Width="55" CellStyle="{StaticResource CommonCellStyle}" />
+                                <telerik:GridViewDataColumn Header="Наминование материала" Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding MaterialName}" Width="350" CellStyle="{StaticResource CommonCellStyle}"/>
+                                <telerik:GridViewDataColumn Header="Геом. парам."  Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding GeometryParameters}" Width="50" CellStyle="{StaticResource CommonCellStyle}"/>
                                 <telerik:GridViewDataColumn Header="Кол-во." DataMemberBinding = "{Binding Quantity}" Width="50" CellStyle="{StaticResource CommonCellStyle}"/>
                                 <telerik:GridViewComboBoxColumn  Header="Ед. изм."  Width="50" CellStyle="{StaticResource CommonCellStyle}"
                                                      DataMemberBinding = "{Binding UnitOfMeasurement}"  
@@ -162,8 +163,8 @@
                                 <telerik:GridViewDataColumn Header="Сертиф./Паспорт"  DataMemberBinding = "{Binding Name}" CellStyle="{StaticResource CommonCellStyle}" Width="150" />
                                 <telerik:GridViewDataColumn Header="№ док. о кач."  DataMemberBinding = "{Binding RegId}" CellStyle="{StaticResource CommonCellStyle}" Width="100" />
                                 <telerik:GridViewDataColumn Header="Дата док."  DataMemberBinding = "{Binding Date, ConverterCulture=ru, StringFormat=d}" CellStyle="{StaticResource CommonCellStyle}" Width="100" />
-                                <telerik:GridViewDataColumn Header="Контр. парам."  DataMemberBinding = "{Binding ControlingParament}" CellStyle="{StaticResource CommonCellStyle}" Width="100" />
-                                <telerik:GridViewDataColumn Header="ГОСТ,ТУ..."  DataMemberBinding = "{Binding RegulationDocumentsName}" Width="300" />
+                                <telerik:GridViewDataColumn Header="Контр. парам."  Style="{StaticResource GridViewDataColumnStyle}"   DataMemberBinding = "{Binding ControlingParament}" CellStyle="{StaticResource CommonCellStyle}" Width="100" />
+                                <telerik:GridViewDataColumn Header="ГОСТ,ТУ..."  Style="{StaticResource GridViewDataColumnStyle}"  DataMemberBinding = "{Binding RegulationDocumentsName}" Width="300" />
                                 <telerik:GridViewDataColumn  Header="Скан" DataMemberBinding="{Binding ImageFile}"  Width="150">
                                     <telerik:GridViewDataColumn.CellTemplate>
                                         <DataTemplate>

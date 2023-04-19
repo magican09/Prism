@@ -590,6 +590,11 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                                     materialCertificate.Date = Convert.ToDateTime(row["Дата_документа"]?.ToString());
                                     materialCertificate.StartTime = materialCertificate.Date;
                                 }
+                                else
+                                {
+                                    materialCertificate.Date = DateTime.MinValue;
+                                    materialCertificate.StartTime = materialCertificate.Date;
+                                }
                             }
 
                             materialCertificate.ControlingParament = row["Контрольный_параметр"].ToString();

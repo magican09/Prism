@@ -351,7 +351,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         #endregion
         #region Registration 
 
-       
+        public void Register(IJornalable obj)
+        {
+            this.Register(obj, true, true);
+        }
         /// <summary>
         /// Метод для регистрации объекта  реализуещго IJornalable в системе. В системе регистрируются как сам объект,
         /// так и все его IJornalable свойства на всю глубину цепочек объектов IJornalable, пока не встретит 
@@ -359,17 +362,17 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// </summary>
         /// <param name="obj"> Регистрируемый объект IJornalable</param>
         /// <param name="enable_outo_registration"> Влючает функую авторегистрации в объекте..</param>
-        public void Register(IJornalable obj, bool enable_outo_registration = true,bool is_db_branch=false)
+        public void Register(IJornalable obj, bool enable_outo_registration = true, bool is_db_branch = false)
         {
 
             if (obj == null) { throw new Exception("Попытка регистрации в системе UnDoReDo объекта со значением null"); }
             //if (this.IsRegistered(obj))//Если объект зарегисприван в данной или в дочерней системе - выходим
             //obj.UnDoReDoSystem.UnRegister(obj);//Если объект и меет регисрацию в другой системе - удаляем эту регисрацию.. это противорчечи   циклу  ниже, но посмотрим..
-
-            if (this._RegistedModels.ContainsKey(obj) && obj.UnDoReDoSystem.Id == this.Id)//Если объект зарегисприван в данной  системе - выходим
+          
+            if (this._RegistedModels.ContainsKey(obj) && obj.UnDoReDoSystem!=null &&  obj.UnDoReDoSystem.Id == this.Id)//Если объект зарегисприван в данной  системе - выходим
                 return;
-            if (this._RegistedModels.ContainsKey(obj) && obj.UnDoReDoSystem.Id != this.Id)
-            { obj.UnDoReDoSystem = this; return; }
+            if (this._RegistedModels.ContainsKey(obj) && (obj.UnDoReDoSystem==null || obj.UnDoReDoSystem.Id != this.Id)) //Если объект был ранее зарегистрирован в этой системеме, но зарегистрирована в другой 
+               { obj.UnDoReDoSystem = this; return; }                                         // просто меняем текущую систему объектв на эту..
             //var all_object_systems = this.ChildrenSystems.Where(s => s._UnDoCommands.Where(cm => cm.ChangedObjects.Where(ob => ob.Id == obj.Id).Any()).Any()).ToList();
             //if (obj.UnDoReDoSystem != null && obj.UnDoReDoSystem.Id != this.Id && all_object_systems.Count == 0)
             //    obj.UnDoReDoSystem.UnRegister(obj);//Если объект и меет регисрацию в другой системе - удаляем эту регисрацию.. это противорчечи   циклу  ниже, но посмотрим..
@@ -379,19 +382,19 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             //foreach (IUnDoReDoSystem unDoReDo in all_object_systems)//Если объект зарегисрирован в дочених системах...
             //     unDoReDo.UnRegister(obj); //Удаляем регисрацию в дочерних системах, и регисрируем объект в текущей
 
-            if (obj.UnDoReDoSystem != null && obj.UnDoReDoSystem.Id != this.Id) //Если существует если объект зарегисрирован в другой системе..
-            {
-                var all_chages_in_obj = new List<IJornalable>(obj.GetAllChangedObjects()); //Получаем внутренние объкеты объкта, в которых были несохраненые изменения
-                                                                                           ////Выполнятеся когда пытаются зарегистрировать объект имеющий изменения в дочерней системе... 
-                if (all_chages_in_obj.Count > 0 && this.SystemHaveNotSavedObjects != null) //Если в обработчик наличия в регистриуемом объекте несохранненых подобъектов влючен - вызывем его...
-                    this.SystemHaveNotSavedObjects?.Invoke(this, new UnDoReDoSystemEventArgs(all_chages_in_obj));
-                else if (all_chages_in_obj.Count > 0) //Если обработчика нет  - то автоматически сохраняем все изменнеия в объекте.
-                    foreach (IJornalable non_save_object in all_chages_in_obj)
-                        obj.UnDoReDoSystem.Save(non_save_object);
+            //if (obj.UnDoReDoSystem != null && obj.UnDoReDoSystem.Id != this.Id) //Если объект зарегисрирован в другой системе..
+            //{
+            //    var all_chages_in_obj = new List<IJornalable>(obj.GetAllChangedObjects()); //Получаем внутренние объкеты объкта, в которых были несохраненые изменения
+            //                                                                               ////Выполнятеся когда пытаются зарегистрировать объект имеющий изменения в дочерней системе... 
+            //    if (all_chages_in_obj.Count > 0 && this.SystemHaveNotSavedObjects != null) //Если в обработчик наличия в регистриуемом объекте несохранненых подобъектов влючен - вызывем его...
+            //        this.SystemHaveNotSavedObjects?.Invoke(this, new UnDoReDoSystemEventArgs(all_chages_in_obj));
+            //    else if (all_chages_in_obj.Count > 0) //Если обработчика нет  - то автоматически сохраняем все изменнеия в объекте.
+            //        foreach (IJornalable non_save_object in all_chages_in_obj)
+            //            obj.UnDoReDoSystem.Save(non_save_object);
 
-                //obj.UnDoReDoSystem.UnRegister(obj);//то удаляем его из родительской системы
-                is_db_branch = obj.IsDbBranch;
-            }
+            //    //obj.UnDoReDoSystem.UnRegister(obj);//то удаляем его из родительской системы
+            //    is_db_branch = obj.IsDbBranch;
+            //}
 
             //if (ParentUnDoReDo != null) //Если существует родительская система..
             //{
@@ -528,8 +531,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             {
                 foreach (IJornalable reg_obj in child_system._RegistedModels.Keys)///Перерегистрируем все объекты бывшей дочерней сисемы
                 {                                                                 /// в текущей
-                    // child_system.UnRegister(reg_obj);
-                    // this.Register(reg_obj);
+                    //child_system.UnRegister(reg_obj);
+                    this.Register(reg_obj);
                     reg_obj.UnDoReDoSystem = this;
                 }
                 child_system.ParentUnDoReDo = null;
@@ -590,6 +593,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             }
         }
 
+        public void SetUnDoReDo_System(IUnDoReDoSystem unDoReDoSystem)
+        {
+            this.UnDoReDo_System = unDoReDoSystem;
+        }
         /// <summary>
         /// Метод добавляет одну систему UnDoReDoSystem  в другую в качетве команды IUnDoRedoCommand (так как UnDoReDoSystem
         /// реализует так же IUnDoRedoCommand).После этого добвленная система вомприниматеся как составная команда 
@@ -599,6 +606,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public void AddUnDoReDoSysAsCommand(IUnDoReDoSystem unDoReDo)
         {
             unDoReDo.Date = DateTime.Now;
+            unDoReDo.SetUnDoReDo_System(this);
             _UnDoCommands.Push((UnDoReDoSystem)unDoReDo);
             foreach (IJornalable element in unDoReDo.ChangedObjects)
                 if (!this.ChangedObjects.Contains(element))
@@ -632,6 +640,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 }
                 saved_obj.ChangesJornal.Remove(command);//Удаляем команду в текущем объекте
                 this._UnDoCommands.Remove(command); //Удаляем команду из   стека UnDo ...
+                if (command is IUnDoReDoSystem 
+                    undoredo_command) undoredo_command.SaveAll();
                 this._ReDoCommands.Clear();///Очищаем стек  ReDo
             }
             if (this.ChangedObjects.Contains(saved_obj))

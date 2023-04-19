@@ -13,6 +13,12 @@ namespace PrismWorkApp.Services.Repositories
             _connectionString = connectionString;
             // Database.EnsureDeleted();
             Database.EnsureCreated();
+            ChangeTracker.StateChanged += ChangeTracker_StateChanged;
+        }
+
+        private void ChangeTracker_StateChanged(object sender, Microsoft.EntityFrameworkCore.ChangeTracking.EntityStateChangedEventArgs e)
+        {
+          
         }
         #region Building Construction
         public virtual DbSet<bldProject> Projects { get; set; }
@@ -228,6 +234,11 @@ namespace PrismWorkApp.Services.Repositories
             foreach (IEntityObject entity in deletedAuditedEntities)
                 entity.State = OpenWorkLib.Data.Service.EntityState.Unchanged;
 
+            var AlLChangedEntities = ChangeTracker.Entries<IEntityObject>()
+                .Where(p => p.State != EntityState.Unchanged);
+
+            var AlLChangedEntities2 = ChangeTracker.Entries<IEntityObject>()
+                .Where(p => p.State == EntityState.Unchanged);
             var now = DateTime.UtcNow;
             int save_result = 0; ;
             try

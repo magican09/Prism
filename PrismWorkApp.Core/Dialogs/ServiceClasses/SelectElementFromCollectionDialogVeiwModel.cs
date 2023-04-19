@@ -8,7 +8,7 @@ namespace PrismWorkApp.Core.Dialogs
 {
     public class SelectElementFromCollectionDialogVeiwModel<TContainer, T> : BindableBase, IDialogAware
         where TContainer : ICollection, IList, new()
-        where T : OpenWorkLib.Data.IEntityObject, new()
+        where T : OpenWorkLib.Data.IEntityObject
     {
         private string _title = "Выбрать";
         public string Title
@@ -69,7 +69,7 @@ namespace PrismWorkApp.Core.Dialogs
 
         private void OnCreateNew()
         {
-            SelectedElement = new T();
+           // SelectedElement = new T();
             CurrentCollection.Add(SelectedElement);
             //var result = ButtonResult.Yes;
             //var param = new DialogParameters();

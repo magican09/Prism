@@ -17,5 +17,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             Name = "Ведомости";
         }
+        public bldAggregationDocumentsGroup(List<bldDocument> _list) : base(_list)
+        {
+            Name = "Ведомости";
+        }
     }
 }

@@ -237,7 +237,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                         if (create_new_atrb == null && navigate_atrb== null) //Если объяет свойство не навигационный и без запрета накопирование  
                         {
                             if (prop_val is ICloneable clonable_prop_val && prop_info.SetMethod != null)
-                                prop_info.SetValue(new_object, clonable_prop_val.Clone());
+                                //  prop_info.SetValue(new_object, clonable_prop_val.Clone());
+                                prop_info.SetValue(new_object, clonable_prop_val);
                             else if (prop_val is IList prop_val_list)
                             {
                                 foreach (object element in prop_val_list)

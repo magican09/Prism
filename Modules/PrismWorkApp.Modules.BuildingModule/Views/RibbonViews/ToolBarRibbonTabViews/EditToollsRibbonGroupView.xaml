@@ -15,6 +15,8 @@
                       Command="{Binding  ApplicationCommands.DeleteCommand}"/>
         <RibbonButton Label="Добавить из..."   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/arrow_down.png" 
                       Command="{Binding  ApplicationCommands.AddFromCommand}"/>
+        <RibbonButton Label="Добавить в..."   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/arrow_up.png" 
+                      Command="{Binding ApplicationCommands.AddToCommand}"/>
         <RibbonButton Label="Переместить в..."   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/32x32/arrow_up.png" 
                       Command="{Binding ApplicationCommands.MoveToCommand}"/>
         <RibbonButton Label="Выгрузить ИД"   LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/48x48/32.png" 

@@ -32,6 +32,7 @@
                                             ItemContainerStyle="{StaticResource MenuItemContainerStyle}"
                                             ItemsSource="{Binding DataContext.CommonCommands,
                 RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}"  >
+            
             </ContextMenu>-->
 
             <Style x:Key="CommonCellStyle" TargetType="{x:Type telerik:GridViewCell}" >
@@ -85,7 +86,8 @@
                                              AutoGenerateColumns="False"
                                              IsFilteringAllowed="True"
                                              RowIndicatorVisibility="Visible" 
-                                             SelectionMode="Single"
+                                             SelectionMode="Extended"
+                                             
                                              CanUserSelect="True"
                                              CanUserDeleteRows="False"
                                              ShowGroupPanel="False" 

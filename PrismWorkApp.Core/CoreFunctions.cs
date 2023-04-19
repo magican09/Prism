@@ -529,7 +529,7 @@ namespace PrismWorkApp.Core
                string message = "",
                string collectionName = "")
            where TContainer : ICollection
-           where T : new()
+           where T : class
         {
 
             var dialog_par = new DialogParameters();

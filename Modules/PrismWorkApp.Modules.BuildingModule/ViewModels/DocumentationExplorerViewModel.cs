@@ -574,6 +574,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 case (nameof(bldAggregationDocument)):
                     {
                         bldAggregationDocument aggregationDocument = d_clicked_object as bldAggregationDocument;
+                        UnDoReDo.Save(aggregationDocument);
                         //  if (aggregationDocument.AttachedDocuments.Count > 0 && aggregationDocument.AttachedDocuments[0] is bldMaterialCertificate)
                         {
                             NavigationParameters navParam = new NavigationParameters();

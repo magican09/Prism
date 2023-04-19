@@ -39,11 +39,9 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// </summary>
         /// <param name="obj">Удаляемы из системы объект</param>
         void UnRegister(IJornalable obj);
-        /// <summary>
-        /// Метод удаляет регистрацию объекта и всего дерерва объектов по иерархии внурь.
-        /// </summary>
-        /// <param name="obj"></param>
-      //  public void UnRegisterAll(IJornalable obj);
+        public void SetUnDoReDo_System(IUnDoReDoSystem unDoReDoSystem);
+
+        public void Register(IJornalable obj);
         /// <summary>
         /// Метод для регистрации объекта  реализуещго IJornalable в системе. В системе регистрируются как сам объект,
         /// так и все его IJornalable свойства на всю глубину цепочек объектов IJornalable, пока не встретит 

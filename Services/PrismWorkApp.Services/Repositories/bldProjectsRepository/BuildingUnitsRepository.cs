@@ -60,6 +60,12 @@ namespace PrismWorkApp.Services.Repositories
             |(ent is INameableObservableCollection coll_ent && !DB_all_changed_objects.Contains(coll_ent.Owner)));
             
 
+          
+            var saved_changed_objects = unDoReDo._RegistedModels.Keys.Where(ob => ob.IsDbBranch && ob.State != OpenWorkLib.Data.Service.EntityState.Unchanged).ToList();
+            foreach (IEntityObject element in saved_changed_objects)
+            {
+                element.State = OpenWorkLib.Data.Service.EntityState.Unchanged;
+            }
             return this.Complete();
         }
         public void Dispose()

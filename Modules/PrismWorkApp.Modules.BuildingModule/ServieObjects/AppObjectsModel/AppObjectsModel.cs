@@ -43,7 +43,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             _dialogService = dialogService;
             _applicationCommands = applicationCommands;
             UnDoReDo = unDoReDoSystem;
-            UnDoReDo.Register(AllModels);
+            UnDoReDo.Register(AllModels,true,false);
             
             //    UnDoReDo = unDoReDoSystem;
             Documentation.Name = "Документация";

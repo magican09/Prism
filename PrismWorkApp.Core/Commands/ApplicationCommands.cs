@@ -11,6 +11,7 @@
         NotifyCompositeCommand DeleteCommand { get; }
         NotifyCompositeCommand MoveToCommand { get; }
         NotifyCompositeCommand AddFromCommand { get; }
+        NotifyCompositeCommand AddToCommand { get; }
         NotifyCompositeCommand AddCommand { get; }
 
         //NotifyCompositeCommand CreateWorkCommand { get; }
@@ -129,6 +130,12 @@
         {
             get { return _addFromCommand; }
         }
+        private NotifyCompositeCommand _addToCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand AddToCommand
+        {
+            get { return _addToCommand; }
+        }
+        
         private NotifyCompositeCommand _addCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand AddCommand
         {

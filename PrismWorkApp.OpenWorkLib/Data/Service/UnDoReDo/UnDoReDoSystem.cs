@@ -371,8 +371,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
           
             if (this._RegistedModels.ContainsKey(obj) && obj.UnDoReDoSystem!=null &&  obj.UnDoReDoSystem.Id == this.Id)//Если объект зарегисприван в данной  системе - выходим
                 return;
-            if (this._RegistedModels.ContainsKey(obj) && (obj.UnDoReDoSystem==null || obj.UnDoReDoSystem.Id != this.Id)) //Если объект был ранее зарегистрирован в этой системеме, но зарегистрирована в другой 
-               { obj.UnDoReDoSystem = this; return; }                                         // просто меняем текущую систему объектв на эту..
+           // if (this._RegistedModels.ContainsKey(obj) && (obj.UnDoReDoSystem==null || obj.UnDoReDoSystem.Id != this.Id)) //Если объект был ранее зарегистрирован в этой системеме, но зарегистрирована в другой 
+            //   { obj.UnDoReDoSystem = this; return; }                                         // просто меняем текущую систему объектв на эту..
             //var all_object_systems = this.ChildrenSystems.Where(s => s._UnDoCommands.Where(cm => cm.ChangedObjects.Where(ob => ob.Id == obj.Id).Any()).Any()).ToList();
             //if (obj.UnDoReDoSystem != null && obj.UnDoReDoSystem.Id != this.Id && all_object_systems.Count == 0)
             //    obj.UnDoReDoSystem.UnRegister(obj);//Если объект и меет регисрацию в другой системе - удаляем эту регисрацию.. это противорчечи   циклу  ниже, но посмотрим..
@@ -427,11 +427,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             obj.PropertyBeforeChanged += OnModelPropertyBeforeChanged;//Событие возникающее в региструемом объекте перед изменением свойства
             obj.UnDoReDoCommandCreated += OnObservedCommandCreated;//Событие возникающее в региструемом коллекции  при применение любой команды IUnDoReDoCommand
             obj.IsAutoRegistrateInUnDoReDo = enable_outo_registration;
-            _RegistedModels.Add(obj, this);
+             if(!_RegistedModels.Where(el=>el.Key.Id==obj.Id).Any()) 
+                _RegistedModels.Add(obj, this);
             if (obj.State == EntityState.Detached)
                 obj.State = EntityState.Unchanged;
             obj.IsDbBranch = is_db_branch;
-            obj.JornalingOn();
+           
             ///Пробегаемся по свойствам и рекурсивно регистрируем все свойства, которые тоже IJornalable
             var props_infoes = obj.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
             foreach (PropertyInfo propertyInfo in props_infoes)
@@ -440,7 +441,10 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 var attr = propertyInfo.GetCustomAttribute<NotJornalingAttribute>();//Проверяем не помченно ли свойтво атрибутом [NotJornalin]
                 if (prop_val is IJornalable jornable_prop && attr == null)//Если свойтво IJornable и не помчено атрибутом 
                     this.Register(jornable_prop, enable_outo_registration, is_db_branch);
+
             }
+
+            obj.JornalingOn();
             OnPropertyChanged("Register");
 
         }

@@ -23,17 +23,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public void Execute(object parameter = null)
         {
             _Collection.JornalingOff();
-            
-            _CollectionState = _Collection.State;
-          //  _ItemState = _Item.State;
-           // _OwnerState = _Collection.Owner.State;
+
+            //  _ItemState = _Item.State;
 
             //if (UnDoReDo_System.Contains(_Item))
             //    _Item.State = EntityState.Modified;
             //else
             //    _Item.State = EntityState.Added;
+            _CollectionState = _Collection.State;
+            _OwnerState = _Collection.Owner.State;
             _Collection.State = EntityState.Modified;
-           // _Collection.Owner.State = EntityState.Modified;
+            _Collection.Owner.State = EntityState.Modified;
            
             _Collection.Add(_Item);
             _Item.ChangesJornal.Add(this);
@@ -47,9 +47,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             _Collection.JornalingOff();
           
-               _Item.State = _ItemState;
+             //  _Item.State = _ItemState;
             _Collection.State = _CollectionState;
-            //_Collection.Owner.State = _OwnerState;
+            _Collection.Owner.State = _OwnerState;
 
             _Collection.Remove(_Item);
             _Item.ChangesJornal.Remove(this);
@@ -66,16 +66,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
             UnDoReDo_System = collection.UnDoReDoSystem;
 
             _Collection.JornalingOff();
+            //  _ItemState = _Item.State;
             _CollectionState = _Collection.State;
-          //  _ItemState = _Item.State;
-            //_OwnerState = _Collection.Owner.State;
+            _OwnerState = _Collection.Owner.State;
 
             //if (UnDoReDo_System.Contains(_Item))
             //    _Item.State = EntityState.Modified;
             //else
             //    _Item.State = EntityState.Added;
             _Collection.State = EntityState.Modified;
-           // _Collection.Owner.State = EntityState.Modified;
+            _Collection.Owner.State = EntityState.Modified;
 
             _Collection.Add(_Item);
             _Item.ChangesJornal.Add(this);

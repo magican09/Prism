@@ -82,7 +82,7 @@
                     <DataTemplate>
                         <telerik:RadGridView x:Name="childGridView" telerik:StyleManager.Theme="VisualStudio2019" 
                                              ItemsSource="{Binding AttachedDocuments}" 
-                                             SelectedItem="{Binding DataContext.SelectedDocument, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl},Mode=TwoWay}"  
+                                             SelectedItem="{Binding DataContext.SelectedDocument, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"  
                                              AutoGenerateColumns="False"
                                              IsFilteringAllowed="True"
                                              RowIndicatorVisibility="Visible" 
@@ -155,7 +155,7 @@
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code}" Width="55" CellStyle="{StaticResource CommonCellStyle}" />
                                 <telerik:GridViewDataColumn Header="Наминование материала" Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding MaterialName}" Width="350" CellStyle="{StaticResource CommonCellStyle}"/>
-                                <telerik:GridViewDataColumn Header="Геом. парам."  Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding GeometryParameters}" Width="50" CellStyle="{StaticResource CommonCellStyle}"/>
+                                <telerik:GridViewDataColumn Header="Геом. парам."  Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding GeometryParameters}" Width="100" CellStyle="{StaticResource CommonCellStyle}"/>
                                 <telerik:GridViewDataColumn Header="Кол-во." DataMemberBinding = "{Binding Quantity}" Width="50" CellStyle="{StaticResource CommonCellStyle}"/>
                                 <telerik:GridViewComboBoxColumn  Header="Ед. изм."  Width="50" CellStyle="{StaticResource CommonCellStyle}"
                                                      DataMemberBinding = "{Binding UnitOfMeasurement}"  

@@ -314,7 +314,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         protected override void SetItem(int index, TEntity item)
         {
-           
+
+            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
+                UnDoReDoSystem.Register(item, true, item.IsDbBranch | this.IsDbBranch);
+            if (!item.Parents.Contains(this)) item.Parents.Add(this);
+            if (!this.Children.Contains(item)) this.Children.Add(item);
 
             if (b_jornal_recording_flag)
             {
@@ -324,16 +328,17 @@ namespace PrismWorkApp.OpenWorkLib.Data
             else
             {
                 base.SetItem(index, item);
+               
             }
-            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
-                UnDoReDoSystem.Register(item, true, item.IsDbBranch|this.IsDbBranch);
-            if (!item.Parents.Contains(this)) item.Parents.Add(this);
-            if (!this.Children.Contains(item)) this.Children.Add(item);
+            
 
         }
         protected override void InsertItem(int index, TEntity item)
         {
-           
+            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
+                UnDoReDoSystem.Register(item, true, item.IsDbBranch | this.IsDbBranch);
+            if (!item.Parents.Contains(this)) item.Parents.Add(this);
+            if (!this.Children.Contains(item)) this.Children.Add(item);
 
             if (b_jornal_recording_flag)
             {
@@ -342,11 +347,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
+                
+               
                 base.InsertItem(index, item);
-                if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(item))
-                    UnDoReDoSystem.Register(item, true, item.IsDbBranch|this.IsDbBranch);
-                if (!item.Parents.Contains(this)) item.Parents.Add(this);
-                if (!this.Children.Contains(item)) this.Children.Add(item);
             }
            
 
@@ -355,7 +358,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         protected override void RemoveItem(int index)
         {
             TEntity item = Items[index];
-            
+            if (item.Parents.Contains(this)) item.Parents.Remove(this);
+            if (this.Children.Contains(item)) this.Children.Remove(item);
+
             if (b_jornal_recording_flag)
             {
                 RemoveItemCommand<TEntity> Command = new RemoveItemCommand<TEntity>(item, index, this);
@@ -363,16 +368,22 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
+               
+               
                 base.RemoveItem(index);
-                if (item.Parents.Contains(this)) item.Parents.Remove(this);
-                if (this.Children.Contains(item)) this.Children.Remove(item);
             }
            
         }
 
         protected override void ClearItems()
         {
-           
+            if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null)
+                foreach (IEntityObject item in this)
+                {
+                    if (item.Parents.Contains(this)) item.Parents.Remove(this);
+                    if (this.Children.Contains(item)) this.Children.Remove(item);
+                }
+
             if (b_jornal_recording_flag)
             {
                 ClearCommand<TEntity> Command = new ClearCommand<TEntity>( this);
@@ -380,14 +391,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
-                base.ClearItems();
+              
 
-                if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null)
-                    foreach (IEntityObject item in this)
-                    {
-                        if (item.Parents.Contains(this)) item.Parents.Remove(this);
-                        if (this.Children.Contains(item)) this.Children.Remove(item);
-                    }
+                
+
+                base.ClearItems();
             }
 
         }

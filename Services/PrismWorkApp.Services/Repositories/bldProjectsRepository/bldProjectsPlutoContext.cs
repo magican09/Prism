@@ -14,11 +14,18 @@ namespace PrismWorkApp.Services.Repositories
             // Database.EnsureDeleted();
             Database.EnsureCreated();
             ChangeTracker.StateChanged += ChangeTracker_StateChanged;
+            ChangeTracker.Tracked += ChangeTracker_Tracked;
+        }
+
+        private void ChangeTracker_Tracked(object sender, Microsoft.EntityFrameworkCore.ChangeTracking.EntityTrackedEventArgs e)
+        {
+           
         }
 
         private void ChangeTracker_StateChanged(object sender, Microsoft.EntityFrameworkCore.ChangeTracking.EntityStateChangedEventArgs e)
         {
-          
+           // IEntityObject entity = (IEntityObject)e.Entry.Entity;
+         //   entity.State = OpenWorkLib.Data.Service.EntityState.Unchanged;
         }
         #region Building Construction
         public virtual DbSet<bldProject> Projects { get; set; }
@@ -242,7 +249,7 @@ namespace PrismWorkApp.Services.Repositories
             var now = DateTime.UtcNow;
             int save_result = 0; ;
             try
-            {
+              {
                 save_result = base.SaveChanges();
             }
             catch (DbUpdateConcurrencyException ex)

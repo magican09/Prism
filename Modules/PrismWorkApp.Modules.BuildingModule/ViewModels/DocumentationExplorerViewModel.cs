@@ -349,7 +349,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
                     }, "Удалить", "Не удалять");
 
-                document = null;
+                  document = null;
                 _buildingUnitsRepository.Complete();
             }
 
@@ -392,7 +392,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 selected_object = Documentation;
             bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(
                 _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync()
-                .Where(d => d.AttachedDocuments.Count > 0 && d.AttachedDocuments[0].GetType() == typeof(bldMaterialCertificate)).ToList());
+                .Where(d => d.AttachedDocuments.Count > 0 && d.AttachedDocuments[0].GetType() == typeof(bldMaterialCertificate) &&
+                !Documentation.Where(dc=>dc.Id==d.Id).Any()).ToList());
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
                       (All_AggregationDocuments, _dialogService, (result) =>
                       {

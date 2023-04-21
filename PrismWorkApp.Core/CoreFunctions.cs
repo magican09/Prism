@@ -255,21 +255,7 @@ namespace PrismWorkApp.Core
                $"Вы действительно хотите {action_name} {element_type_name} ?!");
             dialog_par.Add("confirm_button_content", confirm_action_name);
             dialog_par.Add("refuse_button_content", cencel_action_name);
-            dialogService.ShowDialog(typeof(ConfirmActionWhithoutCancelDialog).Name, dialog_par, result =>
-           {
-               if (result.Result == ButtonResult.Yes)
-               {
-                   var res_massage = result.Parameters.GetValue<string>("confirm_dialog_param");
-                   var p = new DialogParameters();
-                   p.Add("message", $"Готово!");
-                   elm_save_action.Invoke(new DialogResult(ButtonResult.Yes));
-                   dialogService.ShowDialog(typeof(MessageDialog).Name, p, (r) => { });
-               }
-               if (result.Result == ButtonResult.No)
-               {
-                   elm_save_action.Invoke(new DialogResult(ButtonResult.No));
-               }
-           });
+            dialogService.ShowDialog(typeof(ConfirmActionWhithoutCancelDialog).Name, dialog_par, elm_save_action);
 
         }
     

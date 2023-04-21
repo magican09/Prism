@@ -18,6 +18,10 @@ namespace PrismWorkApp.Modules.BuildingModule
             Owner = owner;
 
         }
+        public DataItemCollection()
+        {
+
+        }
         private DataItem _owner;
 
         public DataItem Owner

@@ -75,18 +75,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
             member = val;
             if (member is IEntityObject entity_member)
             {
-                if(entity_member is INameableObservableCollection nameble_collection_mamber)
+                if (entity_member is INameableObservableCollection nameble_collection_mamber)
                 {
                     nameble_collection_mamber.Owner = this;
                 }
                 if (!entity_member.Parents.Contains(this)) entity_member.Parents.Add(this);
                 if (!this.Children.Contains(entity_member)) this.Children.Add(entity_member);
-                if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(entity_member)) 
-                        UnDoReDoSystem.Register(entity_member,true, entity_member.IsDbBranch|this.IsDbBranch);
+                if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null && !UnDoReDoSystem.IsRegistered(entity_member))
+                    UnDoReDoSystem.Register(entity_member, true, entity_member.IsDbBranch | this.IsDbBranch);
             }
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             return true;
-           
+
         }
         protected bool SetProperty<T>(ref T member, T val, [CallerMemberName] string propertyName = null, bool jornal_mode = false)
         {
@@ -133,8 +133,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         #region IJornaling
 
-       
-        private bool _isDbBranch=false;
+
+        private bool _isDbBranch = false;
         [NotMapped]
         [NotJornaling]
         public bool IsDbBranch
@@ -154,6 +154,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private IUnDoReDoSystem _unDoReDoSystem;
         [NotJornaling]
         [NotMapped]
+        [CreateNewWhenCopy]
         public IUnDoReDoSystem UnDoReDoSystem
         {
             get { return _unDoReDoSystem; }
@@ -165,6 +166,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         private ObservableCollection<IUnDoRedoCommand> _changesJornal = new ObservableCollection<IUnDoRedoCommand>();
         [NotJornaling]
         [NotMapped]
+        [CreateNewWhenCopy]
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal
         {
             get { return _changesJornal; }
@@ -179,11 +181,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public void JornalingOn()
         {
-            if (b_jornal_recording_flag == false && UnDoReDoSystem!=null)
+            if (b_jornal_recording_flag == false && UnDoReDoSystem != null)
                 b_jornal_recording_flag = true;
         }
 
-       
+
         #endregion
         public BindableBase()
         {
@@ -234,20 +236,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 {
                     if (prop_val != null)
                     {
-                        if (create_new_atrb == null && navigate_atrb== null) //Если объяет свойство не навигационный и без запрета накопирование  
+                        if (create_new_atrb == null && navigate_atrb == null) //Если объяет свойство не навигационный и  без указания на создания новго объекта   
                         {
-                            if (prop_val is ICloneable clonable_prop_val && prop_info.SetMethod != null)
-                                //  prop_info.SetValue(new_object, clonable_prop_val.Clone());
-                                prop_info.SetValue(new_object, clonable_prop_val);
-                            else if (prop_val is IList prop_val_list)
+                            if (prop_val is IList prop_val_list)
                             {
-                                foreach (object element in prop_val_list)
-                                {
-                                    (new_object_prop_val as IList).Add(element);
-                                }
+                                if (prop_val_list is ICloneable clonable_prop_val_list)
+                                    new_object_prop_val = clonable_prop_val_list.Clone();
+                                else
+                                    foreach (object element in prop_val_list)
+                                        (new_object_prop_val as IList).Add(element);
+                                prop_info.SetValue(new_object, new_object_prop_val);
+
                             }
                             else
-                               if (prop_info.SetMethod != null) prop_info.SetValue(new_object, prop_val);
+                                if (prop_info.SetMethod != null) prop_info.SetValue(new_object, prop_val);
 
                         }
                         if (create_new_atrb != null && navigate_atrb == null && prop_info.SetMethod != null) //Если стоит атрибут "создать новый при копировании"
@@ -256,9 +258,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                             prop_info.SetValue(new_object, prop_val);
                         }
                         if (navigate_atrb != null && prop_info.SetMethod != null) //Если свойство навигационное 
-                        {
                             prop_info.SetValue(new_object, null);
-                        }
                     }
                 }
                 else

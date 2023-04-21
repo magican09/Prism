@@ -497,16 +497,17 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// <param name="child_system">Сисема, которую надо уставновить в качестве доченей.</param>
         public void SetUnDoReDoSystemAsChildren(IUnDoReDoSystem child_system)
         {
+            if (this.Id == child_system.Id) return;
             ///Если в системе регистриуюется дочерняя система, то объекты которые зарегирированы в дочерней системе
             ///удаляем регистрацию в родительской системе, что бы не дублировались записи об изменениях в двух системах
-            if (!ChildrenSystems.Contains(child_system) && child_system.ParentUnDoReDo != this)
+            if (!ChildrenSystems.Where(s=>s.Id==child_system.Id).Any())
             {
                 //if (this._UnDoCommands.Count > 0)//Если в родительской к
                 //{
                 //  List<IJornalable> chnaged_objs=  new List<IJornalable>(ChangedObjects.Where(ob => ob != null)).ToList();
                 //    SystemHaveNotSavedObjects?.Invoke(this, new UnDoReDoSystemEventArgs(chnaged_objs));
                 //}
-                if (child_system.ParentUnDoReDo != null)///Если регистрируемая система уже имела родительскую систему
+                if (child_system.ParentUnDoReDo != null && child_system.ParentUnDoReDo.Id != this.Id)///Если регистрируемая система уже имела родительскую систему
                     child_system.UnSetUnDoReDoSystemAsChildren(child_system.ParentUnDoReDo);//удяляем регисрацию из родительской системы
 
                 //foreach (IJornalable reg_obj in child_system._RegistedModels.Keys)   ///Проходим по всем зарегистрированным в дочернией
@@ -531,7 +532,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             ///Если в дочерней системе были объекты , то 
             /// регистриуем их в родительской системе
-            if (ChildrenSystems.Contains(child_system))
+            if (ChildrenSystems.Where(s=>s.Id==child_system.Id).Any())
             {
                 foreach (IJornalable reg_obj in child_system._RegistedModels.Keys)///Перерегистрируем все объекты бывшей дочерней сисемы
                 {                                                                 /// в текущей
@@ -566,7 +567,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 IUnDoRedoCommand command = e.Command;
                 _UnDoCommands.Push(command);
                 foreach (IJornalable ch_obj in command.ChangedObjects)
-                    if (!ChangedObjects.Contains(ch_obj)) ChangedObjects.Add(ch_obj);
+                    if (!ChangedObjects.Where(ob => ob.Id == ch_obj.Id).Any()) ChangedObjects.Add(ch_obj);
 
                 OnPropertyChanged("OnCommandCreated");
             }
@@ -591,7 +592,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     new PropertySetCommand(changed_obj, e.PropertyName, e.NewValue, e.LastValue);//Созданем команду изменения свойства объекта
                 _UnDoCommands.Push(command);
                 foreach (IJornalable ch_obj in command.ChangedObjects)
-                    if (!ChangedObjects.Contains(ch_obj)) ChangedObjects.Add(ch_obj);
+                    if (!ChangedObjects.Where(ob=>ob.Id==ch_obj.Id).Any()) ChangedObjects.Add(ch_obj);
 
                 OnPropertyChanged("OnModelPropertyBeforeChanged");
             }
@@ -613,7 +614,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             unDoReDo.SetUnDoReDo_System(this);
             _UnDoCommands.Push((UnDoReDoSystem)unDoReDo);
             foreach (IJornalable element in unDoReDo.ChangedObjects)
-                if (!this.ChangedObjects.Contains(element))
+                if (!this.ChangedObjects.Where(ob=>ob.Id==element.Id).Any())
                     this.ChangedObjects.Add(element);
             OnPropertyChanged("AddUnDoReDo");
 
@@ -627,12 +628,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         public int Save(IJornalable obj)
         {
             IJornalable saved_obj = obj;
-            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(saved_obj)).Any());
+            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Where(ob => ob.Id == saved_obj.Id).Any()).Any());
             foreach (IUnDoReDoSystem unDoReDo in all_objects_systems)//Если объект зарегисрирован в дочених системах...
             {
                 unDoReDo.Save(saved_obj);//Сохраняем объект во всех дочерних системах
             }
-            var commands_list = this._UnDoCommands.Union(_ReDoCommands).Where(cm => cm.ChangedObjects.Contains(saved_obj)).ToList(); // Все команды текущей системы в которых содержится сохраняемый объект
+            var commands_list = this._UnDoCommands.Union(_ReDoCommands).Where(cm => cm.ChangedObjects.Where(ob => ob.Id == saved_obj.Id).Any()).ToList(); // Все команды текущей системы в которых содержится сохраняемый объект
             foreach (IUnDoRedoCommand command in commands_list)///Проходим по командам 
             {
                 List<IJornalable> chgd_objects = command.ChangedObjects.Where(ob => ob.Id != saved_obj.Id).ToList();//Находим в командах все объекты с которыми он был связан
@@ -648,7 +649,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                     undoredo_command) undoredo_command.SaveAll();
                 this._ReDoCommands.Clear();///Очищаем стек  ReDo
             }
-            if (this.ChangedObjects.Contains(saved_obj))
+            if (this.ChangedObjects.Where(ob => ob.Id == saved_obj.Id).Any())
                 this.ChangedObjects.Remove(saved_obj);///Удаляем объект из журнала системы, где хараняться наблюдаемые объекты 
                                                       ///в которых были зафиксированы изменения
             if (obj is IList list_obj) //Если регистрируемый элемент является коллекцией
@@ -738,8 +739,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 {
                     nameble_collection_mamber.Owner = entity;
                 }
-                if (!entity_member.Parents.Contains(entity)) entity_member.Parents.Add(entity);
-                if (!entity.Children.Contains(entity_member)) entity.Children.Add(entity_member);
+                if (!entity_member.Parents.Where(ob => ob.Id == entity.Id).Any()) entity_member.Parents.Add(entity);
+                if (!entity.Children.Where(ob => ob.Id == entity_member.Id).Any()) entity.Children.Add(entity_member);
                 if (entity.IsAutoRegistrateInUnDoReDo) entity.UnDoReDoSystem?.Register(entity_member, true);
             }
         }
@@ -753,7 +754,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             IJornalable saved_obj = obj;
             int changes_number = 0;
-            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(saved_obj)).Any());
+            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Where(ob => ob.Id == saved_obj.Id).Any()).Any());
             foreach (IUnDoReDoSystem unDoReDo in all_objects_systems)//Если объект зарегисрирован в дочених системах...
             {
                 changes_number += unDoReDo.GetUnChangesObjectsNamber(saved_obj);//Сохраняем объект во всех дочерних системах
@@ -786,7 +787,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         {
             IJornalable saved_obj = obj;
             int changes_number = 0;
-            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(saved_obj)).Any());
+            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Where(ob => ob.Id == saved_obj.Id).Any()).Any());
             foreach (IUnDoReDoSystem unDoReDo in all_objects_systems)//Если объект зарегисрирован в дочених системах...
             {
                 changes_number += unDoReDo.GetChangesNamber(saved_obj);//Сохраняем объект во всех дочерних системах
@@ -824,7 +825,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 first_object = null;
                 return 0;
             }
-            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Contains(obj)).Any());
+            var all_objects_systems = ChildrenSystems.Where(s => s._UnDoCommands.Union(s._ReDoCommands).Where(cm => cm.ChangedObjects.Where(ob => ob.Id == obj.Id).Any()).Any());
             foreach (IUnDoReDoSystem unDoReDo in all_objects_systems)//Если объект зарегисрирован в дочених системах...
             {
                 i_changes_namber += unDoReDo.GetChangesNamber(obj, false);

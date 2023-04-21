@@ -199,6 +199,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         [NotJornaling]
         [CreateNewWhenCopy]
+        [NotMapped]
         public ObservableCollection<IUnDoRedoCommand> ChangesJornal
         {
             get { return _changesJornal; }
@@ -234,13 +235,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 {
                     if (prop_val != null)
                     {
-                        if (create_new_atrb == null && navigate_atrb == null) //Если объяет свойство не навигационный и без запрета накопирование  
+                        if (create_new_atrb == null && navigate_atrb == null) //Если объяет свойство не навигационный и  без указания на создания новго объекта   
                         {
-                            if (prop_val is ICloneable clonable_prop_val)
+                            if (prop_val is ICloneable clonable_prop_val && prop_info.SetMethod != null)
                                 prop_info.SetValue(new_collection, clonable_prop_val.Clone());
                             else
+                            {
+                                prop_val = Activator.CreateInstance(prop_info.PropertyType);
                                 prop_info.SetValue(new_collection, prop_val);
-
+                            }
+                            if (prop_info.SetMethod != null) prop_info.SetValue(new_collection, prop_val);
+                            //if (prop_val is ICloneable clonable_prop_val)
+                            //    prop_info.SetValue(new_collection, clonable_prop_val.Clone());
+                            //else
+                            //    prop_info.SetValue(new_collection, prop_val);
                         }
                         if (create_new_atrb != null && navigate_atrb != null) //Если стоит атрибут "создать новый при копировании"
                         {
@@ -262,9 +270,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
             foreach (TEntity element in this)
             {
-                new_collection.Add(element);
+                if (element is ICloneable clonable_element)
+                    new_collection.Add(clonable_element.Clone());
+                else
+                    new_collection.Add(element);
             }
-             ((IKeyable)new_collection).Id = Guid.Empty;
+            if (this.Count > 5)
+                ;
+            //foreach (TEntity element in this)
+            //{
+            //    new_collection.Add(element);
+            //}
+             ((IKeyable)new_collection).Id = Guid.NewGuid();
             return new_collection;
         }
         [CreateNewWhenCopy]
@@ -354,7 +371,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
            
 
         }
-
         protected override void RemoveItem(int index)
         {
             TEntity item = Items[index];
@@ -374,7 +390,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
            
         }
-
         protected override void ClearItems()
         {
             if (IsAutoRegistrateInUnDoReDo && UnDoReDoSystem != null)
@@ -391,10 +406,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             else
             {
-              
-
-                
-
+   
                 base.ClearItems();
             }
 

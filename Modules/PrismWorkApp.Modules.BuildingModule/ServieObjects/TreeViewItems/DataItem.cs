@@ -1,6 +1,7 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -15,8 +16,24 @@ namespace PrismWorkApp.Modules.BuildingModule
     public delegate void MenuItemExpandDelegateHandler(DataItem dataItem);
 
     [ContentProperty("Children")]
-    public class DataItem : DependencyObject, INotifyPropertyChanged
+    public class DataItem : DependencyObject, INotifyPropertyChanged,IKeyable
     {
+    
+    private Guid _id;
+    [CreateNewWhenCopy]
+    public Guid Id
+    {
+        get { return _id; }
+        set {  _id= value; OnPropertyChanged("Id"); }
+    }
+        private static Dictionary<object, DataItem> _allItems = new Dictionary<object, DataItem>();
+
+        public  Dictionary<object, DataItem> AllItems
+        {
+            get { return _allItems; }
+            set { _allItems = value; OnPropertyChanged("AllItems"); }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {
@@ -41,6 +58,54 @@ namespace PrismWorkApp.Modules.BuildingModule
                     new FrameworkPropertyMetadata(
                         string.Empty));
 
+        ///////////////////////////////////////////////////////////
+        ///
+        public IEnumerable ItemsSource
+        {
+            get { return (IEnumerable)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemsSourceProperty =
+            DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(DataItem), new PropertyMetadata(new PropertyChangedCallback(OnItemsSourcePropertyChanged)));
+
+        private static void OnItemsSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var control = sender as DataItem;
+            if (control != null)
+                control.OnItemsSourceChanged((IEnumerable)e.OldValue, (IEnumerable)e.NewValue);
+        }
+
+
+
+        private void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+        {
+            // Remove handler for oldValue.CollectionChanged
+            var oldValueINotifyCollectionChanged = oldValue as INotifyCollectionChanged;
+
+            if (null != oldValueINotifyCollectionChanged)
+            {
+                oldValueINotifyCollectionChanged.CollectionChanged -= new NotifyCollectionChangedEventHandler(newValueINotifyCollectionChanged_CollectionChanged);
+            }
+            // Add handler for newValue.CollectionChanged (if possible)
+            var newValueINotifyCollectionChanged = newValue as INotifyCollectionChanged;
+            if (null != newValueINotifyCollectionChanged)
+            {
+                newValueINotifyCollectionChanged.CollectionChanged += new NotifyCollectionChangedEventHandler(newValueINotifyCollectionChanged_CollectionChanged);
+            }
+
+        }
+
+        void newValueINotifyCollectionChanged_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //Do your stuff here.
+        }
+
+
+
+        /// <summary>
+        /// /////////////////////////////////////////////////////////////////
+        /// </summary>
         private bool _isHaveChanges;
 
         public bool IsHaveChanges
@@ -49,12 +114,20 @@ namespace PrismWorkApp.Modules.BuildingModule
             set { _isHaveChanges = value; OnPropertyChanged("IsHaveChanges"); }
         }
 
+        private DataItemCollection _items;
 
+        public DataItemCollection Items
+        {
+            get { return _items; }
+            set { _items = value; }
+        }
+                    
 
         // public MenuItemExpandDelegateHandler MenuItemExpand;
         public DataItem()
         {
-            this._items = new DataItemCollection(this);
+             this._items = new DataItemCollection(this);
+            
 
 
         }
@@ -100,13 +173,8 @@ namespace PrismWorkApp.Modules.BuildingModule
                 OnPropertyChanged("Parent");
             }
         }
-        private DataItemCollection _items;
 
-        public DataItemCollection Items
-        {
-            get { return _items; }
-            set { _items = value; OnPropertyChanged("Items"); }
-        }
+        
 
         private object _attachedObject;
         public object AttachedObject
@@ -128,6 +196,7 @@ namespace PrismWorkApp.Modules.BuildingModule
 
                         }
                     }
+                    _allItems.Add(_attachedObject, this);
                     OnAttachedObjectPropertyChanged(this, new PropertyChangedEventArgs("AttachedObject"));
                 }
                 OnPropertyChanged("AttachedObject");
@@ -170,7 +239,7 @@ namespace PrismWorkApp.Modules.BuildingModule
         public void OnAttachedObjectPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (this.AttachedObject == null) return;
-            this.Items.Clear();
+            //  this.Items.Clear();
             if (DataItemInit == null)
                 throw new Exception($"Не установлен оработчик инициализации DataItemInit {this.ToString()} объекта {this.AttachedObject.ToString()}");
             DataItemInit?.Invoke(this, sender, e);

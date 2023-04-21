@@ -25,6 +25,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _shortName, value); }
         }
         private bldDocumentsGroup _attachedDocuments ;
+        [CreateNewWhenCopy]
         public bldDocumentsGroup AttachedDocuments
         {
             get { return _attachedDocuments; }

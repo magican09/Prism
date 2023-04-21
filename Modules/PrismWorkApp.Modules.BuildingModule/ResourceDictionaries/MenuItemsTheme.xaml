@@ -7,7 +7,7 @@
                      xmlns:prism="http://prismlibrary.com/">
 
     <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
-
+    <loc_core:GetImageFrombldProjectObjectConvecter x:Key="objecobjectTo_Url_Convectert"/>
     <Style x:Key="TreeViewMenuItemContainerStyle" TargetType="MenuItem">
         <Setter Property="Header" Value="{Binding Name,Mode=TwoWay}"/>
         <Setter Property="ItemsSource" Value="{Binding Items}"/>

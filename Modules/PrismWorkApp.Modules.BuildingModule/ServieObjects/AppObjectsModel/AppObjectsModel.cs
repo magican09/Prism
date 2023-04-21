@@ -3,6 +3,7 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
+using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
@@ -82,9 +83,13 @@ namespace PrismWorkApp.Modules.BuildingModule
                   {
                       if (result.Result == ButtonResult.Yes)
                       {
-                          var all_changed_objects = UnDoReDo._RegistedModels.Keys.Where(ob => ob.IsDbBranch && ob.State != EntityState.Unchanged).ToList();
+                         var all_changed_objects = UnDoReDo._RegistedModels.Keys.Where(ob => ob.IsDbBranch && ob.State != EntityState.Unchanged).ToList();
                           UnDoReDo.SaveAll();
                           _buildingUnitsRepository.Complete(UnDoReDo);
+                          var res_massage = result.Parameters.GetValue<string>("confirm_dialog_param");
+                          var p = new DialogParameters();
+                          p.Add("message", $"Готово!");
+                          _dialogService.ShowDialog(typeof(MessageDialog).Name, p, (r) => { });
                       }
                   }, _dialogService);
 

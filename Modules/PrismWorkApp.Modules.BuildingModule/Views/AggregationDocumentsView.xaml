@@ -125,6 +125,9 @@
                                         </MultiBinding>
                                     </KeyBinding.CommandParameter>
                                 </KeyBinding>
+                                <KeyBinding  Key="Z" Modifiers="Ctrl" Command="{Binding DataContext.UnDoCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"/>
+                          
+
 
                             </telerik:RadGridView.InputBindings>
                             <telerik:EventToCommandBehavior.EventBindings>
@@ -153,6 +156,7 @@
                             </telerik:EventToCommandBehavior.EventBindings>
 
                             <telerik:RadGridView.Columns>
+                                <telerik:GridViewImageColumn Width="10" DataMemberBinding="{Binding   Converter={StaticResource objecobjectTo_Url_Convectert}}"/>
                                 <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code}" Width="55" CellStyle="{StaticResource CommonCellStyle}" />
                                 <telerik:GridViewDataColumn Header="Наминование материала" Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding MaterialName}" Width="350" CellStyle="{StaticResource CommonCellStyle}"/>
                                 <telerik:GridViewDataColumn Header="Геом. парам."  Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding GeometryParameters}" Width="100" CellStyle="{StaticResource CommonCellStyle}"/>

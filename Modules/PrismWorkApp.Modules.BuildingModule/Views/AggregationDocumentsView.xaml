@@ -72,8 +72,8 @@
                 
                 <telerik:RadGridView.Columns>
                     <telerik:GridViewDataColumn DataMemberBinding="{Binding Name}" Header="Наименование каталога" Width="30*"  />
-                    <telerik:GridViewDataColumn DataMemberBinding="{Binding AttachedDocuments.Count,Mode=OneWay}" Width="70*"
-                                                IsReadOnly="True" Header="Количество документов в каталоге" />
+                    <telerik:GridViewDataColumn DataMemberBinding="{Binding AttachedDocuments.Count}" IsReadOnly="True" Width="70*"
+                                               Header="Количество документов в каталоге" />
                 </telerik:RadGridView.Columns>
                 <telerik:RadGridView.ChildTableDefinitions>
                     <telerik:GridViewTableDefinition/>
@@ -156,8 +156,8 @@
                             </telerik:EventToCommandBehavior.EventBindings>
 
                             <telerik:RadGridView.Columns>
-                                <telerik:GridViewImageColumn Width="10" DataMemberBinding="{Binding   Converter={StaticResource objecobjectTo_Url_Convectert}}"/>
-                                <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code}" Width="55" CellStyle="{StaticResource CommonCellStyle}" />
+                                <telerik:GridViewImageColumn Width="15" DataMemberBinding="{Binding   Converter={StaticResource objecobjectTo_Url_Convectert}}"/>
+                                <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code }" Width="55" CellStyle="{StaticResource CommonCellStyle}" IsReadOnly="True"    />
                                 <telerik:GridViewDataColumn Header="Наминование материала" Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding MaterialName}" Width="350" CellStyle="{StaticResource CommonCellStyle}"/>
                                 <telerik:GridViewDataColumn Header="Геом. парам."  Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding GeometryParameters}" Width="100" CellStyle="{StaticResource CommonCellStyle}"/>
                                 <telerik:GridViewDataColumn Header="Кол-во." DataMemberBinding = "{Binding Quantity}" Width="50" CellStyle="{StaticResource CommonCellStyle}"/>

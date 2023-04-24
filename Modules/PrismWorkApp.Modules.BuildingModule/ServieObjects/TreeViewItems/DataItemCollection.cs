@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace PrismWorkApp.Modules.BuildingModule
+namespace PrismWorkApp.Modules.BuildingModule.Core
 {
     public class DataItemCollection : ObservableCollection<DataItem>, INotifyPropertyChanged
     {

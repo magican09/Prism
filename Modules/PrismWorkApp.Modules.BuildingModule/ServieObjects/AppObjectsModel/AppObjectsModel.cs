@@ -7,6 +7,7 @@ using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
+using System.Collections;
 using System.Linq;
 
 namespace PrismWorkApp.Modules.BuildingModule
@@ -27,14 +28,16 @@ namespace PrismWorkApp.Modules.BuildingModule
         }
 
         #region Commands 
-        //        public NotifyMenuCommands DocumentsGroupCommands { get; set; } = new NotifyMenuCommands();
+        public NotifyCommand SaveAllToDBCommand { get; set; }
+        public NotifyCommand<object> AddNewMaterialCertificateCommand { get; private set; }
+        public NotifyCommand<object> AddNewAggregationDocumentCommand { get; private set; }
         #endregion
         #region Contructors
         private IApplicationCommands _applicationCommands;
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         private readonly IRegionManager _regionManager;
         private IDialogService _dialogService;
-        public NotifyCommand SaveAllToDBCommand { get; set; }
+    
         IUnDoReDoSystem UnDoReDo;
         public AppObjectsModel(IRegionManager regionManager, IEventAggregator eventAggregator,
                                            IBuildingUnitsRepository buildingUnitsRepository, IDialogService dialogService, IApplicationCommands applicationCommands, IUnDoReDoSystem unDoReDoSystem)
@@ -49,6 +52,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             //    UnDoReDo = unDoReDoSystem;
             Documentation.Name = "Документация";
             SaveAllToDBCommand = new NotifyCommand(OnSaveAllToDB);
+            AddNewMaterialCertificateCommand = new NotifyCommand<object>(OnAddNewMaterialCertificate);
+            AddNewAggregationDocumentCommand = new NotifyCommand<object>(OnAddNewAggregationDocument);
             //LoadAggregationDocumentFromDBCommand = new NotifyCommand<object>(OnLoadAggregationDocumentFromDB);
             //LoadAggregationDocumentFromDBCommand.Name = "Загрузить ведомость документов из БД";
             // CreateNewAggregationDocumentCommand = new NotifyCommand<object>(OnCreateNewAggregationDocument);
@@ -63,7 +68,26 @@ namespace PrismWorkApp.Modules.BuildingModule
             _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveAllToDBCommand);
         }
 
-   
+        private void OnAddNewAggregationDocument(object obj)
+        {
+            if (obj is IList list_obj)
+            {
+               
+                list_obj.Add(new bldAggregationDocument());
+            }
+        }
+
+        private void OnAddNewMaterialCertificate(object obj)
+        {
+         if(obj is IList list_obj)
+            {
+                bldMaterialCertificate new_material_certificate = new bldMaterialCertificate();
+                list_obj.Add(new_material_certificate);
+            }
+
+        }
+
+
 
         #endregion
         #region Model data 

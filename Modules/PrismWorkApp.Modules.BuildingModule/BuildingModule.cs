@@ -84,7 +84,9 @@ namespace PrismWorkApp.Modules.BuildingModule
             documentsRibbonTab.DataContext = new DocumentsRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands, _appObjectsModel);
             //  var materialsRibbonGroup = new MaterialsRibbonGroupView();
             // documentsRibbonTab.Items.Add(materialsRibbonGroup);
+            var dbInteractionRibbonGroupView = new DBIteractionRibbonGroupView();
             var documentsRibbonGroup = new DocumentsRibbonGroupView();
+            documentsRibbonTab.Items.Add(dbInteractionRibbonGroupView);
             documentsRibbonTab.Items.Add(documentsRibbonGroup);
            
 

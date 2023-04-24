@@ -19,6 +19,8 @@
     <loc_core:DataTypeConverter x:Key="dataTypeConverter"/>
     <loc_core:IsCollectionEmpty x:Key="isCollectionEmpty"/>
     <loc_core:EntityStateConverter x:Key="entityStateConverter"/>
+    <loc_core:GetCollectionFrombldProjectModelConvecter  x:Key="getCollectionFromObjectConvecter"  />
+    <loc_core:DataItemsGenerationConverter x:Key="dataItemsGenerationConverter"/>
     <ContextMenu x:Key="TreeViewItemContextMenu"  
                  ItemContainerStyle="{StaticResource TreeViewMenuItemContainerStyle}">
         <telerik:EventToCommandBehavior.EventBindings>
@@ -42,8 +44,8 @@
         <!--<Setter Property="loc_core:MouseDoubleClick.Command" Value="{Binding DataContext.MouseDoubleClickCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"/>
         <Setter Property="loc_core:MouseDoubleClick.CommandParameter" Value="{Binding  DataContext.AttachedObject, RelativeSource={RelativeSource Mode=Self}}"/>-->
     </Style>
-   
-    <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding Items}">
+
+    <HierarchicalDataTemplate x:Key="TreeViewItemTamplate" ItemsSource="{Binding   Items}">
         <StackPanel Orientation="Horizontal">
             <Image x:Name="imageObjectHaveChanges" Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/MainTreeView/object_changed.png"/>
             <Image x:Name="imageObjectNeedSaveToDB"  Visibility="Collapsed"  Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/MainTreeView/need_save_to_db.png"/>

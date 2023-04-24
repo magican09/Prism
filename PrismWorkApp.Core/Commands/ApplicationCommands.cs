@@ -13,6 +13,8 @@
         NotifyCompositeCommand AddFromCommand { get; }
         NotifyCompositeCommand AddToCommand { get; }
         NotifyCompositeCommand AddCommand { get; }
+        NotifyCompositeCommand AddNewAggregationDocumentCommand { get; }
+        NotifyCompositeCommand AddNewMaterialCertificateCommand { get; }
 
         //NotifyCompositeCommand CreateWorkCommand { get; }
         //NotifyCompositeCommand CreateWorkFromTemplateCommand { get; }
@@ -141,6 +143,18 @@
         {
             get { return _addCommand; }
         }
+        private NotifyCompositeCommand _addNewAggregationDocumentCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand AddNewAggregationDocumentCommand
+        {
+            get { return _addNewAggregationDocumentCommand; }
+
+        }
+         private NotifyCompositeCommand _addNewMaterialCertificateCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand AddNewMaterialCertificateCommand
+        {
+            get { return _addNewMaterialCertificateCommand; }
+        }
+        
         private NotifyCompositeCommand _loadUnitsOfMeasurementsCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand LoadUnitsOfMeasurementsCommand
         {

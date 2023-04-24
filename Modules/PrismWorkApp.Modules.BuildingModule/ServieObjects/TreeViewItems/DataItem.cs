@@ -1,34 +1,37 @@
 ﻿using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace PrismWorkApp.Modules.BuildingModule
+namespace PrismWorkApp.Modules.BuildingModule.Core
 {
     public delegate void DataItemInitDelegateHandler(DataItem dataItem, object sender, PropertyChangedEventArgs e);
     public delegate void AttachedCollectionChangedDelegateHandler(DataItem dataItem, object sender, NotifyCollectionChangedEventArgs e);
     public delegate void MenuItemExpandDelegateHandler(DataItem dataItem);
 
     [ContentProperty("Children")]
-    public class DataItem : DependencyObject, INotifyPropertyChanged,IKeyable
+    public class DataItem : DependencyObject, INotifyPropertyChanged, IKeyable
     {
-    
-    private Guid _id;
-    [CreateNewWhenCopy]
-    public Guid Id
-    {
-        get { return _id; }
-        set {  _id= value; OnPropertyChanged("Id"); }
-    }
+
+        private Guid _id;
+        [CreateNewWhenCopy]
+        public Guid Id
+        {
+            get { return _id; }
+            set { _id = value; OnPropertyChanged("Id"); }
+        }
         private static Dictionary<object, DataItem> _allItems = new Dictionary<object, DataItem>();
 
-        public  Dictionary<object, DataItem> AllItems
+        public Dictionary<object, DataItem> AllItems
         {
             get { return _allItems; }
             set { _allItems = value; OnPropertyChanged("AllItems"); }
@@ -60,52 +63,169 @@ namespace PrismWorkApp.Modules.BuildingModule
 
         ///////////////////////////////////////////////////////////
         ///
-        public IEnumerable ItemsSource
+        public DataItemCollection Items
         {
-            get { return (IEnumerable)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
+            get { return (DataItemCollection)GetValue(ItemsProperty); }
+            set { SetValue(ItemsProperty, value); }
         }
 
-        public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(DataItem), new PropertyMetadata(new PropertyChangedCallback(OnItemsSourcePropertyChanged)));
+        public static readonly DependencyProperty ItemsProperty =
+            DependencyProperty.Register("ItemsSource", typeof(DataItemCollection), typeof(DataItem), new PropertyMetadata(new PropertyChangedCallback(OnItemsPropertyChanged)));
 
-        private static void OnItemsSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static void OnItemsPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var control = sender as DataItem;
             if (control != null)
-                control.OnItemsSourceChanged((IEnumerable)e.OldValue, (IEnumerable)e.NewValue);
+                control.OnItemsChanged((DataItemCollection)e.OldValue, (DataItemCollection)e.NewValue);
+        }
+
+        public void SetItems(IEnumerable coll)
+            {
+            this.Items = new DataItemCollection(this);
+            foreach (IKeyable obj in coll)
+            {
+                DataItem new_dataItem = new DataItem();
+                new_dataItem.AttachedObject = obj;
+                DataItemsGenerator.Convert(new_dataItem, null, null, CultureInfo.CurrentCulture);
+                this.Items.Add(new_dataItem);
+            }
+            if (coll is INotifyCollectionChanged notifyable_coll)
+            {
+                notifyable_coll.CollectionChanged +=OnAttachedObjectCollectionProperty_CollectionChanged;
+            }
         }
 
 
-
-        private void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+        private void OnItemsChanged(DataItemCollection oldValue, DataItemCollection newValue)
         {
             // Remove handler for oldValue.CollectionChanged
             var oldValueINotifyCollectionChanged = oldValue as INotifyCollectionChanged;
 
             if (null != oldValueINotifyCollectionChanged)
             {
-                oldValueINotifyCollectionChanged.CollectionChanged -= new NotifyCollectionChangedEventHandler(newValueINotifyCollectionChanged_CollectionChanged);
+                oldValueINotifyCollectionChanged.CollectionChanged -= new NotifyCollectionChangedEventHandler(newItemsINotifyCollectionChanged_CollectionChanged);
             }
             // Add handler for newValue.CollectionChanged (if possible)
             var newValueINotifyCollectionChanged = newValue as INotifyCollectionChanged;
             if (null != newValueINotifyCollectionChanged)
             {
-                newValueINotifyCollectionChanged.CollectionChanged += new NotifyCollectionChangedEventHandler(newValueINotifyCollectionChanged_CollectionChanged);
+                
+                newValueINotifyCollectionChanged.CollectionChanged += new NotifyCollectionChangedEventHandler(newItemsINotifyCollectionChanged_CollectionChanged);
             }
 
         }
 
-        void newValueINotifyCollectionChanged_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        void newItemsINotifyCollectionChanged_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            //Do your stuff here.
+          
+        }
+        /// <summary>
+        /// /////////////////////////////////////////////////////
+        /// </summary>
+
+        public IKeyable AttachedObject
+        {
+            get { return (IKeyable)GetValue(AttachedObjectProperty); }
+            set { SetValue(AttachedObjectProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AttachedObject.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AttachedObjectProperty =
+            DependencyProperty.Register("AttachedObject", typeof(IKeyable), typeof(DataItem), new PropertyMetadata(null,new PropertyChangedCallback(OnAttachedObjectProperty_Changed)));
+
+        private static void OnAttachedObjectProperty_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var control = sender as DataItem;
+            if (control != null)
+                control.OnAttachedObjectChanged((IKeyable)e.OldValue, (IKeyable)e.NewValue);
+        }
+        private static DataItemsGenerationConverter DataItemsGenerator = new DataItemsGenerationConverter();
+        private void OnAttachedObjectChanged(object oldValue, object newValue)
+        {
+            var oldValuePropertyNotificationChanged = oldValue as INotifyPropertyChanged;
+            var oldValueCollectionNotificationChanged = oldValue as INotifyCollectionChanged;
+
+            if (oldValuePropertyNotificationChanged != null)
+                oldValuePropertyNotificationChanged.PropertyChanged -= OnAttachedObjectPropertyChanged;
+       
+            if (oldValueCollectionNotificationChanged != null && oldValue is IEnumerable enurable_oldValue)
+            {
+                //foreach (IKeyable obj in enurable_oldValue)
+                //{
+                //    DataItem old_dataItem = this.Items.Where(di=>di.));
+                //    new_dataItem.AttachedObject = obj;
+                //    this.Items.Add(new_dataItem);
+                //}
+                if (enurable_oldValue is INotifyCollectionChanged notifyable_coll)
+                {
+                    notifyable_coll.CollectionChanged -= OnAttachedObjectCollectionProperty_CollectionChanged;
+                }
+
+                    oldValueCollectionNotificationChanged.CollectionChanged -= OnAttachedObjectCollectionProperty_CollectionChanged;
+              }
+
+            var newValuePropertyNotificationChanged = newValue as INotifyPropertyChanged;
+            var newValueCollectionNotificationChanged = newValue as INotifyCollectionChanged;
+
+            if (newValuePropertyNotificationChanged != null)
+            {
+                DataItemsGenerator.Convert(this, null, null, CultureInfo.CurrentCulture);
+                newValuePropertyNotificationChanged.PropertyChanged += OnAttachedObjectPropertyChanged;
+            }
+            if (newValueCollectionNotificationChanged != null && newValue is IEnumerable enurable_newValue)
+            {
+
+                this.Items = new DataItemCollection(this);
+                foreach (IKeyable obj in enurable_newValue)
+                {
+                    DataItem new_dataItem = new DataItem();
+                    new_dataItem.AttachedObject = obj;
+                    this.Items.Add(new_dataItem);
+                }
+                if (enurable_newValue is INotifyCollectionChanged notifyable_coll)
+                {
+                    notifyable_coll.CollectionChanged += OnAttachedObjectCollectionProperty_CollectionChanged;
+                }
+
+                newValueCollectionNotificationChanged.CollectionChanged += OnAttachedObjectCollectionProperty_CollectionChanged;
+            }
         }
 
 
+        public void OnAttachedObjectPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+      
+        }
 
+        private void OnAttachedObjectCollectionProperty_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (IKeyable obj in e.NewItems)
+                {
+                    if (!this.Items.Where(itm => itm.AttachedObject.Id == obj.Id).Any())
+                    {
+                        DataItem new_dataItem = new DataItem();
+                        new_dataItem.AttachedObject = obj;
+                        this.Items.Add(new_dataItem);
+                    }
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (IKeyable obj in e.OldItems)
+                {
+                    DataItem old_dataItem = this.Items.Where(itm => itm.AttachedObject.Id == obj.Id).FirstOrDefault();
+                    if (old_dataItem != null)
+                        this.Items.Remove(old_dataItem);
+                }
+            }
+        }
         /// <summary>
-        /// /////////////////////////////////////////////////////////////////
+        /// ////////////////
         /// </summary>
+
+
         private bool _isHaveChanges;
 
         public bool IsHaveChanges
@@ -114,26 +234,21 @@ namespace PrismWorkApp.Modules.BuildingModule
             set { _isHaveChanges = value; OnPropertyChanged("IsHaveChanges"); }
         }
 
-        private DataItemCollection _items;
+        //private DataItemCollection _items;
 
-        public DataItemCollection Items
-        {
-            get { return _items; }
-            set { _items = value; }
-        }
-                    
+        //public DataItemCollection Items
+        //{
+        //    get { return _items; }
+        //    set { _items = value; }
+        //}
+
 
         // public MenuItemExpandDelegateHandler MenuItemExpand;
         public DataItem()
         {
-             this._items = new DataItemCollection(this);
-            
-
+            //this._items = new DataItemCollection(this);
 
         }
-
-
-
 
         private string _propName;
 
@@ -174,35 +289,34 @@ namespace PrismWorkApp.Modules.BuildingModule
             }
         }
 
-        
 
-        private object _attachedObject;
-        public object AttachedObject
-        {
-            get { return _attachedObject; }
-            set
-            {
-                _attachedObject = value;
-                if (_attachedObject != null)
-                {
-                    if (_attachedObject is INotifyPropertyChanged notifyable_object)
-                        notifyable_object.PropertyChanged += OnAttachedObjectPropertyChanged;
-                    if (_attachedObject is INotifyCollectionChanged notifyable_collection)
-                        notifyable_collection.CollectionChanged += OnAttachedCollectionChanged;
-                    if (_attachedObject is IList attached_collection)
-                    {
-                        foreach (object obj in attached_collection)
-                        {
+        //private object _attachedObject;
+        //public object AttachedObject
+        //{
+        //    get { return _attachedObject; }
+        //    set
+        //    {
+        //        _attachedObject = value;
+        //        if (_attachedObject != null)
+        //        {
+        //            if (_attachedObject is INotifyPropertyChanged notifyable_object)
+        //                notifyable_object.PropertyChanged += OnAttachedObjectPropertyChanged;
+        //            if (_attachedObject is INotifyCollectionChanged notifyable_collection)
+        //                notifyable_collection.CollectionChanged += OnAttachedCollectionChanged;
+        //            if (_attachedObject is IList attached_collection)
+        //            {
+        //                foreach (object obj in attached_collection)
+        //                {
 
-                        }
-                    }
-                    _allItems.Add(_attachedObject, this);
-                    OnAttachedObjectPropertyChanged(this, new PropertyChangedEventArgs("AttachedObject"));
-                }
-                OnPropertyChanged("AttachedObject");
-                OnPropertyChanged("Type");
-            }
-        }
+        //                }
+        //            }
+        //            _allItems.Add(_attachedObject, this);
+        //            OnAttachedObjectPropertyChanged(this, new PropertyChangedEventArgs("AttachedObject"));
+        //        }
+        //        OnPropertyChanged("AttachedObject");
+        //        OnPropertyChanged("Type");
+        //    }
+        //}
         private void OnMenuItemFolded(DataItem dataItem)
         {
 
@@ -211,40 +325,32 @@ namespace PrismWorkApp.Modules.BuildingModule
         private void OnMenuItemExpand(DataItem dataItem)
         {
 
-            foreach (DataItem item in dataItem.Items)
-            {
-                item.OnAttachedObjectPropertyChanged(item, new PropertyChangedEventArgs("IsExpanded"));
-            }
-        }
-        public void OnAttachedCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            //if (e.Action == NotifyCollectionChangedAction.Add &&  IsExpanded)
+            //foreach (DataItem item in dataItem.Items)
             //{
-            //    foreach (object obj in e.NewItems)
-            //    {
-            //        if (Items.Where(itm => itm.AttachedObject == obj).FirstOrDefault() == null)
-            //        {
-            //            DataItem new_item = new DataItem();
-            //            new_item.AttachedObject = obj;
-            //       //     Items.Add(new_item);
-            //        }
-            //    }
+            //    item.OnAttachedObjectPropertyChanged(item, new PropertyChangedEventArgs("IsExpanded"));
             //}
-            if (Parent != null && Parent.IsExpanded) { Parent.IsExpanded = false; }
-            AttachedObjectCollectionChanged?.Invoke(this, sender, e);
-            OnAttachedObjectPropertyChanged(this, new PropertyChangedEventArgs("AttachedCollectionChanged"));
-
         }
+        //public void OnAttachedCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    //if (e.Action == NotifyCollectionChangedAction.Add &&  IsExpanded)
+        //    //{
+        //    //    foreach (object obj in e.NewItems)
+        //    //    {
+        //    //        if (Items.Where(itm => itm.AttachedObject == obj).FirstOrDefault() == null)
+        //    //        {
+        //    //            DataItem new_item = new DataItem();
+        //    //            new_item.AttachedObject = obj;
+        //    //       //     Items.Add(new_item);
+        //    //        }
+        //    //    }
+        //    //}
+        //    if (Parent != null && Parent.IsExpanded) { Parent.IsExpanded = false; }
+        //    AttachedObjectCollectionChanged?.Invoke(this, sender, e);
+        //    OnAttachedObjectPropertyChanged(this, new PropertyChangedEventArgs("AttachedCollectionChanged"));
 
-        public void OnAttachedObjectPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (this.AttachedObject == null) return;
-            //  this.Items.Clear();
-            if (DataItemInit == null)
-                throw new Exception($"Не установлен оработчик инициализации DataItemInit {this.ToString()} объекта {this.AttachedObject.ToString()}");
-            DataItemInit?.Invoke(this, sender, e);
+        //}
 
-        }
+       
 
         private Type _type;
 
@@ -270,44 +376,44 @@ namespace PrismWorkApp.Modules.BuildingModule
             }
             set { _typeName = value; OnPropertyChanged("TypeName"); }
         }
-        private void OnSetAttachedObject()
-        {
-            var prop_infoes = AttachedObject.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
-            foreach (PropertyInfo prop_info in prop_infoes)
-            {
-                var prop_val = prop_info.GetValue(AttachedObject);
-                if (!prop_info.PropertyType.FullName.Contains("System."))
-                {
-                    if ((prop_val is IEntityObject))
-                    {
-                        DataItem dataItem = new DataItem();
-                        dataItem.PropName = prop_info.Name;
-                        dataItem.Type = prop_info.PropertyType;
-                        if (prop_val is IList list_prop)
-                        {
-                            foreach (object obj in list_prop)
-                            {
-                                DataItem in_dataItem = new DataItem();
-                                in_dataItem.PropName = prop_info.Name;
-                                in_dataItem.Type = prop_info.PropertyType;
-                            }
-                        }
-                        Items.Add(dataItem);
+        //private void OnSetAttachedObject()
+        //{
+        //    var prop_infoes = AttachedObject.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
+        //    foreach (PropertyInfo prop_info in prop_infoes)
+        //    {
+        //        var prop_val = prop_info.GetValue(AttachedObject);
+        //        if (!prop_info.PropertyType.FullName.Contains("System."))
+        //        {
+        //            if ((prop_val is IEntityObject))
+        //            {
+        //                DataItem dataItem = new DataItem();
+        //                dataItem.PropName = prop_info.Name;
+        //                dataItem.Type = prop_info.PropertyType;
+        //                if (prop_val is IList list_prop)
+        //                {
+        //                    foreach (object obj in list_prop)
+        //                    {
+        //                        DataItem in_dataItem = new DataItem();
+        //                        in_dataItem.PropName = prop_info.Name;
+        //                        in_dataItem.Type = prop_info.PropertyType;
+        //                    }
+        //                }
+        //                Items.Add(dataItem);
 
 
 
-                    }
-                }
-            }
-        }
+        //            }
+        //        }
+        //    }
+        //}
 
-        private void OnExpand()
-        {
-            foreach (DataItem item in Items)
-            {
-                var obj = AttachedObject.GetType().GetProperty(item.PropName).GetValue(AttachedObject);
-                if (obj != null) item.AttachedObject = obj;
-            }
-        }
+        //private void OnExpand()
+        //{
+        //    //foreach (DataItem item in Items)
+        //    //{
+        //    //    IJornalable obj =(IJornalable) AttachedObject.GetType().GetProperty(item.PropName).GetValue(AttachedObject);
+        //    //    if (obj != null) item.AttachedObject = obj;
+        //    //}
+        //}
     }
 }

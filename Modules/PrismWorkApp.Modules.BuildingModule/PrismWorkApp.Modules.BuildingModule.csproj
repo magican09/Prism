@@ -51,6 +51,7 @@
         <None Remove="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\wand.png" />
         <None Remove="Resourses\Images\Ribbon\access_icon.png" />
+        <None Remove="Resourses\Images\Ribbon\DocumentsRibbonTab\new_bldAggregationDocument.png" />
         <None Remove="Resourses\Images\Ribbon\grand_smeta_file.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_AggregationDocument.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
@@ -133,6 +134,7 @@
     <Resource Include="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\wand.png" />
     <Resource Include="Resourses\Images\Ribbon\access_icon.png" />
+    <Resource Include="Resourses\Images\Ribbon\DocumentsRibbonTab\new_bldAggregationDocument.png" />
     <Resource Include="Resourses\Images\Ribbon\grand_smeta_file.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_AggregationDocument.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\128x128\load_from_db.jpg" />
@@ -178,8 +180,5 @@
     <Page Update="Views\RibbonViews\ProjectManagerRibbonTabViews\ProjectManagerRibbonTabView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resourses\Images\Ribbon\DocumentsRibbonTab\" />
   </ItemGroup>
 </Project>

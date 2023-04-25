@@ -6,6 +6,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public interface IEntityObject : IKeyable, INameable, IJornalable,  IValidateable
     {
         public Func<IEntityObject, bool> RestrictionPredicate { get; set; }
-        public Guid StoredId { get; set; }
+       
     }
 }

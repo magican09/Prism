@@ -60,7 +60,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             //    _regionManager.RequestNavigate(RegionNames.ContentRegion, "ProjectExplorerView");
             //  _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, "ConvertersView");
-            _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new DocumentationExplorerView());
+            _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new SolutionExplorerView());
             _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new ProjectExplorerView());
 
             var projectManagerRibbonTab = new ProjectManagerRibbonTabView();
@@ -175,7 +175,7 @@ namespace PrismWorkApp.Modules.BuildingModule
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<ProjectExplorerView>();
-            containerRegistry.RegisterForNavigation<DocumentationExplorerView>();
+            containerRegistry.RegisterForNavigation<SolutionExplorerView>();
             containerRegistry.RegisterForNavigation<WorksTableView>();
             containerRegistry.RegisterForNavigation<AOSRDocumentsTableView>();
             containerRegistry.RegisterForNavigation<MaterialView>();
@@ -234,7 +234,10 @@ namespace PrismWorkApp.Modules.BuildingModule
 
             containerRegistry.RegisterDialog<GetObjectFromCollectionDialogVeiw, GetObjectFromCollectionDialogVeiwModel>();
 
-           // containerRegistry.RegisterSingleton<IbldCommands, bldCommandMethods>();
+            containerRegistry.RegisterForNavigation<MaterialCertificateAggregationDocumentsView, AggregationDocumentsViewModel>();
+          
+            
+            // containerRegistry.RegisterSingleton<IbldCommands, bldCommandMethods>();
             //   containerRegistry.RegisterSingleton<IAppObjectsModel,AppObjectsModel>();
             //  containerRegistry.RegisterForNavigation<ToolBarRibbonTabView, ToolBarRibbonTabViewModel>();
             //   containerRegistry.RegisterDialog<ConfirmCreateDialogViewModel, ConfirmCreateDialogViewModel>();

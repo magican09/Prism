@@ -550,6 +550,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     if (result.Result == ButtonResult.No)
                     {
                         UnDoReDo.UnDoAll(AggregationDocuments);
+                        UnDoReDo.ClearStacks();
                     }
                 });
 

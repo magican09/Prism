@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="PrismWorkApp.Modules.BuildingModule.Views.AggregationDocumentsView"
+﻿<UserControl x:Class="PrismWorkApp.Modules.BuildingModule.Views.MaterialCertificateAggregationDocumentsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -158,9 +158,19 @@
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewImageColumn Width="15" DataMemberBinding="{Binding   Converter={StaticResource objecobjectTo_Url_Convectert}}"/>
                                 <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code }" Width="55" CellStyle="{StaticResource CommonCellStyle}" IsReadOnly="True"    />
-                                <telerik:GridViewDataColumn Header="Нименование"  DataMemberBinding = "{Binding Name}" CellStyle="{StaticResource CommonCellStyle}" Width="150" />
+                                <telerik:GridViewDataColumn Header="Наминование материала" Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding MaterialName}" Width="350" CellStyle="{StaticResource CommonCellStyle}"/>
+                                <telerik:GridViewDataColumn Header="Геом. парам."  Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding GeometryParameters}" Width="100" CellStyle="{StaticResource CommonCellStyle}"/>
+                                <telerik:GridViewDataColumn Header="Кол-во." DataMemberBinding = "{Binding Quantity}" Width="50" CellStyle="{StaticResource CommonCellStyle}"/>
+                                <telerik:GridViewComboBoxColumn  Header="Ед. изм."  Width="50" CellStyle="{StaticResource CommonCellStyle}"
+                                                     DataMemberBinding = "{Binding UnitOfMeasurement}"  
+                                                     ItemsSource="{Binding DataContext.AllUnitsOfMeasurements, RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
+                                                     DisplayMemberPath="Name"/>
+
+                                <telerik:GridViewDataColumn Header="Сертиф./Паспорт"  DataMemberBinding = "{Binding Name}" CellStyle="{StaticResource CommonCellStyle}" Width="150" />
                                 <telerik:GridViewDataColumn Header="№ док. о кач."  DataMemberBinding = "{Binding RegId}" CellStyle="{StaticResource CommonCellStyle}" Width="100" />
                                 <telerik:GridViewDataColumn Header="Дата док."  DataMemberBinding = "{Binding Date, ConverterCulture=ru, StringFormat=d}" CellStyle="{StaticResource CommonCellStyle}" Width="100" />
+                                <telerik:GridViewDataColumn Header="Контр. парам."  Style="{StaticResource GridViewDataColumnStyle}"   DataMemberBinding = "{Binding ControlingParament}" CellStyle="{StaticResource CommonCellStyle}" Width="100" />
+                                <telerik:GridViewDataColumn Header="ГОСТ,ТУ..."  Style="{StaticResource GridViewDataColumnStyle}"  DataMemberBinding = "{Binding RegulationDocumentsName}" Width="300" />
                                 <telerik:GridViewDataColumn  Header="Скан" DataMemberBinding="{Binding ImageFile}"  Width="150">
                                     <telerik:GridViewDataColumn.CellTemplate>
                                         <DataTemplate>

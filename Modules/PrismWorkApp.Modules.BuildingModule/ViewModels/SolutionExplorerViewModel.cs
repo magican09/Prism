@@ -25,7 +25,7 @@ using DialogParameters = Prism.Services.Dialogs.DialogParameters;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
-    public class DocumentationExplorerViewModel : BaseViewModel<object>, INotifyPropertyChanged, INavigationAware//, IConfirmNavigationRequest
+    public class SolutionExplorerViewModel : BaseViewModel<object>, INotifyPropertyChanged, INavigationAware//, IConfirmNavigationRequest
     {
 
 
@@ -94,6 +94,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> CreateNewAggregationDocumentCommand { get; set; }
         public NotifyCommand<object> RemoveAggregationDocumentCommand { get; private set; }
         public NotifyCommand<object> CloseAggregationDocumentCommand { get; private set; }
+        public NotifyCommand<object> OpenAsMaterialCertificateAggregationDocumentCommand { get; set; }
+
 
         public NotifyCommand<object> LoadUnitOfMeasurementFromDBCommand { get; set; }
         public NotifyCommand<object> CreateNewUnitOfMeasurementCommand { get; set; }
@@ -110,7 +112,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private IApplicationCommands _applicationCommands;
         IBuildingUnitsRepository _buildingUnitsRepository;
-        public DocumentationExplorerViewModel(IEventAggregator eventAggregator,
+        public SolutionExplorerViewModel(IEventAggregator eventAggregator,
                             IRegionManager regionManager, IDialogService dialogService,
                                            IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel, IUnDoReDoSystem unDoReDoSystem)
         {
@@ -140,13 +142,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             EditInTreeViewItemCommand.Name = "Редактировать";
 
             LoadAggregationDocumentFromDBCommand = new NotifyCommand<object>(OnLoadAggregationDocumentFromDB);
-            LoadAggregationDocumentFromDBCommand.Name = "Загрузить ведомость документов из БД";
+            LoadAggregationDocumentFromDBCommand.Name = "Загрузить перечень документов из БД";
             CreateNewAggregationDocumentCommand = new NotifyCommand<object>(OnCreateNewAggregationDocument);
-            CreateNewAggregationDocumentCommand.Name = "Добавить новую ведомость документов";
+            CreateNewAggregationDocumentCommand.Name = "Добавить новый перечень документов";
             RemoveAggregationDocumentCommand = new NotifyCommand<object>(OnRemoveAggregationDocument);
-            RemoveAggregationDocumentCommand.Name = "Удалить ведомость документов";
+            RemoveAggregationDocumentCommand.Name = "Удалить перечень документов";
             CloseAggregationDocumentCommand = new NotifyCommand<object>(OnCloseAggregationDocument);
-            CloseAggregationDocumentCommand.Name = "Закрыть ведомость документов";
+            CloseAggregationDocumentCommand.Name = "Закрыть перечень документов";
             CreateNewUnitOfMeasurementCommand = new NotifyCommand<object>(OnCreateNewUnitOfMeasurement);
             CreateNewUnitOfMeasurementCommand.Name = "Добавить новую ед.изм.";
             CreateBasedOnCommand = new NotifyCommand<object>(OnCreateBasedOn);
@@ -154,6 +156,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             RemoveUnitOfMeasurementCommand = new NotifyCommand<object>(OnRemoveUnitOfMeasurement);
             RemoveUnitOfMeasurementCommand.Name = "Удалить ед.изм.";
 
+
+            OpenAsMaterialCertificateAggregationDocumentCommand = new NotifyCommand<object>(OnOpenAsMaterialCertificateAggregationDocument);
+            OpenAsMaterialCertificateAggregationDocumentCommand.Name= "Открыть как перечень сертификатов/паспартов";
+          
             _applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadAggregationDocumentFromDBCommand);
 
             _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
@@ -167,6 +173,26 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             Items.Add(Root);
 
             UnDoReDo.SaveAll();
+        }
+
+        private void OnOpenAsMaterialCertificateAggregationDocument(object obj)
+        {
+            object selected_object = null;
+            object parent_object = null;
+            if (obj is IList list)
+            {
+                selected_object = ((DataItem)list[0]).AttachedObject;
+                parent_object = ((DataItem)list[0]).Parent.AttachedObject;
+            }
+            else selected_object = ((DataItem)obj).AttachedObject;
+
+            if (selected_object is bldAggregationDocument document)
+            {
+                bldAggregationDocument aggregationDocument = selected_object as bldAggregationDocument;
+                NavigationParameters navParam = new NavigationParameters();
+                navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+               _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificateAggregationDocumentsView).Name, navParam);
+            }
         }
 
         private void OnCloseAggregationDocument(object obj)
@@ -451,8 +477,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             switch (d_clicked_object?.GetType().Name)
             {
-
-
                 case (nameof(bldAggregationDocument)):
                     {
                         bldAggregationDocument aggregationDocument = d_clicked_object as bldAggregationDocument;
@@ -463,7 +487,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                             navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             //                   navParam.Add("parant_undoredo_system", (new ConveyanceObject(UnDoReDo, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
-
                         }
                         break;
                     }
@@ -483,6 +506,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     {
                         context_menu_item_commands = new NotifyMenuCommands()
                             {
+                        
                              CreateNewAggregationDocumentCommand,
                              LoadAggregationDocumentFromDBCommand
                             };
@@ -494,7 +518,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     {
                         context_menu_item_commands = new NotifyMenuCommands()
                             {
-                              CreateBasedOnCommand,
+                             CreateBasedOnCommand,
+                              OpenAsMaterialCertificateAggregationDocumentCommand,
                               CloseAggregationDocumentCommand,
                               RemoveAggregationDocumentCommand
                             };
@@ -547,16 +572,20 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            object bld_document = (bldDocument)navigationContext.Parameters["bld_document"];
+            object bld_object =  navigationContext.Parameters["bld_object"];
             //  if (bld_project != null && bld_Projects.Where(pr => pr.Id == bld_project.Id).FirstOrDefault() == null && bld_project != null)
-            if (bld_document is bldAggregationDocument bld_aggregationDoc)
+           switch(bld_object.GetType().Name)
             {
-                var doc = Documentation.Where(doc => doc.Id == bld_aggregationDoc.Id).FirstOrDefault();
-                if (doc == null)
-                {
-                    Documentation.Add(bld_aggregationDoc);
-                }
+                case (nameof(bldAggregationDocument)):
+                    {
+                        var bld_aggregationDoc = bld_object as bldAggregationDocument;
+                        var doc = Documentation.Where(doc => doc.Id == bld_aggregationDoc.Id).FirstOrDefault();
+                        if (doc == null)
+                             Documentation.Add(bld_aggregationDoc);
+                        break;
+                    }
             }
+             
 
         }
     }

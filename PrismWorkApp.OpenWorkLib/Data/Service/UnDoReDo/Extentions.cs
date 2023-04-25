@@ -76,7 +76,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
                 foreach (IJornalable element in list_obj)
                     finded_objects = finded_objects.Union(element.GetAllChangedObjects());
 
-            if (obj.ChangesJornal.Count > 0 && !finded_objects.Where(ob => ob.Id == obj.Id).Any())
+            if (obj.ChangesJornal.Count > 0 && !finded_objects.Where(ob => ob.StoredId == obj.StoredId).Any())
                 return finded_objects.Union(new List<IJornalable>() { obj });
             return finded_objects;
         }

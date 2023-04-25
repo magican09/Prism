@@ -24,15 +24,16 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             _Collection.JornalingOff();
 
-            // _ItemState = _Item.State;
-            //if (UnDoReDo_System.Contains(_Item))
-            //    _Item.State = EntityState.Modified;
-            //else
-            //    _Item.State = EntityState.Removed;
-            _CollectionState = _Collection.State;
+            _ItemState = _Item.State;
+            if (UnDoReDo_System.Contains(_Item))
+                _Item.State = EntityState.Modified;
+            else
+                _Item.State = EntityState.Removed;
+            //  _CollectionState = _Collection.State;
+            //_Collection.State = EntityState.Modified;
             _OwnerState = _Collection.Owner.State;
-            _Collection.State = EntityState.Modified;
-            _Collection.Owner.State = EntityState.Modified;
+            if (UnDoReDo_System.Contains(_Collection.Owner))
+                _Collection.Owner.State = EntityState.Modified;
 
             _Collection.Remove(_Item);
             ChangedObjects.Add(_Item);
@@ -46,9 +47,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             _Collection.JornalingOff();
            
-            _Collection.State = _CollectionState;
+            //_Collection.State = _CollectionState;
             _Collection.Owner.State = _OwnerState;
-            //_Item.State = _ItemState;
+            _Item.State = _ItemState;
 
             _Collection.Insert(_Index, _Item);
             ChangedObjects.Remove(_Item);
@@ -65,17 +66,18 @@ namespace PrismWorkApp.OpenWorkLib.Data
             UnDoReDo_System = collection.UnDoReDoSystem;
 
             _Collection.JornalingOff();
-            // _ItemState = _Item.State;
-            //if (UnDoReDo_System.Contains(_Item))
-            //    _Item.State = EntityState.Modified;
-            //else
-            //    _Item.State = EntityState.Removed;
+            _ItemState = _Item.State;
+            if (UnDoReDo_System.Contains(_Item))
+                _Item.State = EntityState.Modified;
+            else
+                _Item.State = EntityState.Removed;
 
-            _CollectionState = _Collection.State;
-            _OwnerState = _Collection.Owner.State;
-            _Collection.State = EntityState.Modified;
-             _Collection.Owner.State = EntityState.Modified;
-          
+            //_CollectionState = _Collection.State;
+            //_Collection.State = EntityState.Modified;
+             _OwnerState = _Collection.Owner.State;
+            if (UnDoReDo_System.Contains(_Collection.Owner))
+                _Collection.Owner.State = EntityState.Modified;
+
             _Collection.Remove(_Item);
             ChangedObjects.Add(_Item);
             ChangedObjects.Add(_Collection);

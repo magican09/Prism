@@ -162,6 +162,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Views\MaterialCertificateAggregationDocumentsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\ConstructionView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -175,6 +178,10 @@
   <ItemGroup>
     <Page Update="Dialogs\GetObjectFromCollectionDialogVeiw.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Views\MaterialCertificateAggregationDocumentsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ConstructionView .xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

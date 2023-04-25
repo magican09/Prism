@@ -34,8 +34,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     item.State = EntityState.Added;
                 _ItemStateDict.Add(item, item.State);
             }
-            _CollectionState = _Collection.State;
-            _Collection.State = EntityState.Modified; 
+            //_CollectionState = _Collection.State;
+            //_Collection.State = EntityState.Modified; 
             _OwnerState = _Collection.Owner.State;
 
             _Collection.ChangesJornal.Add(this);
@@ -52,7 +52,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 item.State = _ItemStateDict[item];
                 item.ChangesJornal.Remove(this);
             }
-            _Collection.State = _CollectionState;
+            //_Collection.State = _CollectionState;
             _Collection.Owner.State = _OwnerState;
             
             _Collection.ChangesJornal.Remove(this);
@@ -77,8 +77,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                     item.State = EntityState.Added;
                 _ItemStateDict.Add(item, item.State);
             }
-            _CollectionState = _Collection.State;
-            _Collection.State = EntityState.Modified;
+            //_CollectionState = _Collection.State;
+            //_Collection.State = EntityState.Modified;
              _OwnerState = _Collection.Owner.State;
             _Collection.ChangesJornal.Add(this);
             ChangedObjects.Add(_Collection);

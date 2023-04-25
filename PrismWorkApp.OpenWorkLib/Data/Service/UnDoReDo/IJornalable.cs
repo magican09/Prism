@@ -1,9 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public interface IJornalable : IKeyable, IHierarchical
     {
+        public Guid StoredId { get; set; }
         /// <summary>
         /// Включение жруналирования объекта
         /// </summary>
@@ -33,8 +35,8 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// Флад включающий функцию авторегисрации добаляемых в тейкущй объект объектов
         /// </summary>
         public bool IsAutoRegistrateInUnDoReDo { get; set; }
+     
 
-        
 
     }
     public enum EntityState

@@ -30,10 +30,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             else
                 _Item.State = EntityState.Added;
             _OwnerState = _Collection.Owner.State;
-            _Collection.Owner.State = EntityState.Modified;
+            if (UnDoReDo_System.Contains(_Collection.Owner))
+                _Collection.Owner.State = EntityState.Modified;
 
-            _CollectionState = _Collection.State;
-            _Collection.State = EntityState.Modified;
+            // _CollectionState = _Collection.State;
+            // _Collection.State = EntityState.Modified;
             _Collection.Insert(_Index, _Item);
             ChangedObjects.Add(_Item);
             ChangedObjects.Add(_Collection);
@@ -48,7 +49,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
             _Item.State = _ItemState;
             _Collection.Owner.State = _OwnerState;
-            _Collection.State = _CollectionState;
+         //   _Collection.State = _CollectionState;
 
             _Collection.Remove(_Item);
             ChangedObjects.Remove(_Item);
@@ -72,10 +73,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
             else
                 _Item.State = EntityState.Added;
             _OwnerState = _Collection.Owner.State;
-            _Collection.Owner.State = EntityState.Modified;
+            if (UnDoReDo_System.Contains(_Collection.Owner))
+                _Collection.Owner.State = EntityState.Modified;
         
-            _CollectionState = _Collection.State;
-            _Collection.State = EntityState.Modified;
+           // _CollectionState = _Collection.State;
+           // _Collection.State = EntityState.Modified;
 
             _Collection.Insert(_Index, _Item);
             ChangedObjects.Add(_Item);

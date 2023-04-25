@@ -5,9 +5,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Views
     /// <summary>
     /// Interaction logic for DocumentationExplorerView.xaml
     /// </summary>
-    public partial class DocumentationExplorerView : UserControl
+    public partial class SolutionExplorerView : UserControl
     {
-        public DocumentationExplorerView()
+        public SolutionExplorerView()
         {
             InitializeComponent();
         }

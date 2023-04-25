@@ -52,7 +52,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         #region Properties
         private Guid _id = Guid.NewGuid();
-        private Guid _storedId;
+       
         private string _code;
         private string _name;
         [CreateNewWhenCopy]
@@ -61,12 +61,20 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _id; }
             set { SetProperty(ref _id, value); }
         }
+         private Guid _storedId = Guid.NewGuid();
         [CreateNewWhenCopy]
         public Guid StoredId
         {
-            get { return _storedId; }
+            get
+            {
+                if (_id != Guid.Empty)
+                    return _id;
+
+                return _storedId;
+            }
             set { SetProperty(ref _storedId, value); }
         }
+
         public string Code
         {
             get

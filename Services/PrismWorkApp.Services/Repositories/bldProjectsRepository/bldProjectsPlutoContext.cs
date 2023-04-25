@@ -12,11 +12,14 @@ namespace PrismWorkApp.Services.Repositories
         {
             _connectionString = connectionString;
             // Database.EnsureDeleted();
-            Database.EnsureCreated();
+           // Database.EnsureCreated();
             ChangeTracker.StateChanged += ChangeTracker_StateChanged;
             ChangeTracker.Tracked += ChangeTracker_Tracked;
         }
+        //public bldProjectsPlutoContext()
+        //{
 
+        //}
         private void ChangeTracker_Tracked(object sender, Microsoft.EntityFrameworkCore.ChangeTracking.EntityTrackedEventArgs e)
         {
            
@@ -77,7 +80,7 @@ namespace PrismWorkApp.Services.Repositories
             // optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;;Database=workappdb;Trusted_Connection=True;");
             optionsBuilder.UseSqlServer(_connectionString);
             optionsBuilder.EnableSensitiveDataLogging();
-
+         //   optionsBuilder.UseSqlServer("ThisIsJustForMigrations");
             // optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

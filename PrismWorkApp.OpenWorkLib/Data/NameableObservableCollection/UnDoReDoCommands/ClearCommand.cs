@@ -38,10 +38,11 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 _ItemStateDict.Add(item, item.State);
             }
             _OwnerState = _Collection.Owner.State;
-            _Collection.Owner.State = EntityState.Modified;
-            _CollectionState = _Collection.State;
-            _Collection.State = EntityState.Modified;
-           _Collection.ChangesJornal.Add(this);
+            if (UnDoReDo_System.Contains(_Collection.Owner))
+                _Collection.Owner.State = EntityState.Modified;
+            //_CollectionState = _Collection.State;
+            //_Collection.State = EntityState.Modified;
+            _Collection.ChangesJornal.Add(this);
             ChangedObjects.Add(_Collection);
             _Collection.JornalingOn();
 
@@ -59,7 +60,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 ChangedObjects.Remove(item);
             }
 
-            _Collection.State = _CollectionState;
+            //_Collection.State = _CollectionState;
             _Collection.Owner.State = _OwnerState;
 
             _Collection.ChangesJornal.Remove(this);
@@ -88,11 +89,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 item.ChangesJornal.Add(this);
                 _ItemStateDict.Add(item, item.State);
             }
-            _Collection.Owner.State = EntityState.Modified;
+            if (UnDoReDo_System.Contains(_Collection.Owner))
+                _Collection.Owner.State = EntityState.Modified;
 
-            _CollectionState = _Collection.State;
-            _Collection.State = EntityState.Modified;
-            
+            //_CollectionState = _Collection.State;
+            //_Collection.State = EntityState.Modified;
+
             _Collection.ChangesJornal.Add(this);
             ChangedObjects.Add(_Collection);
             _Collection.JornalingOn();

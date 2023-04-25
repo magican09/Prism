@@ -71,7 +71,7 @@
                 </telerik:RadGridView.InputBindings>
                 
                 <telerik:RadGridView.Columns>
-                    <telerik:GridViewDataColumn DataMemberBinding="{Binding Name}" Header="Наименование каталога" Width="30*"  />
+                    <telerik:GridViewDataColumn DataMemberBinding="{Binding Name}" Header="Наименование каталога" Width="130*"  />
                     <telerik:GridViewDataColumn DataMemberBinding="{Binding AttachedDocuments.Count}" IsReadOnly="True" Width="70*"
                                                Header="Количество документов в каталоге" />
                 </telerik:RadGridView.Columns>

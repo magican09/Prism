@@ -44,10 +44,11 @@ namespace PrismWorkApp.Services.Repositories
         #region Documentation
         public virtual DbSet<bldDocument> Documents { get; set; }
         public virtual DbSet<bldAOSRDocument> AOSRDocuments { get; set; }
-        public virtual DbSet<bldExecutiveScheme> ExecutiveSchemes { get; set; }
-        public virtual DbSet<bldLaboratoryReport> LaboratoryReports { get; set; }
-        public virtual DbSet<bldOrderDocument> OrderDocuments { get; set; }
         public virtual DbSet<bldMaterialCertificate> MaterialCertificates { get; set; }
+        public virtual DbSet<bldLaboratoryReport> LaboratoryReports { get; set; }
+        public virtual DbSet<bldExecutiveScheme> ExecutiveSchemes { get; set; }
+      
+        public virtual DbSet<bldOrderDocument> OrderDocuments { get; set; }
         public virtual DbSet<bldPasportDocument> PasportDocuments { get; set; }
         public virtual DbSet<bldProjectDocument> ProjectDocuments { get; set; }
         public virtual DbSet<bldRegulationtDocument> RegulationtDocuments { get; set; }
@@ -172,6 +173,10 @@ namespace PrismWorkApp.Services.Repositories
              .HasOne(bo => bo.ParentObject)
              .WithMany(bo => bo.BuildingObjects)
              .HasForeignKey(bo => bo.bldObjectId);
+           
+            //modelBuilder.Entity<bldMaterialCertificate>()
+            //   .Property(mc => mc.Id)
+            //   .ValueGeneratedNever();
 
             //modelBuilder.Entity<bldAggregationDocument>()
             //    .HasMany(ad => ad.ParentDocuments)

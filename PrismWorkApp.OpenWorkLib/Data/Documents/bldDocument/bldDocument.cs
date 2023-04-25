@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public abstract class bldDocument : BindableBase, IbldDocument, IEntityObject
+    public abstract class bldDocument : BindableBase, IbldDocument 
     {
 
         private DateTime _date = DateTime.Now;
@@ -78,11 +78,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             InvokeUnDoReDoCommandCreatedEvent(Command);
             return new_doc;
         }
-        public TEntity AddCreatedBasedOnNewDocument<TEntity>(TEntity sample_doc) where TEntity : IbldDocument, new()
+        public bldDocument AddCreatedBasedOnNewDocument(IbldDocument sample_doc) 
         {
-            TEntity new_doc = (TEntity)sample_doc.Clone();
-            new_doc.Id = Guid.NewGuid();
-            AddDocumentCommand<TEntity> Command = new AddDocumentCommand<TEntity>(this, new_doc);
+            bldDocument new_doc = (bldDocument)sample_doc.Clone();
+          //  new_doc.Id = Guid.NewGuid();
+            new_doc.IsHaveImageFile = false;
+            AddDocumentCommand<bldDocument> Command = new AddDocumentCommand<bldDocument>(this, new_doc);
             InvokeUnDoReDoCommandCreatedEvent(Command);
             return new_doc;
         }

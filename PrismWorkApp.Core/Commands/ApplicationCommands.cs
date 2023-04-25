@@ -13,14 +13,11 @@
         NotifyCompositeCommand AddFromCommand { get; }
         NotifyCompositeCommand AddToCommand { get; }
         NotifyCompositeCommand AddCommand { get; }
+      
         NotifyCompositeCommand AddNewAggregationDocumentCommand { get; }
         NotifyCompositeCommand AddNewMaterialCertificateCommand { get; }
-
-        //NotifyCompositeCommand CreateWorkCommand { get; }
-        //NotifyCompositeCommand CreateWorkFromTemplateCommand { get; }
-        //NotifyCompositeCommand DeleteWorkCommand { get; }
-        //NotifyCompositeCommand MoveWorkCommand { get; }
-        //NotifyCompositeCommand AddWorkCommand { get; }
+        NotifyCompositeCommand AddNewLaboratoryReportCommand { get; }
+        NotifyCompositeCommand AddNewExecutiveSchemeCommand { get; }
 
         NotifyCompositeCommand SaveExecutiveDocumentsCommand { get; }
         NotifyCompositeCommand LoadMaterialsFromAccessCommand { get; }
@@ -154,7 +151,18 @@
         {
             get { return _addNewMaterialCertificateCommand; }
         }
-        
+     
+        private NotifyCompositeCommand _addNewLaboratoryReportCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand AddNewLaboratoryReportCommand
+        {
+            get { return _addNewLaboratoryReportCommand; }
+        }
+        private NotifyCompositeCommand _addNewExecutiveSchemeCommand = new NotifyCompositeCommand(true);
+        public NotifyCompositeCommand AddNewExecutiveSchemeCommand
+        {
+            get { return _addNewExecutiveSchemeCommand; }
+        }
+
         private NotifyCompositeCommand _loadUnitsOfMeasurementsCommand = new NotifyCompositeCommand(true);
         public NotifyCompositeCommand LoadUnitsOfMeasurementsCommand
         {

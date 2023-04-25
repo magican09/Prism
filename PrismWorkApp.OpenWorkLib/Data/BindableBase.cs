@@ -28,18 +28,23 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             UnDoReDoCommandCreated.Invoke(this, new UnDoReDoCommandCreateEventsArgs(command));
         }
-        private Guid _id;
+        private Guid _id ;
         [CreateNewWhenCopy]
         public Guid Id
         {
-            get { return _id; }
+            get{ return _id;}
             set { SetProperty(ref _id, value); }
-        }
-        private Guid _storedId;
+        } 
+        private Guid _storedId = Guid.NewGuid();
         [CreateNewWhenCopy]
         public Guid StoredId
         {
-            get { return _storedId; }
+            get {
+                if (_id != Guid.Empty)
+                    return _id;
+
+                return _storedId;
+            }
             set { SetProperty(ref _storedId, value); }
         }
         private string _code;
@@ -189,6 +194,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #endregion
         public BindableBase()
         {
+          
         }
         [NotMapped]
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе (например копирования рефлексией) с данныv объектом по умолчанию 

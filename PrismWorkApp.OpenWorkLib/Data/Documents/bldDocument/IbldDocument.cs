@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-    public interface IbldDocument : IRegisterable, IEntityObject, INameable, IBindableBase, ICloneable
+    public interface IbldDocument : IBindableBase
     {
         bldDocumentsGroup AttachedDocuments { get; set; }
         DateTime Date { get; set; }
@@ -11,5 +11,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         int PagesNumber { get; set; }
         string RegId { get; set; }
         string ShortName { get; set; }
+        public bool IsHaveImageFile { get; set; }
     }
 }

@@ -25,9 +25,26 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 switch (dataItem.AttachedObject.GetType().Name)
                 {
 
+                    case (nameof(bldLaboratoryReport)):
+                    case (nameof(bldExecutiveScheme)):
+                        {
+                            bldDocument document = ((bldDocument)dataItem.AttachedObject);
+                            Binding binding = new Binding("Name");
+                            binding.Source = document;
+                            binding.Path = new PropertyPath("Name");
+                            binding.Mode = BindingMode.OneWay;
+                            BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
+
+                            dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                            DataItem attachedDocs_dataitem = new DataItem();
+                            dataItem.Items.Add(attachedDocs_dataitem);
+                            attachedDocs_dataitem.AttachedObject = document.AttachedDocuments;
+                            break;
+                        }
+                    
                     case (nameof(bldMaterialCertificate)):
                         {
-                            bldMaterialCertificate document = ((bldMaterialCertificate)dataItem.AttachedObject);
+                            bldDocument document = ((bldDocument)dataItem.AttachedObject);
                             Binding binding = new Binding("MaterialName");
                             binding.Source = document;
                             binding.Path = new PropertyPath("MaterialName");

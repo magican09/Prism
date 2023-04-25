@@ -82,7 +82,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
         public void SetItems(IEnumerable coll)
             {
             this.Items = new DataItemCollection(this);
-            foreach (IKeyable obj in coll)
+            foreach (IEntityObject obj in coll)
             {
                 DataItem new_dataItem = new DataItem();
                 new_dataItem.AttachedObject = obj;
@@ -123,21 +123,21 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
         /// /////////////////////////////////////////////////////
         /// </summary>
 
-        public IKeyable AttachedObject
+        public IEntityObject AttachedObject
         {
-            get { return (IKeyable)GetValue(AttachedObjectProperty); }
+            get { return (IEntityObject)GetValue(AttachedObjectProperty); }
             set { SetValue(AttachedObjectProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for AttachedObject.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AttachedObjectProperty =
-            DependencyProperty.Register("AttachedObject", typeof(IKeyable), typeof(DataItem), new PropertyMetadata(null,new PropertyChangedCallback(OnAttachedObjectProperty_Changed)));
+            DependencyProperty.Register("AttachedObject", typeof(IEntityObject), typeof(DataItem), new PropertyMetadata(null,new PropertyChangedCallback(OnAttachedObjectProperty_Changed)));
 
         private static void OnAttachedObjectProperty_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var control = sender as DataItem;
             if (control != null)
-                control.OnAttachedObjectChanged((IKeyable)e.OldValue, (IKeyable)e.NewValue);
+                control.OnAttachedObjectChanged((IEntityObject)e.OldValue, (IEntityObject)e.NewValue);
         }
         private static DataItemsGenerationConverter DataItemsGenerator = new DataItemsGenerationConverter();
         private void OnAttachedObjectChanged(object oldValue, object newValue)
@@ -150,19 +150,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
        
             if (oldValueCollectionNotificationChanged != null && oldValue is IEnumerable enurable_oldValue)
             {
-                //foreach (IKeyable obj in enurable_oldValue)
-                //{
-                //    DataItem old_dataItem = this.Items.Where(di=>di.));
-                //    new_dataItem.AttachedObject = obj;
-                //    this.Items.Add(new_dataItem);
-                //}
-                if (enurable_oldValue is INotifyCollectionChanged notifyable_coll)
-                {
+              if (enurable_oldValue is INotifyCollectionChanged notifyable_coll)
                     notifyable_coll.CollectionChanged -= OnAttachedObjectCollectionProperty_CollectionChanged;
-                }
-
-                    oldValueCollectionNotificationChanged.CollectionChanged -= OnAttachedObjectCollectionProperty_CollectionChanged;
-              }
+              oldValueCollectionNotificationChanged.CollectionChanged -= OnAttachedObjectCollectionProperty_CollectionChanged;
+            }
 
             var newValuePropertyNotificationChanged = newValue as INotifyPropertyChanged;
             var newValueCollectionNotificationChanged = newValue as INotifyCollectionChanged;
@@ -176,7 +167,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             {
 
                 this.Items = new DataItemCollection(this);
-                foreach (IKeyable obj in enurable_newValue)
+                foreach (IEntityObject obj in enurable_newValue)
                 {
                     DataItem new_dataItem = new DataItem();
                     new_dataItem.AttachedObject = obj;
@@ -201,9 +192,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                foreach (IKeyable obj in e.NewItems)
+                foreach (IEntityObject obj in e.NewItems)
                 {
-                    if (!this.Items.Where(itm => itm.AttachedObject.Id == obj.Id).Any())
+                    if (!this.Items.Where(itm => itm.AttachedObject.StoredId == obj.StoredId).Any())
                     {
                         DataItem new_dataItem = new DataItem();
                         new_dataItem.AttachedObject = obj;
@@ -213,9 +204,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             }
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                foreach (IKeyable obj in e.OldItems)
+                foreach (IEntityObject obj in e.OldItems)
                 {
-                    DataItem old_dataItem = this.Items.Where(itm => itm.AttachedObject.Id == obj.Id).FirstOrDefault();
+                    DataItem old_dataItem = this.Items.Where(itm => itm.AttachedObject.StoredId == obj.StoredId).FirstOrDefault();
                     if (old_dataItem != null)
                         this.Items.Remove(old_dataItem);
                 }

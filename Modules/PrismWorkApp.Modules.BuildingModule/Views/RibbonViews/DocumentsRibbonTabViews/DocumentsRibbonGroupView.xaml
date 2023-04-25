@@ -8,5 +8,11 @@
     <StackPanel Orientation="Horizontal">
             <RibbonButton  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/DocumentsRibbonTab/new_bldAggregationDocument.png"
                 Command="{Binding ApplicationCommands.AddNewAggregationDocumentCommand}"/>
+            <RibbonButton  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/DocumentsRibbonTab/new_bldMaterialCertificate.png"
+                Command="{Binding ApplicationCommands.AddNewMaterialCertificateCommand}"/>
+        <RibbonButton  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/DocumentsRibbonTab/new_bldLaboratoryReport.png"
+                Command="{Binding ApplicationCommands.AddNewLaboratoryReportCommand}"/>
+        <RibbonButton  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/DocumentsRibbonTab/new_bldExecutiveScheme.png"
+                Command="{Binding ApplicationCommands.AddNewExecutiveSchemeCommand}"/>
     </StackPanel>
 </RibbonGroup>

@@ -31,6 +31,8 @@ namespace PrismWorkApp.Modules.BuildingModule
         public NotifyCommand SaveAllToDBCommand { get; set; }
         public NotifyCommand<object> AddNewMaterialCertificateCommand { get; private set; }
         public NotifyCommand<object> AddNewAggregationDocumentCommand { get; private set; }
+        public NotifyCommand<object> AddNewLaboratoryReportCommand { get; private set; }
+        public NotifyCommand<object> AddNewExecutiveSchemeCommand { get; private set; }
         #endregion
         #region Contructors
         private IApplicationCommands _applicationCommands;
@@ -54,6 +56,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             SaveAllToDBCommand = new NotifyCommand(OnSaveAllToDB);
             AddNewMaterialCertificateCommand = new NotifyCommand<object>(OnAddNewMaterialCertificate);
             AddNewAggregationDocumentCommand = new NotifyCommand<object>(OnAddNewAggregationDocument);
+            AddNewLaboratoryReportCommand = new NotifyCommand<object>(OnAddNewLaboratoryReport);
+            AddNewExecutiveSchemeCommand = new NotifyCommand<object>(OnAddNewExecutiveScheme);
             //LoadAggregationDocumentFromDBCommand = new NotifyCommand<object>(OnLoadAggregationDocumentFromDB);
             //LoadAggregationDocumentFromDBCommand.Name = "Загрузить ведомость документов из БД";
             // CreateNewAggregationDocumentCommand = new NotifyCommand<object>(OnCreateNewAggregationDocument);
@@ -68,23 +72,33 @@ namespace PrismWorkApp.Modules.BuildingModule
             _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveAllToDBCommand);
         }
 
-        private void OnAddNewAggregationDocument(object obj)
+        private void OnAddNewExecutiveScheme(object obj)
         {
             if (obj is IList list_obj)
             {
-               
-                list_obj.Add(new bldAggregationDocument());
+                list_obj.Add(new bldExecutiveScheme());
+
             }
+        }
+
+        private void OnAddNewLaboratoryReport(object obj)
+        {
+            if (obj is IList list_obj)
+                list_obj.Add(new bldLaboratoryReport());
+
+        }
+
+        private void OnAddNewAggregationDocument(object obj)
+        {
+            if (obj is IList list_obj)
+                list_obj.Add(new bldAggregationDocument());
+            
         }
 
         private void OnAddNewMaterialCertificate(object obj)
         {
          if(obj is IList list_obj)
-            {
-                bldMaterialCertificate new_material_certificate = new bldMaterialCertificate();
-                list_obj.Add(new_material_certificate);
-            }
-
+              list_obj.Add(new bldMaterialCertificate());
         }
 
 

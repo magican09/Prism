@@ -6,6 +6,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
     {
         public bldLaboratoryReportsGroup()
         {
+           
             Name = "Лабораторные испытания";
         }
 
@@ -15,6 +16,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         public bldLaboratoryReportsGroup(List<bldLaboratoryReport> _list) : base(_list)
         {
+          
             Name = "Лабораторные испытания";
         }
     }

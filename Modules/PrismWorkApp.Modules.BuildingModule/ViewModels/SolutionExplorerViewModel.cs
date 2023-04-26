@@ -191,7 +191,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 bldAggregationDocument aggregationDocument = selected_object as bldAggregationDocument;
                 NavigationParameters navParam = new NavigationParameters();
                 navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
-               _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificateAggregationDocumentsView).Name, navParam);
+                navParam.Add("title", "Перечень сертификатов/паспортов");
+                _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(MaterialCertificateAggregationDocumentsView).Name, navParam);
             }
         }
 
@@ -485,6 +486,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         {
                             NavigationParameters navParam = new NavigationParameters();
                             navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
+                            navParam.Add("title","Общий перечень документов");
                             //                   navParam.Add("parant_undoredo_system", (new ConveyanceObject(UnDoReDo, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(AggregationDocumentsView).Name, navParam);
                         }

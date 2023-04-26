@@ -126,11 +126,21 @@
                                     </KeyBinding.CommandParameter>
                                 </KeyBinding>
                                 <KeyBinding  Key="Z" Modifiers="Ctrl" Command="{Binding DataContext.UnDoCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"/>
-                          
-
-
-                            </telerik:RadGridView.InputBindings>
-                            <telerik:EventToCommandBehavior.EventBindings>
+                             </telerik:RadGridView.InputBindings>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <prism:InvokeCommandAction Command="{Binding DataContext.DataGridSelectionChangedCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}">
+                                        <prism:InvokeCommandAction.CommandParameter>
+                                            <MultiBinding Converter="{StaticResource    ObjectsToListMultiConverter}">
+                                                <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItem"/>
+                                                <Binding  RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="DataContext"/>
+                                                <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
+                                            </MultiBinding>
+                                        </prism:InvokeCommandAction.CommandParameter>
+                                    </prism:InvokeCommandAction>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <!--<telerik:EventToCommandBehavior.EventBindings>
                                 <telerik:EventBinding  EventName="SelectionChanged"  Command="{Binding DataContext.DataGridSelectionChangedCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
                                            RaiseOnHandledEvents="True"  >
                                     <telerik:EventBinding.CommandParameter>
@@ -143,7 +153,7 @@
                                 </telerik:EventBinding>
                                 <telerik:EventBinding  EventName="LostFocus" Command="{Binding DataContext.DataGridLostFocusCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"/>
                              
-                                <!--<telerik:EventBinding EventName="Copying" Command="{Binding DataContext.DataGridCopyingCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
+                                --><!--<telerik:EventBinding EventName="Copying" Command="{Binding DataContext.DataGridCopyingCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
                                                      RaiseOnHandledEvents="True"  PassEventArgsToCommand="True"   />
                                 <telerik:EventBinding EventName="Pasting" Command="{Binding DataContext.DataGridPastingCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
                                                      RaiseOnHandledEvents="True" PassEventArgsToCommand="True"  />
@@ -151,9 +161,9 @@
                                 <telerik:EventBinding EventName="CopyingCellClipboardContent" Command="{Binding DataContext.DataGridCopyingCellClipboardContentCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
                                                      RaiseOnHandledEvents="True" PassEventArgsToCommand="True"  />
                                 <telerik:EventBinding EventName="PastingCellClipboardContent" Command="{Binding DataContext.DataGridPastingCellClipboardContentCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}"
-                                                     RaiseOnHandledEvents="True" PassEventArgsToCommand="True"  />-->
+                                                     RaiseOnHandledEvents="True" PassEventArgsToCommand="True"  />--><!--
                                 
-                            </telerik:EventToCommandBehavior.EventBindings>
+                            </telerik:EventToCommandBehavior.EventBindings>-->
 
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewImageColumn Width="15" DataMemberBinding="{Binding   Converter={StaticResource objecobjectTo_Url_Convectert}}"/>

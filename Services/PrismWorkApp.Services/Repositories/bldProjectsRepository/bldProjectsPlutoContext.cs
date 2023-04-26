@@ -12,7 +12,7 @@ namespace PrismWorkApp.Services.Repositories
         {
             _connectionString = connectionString;
             // Database.EnsureDeleted();
-           // Database.EnsureCreated();
+          //  Database.EnsureCreated();
             ChangeTracker.StateChanged += ChangeTracker_StateChanged;
             ChangeTracker.Tracked += ChangeTracker_Tracked;
         }

@@ -40,7 +40,7 @@ namespace PrismWorkApp.Core
         public event EventHandler IsActiveChanged;
 
         private bool _isActive;
-        public bool IsActive
+        public  bool IsActive
         {
             get { return _isActive; }
             set
@@ -56,12 +56,12 @@ namespace PrismWorkApp.Core
 
         }
 
-        private void OnIsActiveChanged()
+        private  void OnIsActiveChanged()
         {
             //UpdateCommand.IsActive = IsActive; //set the command as active
             IsActiveChanged?.Invoke(this, new EventArgs()); //invoke the event for all listeners
-
         }
+
         public virtual void OnSave()
         {
 

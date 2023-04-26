@@ -104,13 +104,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
            IRegionManager regionManager, IBuildingUnitsRepository buildingUnitsRepository, IApplicationCommands applicationCommands, IAppObjectsModel appObjectsModel)
         {
 
-            UnDoReDo = new UnDoReDoSystem();
+            UnDoReDo = new UnDoReDoSystem(this);
             ApplicationCommands = applicationCommands;
             AppObjectsModel = appObjectsModel as AppObjectsModel;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
 
+           
             ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
 
@@ -193,6 +194,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             AllUnitsOfMeasurements = new ObservableCollection<bldUnitOfMeasurement>(_buildingUnitsRepository.UnitOfMeasurementRepository.GetAllAsync());
 
         }
+
+       
 
         private void OnAddNewExecutiveScheme(object obj)
         {
@@ -527,6 +530,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public virtual void OnSave()
         {
+         if(UnDoReDo.ChangedObjects.Count>0)
             base.OnSave<bldDocumentsGroup>(AggregationDocuments,
                  (result) =>
                  {
@@ -573,6 +577,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_agrregation_document"];
+            if (navigationContext.Parameters["title"] != null) Title = navigationContext.Parameters["title"].ToString();
             if (navigane_message != null)
             {
                 bldAggregationDocument arg_document = (bldAggregationDocument)navigane_message.Object;
@@ -589,7 +594,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                 if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
                 AggregationDocuments.ErrorsChanged += RaiseCanExecuteChanged;
-                Title = $"Сертификаты/Паспорта";
+               
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -608,6 +613,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
 
+         //   this.OnSave();
+            
         }
     }
 }

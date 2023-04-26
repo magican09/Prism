@@ -43,12 +43,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _unDoReDo, value); }
         }
 
-       
+
 
         public BaseViewModel()
         {
             // IsActiveChanged += OnActiveChanged;
-
+            IsActiveChanged += OnIsAciveChanged;
         }
         public virtual void OnSave(string object_name = "")
         {
@@ -63,12 +63,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 if (result.Result == ButtonResult.Yes)
                 {
                     UnDoReDo.SaveAll();
-                   
+
                 }
             });
 
         }
-        public virtual void OnSave<T>(T selected_obj,Action<IDialogResult> result, string object_name = "") where T : IEntityObject
+        public virtual void OnSave<T>(T selected_obj, Action<IDialogResult> result, string object_name = "") where T : IEntityObject
         {
             CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена",
             result, _dialogService);
@@ -98,14 +98,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             {
                 CoreFunctions.ConfirmActionOnElementDialog<T>(selected_obj, "Сохранить", object_name, "Сохранить", "Не сохранять", "Отмена", (result) =>
                 {
-                   
+
                     if (view != null)
                     {
                         result_action.Invoke(result);
                         if (result.Result == ButtonResult.Yes)
                         {
 
-                          //  UnDoReDo.SaveAllChages(selected_obj);
+                            //  UnDoReDo.SaveAllChages(selected_obj);
                             if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
@@ -122,8 +122,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         }
                         else if (result.Result == ButtonResult.No)
                         {
-                         //   UnDoReDo.UnDoAll();
-                         //   UnDoReDo.SaveAllChages();
+                            //   UnDoReDo.UnDoAll();
+                            //   UnDoReDo.SaveAllChages();
                             if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
                                 _regionManager.Regions[RegionNames.ContentRegion].Deactivate(view);
@@ -147,7 +147,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                 param.Add("cancel_dialog_param", "Отменено пользователем!");
                                 RequestClose.Invoke(new DialogResult(_result, param));
                             }
-                           // OnWindowClose();
+                            // OnWindowClose();
                         }
                         else
                         {
@@ -188,7 +188,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     {
                         if (result.Result == ButtonResult.Yes)
                         {
-                            
+
                             UnDoReDo.Save(selected_obj);
                             if (_regionManager != null && _regionManager.Regions[RegionNames.ContentRegion].Views.Contains(view))
                             {
@@ -264,36 +264,41 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         #region on Activate event  
-        //private void OnActiveChanged(object sender, EventArgs e)
-        //{
-        //    if (IsActive)
-        //        RegisterAplicationCommands();
-        //    else
-        //        UnRegisterAplicationCommands();
+        private void OnIsAciveChanged(object sender, EventArgs e)
+        {
+            if (UnDoReDo != null)
+            {
+                if (this.IsActive == false)
+                {
+                    if (UnDoReDo.ChangedObjects.Count > 0)
+                        this.OnSave<bldDocumentsGroup>(null,
+                         (result) =>
+                         {
+                             if (result.Result == ButtonResult.Yes)
+                             {
+                                 UnDoReDo.ParentUnDoReDo.SaveAll();
+                             }
+                             if (result.Result == ButtonResult.No)
+                             {
+                                 UnDoReDo.UnDoAll();
+                                 UnDoReDo.ClearStacks();
+                             }
+                         });
 
-        //}
-        //public virtual void RegisterAplicationCommands()
-        //{
-        //    //ObservableCollection<INotifyCommand> undo_redo_collection =  GetUnDoReDoCommandObjects(_applicationCommands);
-
-        //}
-        //public virtual  void UnRegisterAplicationCommands()
-        //{
-
-        //}
-        //private ObservableCollection<INotifyCommand> GetUnDoReDoCommandObjects(object common_command_object)
-        //{
-        //    ObservableCollection < INotifyCommand >  undo_redo_collection = new ObservableCollection<INotifyCommand>();
-
-        //   // var file_infos = common_command_object.GetType().GetProperties();
-
-        //  //  foreach(PropertyInfo prop_info in file_infos)
-        //    {
-
-        //    }
-
-        //    return undo_redo_collection;
-        //}
+                    foreach (IJornalable obj in UnDoReDo._RegistedModels.Keys)
+                    {
+                        obj.UnDoReDoSystem = UnDoReDo.ParentUnDoReDo;
+                    }
+                }
+                else
+                {
+                    foreach (IJornalable obj in UnDoReDo._RegistedModels.Keys)
+                    {
+                        obj.UnDoReDoSystem = UnDoReDo;
+                    }
+                }
+            }
+        }
         #endregion
     }
 }

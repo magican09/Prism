@@ -71,6 +71,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         #region IActiveAware 
         public bool IsActive { get; set; } ///Реализация интресфейса IActiveAware
         public event EventHandler IsActiveChanged;
+       
         #endregion
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -534,12 +535,12 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
             /// регистриуем их в родительской системе
             if (ChildrenSystems.Where(s=>s.Id == child_system.Id).Any())
             {
-                foreach (IJornalable reg_obj in child_system._RegistedModels.Keys)///Перерегистрируем все объекты бывшей дочерней сисемы
-                {                                                                 /// в текущей
-                    //child_system.UnRegister(reg_obj);
-                    this.Register(reg_obj);
-                    reg_obj.UnDoReDoSystem = this;
-                }
+                //foreach (IJornalable reg_obj in child_system._RegistedModels.Keys)///Перерегистрируем все объекты бывшей дочерней сисемы
+                //{                                                                 /// в текущей
+                //    //child_system.UnRegister(reg_obj);
+                //    this.Register(reg_obj);
+                //    reg_obj.UnDoReDoSystem = this;
+                //}
                 child_system.ParentUnDoReDo = null;
                 child_system.SystemHaveNotSavedObjects -= this.SystemHaveNotSavedObjects;
                 child_system.PropertyChanged -= this.PropertyChanged;

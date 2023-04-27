@@ -609,7 +609,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             //  picture.ImageFile = (byte[])row["files"];
                             if ((byte[])row["files"] != null)
                             {
-                                picture.Data = (byte[])row["files"];
+                                picture.Data = FormatPDFFromAccess((byte[])row["files"]);
                                 materialCertificate.IsHaveImageFile = true;
                             }
                             else

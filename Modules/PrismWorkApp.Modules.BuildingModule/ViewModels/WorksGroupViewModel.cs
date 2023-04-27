@@ -904,7 +904,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             bldWork selected_work = obj as bldWork;
             ObservableCollection<bldUnitOfMeasurement> All_UnitOfMeasurements =
-                 new ObservableCollection<bldUnitOfMeasurement>(_buildingUnitsRepository.UnitOfMeasurementRepository.GetAllUnits());
+                 new ObservableCollection<bldUnitOfMeasurement>(_buildingUnitsRepository.UnitOfMeasurementRepository.GetAllAsync());
             NameablePredicate<ObservableCollection<bldUnitOfMeasurement>, bldUnitOfMeasurement> predicate_1 = new NameablePredicate<ObservableCollection<bldUnitOfMeasurement>, bldUnitOfMeasurement>();
             predicate_1.Name = "Все единицы измеререния";
             predicate_1.Predicate = (col) => col;

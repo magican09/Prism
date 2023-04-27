@@ -25,6 +25,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                 switch (dataItem.AttachedObject.GetType().Name)
                 {
 
+                    case (nameof(bldAggregationDocument)):
                     case (nameof(bldLaboratoryReport)):
                     case (nameof(bldExecutiveScheme)):
                         {
@@ -57,73 +58,60 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             attachedDocs_dataitem.AttachedObject = document.AttachedDocuments;
                             break;
                         }
-                    case (nameof(bldAggregationDocument)):
+                    //case (nameof(bldAggregationDocument)):
+                    //    {
+                    //        bldAggregationDocument document = ((bldAggregationDocument)dataItem.AttachedObject);
+                    //        Binding binding = new Binding("Name");
+                    //        binding.Source = document;
+                    //        binding.Path = new PropertyPath("Name");
+                    //        binding.Mode = BindingMode.TwoWay;
+                    //        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
+
+                    //        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+                    //        DataItem attachedDocs = new DataItem();
+                    //        attachedDocs.AttachedObject = document.AttachedDocuments;
+                    //        dataItem.Items.Add(attachedDocs);
+                    //        break;
+                    //    }
+                    //case (nameof(bldDocumentsGroup)):
+                    //case (nameof(bldAggregationDocumentsGroup)):
+                    //case (nameof(bldMaterialCertificatesGroup)):
+                    //    {
+                    //        bldDocumentsGroup documents = ((bldDocumentsGroup)dataItem.AttachedObject);
+                    //        Binding binding = new Binding("Name");
+                    //        binding.Source = documents;
+                    //        binding.Path = new PropertyPath("Name");
+                    //        binding.Mode = BindingMode.TwoWay;
+                    //        binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                    //        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
+                    //        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(new bldDocumentsGroup(), null, null, CultureInfo.CurrentCulture);
+                    //        break;
+                    //    }
+                    case (nameof(bldUnitOfMeasurement)):
+                    case (nameof(FileFormat)):
                         {
-                            bldAggregationDocument document = ((bldAggregationDocument)dataItem.AttachedObject);
+                            IEntityObject entity = ((IEntityObject)dataItem.AttachedObject);
                             Binding binding = new Binding("Name");
-                            binding.Source = document;
+                            binding.Source = entity;
                             binding.Path = new PropertyPath("Name");
                             binding.Mode = BindingMode.TwoWay;
                             BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
-
                             dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
-                           // dataItem.SetItems(document.AttachedDocuments);
-                            DataItem attachedDocs = new DataItem();
-                            attachedDocs.AttachedObject = document.AttachedDocuments;
-                            dataItem.Items.Add(attachedDocs);
                             break;
                         }
                     case (nameof(bldDocumentsGroup)):
                     case (nameof(bldAggregationDocumentsGroup)):
                     case (nameof(bldMaterialCertificatesGroup)):
-                        {
-                            bldDocumentsGroup documents = ((bldDocumentsGroup)dataItem.AttachedObject);
-                            Binding binding = new Binding("Name");
-                            binding.Source = documents;
-                            binding.Path = new PropertyPath("Name");
-                            binding.Mode = BindingMode.TwoWay;
-                            binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                            BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
-                            dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(new bldDocumentsGroup(), null, null, CultureInfo.CurrentCulture);
-                     //       dataItem.SetItems(documents);
-
-                            //foreach (bldDocument doc in documents)
-                            //{
-                            //    DataItem atch_doc_item = new DataItem();
-                            //    dataItem.Items.Add(atch_doc_item);
-                            //    atch_doc_item.AttachedObject = doc;
-
-                            //}
-                            break;
-                        }
-                    case (nameof(bldUnitOfMeasurement)):
-                        {
-                            bldUnitOfMeasurement unit_of_measurement = ((bldUnitOfMeasurement)dataItem.AttachedObject);
-                            Binding binding = new Binding("Name");
-                            binding.Source = unit_of_measurement;
-                            binding.Path = new PropertyPath("Name");
-                            binding.Mode = BindingMode.TwoWay;
-                            BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
-                            dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
-                            break;
-                        }
                     case (nameof(bldUnitOfMeasurementsGroup)):
+                    case (nameof(FileFormatsGroup)):
                         {
-                            IList entity_collection = (IList)dataItem.AttachedObject;
+                            INameableObservableCollection entity_collection = (INameableObservableCollection)dataItem.AttachedObject;
                             Binding binding = new Binding("Name");
                             binding.Source = entity_collection;
                             binding.Path = new PropertyPath("Name");
                             binding.Mode = BindingMode.TwoWay;
                             BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
-
                             dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
-                         //   dataItem.SetItems(entity_collection);
-                           //foreach (IEntityObject entity in entity_collection)
-                            //{
-                            //    DataItem ent_item = new DataItem();
-                            //    //dataItem.Items.Add(ent_item);
-                            //    ent_item.AttachedObject = entity;
-                            //}
                             break;
                         }
                     case ("NameableObservableCollection`1"): //Если тип объекта NameableObservableCollection<IEntityObject>
@@ -134,15 +122,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             binding.Path = new PropertyPath("Name");
                             binding.Mode = BindingMode.TwoWay;
                             BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
-
                             dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(new NameableObservableCollection<IEntityObject>(), null, null, CultureInfo.CurrentCulture);
-                            //dataItem.SetItems(entity_collection);
-                            //foreach (IEntityObject entity in entity_collection)
-                            //{
-                            //    DataItem ent_item = new DataItem();
-                            //    dataItem.Items.Add(ent_item);
-                            //    ent_item.AttachedObject = entity;
-                            //}
                             break;
                         }
 

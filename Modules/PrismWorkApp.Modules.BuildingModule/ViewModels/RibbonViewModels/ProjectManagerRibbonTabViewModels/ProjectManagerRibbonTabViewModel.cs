@@ -38,6 +38,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand LoadMaterialsFromAccessCommand { get; private set; }
 
         public NotifyCommand LoadUnitsOfMeasurementsFromDBCommand { get; private set; }
+        public NotifyCommand LoadFileFormatsFromDBCommand { get; private set; }
+
         public NotifyCommand SaveUnitsOfMeasurementsFromDBCommand { get; private set; }
 
         private const int CURRENT_MODULE_ID = 2;
@@ -101,10 +103,27 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 .ObservesProperty(() => AllChangesIsDone);
             AllChangesIsDone = true;
 
-            LoadUnitsOfMeasurementsFromDBCommand = new NotifyCommand(LoadUnitsOfMeasurementsFromDB);
+            LoadUnitsOfMeasurementsFromDBCommand = new NotifyCommand(OnLoadUnitsOfMeasurementsFromDB);
+            LoadFileFormatsFromDBCommand = new NotifyCommand(OnLoadFileFormatsFromDB);
           //  _applicationCommands.LoadUnitsOfMeasurementsCommand.RegisterCommand(LoadUnitsOfMeasurementsFromDBCommand);
-            // ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
+          // ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialsFromAccessCommand);
           //  IsActiveChanged += OnActiveChanged;
+        }
+
+        private void OnLoadFileFormatsFromDB()
+        {
+            if (!_appObjectsModel.AllModels.Where(el => el is FileFormatsGroup).Any())
+                _appObjectsModel.AllModels.Add(new FileFormatsGroup());
+            var file_formats = (FileFormatsGroup)_appObjectsModel.AllModels.Where(el => el is FileFormatsGroup).FirstOrDefault();
+            var file_formats_from_db = _buildingUnitsRepository.FileFormatsRepository.GetAllAsync();
+            foreach(FileFormat fileFormat in file_formats_from_db)
+                if(!file_formats.Where(ff=>ff.Id==fileFormat.Id).Any())
+                {
+                    fileFormat.IsDbBranch = true;
+                    file_formats.Add(fileFormat);
+                    fileFormat.State = EntityState.Unchanged;
+                }
+            file_formats.UnDoReDoSystem.Save(file_formats);
         }
 
         private void OnActiveChanged(object sender, EventArgs e)
@@ -118,8 +137,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             }
         }
-
-
 
         private void LoadProjectFromXML()
         {
@@ -151,7 +168,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //  _buildingUnitsRepository.Complete();
 
         }
-        private void LoadUnitsOfMeasurementsFromDB()
+        private void OnLoadUnitsOfMeasurementsFromDB()
         {
 
             if (!_appObjectsModel.AllModels.Where(el => el is bldUnitOfMeasurementsGroup).Any())

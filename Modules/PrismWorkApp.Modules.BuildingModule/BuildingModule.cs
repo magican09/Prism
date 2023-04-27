@@ -66,11 +66,13 @@ namespace PrismWorkApp.Modules.BuildingModule
             var projectManagerRibbonTab = new ProjectManagerRibbonTabView();
             var dataImportRibbonGroup = new DataImportRibbonGroupView();
             var currentProjectRibbonGroup = new CurentProjectRibbonGroupView();
-            var unitUfMeasurementsGroup = new UnitOfMeasurementGroupView();
+            var unitUfMeasurementsRibbonGroup = new UnitOfMeasurementGroupView();
+            var fileManagerRibbonGroup = new FileManagerRibbonGroupView();
             projectManagerRibbonTab.DataContext = new ProjectManagerRibbonTabViewModel(_regionManager, _eventAggregator, _buildingUnitsRepository, _dialogService, _applicationCommands, _appObjectsModel);
             projectManagerRibbonTab.Items.Add(dataImportRibbonGroup);//
             projectManagerRibbonTab.Items.Add(currentProjectRibbonGroup);//Созадем группу панели инструметов с конвекторами
-            projectManagerRibbonTab.Items.Add(unitUfMeasurementsGroup);
+            projectManagerRibbonTab.Items.Add(unitUfMeasurementsRibbonGroup);
+            projectManagerRibbonTab.Items.Add(fileManagerRibbonGroup);
             _regionManager.Regions[RegionNames.RibbonRegion].Add(projectManagerRibbonTab);
 
             var toolBarRibbonTab = new ToolBarRibbonTabView();

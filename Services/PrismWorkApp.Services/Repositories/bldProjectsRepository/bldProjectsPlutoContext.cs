@@ -11,8 +11,8 @@ namespace PrismWorkApp.Services.Repositories
         public bldProjectsPlutoContext(string connectionString) : base()
         {
             _connectionString = connectionString;
-            // Database.EnsureDeleted();
-          //  Database.EnsureCreated();
+        //  Database.EnsureDeleted();
+            Database.EnsureCreated();
             ChangeTracker.StateChanged += ChangeTracker_StateChanged;
             ChangeTracker.Tracked += ChangeTracker_Tracked;
         }
@@ -57,6 +57,8 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<bldRegulationtDocument> RegulationtDocuments { get; set; }
         public virtual DbSet<Picture> Pictures { get; set; }
         public virtual DbSet<bldAggregationDocument> AggregationDocuments { get; set; }
+        public virtual DbSet<FileFormat> FileFormats { get; set; }
+
         #endregion
         #region Participants
         public virtual DbSet<bldCompany> Companies { get; set; }

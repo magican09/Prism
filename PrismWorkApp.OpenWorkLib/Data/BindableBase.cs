@@ -135,7 +135,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
             ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
         }
         #endregion
-
         #region IJornaling
 
 
@@ -194,11 +193,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         #endregion
         public BindableBase()
         {
-          
         }
         [NotMapped]
         public virtual Func<IEntityObject, bool> RestrictionPredicate { get; set; } = x => true;//Предикат для ограничений при работе (например копирования рефлексией) с данныv объектом по умолчанию 
-
         #region  IHierarchical
         public ObservableCollection<IEntityObject> _parents = new ObservableCollection<IEntityObject>();
         [NavigateProperty]
@@ -208,7 +205,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
         {
             get { return _parents; }
         }
-
         private ObservableCollection<IEntityObject> _children = new ObservableCollection<IEntityObject>();
         [NavigateProperty]
         [NotMapped]
@@ -221,9 +217,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { }
         }
-
         #endregion
-
         public virtual object Clone()
         {
             BindableBase new_object = (BindableBase)Activator.CreateInstance(this.GetType());
@@ -237,7 +231,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
                 var member_info = this.GetType().GetMember(prop_info.Name);
                 var create_new_atrb = prop_info.GetCustomAttribute<CreateNewWhenCopyAttribute>();
                 var navigate_atrb = prop_info.GetCustomAttribute<NavigatePropertyAttribute>();
-
                 if (!prop_info.PropertyType.FullName.Contains("System"))
                 {
                     if (prop_val != null)
@@ -275,7 +268,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             return new_object;
         }
-
+        
 
         //public virtual object Clone()
         //{

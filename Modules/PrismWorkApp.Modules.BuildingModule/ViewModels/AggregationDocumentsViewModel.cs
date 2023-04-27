@@ -477,7 +477,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 Directory.CreateDirectory(BD_FilesDir);
             if (selected_document.ImageFile == null)
                 selected_document = _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.LoadPropertyObjects(selected_document.Id);
-            string s = Path.Combine(BD_FilesDir, selected_document.ImageFile.FileName);
+            string s = Path.Combine(BD_FilesDir, selected_document.ImageFile.FileName );
 
             using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
             {

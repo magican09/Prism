@@ -20,6 +20,7 @@ namespace PrismWorkApp.Services.Repositories
         public bldProjectUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
         public bldProjectMaterialsRepository Materials { get; }
         public bldDocumentsRepository DocumentsRepository { get; }
+        public FileFormatsRepository FileFormatsRepository { get; }
 
         private readonly bldProjectsPlutoContext _context;
 
@@ -38,6 +39,7 @@ namespace PrismWorkApp.Services.Repositories
             UnitOfMeasurementRepository = new bldProjectUnitOfMeasuremenRepository(_context);
             Materials = new bldProjectMaterialsRepository(_context);
             DocumentsRepository = new bldDocumentsRepository(_context);
+            FileFormatsRepository = new FileFormatsRepository(_context);
         }
         public int Complete()
         {

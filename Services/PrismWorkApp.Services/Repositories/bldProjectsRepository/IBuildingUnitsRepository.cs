@@ -19,6 +19,7 @@ namespace PrismWorkApp.Services.Repositories
         public bldProjectUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
         public bldProjectMaterialsRepository Materials { get; }
         public bldDocumentsRepository DocumentsRepository { get; }
+        public FileFormatsRepository FileFormatsRepository { get; }
         public int Complete();
         public int Complete(IUnDoReDoSystem unDoReDo);
     }

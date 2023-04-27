@@ -97,7 +97,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> OpenAsMaterialCertificateAggregationDocumentCommand { get; set; }
 
 
-        public NotifyCommand<object> LoadUnitOfMeasurementFromDBCommand { get; set; }
+        //public NotifyCommand<object> LoadUnitOfMeasurementFromDBCommand { get; set; }
         public NotifyCommand<object> CreateNewUnitOfMeasurementCommand { get; set; }
         public NotifyCommand<object> RemoveUnitOfMeasurementCommand { get; private set; }
 

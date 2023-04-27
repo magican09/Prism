@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class bldProjectUnitOfMeasuremenRepository : Repository<bldUnitOfMeasurement>
+    public class FileFormatsRepository : Repository<FileFormat>
     {
-        public bldProjectUnitOfMeasuremenRepository(DbContext context) : base(context)
+        public FileFormatsRepository(DbContext context) : base(context)
         {
 
         }
@@ -15,7 +15,10 @@ namespace PrismWorkApp.Services.Repositories
         {
             this.Dispose();
         }
-     
+        public List<FileFormat> GetAllFileFormats()//(Guid id)
+        {
+            return PlutoContext.FileFormats.ToList();//out_val;
+        }
 
         public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }
     }

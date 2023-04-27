@@ -39,6 +39,7 @@
         <None Remove="Resourses\Images\bldProjectImages\bldUnitOfMeasurementsGroup.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldWork.png" />
         <None Remove="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
+        <None Remove="Resourses\Images\bldProjectImages\FileFormatsGroup.png" />
         <None Remove="Resourses\Images\bldProjectImages\NameableObservableCollection`1.png" />
         <None Remove="Resourses\Images\close-icon.png" />
         <None Remove="Resourses\Images\Interface\collapse.gif" />
@@ -64,6 +65,7 @@
         <None Remove="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\48x48\32.png" />
         <None Remove="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+        <None Remove="Resourses\Images\Ribbon\ProjectManagerRibbonTab\load_FileFormats.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\app_settings.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
         <None Remove="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />
@@ -125,6 +127,7 @@
     <Resource Include="Resourses\Images\bldProjectImages\bldUnitOfMeasurementsGroup.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldWork.png" />
     <Resource Include="Resourses\Images\bldProjectImages\bldWorksGroup.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\FileFormatsGroup.png" />
     <Resource Include="Resourses\Images\bldProjectImages\NameableObservableCollection`1.png" />
     <Resource Include="Resourses\Images\Interface\close-icon.png" />
     <Resource Include="Resourses\Images\Interface\collapse.gif" />
@@ -150,6 +153,7 @@
     <Resource Include="Resourses\Images\Ribbon\PNG\32x32\load_from_exell.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\48x48\32.png" />
     <Resource Include="Resourses\Images\Ribbon\PNG\64x64\load_from_excel.jpg" />
+    <Resource Include="Resourses\Images\Ribbon\ProjectManagerRibbonTab\load_FileFormats.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\app_settings.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_left.png" />
     <Resource Include="Resourses\Images\Ribbon\QuickAccwssTollBar\arrow_right.png" />

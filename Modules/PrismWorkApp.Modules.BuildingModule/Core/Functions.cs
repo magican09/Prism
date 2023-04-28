@@ -528,6 +528,8 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             Directory.CreateDirectory(BD_FilesDir);
             MemoryStream memoryStream = new MemoryStream();
             ObservableCollection<bldUnitOfMeasurement> units = new ObservableCollection<bldUnitOfMeasurement>();
+           
+
             using (OdbcConnection connection = new OdbcConnection(ConnectionString))
             {
                 //OdbcDataAdapter dataAdapter = new OdbcDataAdapter
@@ -609,7 +611,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             //  picture.ImageFile = (byte[])row["files"];
                             if ((byte[])row["files"] != null)
                             {
-                                picture.Data = FormatPDFFromAccess((byte[])row["files"]);
+                                FileData fileData = new FileData();
+                                fileData.Data= FormatPDFFromAccess((byte[])row["files"]);
+                                picture.FileData = fileData;
                                 materialCertificate.IsHaveImageFile = true;
                             }
                             else

@@ -1,4 +1,5 @@
-﻿using PrismWorkApp.OpenWorkLib.Data.Service;
+﻿using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 
 namespace PrismWorkApp.Services.Repositories
@@ -19,8 +20,12 @@ namespace PrismWorkApp.Services.Repositories
         public bldProjectUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
         public bldProjectMaterialsRepository Materials { get; }
         public bldDocumentsRepository DocumentsRepository { get; }
-        public FileFormatsRepository FileFormatsRepository { get; }
+        public TypesOfFileRepository TypesOfFileRepository { get; }
         public int Complete();
         public int Complete(IUnDoReDoSystem unDoReDo);
+        public void Add(IEntityObject entity);
+        public void Remove(IEntityObject entity);
+        public void SetAsDetached(IEntityObject entity);
+        public bool Contains(IEntityObject entity);
     }
 }

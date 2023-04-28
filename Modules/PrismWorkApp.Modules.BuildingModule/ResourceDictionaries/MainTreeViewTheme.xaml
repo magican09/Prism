@@ -12,15 +12,7 @@
                             Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/MenuItemsTheme.xaml"/>
    
     </ResourceDictionary.MergedDictionaries>
-    
-    <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
-    <loc_core:GetImageFrombldProjectObjectConvecter x:Key="imgFrombldProjectObject"/>
-    <loc_core:StringToUriConverter x:Key="stringToUriConverter"/>
-    <loc_core:DataTypeConverter x:Key="dataTypeConverter"/>
-    <loc_core:IsCollectionEmpty x:Key="isCollectionEmpty"/>
-    <loc_core:EntityStateConverter x:Key="entityStateConverter"/>
-    <loc_core:GetCollectionFrombldProjectModelConvecter  x:Key="getCollectionFromObjectConvecter"  />
-    <loc_core:DataItemsGenerationConverter x:Key="dataItemsGenerationConverter"/>
+   
     <ContextMenu x:Key="TreeViewItemContextMenu"  
                  ItemContainerStyle="{StaticResource TreeViewMenuItemContainerStyle}">
         <telerik:EventToCommandBehavior.EventBindings>

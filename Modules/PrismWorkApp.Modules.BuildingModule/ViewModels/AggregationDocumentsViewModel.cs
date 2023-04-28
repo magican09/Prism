@@ -430,7 +430,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         byte[] buffer = new byte[fs.Length];
                         fs.ReadAsync(buffer, 0, buffer.Length);
                         selected_document.ImageFile = new Picture();
-                        selected_document.ImageFile.Data = buffer;
+                        selected_document.ImageFile.FileData.Data = buffer;
                         selected_document.ImageFile.FileName = openFileDialog.SafeFileName;
                         selected_document.IsHaveImageFile = true;
                     }
@@ -462,7 +462,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
                 using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
                 {
-                    fs.Write(Functions.FormatPDFFromAccess(selected_document.ImageFile.Data));
+                    fs.Write(Functions.FormatPDFFromAccess(selected_document.ImageFile.FileData.Data));
                 }
             }
 
@@ -481,7 +481,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
             {
-                fs.Write(Functions.FormatPDFFromAccess(selected_document.ImageFile.Data));
+                fs.Write(Functions.FormatPDFFromAccess(selected_document.ImageFile.FileData.Data));
             }
             ProcessStartInfo info = new ProcessStartInfo(s);
             info.UseShellExecute = true;

@@ -57,7 +57,7 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<bldRegulationtDocument> RegulationtDocuments { get; set; }
         public virtual DbSet<Picture> Pictures { get; set; }
         public virtual DbSet<bldAggregationDocument> AggregationDocuments { get; set; }
-        public virtual DbSet<FileFormat> FileFormats { get; set; }
+        public virtual DbSet<TypeOfFile> TypesOfFile { get; set; }
 
         #endregion
         #region Participants
@@ -159,14 +159,14 @@ namespace PrismWorkApp.Services.Repositories
           .WithOne(d => d.bldWork)
           .HasForeignKey<bldAOSRDocument>(d => d.bldWorkId);
 
-            modelBuilder.Entity<Picture>()
+            modelBuilder.Entity<FileData>()
                 .Property(p => p.Data)
                 .HasColumnType("VARBINARY(MAX) FILESTREAM");
-            modelBuilder.Entity<Picture>()
+            modelBuilder.Entity<FileData>()
             .Property(m => m.DataId)
             .HasColumnType("UNIQUEIDENTIFIER ROWGUIDCOL")
             .IsRequired();
-            modelBuilder.Entity<Picture>()
+            modelBuilder.Entity<FileData>()
                   .HasAlternateKey(m => m.DataId);
 
             modelBuilder.Entity<bldConstruction>()
@@ -203,6 +203,7 @@ namespace PrismWorkApp.Services.Repositories
             modelBuilder.Entity<bldRegulationtDocument>().ToTable("RegulationtDocuments");
             modelBuilder.Entity<bldAggregationDocument>().ToTable("AggregationDocuments");
             modelBuilder.Entity<bldOrderDocument>().ToTable("OrderDocuments");
+            
 
             //modelBuilder.Entity<EmployeePosition>().ToTable("EmployeePositions");
             //modelBuilder.Entity<Person>().ToTable("Persons");

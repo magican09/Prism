@@ -112,18 +112,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private void OnLoadFileFormatsFromDB()
         {
-            if (!_appObjectsModel.AllModels.Where(el => el is FileFormatsGroup).Any())
-                _appObjectsModel.AllModels.Add(new FileFormatsGroup());
-            var file_formats = (FileFormatsGroup)_appObjectsModel.AllModels.Where(el => el is FileFormatsGroup).FirstOrDefault();
-            var file_formats_from_db = _buildingUnitsRepository.FileFormatsRepository.GetAllAsync();
-            foreach(FileFormat fileFormat in file_formats_from_db)
-                if(!file_formats.Where(ff=>ff.Id==fileFormat.Id).Any())
+            if (!_appObjectsModel.AllModels.Where(el => el is TypesOfFileGroup).Any())
+                _appObjectsModel.AllModels.Add(new TypesOfFileGroup());
+            var file_types = (TypesOfFileGroup)_appObjectsModel.AllModels.Where(el => el is TypesOfFileGroup).FirstOrDefault();
+            var file_types_from_db = _buildingUnitsRepository.TypesOfFileRepository.GetAllAsync();
+
+            foreach(TypeOfFile fileType in file_types_from_db)
+                if(!file_types.Where(ff=>ff.Id== fileType.Id).Any())
                 {
-                    fileFormat.IsDbBranch = true;
-                    file_formats.Add(fileFormat);
-                    fileFormat.State = EntityState.Unchanged;
+                    fileType.IsDbBranch = true;
+                    file_types.Add(fileType);
+                    fileType.State = EntityState.Unchanged;
                 }
-            file_formats.UnDoReDoSystem.Save(file_formats);
+            file_types.UnDoReDoSystem.Save(file_types);
         }
 
         private void OnActiveChanged(object sender, EventArgs e)

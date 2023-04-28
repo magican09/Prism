@@ -6,15 +6,15 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public partial class Picture : BindableBase, INameable, IKeyable
     {
 
-        public Guid DataId { get; set; } = Guid.NewGuid();
-        private byte[] _data;
 
-      
-        public byte[] Data
+        private FileData _fileData;
+
+        public FileData FileData
         {
-            get { return _data; }
-            set { SetProperty(ref _data, value); }
+            get { return _fileData; }
+            set { SetProperty(ref _fileData, value); }
         }
+
         private string _file_name;
         public string FileName
         {
@@ -22,12 +22,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _file_name, value); }
         }
 
-        private FileFormat _format;
+        private TypeOfFile _fileType;
       
-        public FileFormat Format
+        public TypeOfFile FileType
         {
-            get { return _format; }
-            set { SetProperty(ref _format, value); }
+            get { return _fileType; }
+            set { SetProperty(ref _fileType, value); }
         }       
 
     }

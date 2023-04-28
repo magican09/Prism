@@ -5,9 +5,13 @@
                      xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
                      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                      xmlns:prism="http://prismlibrary.com/">
+    <ResourceDictionary.MergedDictionaries>
 
-    <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
-    <loc_core:GetImageFrombldProjectObjectConvecter x:Key="objecobjectTo_Url_Convectert"/>
+        <ResourceDictionary
+                            Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/Converters.xaml"/>
+
+    </ResourceDictionary.MergedDictionaries>
+   
     <Style x:Key="TreeViewMenuItemContainerStyle" TargetType="MenuItem">
         <Setter Property="Header" Value="{Binding Name,Mode=TwoWay}"/>
         <Setter Property="ItemsSource" Value="{Binding Items}"/>

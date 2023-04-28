@@ -12,7 +12,7 @@
 
     <StackPanel Orientation="Horizontal">
 
-        <RibbonButton Label ="Загрузить"  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/ProjectManagerRibbonTab/load_FileFormats.png" 
+        <RibbonButton Label ="Загрузить"  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/ProjectManagerRibbonTab/load_TypesOfFile.png" 
                 Command="{Binding  LoadFileFormatsFromDBCommand}"/>
         <!--<RibbonButton Label ="Сохранить"  LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/save_to_db.jpg" 
                 Command="{Binding ApplicationCommands.SaveUnitsOfMeasurementsCommand}"/>-->

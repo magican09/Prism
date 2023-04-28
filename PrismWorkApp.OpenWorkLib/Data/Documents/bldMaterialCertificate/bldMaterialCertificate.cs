@@ -22,8 +22,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _quantity; }
             set { SetProperty(ref _quantity, value); }
         }//Количесво 
-        private bldUnitOfMeasurement _unitOfMeasurement;
-        public virtual bldUnitOfMeasurement UnitOfMeasurement
+        private bldUnitOfMeasurement? _unitOfMeasurement;
+        public virtual bldUnitOfMeasurement? UnitOfMeasurement
         {
             get { return _unitOfMeasurement; }
             set { SetProperty(ref _unitOfMeasurement, value); }

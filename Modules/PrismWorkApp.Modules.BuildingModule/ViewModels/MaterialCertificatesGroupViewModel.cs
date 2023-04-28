@@ -243,7 +243,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                         byte[] buffer = new byte[fs.Length];
                         fs.ReadAsync(buffer, 0, buffer.Length);
                         selected_certificate.ImageFile = new Picture();
-                        selected_certificate.ImageFile.Data = buffer;
+                        selected_certificate.ImageFile.FileData.Data = buffer;
                         selected_certificate.ImageFile.FileName = openFileDialog.SafeFileName;
                     }
                 }
@@ -272,7 +272,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
                 using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
                 {
-                    fs.Write(Functions.FormatPDFFromAccess(selected_certificate.ImageFile.Data));
+                    fs.Write(Functions.FormatPDFFromAccess(selected_certificate.ImageFile.FileData.Data));
                 }
             }
 
@@ -290,7 +290,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
             {
-                fs.Write(Functions.FormatPDFFromAccess(selected_certificate.ImageFile.Data));
+                fs.Write(Functions.FormatPDFFromAccess(selected_certificate.ImageFile.FileData.Data));
             }
             ProcessStartInfo info = new ProcessStartInfo(s);
             info.UseShellExecute = true;

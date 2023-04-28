@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-   public class FileFormat: BindableBase
+   public class TypeOfFile: BindableBase
     {
         private string _extention;
         public string Extention

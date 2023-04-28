@@ -88,7 +88,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                     //        break;
                     //    }
                     case (nameof(bldUnitOfMeasurement)):
-                    case (nameof(FileFormat)):
                         {
                             IEntityObject entity = ((IEntityObject)dataItem.AttachedObject);
                             Binding binding = new Binding("Name");
@@ -99,11 +98,33 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
                             break;
                         }
+                    case (nameof(TypeOfFile)):
+                        {
+                            TypeOfFile entity = ((TypeOfFile)dataItem.AttachedObject);
+                            Binding binding = new Binding("Name");
+                            binding.Source = entity;
+                            binding.Path = new PropertyPath("Name");
+                            binding.Mode = BindingMode.TwoWay;
+                            BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
+                            dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
+
+                            DataItem attachedDocs_dataitem = new DataItem();
+                            dataItem.Items.Add(attachedDocs_dataitem);
+                            attachedDocs_dataitem.AttachedObject = entity;
+
+                            Binding binding_2 = new Binding("Extention");
+                            binding_2.Source = entity;
+                            binding_2.Path = new PropertyPath("Extention");
+                            binding_2.Mode = BindingMode.TwoWay;
+                            BindingOperations.SetBinding(attachedDocs_dataitem, DataItem.TextProperty, binding_2);
+                         
+                            break;
+                        }
                     case (nameof(bldDocumentsGroup)):
                     case (nameof(bldAggregationDocumentsGroup)):
                     case (nameof(bldMaterialCertificatesGroup)):
                     case (nameof(bldUnitOfMeasurementsGroup)):
-                    case (nameof(FileFormatsGroup)):
+                    case (nameof(TypesOfFileGroup)):
                         {
                             INameableObservableCollection entity_collection = (INameableObservableCollection)dataItem.AttachedObject;
                             Binding binding = new Binding("Name");

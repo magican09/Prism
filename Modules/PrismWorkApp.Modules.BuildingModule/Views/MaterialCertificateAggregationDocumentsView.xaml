@@ -167,7 +167,7 @@
                             </telerik:EventToCommandBehavior.EventBindings>-->
 
                             <telerik:RadGridView.Columns>
-                                <telerik:GridViewImageColumn Width="15" DataMemberBinding="{Binding   Converter={StaticResource objecobjectTo_Url_Convectert}}"/>
+                                <telerik:GridViewImageColumn Width="15" DataMemberBinding="{Binding   Converter={StaticResource imgFrombldProjectObject}}"/>
                                 <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code }" Width="55" CellStyle="{StaticResource CommonCellStyle}" IsReadOnly="True"    />
                                 <telerik:GridViewDataColumn Header="Наминование материала" Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding MaterialName}" Width="350" CellStyle="{StaticResource CommonCellStyle}"/>
                                 <telerik:GridViewDataColumn Header="Геом. парам."  Style="{StaticResource GridViewDataColumnStyle}" DataMemberBinding = "{Binding GeometryParameters}" Width="100" CellStyle="{StaticResource CommonCellStyle}"/>

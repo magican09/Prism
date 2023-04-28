@@ -20,7 +20,7 @@ namespace PrismWorkApp.Services.Repositories
         public bldProjectUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
         public bldProjectMaterialsRepository Materials { get; }
         public bldDocumentsRepository DocumentsRepository { get; }
-        public FileFormatsRepository FileFormatsRepository { get; }
+        public TypesOfFileRepository TypesOfFileRepository { get; }
 
         private readonly bldProjectsPlutoContext _context;
 
@@ -39,11 +39,11 @@ namespace PrismWorkApp.Services.Repositories
             UnitOfMeasurementRepository = new bldProjectUnitOfMeasuremenRepository(_context);
             Materials = new bldProjectMaterialsRepository(_context);
             DocumentsRepository = new bldDocumentsRepository(_context);
-            FileFormatsRepository = new FileFormatsRepository(_context);
+            TypesOfFileRepository = new TypesOfFileRepository(_context);
         }
         public int Complete()
         {
-         
+
             //    _context.Attach(obj).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             return _context.SaveChanges();
         }
@@ -51,7 +51,7 @@ namespace PrismWorkApp.Services.Repositories
         {
 
             var all_changed_objects = unDoReDo._RegistedModels.Keys.Where(ob =>
-            (!(ob is INameableObservableCollection) &ob.IsDbBranch && ob.State != OpenWorkLib.Data.Service.EntityState.Unchanged)||
+            (!(ob is INameableObservableCollection) & ob.IsDbBranch && ob.State != OpenWorkLib.Data.Service.EntityState.Unchanged) ||
             (ob is INameableObservableCollection coll_ob && coll_ob.Owner.IsDbBranch && coll_ob.Owner.State != OpenWorkLib.Data.Service.EntityState.Unchanged)
             ).ToList();
 
@@ -59,10 +59,10 @@ namespace PrismWorkApp.Services.Repositories
                .Where(p => p.State != EntityState.Unchanged)
             .Select(p => p.Entity);
             var needed_add_to_DB = all_changed_objects.Where(ent => !DB_all_changed_objects.Contains(ent)
-            |(ent is INameableObservableCollection coll_ent && !DB_all_changed_objects.Contains(coll_ent.Owner)));
-            
+            | (ent is INameableObservableCollection coll_ent && !DB_all_changed_objects.Contains(coll_ent.Owner)));
 
-          
+
+
             var saved_changed_objects = unDoReDo._RegistedModels.Keys.Where(ob => ob.IsDbBranch && ob.State != OpenWorkLib.Data.Service.EntityState.Unchanged).ToList();
             foreach (IEntityObject element in saved_changed_objects)
             {
@@ -75,5 +75,27 @@ namespace PrismWorkApp.Services.Repositories
         {
             _context.Dispose();
         }
+        public void Add(IEntityObject entity)
+        {
+            _context.Add(entity);
+        }
+
+        public void Remove(IEntityObject entity)
+        {
+            _context.Remove(entity);
+
+        }
+        public void SetAsDetached(IEntityObject entity)
+        {
+            _context.Entry(entity).State = EntityState.Detached;
+        
+        }
+        public bool  Contains(IEntityObject entity)
+        {
+            return _context.Entry(entity) != null;
+          
+        }
+
+
     }
 }

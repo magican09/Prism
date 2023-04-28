@@ -22,9 +22,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand LoadMaterialCertificatesFromAccessCommand { get; private set; }
         public NotifyCommand LoadMaterialCertificatesFromDBCommand { get; private set; }
-        
-        
-
+   
         public NotifyCommand SaveDataToDBCommand { get; private set; }
         private string _title = "Материалы";
         public string Title
@@ -167,6 +165,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ObservableCollection<bldUnitOfMeasurement> units = new ObservableCollection<bldUnitOfMeasurement>();
             bldAggregationDocument aggregationDocument = new bldAggregationDocument("Загруженные сертификаты");
 
+            TypeOfFile typeOfFile = _buildingUnitsRepository.TypesOfFileRepository.GetAllAsync().Where(el => el.Name == "PDF").FirstOrDefault();
+            if(typeOfFile==null)
+            {
+                typeOfFile = new TypeOfFile();
+                typeOfFile.Name = "PDF";
+                typeOfFile.Extention = "*.pdf";
+                _buildingUnitsRepository.TypesOfFileRepository.Add(typeOfFile);
+                _buildingUnitsRepository.Complete();
+
+            }
             foreach (bldMaterialCertificate certificate in certificates)
             {
                 bldUnitOfMeasurement measurement =
@@ -177,6 +185,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                 else
                     certificate.UnitOfMeasurement = measurement;
+                certificate.ImageFile.FileType = typeOfFile;
                 aggregationDocument.AttachedDocuments.Add(certificate);
             }
             _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.Add(aggregationDocument);

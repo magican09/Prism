@@ -4,22 +4,22 @@ using System.Text;
 
 namespace PrismWorkApp.OpenWorkLib.Data
 {
-   public  class FileFormatsGroup:NameableObservableCollection<FileFormat>
+   public  class TypesOfFileGroup:NameableObservableCollection<TypeOfFile>
     {
-        public FileFormatsGroup()
+        public TypesOfFileGroup()
         {
             Name = "Форматы файлов";
         }
 
-        public FileFormatsGroup(string name)
+        public TypesOfFileGroup(string name)
         {
             Name = name;
         }
-        public FileFormatsGroup(List<FileFormat> _list) : base(_list)
+        public TypesOfFileGroup(List<TypeOfFile> _list) : base(_list)
         {
             Name = "Форматы файлов";
         }
-        public FileFormatsGroup(IEnumerable<FileFormat> _list) : base(_list)
+        public TypesOfFileGroup(IEnumerable<TypeOfFile> _list) : base(_list)
         {
             Name = "Форматы файлов";
         }

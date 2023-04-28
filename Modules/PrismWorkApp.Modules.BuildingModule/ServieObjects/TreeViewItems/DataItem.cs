@@ -158,7 +158,9 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             var newValuePropertyNotificationChanged = newValue as INotifyPropertyChanged;
             var newValueCollectionNotificationChanged = newValue as INotifyCollectionChanged;
 
-            if (newValuePropertyNotificationChanged != null)
+            if (Parent != null && Parent.AttachedObject == newValue)//Чтобы не было зацикливания, если новое значение было в родительстком- дальше не погружаемся по дереву внутрь
+               return ;
+            if (newValuePropertyNotificationChanged != null )
             {
                 DataItemsGenerator.Convert(this, null, null, CultureInfo.CurrentCulture);
                 newValuePropertyNotificationChanged.PropertyChanged += OnAttachedObjectPropertyChanged;

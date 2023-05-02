@@ -21,6 +21,8 @@ namespace PrismWorkApp.Services.Repositories
         public bldProjectMaterialsRepository Materials { get; }
         public bldDocumentsRepository DocumentsRepository { get; }
         public TypesOfFileRepository TypesOfFileRepository { get; }
+        public FileDatasRepository FileDatasRepository { get; }
+        public PicturesReposytory PicturesReposytory { get; }
 
         private readonly bldProjectsPlutoContext _context;
 
@@ -40,6 +42,9 @@ namespace PrismWorkApp.Services.Repositories
             Materials = new bldProjectMaterialsRepository(_context);
             DocumentsRepository = new bldDocumentsRepository(_context);
             TypesOfFileRepository = new TypesOfFileRepository(_context);
+            FileDatasRepository = new FileDatasRepository(_context);
+            PicturesReposytory = new PicturesReposytory(_context);
+
         }
         public int Complete()
         {

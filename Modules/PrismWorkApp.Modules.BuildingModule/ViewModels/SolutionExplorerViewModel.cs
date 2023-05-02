@@ -21,6 +21,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Telerik.Windows.Controls;
+using Microsoft.EntityFrameworkCore;
 using DialogParameters = Prism.Services.Dialogs.DialogParameters;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
@@ -293,9 +294,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             if (selected_object == null)
                 selected_object = Documentation;
             bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(
-                _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync()
+                _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.Select()
+                .Include(ad => ad.AttachedDocuments)
+                .ThenInclude(mc=>mc.ImageFile)
+                .ThenInclude(mc=>mc.FileType).ToList()
                 .Where(d => d.AttachedDocuments.Count > 0 && d.AttachedDocuments[0].GetType() == typeof(bldMaterialCertificate) &&
-                !Documentation.Where(dc => dc.Id == d.Id).Any()).ToList());
+                !Documentation.Where(dc => dc.Id == d.Id).Any()).ToList()); ;
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
                       (All_AggregationDocuments, _dialogService, (result) =>
                       {
@@ -319,7 +323,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                       doc_coll.Add(loaded_doc as bldDocument);
                                   }
                                   UnDoReDo.Save(loaded_doc); //Сохраняемся после довбалвения в коллецию
-                                  loaded_doc.State = EntityState.Unchanged;
+                                  loaded_doc.State = OpenWorkLib.Data.Service.EntityState.Unchanged;
                               }
                           }
                       }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,

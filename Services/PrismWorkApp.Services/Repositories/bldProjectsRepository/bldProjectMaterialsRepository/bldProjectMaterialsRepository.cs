@@ -19,10 +19,10 @@ namespace PrismWorkApp.Services.Repositories
         {
             return ProjectsPlutoContext.Materials.Where(m => m.Name == name).ToList();
         }
-        public List<bldMaterial> GetAllAsync()
-        {
-            return ProjectsPlutoContext.Materials.ToList();
-        }
+        //public List<bldMaterial> GetAllAsync()
+        //{
+        //    return ProjectsPlutoContext.Materials.ToList();
+        //}
 
         public bldProjectsPlutoContext ProjectsPlutoContext { get { return Context as bldProjectsPlutoContext; } }
 

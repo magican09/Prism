@@ -21,6 +21,9 @@ namespace PrismWorkApp.Services.Repositories
         public bldProjectMaterialsRepository Materials { get; }
         public bldDocumentsRepository DocumentsRepository { get; }
         public TypesOfFileRepository TypesOfFileRepository { get; }
+        public FileDatasRepository FileDatasRepository { get; }
+        public PicturesReposytory PicturesReposytory { get; }
+
         public int Complete();
         public int Complete(IUnDoReDoSystem unDoReDo);
         public void Add(IEntityObject entity);

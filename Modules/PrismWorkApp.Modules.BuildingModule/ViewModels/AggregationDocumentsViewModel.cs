@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.GridView;
+using Microsoft.EntityFrameworkCore;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
@@ -56,7 +57,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             set { SetProperty(ref _aggregationDocuments, value); }
         }
         private bldDocument _selectedAggregationDocument;
-
         public bldDocument SelectedAggregationDocument
         {
             get { return _selectedAggregationDocument; }
@@ -64,7 +64,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
 
         public NotifyCommand<object> ContextMenuOpenedCommand { get; private set; }
-
         public NotifyCommand<object> DataGridSelectionChangedCommand { get; private set; }
 
         public NotifyCommand UnDoCommand { get; protected set; }
@@ -95,7 +94,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public ObservableCollection<MenuItem> CommonContextMenuItems { get; set; }
 
 
-        AppObjectsModel AppObjectsModel { get; set; }
+        //  AppObjectsModel AppObjectsModel { get; set; }
 
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
         AppObjectsModel _appObjectsModel;
@@ -106,12 +105,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             UnDoReDo = new UnDoReDoSystem(this);
             ApplicationCommands = applicationCommands;
-            AppObjectsModel = appObjectsModel as AppObjectsModel;
+            _appObjectsModel = appObjectsModel as AppObjectsModel;
             _dialogService = dialogService;
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
 
-           
+
             ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
 
@@ -173,9 +172,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
            SelectedAggregationDocument != null).ObservesProperty(() => SelectedAggregationDocument); ;
 
 
-            OpenImageFileCommand = new NotifyCommand<object>(OnOpenImageFile);
-            SaveImageFileToDiskCommand = new NotifyCommand<object>(OnSaveImageFileToDisk);
-            LoadImageFileFromDiskCommand = new NotifyCommand<object>(OnLoadImageFileFromDisk);
+            OpenImageFileCommand = _appObjectsModel.OpenDocumentImageFileCommand;
+            SaveImageFileToDiskCommand = _appObjectsModel.SaveDocumentImageFileToDiskCommand;
+            LoadImageFileFromDiskCommand = _appObjectsModel.LoadDocumentImageFileFromDiskCommand;
 
             #endregion
             ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
@@ -185,6 +184,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewDocumentCommand);
             ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
             ApplicationCommands.DeleteCommand.RegisterCommand(RemoveDocumentsCommand);
+            ApplicationCommands.AddToCommand.RegisterCommand(AddDocumentsToCommand);
+            ApplicationCommands.MoveToCommand.RegisterCommand(MoveDocumentsToCommand);
+
 
             ApplicationCommands.AddNewAggregationDocumentCommand.RegisterCommand(AddNewAggregationDocumentCommand);
             ApplicationCommands.AddNewMaterialCertificateCommand.RegisterCommand(AddNewMaterialCertificateCommand);
@@ -195,26 +197,37 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-       
-
         private void OnAddNewExecutiveScheme(object obj)
         {
-            AppObjectsModel.AddNewExecutiveSchemeCommand.Execute(SelectedAggregationDocument.AttachedDocuments);
+            IList parms = new List<object>();
+            parms.Add(null);
+            parms.Add(SelectedAggregationDocument.AttachedDocuments);
+            parms.Add(typeof(bldExecutiveScheme));
+            _appObjectsModel.CreateNewCommand.Execute(parms);
         }
-
         private void OnAddNewLaboratoryReport(object obj)
         {
-            AppObjectsModel.AddNewLaboratoryReportCommand.Execute(SelectedAggregationDocument.AttachedDocuments);
+            IList parms = new List<object>();
+            parms.Add(null);
+            parms.Add(SelectedAggregationDocument.AttachedDocuments);
+            parms.Add(typeof(bldLaboratoryReport));
+            _appObjectsModel.CreateNewCommand.Execute(parms);
         }
-
         private void OnAddNewMaterialCertificate(object obj)
         {
-            AppObjectsModel.AddNewMaterialCertificateCommand.Execute(SelectedAggregationDocument.AttachedDocuments);
+            IList parms = new List<object>();
+            parms.Add(null);
+            parms.Add(SelectedAggregationDocument.AttachedDocuments);
+            parms.Add(typeof(bldMaterialCertificate));
+            _appObjectsModel.CreateNewCommand.Execute(parms);
         }
-
         private void OnCreateNewAggregationDocument(object obj)
         {
-            AppObjectsModel.AddNewAggregationDocumentCommand.Execute(SelectedAggregationDocument.AttachedDocuments);
+            IList parms = new List<object>();
+            parms.Add(null);
+            parms.Add(SelectedAggregationDocument.AttachedDocuments);
+            parms.Add(typeof(bldAggregationDocument));
+            _appObjectsModel.CreateNewCommand.Execute(parms);
         }
 
         private void OnMoveDocumentTo(object obj)
@@ -254,7 +267,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          "Перечень каталогов");
 
         }
-
         private void OnAddDocumentTo(object obj)
         {
             bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(
@@ -282,7 +294,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                          "Форма для добавления",
                          "Перечень каталогов");
         }
-
         private void OnPasteDocuments(object obj)
         {
             int insert_index = SelectedAggregationDocument.AttachedDocuments.IndexOf(SelectedDocument) + 1;
@@ -298,7 +309,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoReDo.AddUnDoReDoSysAsCommand(loacl_unDoReDoSystem);
             UnDoReDo.Register(SelectedAggregationDocument);
         }
-
         private void OnCopyDocuments(object obj)
         {
             DocumentsBuffer.Clear();
@@ -336,7 +346,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                  , _dialogService);
             }
-
             else
                 AggregationDocuments.Remove(SelectedAggregationDocument);
             if (AggregationDocuments.Count > 0)
@@ -345,7 +354,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         #region Mouse methods
         NotifyMenuCommands context_menu_item_commands = null;
-
         private void OnContextMenuOpened(object obj)
         {
 
@@ -408,113 +416,22 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             foreach (object elm in ((IList)obj)[2] as IList)
                 SelectedDocuments.Add(elm as bldDocument);
         }
-
-        private void OnPastingCellClipboardContent(object obj)
-        {
-            GridViewCellClipboardEventArgs e = obj as GridViewCellClipboardEventArgs;
-            string data = Clipboard.GetData(DataFormats.Text).ToString();
-        }
-
-        private void OnLoadImageFileFromDisk(object document)
-        {
-            bldDocument selected_document = document as bldDocument;
-            string image_file_name = "";
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
-                image_file_name = openFileDialog.FileName;
-            if (image_file_name != "")
-                try
-                {
-                    using (FileStream fs = File.OpenRead(image_file_name))
-                    {
-                        byte[] buffer = new byte[fs.Length];
-                        fs.ReadAsync(buffer, 0, buffer.Length);
-                        selected_document.ImageFile = new Picture();
-                        selected_document.ImageFile.FileData.Data = buffer;
-                        selected_document.ImageFile.FileName = openFileDialog.SafeFileName;
-                        selected_document.IsHaveImageFile = true;
-                    }
-                }
-                catch
-                {
-                    throw new Exception("Не удается считать файл!");
-                }
-
-        }
-
-        private void OnSaveImageFileToDisk(object document)
-        {
-            bldDocument selected_document = document as bldDocument;
-            if (selected_document.ImageFile == null)
-                selected_document = _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.LoadPropertyObjects(selected_document.Id);
-
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-
-            dialog.IsFolderPicker = true;
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-
-                string BD_FilesDir = dialog.FileName; ;
-
-                if (!Directory.Exists(BD_FilesDir))
-                    Directory.CreateDirectory(BD_FilesDir);
-                string s = Path.Combine(BD_FilesDir, selected_document.ImageFile.FileName);
-
-                using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
-                {
-                    fs.Write(Functions.FormatPDFFromAccess(selected_document.ImageFile.FileData.Data));
-                }
-            }
-
-        }
-
-        private void OnOpenImageFile(object document)
-        {
-            bldDocument selected_document = document as bldDocument;
-            string BD_FilesDir = Path.GetTempPath();
-
-            if (!Directory.Exists(BD_FilesDir))
-                Directory.CreateDirectory(BD_FilesDir);
-            if (selected_document.ImageFile == null)
-                selected_document = _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.LoadPropertyObjects(selected_document.Id);
-            string s = Path.Combine(BD_FilesDir, selected_document.ImageFile.FileName );
-
-            using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
-            {
-                fs.Write(Functions.FormatPDFFromAccess(selected_document.ImageFile.FileData.Data));
-            }
-            ProcessStartInfo info = new ProcessStartInfo(s);
-            info.UseShellExecute = true;
-            using (var proc = Process.Start(info)) { }
-        }
-
         private void OnRemoveDocuments(object obj)
         {
-
             foreach (bldDocument document in new ObservableCollection<bldDocument>(SelectedDocuments))
                 SelectedAggregationDocument.AttachedDocuments.Remove(document);
         }
-
         private void OnCreatedBasedOn(object obj)
         {
+
             bldDocument new_document = SelectedDocument.Clone() as bldDocument;
             new_document.IsHaveImageFile = false;
             SelectedAggregationDocument.AttachedDocuments.Add(new_document);
-            //   SelectedAggregationDocument.AddCreatedBasedOnNewDocument(SelectedDocument);
         }
-
         private void OnCreateNewDocument(object obj)
         {
             bldDocument new_document = (bldDocument)Activator.CreateInstance(SelectedDocument.GetType());
             SelectedAggregationDocument.AttachedDocuments.Add(new_document);
-        }
-
-        private void OnDataGridLostFocus(object obj)
-        {
-            //SelectedDocuments.Clear();
-            //SelectedDocument = null;
-            //SelectedAggregationDocument = null;
-
         }
 
         public void RaiseCanExecuteChanged(object sender, EventArgs e)
@@ -530,16 +447,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public virtual void OnSave()
         {
-         if(UnDoReDo.ChangedObjects.Count>0)
-            base.OnSave<bldDocumentsGroup>(AggregationDocuments,
-                 (result) =>
-                 {
-                     if (result.Result == ButtonResult.Yes)
+            if (UnDoReDo.ChangedObjects.Count > 0)
+                base.OnSave<bldDocumentsGroup>(AggregationDocuments,
+                     (result) =>
                      {
-                         UnDoReDo.ParentUnDoReDo.Save(AggregationDocuments);
-                     }
+                         if (result.Result == ButtonResult.Yes)
+                         {
+                             UnDoReDo.ParentUnDoReDo.Save(AggregationDocuments);
+                         }
 
-                 });
+                     });
         }
         public virtual void OnClose(object obj)
         {
@@ -549,7 +466,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     if (result.Result == ButtonResult.Yes)
                     {
                         UnDoReDo.Save(AggregationDocuments);
-                        //    UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
                     }
                     if (result.Result == ButtonResult.No)
                     {
@@ -564,9 +480,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             ApplicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
             ApplicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
             ApplicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
-            ApplicationCommands.CreateBasedOnCommand.UnregisterCommand(CreateNewDocumentCommand);
+
+            ApplicationCommands.CreateNewCommand.UnregisterCommand(CreateNewDocumentCommand);
             ApplicationCommands.CreateBasedOnCommand.UnregisterCommand(CreatedBasedOnCommand);
             ApplicationCommands.DeleteCommand.UnregisterCommand(RemoveDocumentsCommand);
+            ApplicationCommands.AddToCommand.UnregisterCommand(AddDocumentsToCommand);
+            ApplicationCommands.MoveToCommand.UnregisterCommand(MoveDocumentsToCommand);
+
+
             ApplicationCommands.AddNewAggregationDocumentCommand.UnregisterCommand(AddNewAggregationDocumentCommand);
             ApplicationCommands.AddNewMaterialCertificateCommand.UnregisterCommand(AddNewMaterialCertificateCommand);
             ApplicationCommands.AddNewLaboratoryReportCommand.UnregisterCommand(AddNewLaboratoryReportCommand);
@@ -594,27 +515,16 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 }
                 if (AggregationDocuments != null) AggregationDocuments.ErrorsChanged -= RaiseCanExecuteChanged;
                 AggregationDocuments.ErrorsChanged += RaiseCanExecuteChanged;
-               
+
             }
         }
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            //ConveyanceObject navigane_message = (ConveyanceObject)navigationContext.Parameters["bld_agrregation_document"];
-            //bldAggregationDocument arg_document = (bldAggregationDocument)navigane_message.Object;
-            //if (AggregationDocuments.Where(ad => ad.Id == arg_document.Id).FirstOrDefault() == null)
-            //{
-            //    return false;
-            //}
-            //else
-            //    return true;
-
             return true;
         }
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
 
-         //   this.OnSave();
-            
         }
     }
 }

@@ -58,8 +58,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _parentDocuments; }
             set { SetProperty(ref _parentDocuments, value); }
         }
-        private Picture _imageFile;
-        public Picture ImageFile
+        private Picture? _imageFile;
+        public Picture? ImageFile
         {
             get { return _imageFile; }
             set { SetProperty(ref _imageFile, value); }
@@ -70,6 +70,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _IsHaveImageFile; }
             set { SetProperty(ref _IsHaveImageFile, value); }
         }
+        #region Methods 
+        
+        #endregion
 
         #region Commands 
         public TEntity AddNewDocument<TEntity>(TEntity new_doc) where TEntity : IbldDocument, new()

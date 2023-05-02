@@ -186,8 +186,23 @@
                                     <telerik:GridViewDataColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
+                                                <Image x:Name="fileImage"  >
+                                                    <Image.Style>
+                                                        <Style TargetType="Image">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
+                                                                             Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Source" Value="{Binding  Path=DataContext.ImageFile.FileType,Converter={StaticResource imgFrombldProjectObject},RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"/>
+                                                                    <!--<Setter Property="Source" Value="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/bldProjectImages/TypesOfFile/pdf.png"/>-->
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
                                                 <Button x:Name="viewFileImageButton" Content="просмотр" Command="{Binding DataContext.OpenImageFileCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}}"  Margin="0 0 0 0"
-                                      CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}},Path=DataContext}"  >
+                                      CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"  >
                                                     <Button.Style>
                                                         <Style TargetType="{x:Type Button}">
                                                             <Setter Property="Visibility" Value="Visible"/>

@@ -11,6 +11,10 @@ namespace PrismWorkApp.Services.Repositories
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         protected readonly DbContext Context;
+        public IQueryable<TEntity> Select()
+        {
+            return Context.Set<TEntity>();
+        }
 
         public Repository(DbContext context)
         {
@@ -61,5 +65,6 @@ namespace PrismWorkApp.Services.Repositories
         {
              Context.Entry(entity).State= EntityState.Detached;
         }
+
     }
 }

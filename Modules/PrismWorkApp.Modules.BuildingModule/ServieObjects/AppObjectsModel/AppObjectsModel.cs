@@ -1,4 +1,7 @@
-﻿using Prism.Events;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
@@ -10,6 +13,8 @@ using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services.Repositories;
 using System;
 using System.Collections;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace PrismWorkApp.Modules.BuildingModule
@@ -35,11 +40,12 @@ namespace PrismWorkApp.Modules.BuildingModule
         public NotifyCommand<object> RemoveObjCommand { get; set; }
         public NotifyCommand<object> CloseObjCommand { get; set; }
 
+        public NotifyCommand<object> OpenDocumentImageFileCommand { get; private set; }
+        public NotifyCommand<object> SaveDocumentImageFileToDiskCommand { get; private set; }
+        public NotifyCommand<object> LoadDocumentImageFileFromDiskCommand { get; private set; }
+
         public NotifyCommand SaveAllToDBCommand { get; set; }
-        public NotifyCommand<object> AddNewMaterialCertificateCommand { get; private set; }
-        public NotifyCommand<object> AddNewAggregationDocumentCommand { get; private set; }
-        public NotifyCommand<object> AddNewLaboratoryReportCommand { get; private set; }
-        public NotifyCommand<object> AddNewExecutiveSchemeCommand { get; private set; }
+       
         #endregion
         #region Contructors
         private IApplicationCommands _applicationCommands;
@@ -57,8 +63,6 @@ namespace PrismWorkApp.Modules.BuildingModule
             _applicationCommands = applicationCommands;
             UnDoReDo = unDoReDoSystem;
             UnDoReDo.Register(AllModels, true, false);
-
-            //    UnDoReDo = unDoReDoSystem;
             Documentation.Name = "Документация";
 
             CreateBasedOnCommand = new NotifyCommand<object>(OnCreateBasedOn);
@@ -71,10 +75,14 @@ namespace PrismWorkApp.Modules.BuildingModule
             CloseObjCommand.Name = "Закрыть";
 
             SaveAllToDBCommand = new NotifyCommand(OnSaveAllToDB);
-            AddNewMaterialCertificateCommand = new NotifyCommand<object>(OnAddNewMaterialCertificate);
-            AddNewAggregationDocumentCommand = new NotifyCommand<object>(OnAddNewAggregationDocument);
-            AddNewLaboratoryReportCommand = new NotifyCommand<object>(OnAddNewLaboratoryReport);
-            AddNewExecutiveSchemeCommand = new NotifyCommand<object>(OnAddNewExecutiveScheme);
+            
+            OpenDocumentImageFileCommand = new NotifyCommand<object>(OnOpenImageFile);
+            OpenDocumentImageFileCommand.Name = "Открыть файл";
+            SaveDocumentImageFileToDiskCommand  = new NotifyCommand<object>(OnSaveImageFileToDisk);
+            SaveDocumentImageFileToDiskCommand.Name = "Сохранить файл";
+            LoadDocumentImageFileFromDiskCommand = new NotifyCommand<object>(OnLoadImageFileFromDisk);
+            LoadDocumentImageFileFromDiskCommand.Name = "Загрузить файл";
+            
             //LoadAggregationDocumentFromDBCommand = new NotifyCommand<object>(OnLoadAggregationDocumentFromDB);
             //LoadAggregationDocumentFromDBCommand.Name = "Загрузить ведомость документов из БД";
             // CreateNewAggregationDocumentCommand = new NotifyCommand<object>(OnCreateNewAggregationDocument);
@@ -88,6 +96,81 @@ namespace PrismWorkApp.Modules.BuildingModule
 
             _applicationCommands.SaveAllToDBCommand.RegisterCommand(SaveAllToDBCommand);
         }
+        private void OnLoadImageFileFromDisk(object document)
+        {
+            bldDocument selected_document = document as bldDocument;
+            string image_file_name = "";
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Файлы скана (PDF,JPG,PNG,GIF)|*.PDF;*.JPG;*.PNG;*.GIF";
+            if (openFileDialog.ShowDialog() == true)
+                image_file_name = openFileDialog.FileName;
+            string file_extention = "*"+Path.GetExtension(image_file_name);
+            if (image_file_name != "")
+                try
+                {
+                    using (FileStream fs = File.OpenRead(image_file_name))
+                    {
+                        byte[] buffer = new byte[fs.Length];
+                        fs.ReadAsync(buffer, 0, buffer.Length);
+                        Picture new_image_file = new Picture();
+                        new_image_file.FileData = new FileData();
+                        new_image_file.FileType =_buildingUnitsRepository.TypesOfFileRepository.Select().Where(tf=>tf.Extention==file_extention).FirstOrDefault();
+                        new_image_file.FileData.Data = buffer;
+                        new_image_file.FileName = openFileDialog.SafeFileName;
+                         selected_document.ImageFile = new_image_file;
+                        selected_document.IsHaveImageFile = true;
+                    //    _buildingUnitsRepository.PicturesReposytory.Add(new_image_file);
+                    }
+                }
+                catch
+                {
+                    throw new Exception("Не удается считать файл!");
+                }
+
+        }
+        private void OnSaveImageFileToDisk(object document)
+        {
+            bldDocument selected_document = document as bldDocument;
+            if (selected_document.ImageFile.FileData == null)
+                _buildingUnitsRepository.PicturesReposytory.Select().Where(fd => fd.Id == selected_document.ImageFile.Id).Include(fd => fd.FileData).FirstOrDefault();
+
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                string BD_FilesDir = dialog.FileName; ;
+                if (!Directory.Exists(BD_FilesDir))
+                    Directory.CreateDirectory(BD_FilesDir);
+
+                string s = Path.Combine(BD_FilesDir, selected_document.ImageFile.FileName);
+                using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
+                {
+                    fs.Write(selected_document.ImageFile.FileData.Data);
+                }
+            }
+        }
+        private void OnOpenImageFile(object document)
+        {
+            bldDocument selected_document = document as bldDocument;
+            string BD_FilesDir = Path.GetTempPath();
+
+            if (!Directory.Exists(BD_FilesDir))
+                Directory.CreateDirectory(BD_FilesDir);
+           
+            if (selected_document.ImageFile.FileData == null)
+              _buildingUnitsRepository.PicturesReposytory.Select().Where(fd => fd.Id == selected_document.ImageFile.Id).Include(fd => fd.FileData).FirstOrDefault();
+            string s = Path.Combine(BD_FilesDir, selected_document.ImageFile.FileName );
+
+            using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
+            {
+                fs.Write(selected_document.ImageFile.FileData.Data);
+            }
+            ProcessStartInfo info = new ProcessStartInfo(s);
+            info.UseShellExecute = true;
+            using (var proc = Process.Start(info)) { }
+        }
+
         private void OnRemove(object obj)
         {
             if (obj is IList list)
@@ -128,7 +211,6 @@ namespace PrismWorkApp.Modules.BuildingModule
             }
 
         }
-
         private void OnCloseObj(object obj)
         {
             if (obj is IList list)
@@ -190,6 +272,9 @@ namespace PrismWorkApp.Modules.BuildingModule
             {
                 IEntityObject selected_object = list[0] as IEntityObject;
                 IEntityObject selected_object_parent = list[1] as IEntityObject;
+                Type type_for_created_obj =null;
+                if(((IList)obj)[2]!=null)
+                    type_for_created_obj = ((IList)obj)[2] as Type;
 
                 if (selected_object_parent != null)
                 {
@@ -209,48 +294,36 @@ namespace PrismWorkApp.Modules.BuildingModule
             if (obj is IList list)
             {
                 IEntityObject selected_object = list[0] as IEntityObject;
-                Type type_for_created_obj = ((IList)obj)[2] as Type;
-                if (selected_object != null && type_for_created_obj != null)
+                IEntityObject selected_object_parent = list[1] as IEntityObject;
+                Type type_for_created_obj= null;
+                if (((IList)obj)[2] != null)
+                    type_for_created_obj = ((IList)obj)[2] as Type;
+               
+                if ( type_for_created_obj != null)
                 {
                     IEntityObject new_obj = (IEntityObject)Activator.CreateInstance(type_for_created_obj);
+                    INameableObservableCollection coll_for_add = null;
                     if (selected_object is INameableObservableCollection nameable_selected_coll)
+                        coll_for_add = nameable_selected_coll;
+                    else 
+                        if (selected_object_parent is INameableObservableCollection nameable_parent_selected_coll)
+                                coll_for_add = nameable_parent_selected_coll;
+                    if(coll_for_add!=null)
                     {
-                        if (!nameable_selected_coll.Owner.IsDbBranch)
+                        if (!coll_for_add.Owner.IsDbBranch)
                         {
                             _buildingUnitsRepository.Add(new_obj);
                             new_obj.IsDbBranch = true;
                         }
-                        nameable_selected_coll.Add(new_obj);
+                        coll_for_add.Add(new_obj);
                     }
+                  
+
                 }
             }
         }
  
-        private void OnAddNewExecutiveScheme(object obj)
-        {
-            if (obj is IList list_obj)
-            {
-                list_obj.Add(new bldExecutiveScheme());
-
-            }
-        }
-        private void OnAddNewLaboratoryReport(object obj)
-        {
-            if (obj is IList list_obj)
-                list_obj.Add(new bldLaboratoryReport());
-
-        }
-        private void OnAddNewAggregationDocument(object obj)
-        {
-            if (obj is IList list_obj)
-                list_obj.Add(new bldAggregationDocument());
-
-        }
-        private void OnAddNewMaterialCertificate(object obj)
-        {
-            if (obj is IList list_obj)
-                list_obj.Add(new bldMaterialCertificate());
-        }
+        
 
         #endregion
         #region Model data 
@@ -270,7 +343,7 @@ namespace PrismWorkApp.Modules.BuildingModule
                   {
                       if (result.Result == ButtonResult.Yes)
                       {
-                          var all_changed_objects = UnDoReDo._RegistedModels.Keys.Where(ob => ob.IsDbBranch && ob.State != EntityState.Unchanged).ToList();
+                          var all_changed_objects = UnDoReDo._RegistedModels.Keys.Where(ob => ob.IsDbBranch && ob.State != OpenWorkLib.Data.Service.EntityState.Unchanged).ToList();
                           UnDoReDo.SaveAll();
                           _buildingUnitsRepository.Complete(UnDoReDo);
                           var res_massage = result.Parameters.GetValue<string>("confirm_dialog_param");

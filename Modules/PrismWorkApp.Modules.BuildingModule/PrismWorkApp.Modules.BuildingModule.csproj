@@ -42,7 +42,9 @@
         <None Remove="Resourses\Images\bldProjectImages\NameableObservableCollection`1.png" />
         <None Remove="Resourses\Images\bldProjectImages\TypesOfFileGroup.png" />
         <None Remove="Resourses\Images\bldProjectImages\TypesOfFile\docx.png" />
+        <None Remove="Resourses\Images\bldProjectImages\TypesOfFile\jpg.png" />
         <None Remove="Resourses\Images\bldProjectImages\TypesOfFile\pdf.png" />
+        <None Remove="Resourses\Images\bldProjectImages\TypesOfFile\png.png" />
         <None Remove="Resourses\Images\close-icon.png" />
         <None Remove="Resourses\Images\Interface\collapse.gif" />
         <None Remove="Resourses\Images\Interface\expand.gif" />
@@ -132,7 +134,9 @@
     <Resource Include="Resourses\Images\bldProjectImages\TypesOfFileGroup.png" />
     <Resource Include="Resourses\Images\bldProjectImages\NameableObservableCollection`1.png" />
     <Resource Include="Resourses\Images\bldProjectImages\TypesOfFile\docx.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\TypesOfFile\jpg.png" />
     <Resource Include="Resourses\Images\bldProjectImages\TypesOfFile\pdf.png" />
+    <Resource Include="Resourses\Images\bldProjectImages\TypesOfFile\png.png" />
     <Resource Include="Resourses\Images\Interface\close-icon.png" />
     <Resource Include="Resourses\Images\Interface\collapse.gif" />
     <Resource Include="Resourses\Images\Interface\expand.gif" />

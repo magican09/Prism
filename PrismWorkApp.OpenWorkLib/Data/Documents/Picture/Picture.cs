@@ -5,9 +5,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public partial class Picture : BindableBase, INameable, IKeyable
     {
+        public Picture()
+        {
+            
+        }
 
-
-        private FileData _fileData;
+        private FileData _fileData ;
 
         public FileData FileData
         {

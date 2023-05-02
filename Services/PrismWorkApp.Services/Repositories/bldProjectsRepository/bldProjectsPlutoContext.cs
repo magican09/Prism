@@ -58,6 +58,7 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<Picture> Pictures { get; set; }
         public virtual DbSet<bldAggregationDocument> AggregationDocuments { get; set; }
         public virtual DbSet<TypeOfFile> TypesOfFile { get; set; }
+        public virtual DbSet<FileData> FileDatas { get; set; }
 
         #endregion
         #region Participants

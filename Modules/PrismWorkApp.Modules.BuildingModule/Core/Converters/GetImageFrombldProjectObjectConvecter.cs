@@ -87,6 +87,10 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                         bldProjectImagesDir = $"Images/bldProjectImages/TypesOfFile";
                         if (type_of_file.Extention != null)
                             type_name = type_of_file.Extention.Replace("*.", "");
+                        if (type_of_file.Extention == "*.pdf")
+                            ;
+                        else
+                            ;
                         img_suffix = "";
                         break;
                     }

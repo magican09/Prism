@@ -8,13 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-
+using System.Linq.Dynamic.Core;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
     public class FindDocumentViewModel : BaseViewModel<IEntityObject>, INavigationAware
     {
-        private ObservableCollection<bldDocument> _findedDocuments;
+        private ObservableCollection<bldDocument> _findedDocuments = new ObservableCollection<bldDocument>();
         public ObservableCollection<bldDocument> FindedDocuments
         {
             get { return _findedDocuments; }
@@ -141,11 +141,19 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
 
             ObservableCollection<bldDocument> docs;
-           
-           //  docs = new ObservableCollection<bldDocument>(_buildingUnitsRepository.DocumentsRepository.Select().Where(ad =>ad is bldMaterialCertificate 
-          //  &&  EF.Functions.Like(ad.Name , $"%{SearchString}%")).ToList());
-            docs = new ObservableCollection<bldDocument>(_buildingUnitsRepository.DocumentsRepository.Select()
-                .Where("Name!=@0","a" ).ToList());
+
+            //  docs = new ObservableCollection<bldDocument>(_buildingUnitsRepository.DocumentsRepository.Select().Where(ad =>ad is bldMaterialCertificate 
+            //  &&  EF.Functions.Like(ad.Name , $"%{SearchString}%")).ToList());
+            docs = new ObservableCollection<bldDocument>(_buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Select()
+                .Where(d => d is bldMaterialCertificate)
+                // .Where($"{SelectedColumnName.Value}.Contains(@0)",SearchString ).ToList());
+                .Where(string.Format("{0}.Contains(@0, \"{1}\")",
+                        SelectedColumnName.Value, StringComparison.InvariantCultureIgnoreCase.ToString()), SearchString).ToList());
+
+
+            FindedDocuments.Clear();
+            foreach (bldDocument document in docs)
+                FindedDocuments.Add(document);
         }
 
         

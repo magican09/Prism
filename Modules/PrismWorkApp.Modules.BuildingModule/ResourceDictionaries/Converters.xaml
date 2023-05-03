@@ -9,12 +9,15 @@
     <loc_core:BindingProxy x:Key="Proxy" Data="{Binding}" />
     <loc_core:NextPreviousWorkMultiConverter x:Key="NextPreviousWorkMultiConverter"/>
     <loc_core:ObjectsPairMultiConverter x:Key="ObjectsPairMultiConverter"/>
+  
+    
     <loc_core:ObjectsToListMultiConverter x:Key="ObjectsToListMultiConverter"/>
+    <loc_core:TreeViewMultiCommandToCommandArgsConverter x:Key="multiCommandToCommandArgs"/>
     <loc_core:GetImageFrombldProjectObjectConvecter x:Key="imgFrombldProjectObject"/>
-    <loc_core:StringToUriConverter x:Key="stringToUriConverter"/>
+    <!--<loc_core:StringToUriConverter x:Key="stringToUriConverter"/>-->
     <loc_core:DataTypeConverter x:Key="dataTypeConverter"/>
-    <loc_core:IsCollectionEmpty x:Key="isCollectionEmpty"/>
+    <!--<loc_core:IsCollectionEmpty x:Key="isCollectionEmpty"/>-->
     <loc_core:EntityStateConverter x:Key="entityStateConverter"/>
-    <loc_core:GetCollectionFrombldProjectModelConvecter  x:Key="getCollectionFromObjectConvecter"  />
+    <!--<loc_core:GetCollectionFrombldProjectModelConvecter  x:Key="getCollectionFromObjectConvecter"  />-->
     <loc_core:DataItemsGenerationConverter x:Key="dataItemsGenerationConverter"/>
 </ResourceDictionary>

@@ -22,7 +22,6 @@ namespace PrismWorkApp.Modules.BuildingModule
     public class AppObjectsModel : BindableBase, IAppObjectsModel//,IActiveAware
     {
         private NameableObservableCollection<IEntityObject> _allModels = new NameableObservableCollection<IEntityObject>();
-
         public NameableObservableCollection<IEntityObject> AllModels
         {
             get { return _allModels; }
@@ -35,17 +34,17 @@ namespace PrismWorkApp.Modules.BuildingModule
         }
 
         #region Commands 
-        public NotifyCommand<object> CreateBasedOnCommand { get; set; }
-        public NotifyCommand<object> CreateNewCommand { get; set; }
-        public NotifyCommand<object> RemoveObjCommand { get; set; }
-        public NotifyCommand<object> CloseObjCommand { get; set; }
+        public NotifyCommand<CommandArgs> CreateBasedOnCommand { get; private set; }
+        public NotifyCommand<CommandArgs> CreateNewCommand { get; private set; }
+        public NotifyCommand<CommandArgs> RemoveObjCommand { get; private set; }
+        public NotifyCommand<CommandArgs> CloseObjCommand { get; set; }
 
         public NotifyCommand<object> OpenDocumentImageFileCommand { get; private set; }
         public NotifyCommand<object> SaveDocumentImageFileToDiskCommand { get; private set; }
         public NotifyCommand<object> LoadDocumentImageFileFromDiskCommand { get; private set; }
 
-        public NotifyCommand SaveAllToDBCommand { get; set; }
-       
+        public NotifyCommand SaveAllToDBCommand { get; private set; }
+
         #endregion
         #region Contructors
         private IApplicationCommands _applicationCommands;
@@ -65,24 +64,24 @@ namespace PrismWorkApp.Modules.BuildingModule
             UnDoReDo.Register(AllModels, true, false);
             Documentation.Name = "Документация";
 
-            CreateBasedOnCommand = new NotifyCommand<object>(OnCreateBasedOn);
+            CreateBasedOnCommand = new NotifyCommand<CommandArgs>(OnCreateBasedOn);
             CreateBasedOnCommand.Name = "Создать новый  на основании..";
-            CreateNewCommand = new NotifyCommand<object>(OnCreateNew);
+            CreateNewCommand = new NotifyCommand<CommandArgs>(OnCreateNew);
             CreateNewCommand.Name = "Создать новый...";
-            RemoveObjCommand = new NotifyCommand<object>(OnRemove);
+            RemoveObjCommand = new NotifyCommand<CommandArgs>(OnRemove);
             RemoveObjCommand.Name = "Удалить";
-            CloseObjCommand = new NotifyCommand<object>(OnCloseObj);
+            CloseObjCommand = new NotifyCommand<CommandArgs>(OnCloseObj);
             CloseObjCommand.Name = "Закрыть";
 
             SaveAllToDBCommand = new NotifyCommand(OnSaveAllToDB);
-            
+
             OpenDocumentImageFileCommand = new NotifyCommand<object>(OnOpenImageFile);
             OpenDocumentImageFileCommand.Name = "Открыть файл";
-            SaveDocumentImageFileToDiskCommand  = new NotifyCommand<object>(OnSaveImageFileToDisk);
+            SaveDocumentImageFileToDiskCommand = new NotifyCommand<object>(OnSaveImageFileToDisk);
             SaveDocumentImageFileToDiskCommand.Name = "Сохранить файл";
             LoadDocumentImageFileFromDiskCommand = new NotifyCommand<object>(OnLoadImageFileFromDisk);
             LoadDocumentImageFileFromDiskCommand.Name = "Загрузить файл";
-            
+
             //LoadAggregationDocumentFromDBCommand = new NotifyCommand<object>(OnLoadAggregationDocumentFromDB);
             //LoadAggregationDocumentFromDBCommand.Name = "Загрузить ведомость документов из БД";
             // CreateNewAggregationDocumentCommand = new NotifyCommand<object>(OnCreateNewAggregationDocument);
@@ -104,7 +103,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             openFileDialog.Filter = "Файлы скана (PDF,JPG,PNG,GIF)|*.PDF;*.JPG;*.PNG;*.GIF";
             if (openFileDialog.ShowDialog() == true)
                 image_file_name = openFileDialog.FileName;
-            string file_extention = "*"+Path.GetExtension(image_file_name);
+            string file_extention = "*" + Path.GetExtension(image_file_name);
             if (image_file_name != "")
                 try
                 {
@@ -114,12 +113,12 @@ namespace PrismWorkApp.Modules.BuildingModule
                         fs.ReadAsync(buffer, 0, buffer.Length);
                         Picture new_image_file = new Picture();
                         new_image_file.FileData = new FileData();
-                        new_image_file.FileType =_buildingUnitsRepository.TypesOfFileRepository.Select().Where(tf=>tf.Extention==file_extention).FirstOrDefault();
+                        new_image_file.FileType = _buildingUnitsRepository.TypesOfFileRepository.Select().Where(tf => tf.Extention == file_extention).FirstOrDefault();
                         new_image_file.FileData.Data = buffer;
                         new_image_file.FileName = openFileDialog.SafeFileName;
-                         selected_document.ImageFile = new_image_file;
+                        selected_document.ImageFile = new_image_file;
                         selected_document.IsHaveImageFile = true;
-                    //    _buildingUnitsRepository.PicturesReposytory.Add(new_image_file);
+                        //    _buildingUnitsRepository.PicturesReposytory.Add(new_image_file);
                     }
                 }
                 catch
@@ -157,10 +156,10 @@ namespace PrismWorkApp.Modules.BuildingModule
 
             if (!Directory.Exists(BD_FilesDir))
                 Directory.CreateDirectory(BD_FilesDir);
-           
+
             if (selected_document.ImageFile.FileData == null)
-              _buildingUnitsRepository.PicturesReposytory.Select().Where(fd => fd.Id == selected_document.ImageFile.Id).Include(fd => fd.FileData).FirstOrDefault();
-            string s = Path.Combine(BD_FilesDir, selected_document.ImageFile.FileName );
+                _buildingUnitsRepository.PicturesReposytory.Select().Where(fd => fd.Id == selected_document.ImageFile.Id).Include(fd => fd.FileData).FirstOrDefault();
+            string s = Path.Combine(BD_FilesDir, selected_document.ImageFile.FileName);
 
             using (System.IO.FileStream fs = new System.IO.FileStream(s, FileMode.OpenOrCreate))
             {
@@ -171,159 +170,130 @@ namespace PrismWorkApp.Modules.BuildingModule
             using (var proc = Process.Start(info)) { }
         }
 
-        private void OnRemove(object obj)
+        private void OnRemove(CommandArgs cm_args)
         {
-            if (obj is IList list)
+            if (cm_args != null && cm_args.Entity != null && cm_args.Parent is INameableObservableCollection parent_collection)
             {
-                IEntityObject selected_object = list[0] as IEntityObject;
-                INameableObservableCollection parent_collection = list[1] as INameableObservableCollection;
-                if (selected_object != null && parent_collection != null)
-                {
-                    CoreFunctions.ConfirmChangesDialog(_dialogService, "хотите удалить объект?!\n Объект будет удален безвозвратно!!!",
-                   (result) =>
+             CoreFunctions.ConfirmChangesDialog(_dialogService, "хотите удалить объект?!\n Объект будет удален безвозвратно!!!",
+               (result) =>
+               {
+                   if (result.Result == ButtonResult.Yes || result.Result == ButtonResult.No)
                    {
-                       if (result.Result == ButtonResult.Yes || result.Result == ButtonResult.No)
-                       {
-                           CoreFunctions.ConfirmChangesDialog(_dialogService, "хотите удалить объект?!",
-                             (result_2) =>
+                       CoreFunctions.ConfirmChangesDialog(_dialogService, "хотите удалить объект?!",
+                         (result_2) =>
+                         {
+                             if (result_2.Result == ButtonResult.Yes)
                              {
-                                 if (result_2.Result == ButtonResult.Yes)
+                                 parent_collection.Remove(cm_args.Entity);
+
+                                 if (result.Result == ButtonResult.Yes)
                                  {
-                                     parent_collection.Remove(selected_object);
-
-                                     if (result.Result == ButtonResult.Yes)
-                                     {
-                                         _buildingUnitsRepository.Remove(selected_object);
-                                     }
-                                     var dialog_par = new DialogParameters();
-                                     dialog_par.Add("message", $"{selected_object.Name} успешно удален!");
-                                     _dialogService.ShowDialog(nameof(MessageDialog), dialog_par, (result) => { });
+                                     _buildingUnitsRepository.Remove(cm_args.Entity);
                                  }
+                                 var dialog_par = new DialogParameters();
+                                 dialog_par.Add("message", $"{cm_args.Entity.Name} успешно удален!");
+                                 _dialogService.ShowDialog(nameof(MessageDialog), dialog_par, (result) => { });
+                             }
 
-                             }, "Всё равно удалить", "Не удалять");
-                       }
+                         }, "Всё равно удалить", "Не удалять");
+                   }
 
-                   }, "Удалить", "Не удалять");
+               }, "Удалить", "Не удалять");
 
-                    selected_object = null;
-                    _buildingUnitsRepository.Complete();
-                }
-            }
-
-        }
-        private void OnCloseObj(object obj)
-        {
-            if (obj is IList list)
-            {
-                IEntityObject selected_object = list[0] as IEntityObject;
-                INameableObservableCollection parent_collection = list[1] as INameableObservableCollection;
-                if (selected_object != null && parent_collection != null)
-                {
-                    int ch_namber = UnDoReDo.GetChangesNamber(selected_object); //Отнимает 1, так как в изменениях 
-                    if (ch_namber != 0)
-                    {
-                        CoreFunctions.ConfirmChangesDialog(_dialogService, "сохранить изменения",
-                            (result) =>
-                            {
-                                if (result.Result == ButtonResult.Yes || result.Result == ButtonResult.No)
-                                {
-                                    parent_collection.Remove(selected_object);
-
-                                    if (result.Result == ButtonResult.Yes)
-                                    {
-                                        UnDoReDo.Save(selected_object);
-                                        UnDoReDo.UnRegister(selected_object);
-                                        _buildingUnitsRepository.Complete();
-                                        var dialog_par = new DialogParameters();
-                                        dialog_par.Add("message", $"{ch_namber.ToString()} изменения(й) сохранено!");
-                                        _dialogService.ShowDialog(nameof(MessageDialog), dialog_par, (result) => { });
-                                    }
-                                    if (result.Result == ButtonResult.No)
-                                    {
-                                        UnDoReDo.UnDoAll(selected_object);
-                                        UnDoReDo.UnRegister(selected_object);
-                                        parent_collection.Remove(selected_object);
-                                        var dialog_par = new DialogParameters();
-                                        dialog_par.Add("message", $"{ch_namber.ToString()} изменения(й) сброшено!");
-                                        _dialogService.ShowDialog(nameof(MessageDialog), dialog_par, (result) => { });
-                                    }
-                                }
-                                if (result.Result == ButtonResult.Cancel)
-                                {
-                                }
-                            });
-                    }
-                    else
-                    {
-                        parent_collection.Remove(selected_object);
-                    }
-
-                    if (_buildingUnitsRepository.Contains(selected_object))
-                        _buildingUnitsRepository.SetAsDetached(selected_object);
-
-                    parent_collection = null;
-
-                }
+                cm_args.Entity = null;
+                _buildingUnitsRepository.Complete();
             }
         }
-        private void OnCreateBasedOn(object obj)
+        private void OnCloseObj(CommandArgs cm_args)
         {
-            if (obj is IList list)
+            if (cm_args != null && cm_args.Entity != null && cm_args.Parent is INameableObservableCollection parent_collection)
             {
-                IEntityObject selected_object = list[0] as IEntityObject;
-                IEntityObject selected_object_parent = list[1] as IEntityObject;
-                Type type_for_created_obj =null;
-                if(((IList)obj)[2]!=null)
-                    type_for_created_obj = ((IList)obj)[2] as Type;
-
-                if (selected_object_parent != null)
+                int ch_namber = UnDoReDo.GetChangesNamber(cm_args.Entity); //Отнимает 1, так как в изменениях 
+                if (ch_namber != 0)
                 {
-                    IEntityObject new_object = (IEntityObject)selected_object.Clone();
-                    if (!selected_object_parent.IsDbBranch)
-                    {
-                        _buildingUnitsRepository.Add(new_object);
-                    }
-                    if (new_object is IJornalable jornable_new_object) jornable_new_object.IsDbBranch = true;
-                    if (selected_object_parent is IList new_object_list_parent)
-                        new_object_list_parent.Add(new_object);
-                }
-            }
-        }
-        private void OnCreateNew(object obj)
-        {
-            if (obj is IList list)
-            {
-                IEntityObject selected_object = list[0] as IEntityObject;
-                IEntityObject selected_object_parent = list[1] as IEntityObject;
-                Type type_for_created_obj= null;
-                if (((IList)obj)[2] != null)
-                    type_for_created_obj = ((IList)obj)[2] as Type;
-               
-                if ( type_for_created_obj != null)
-                {
-                    IEntityObject new_obj = (IEntityObject)Activator.CreateInstance(type_for_created_obj);
-                    INameableObservableCollection coll_for_add = null;
-                    if (selected_object is INameableObservableCollection nameable_selected_coll)
-                        coll_for_add = nameable_selected_coll;
-                    else 
-                        if (selected_object_parent is INameableObservableCollection nameable_parent_selected_coll)
-                                coll_for_add = nameable_parent_selected_coll;
-                    if(coll_for_add!=null)
-                    {
-                        if (!coll_for_add.Owner.IsDbBranch)
+                    CoreFunctions.ConfirmChangesDialog(_dialogService, "сохранить изменения",
+                        (result) =>
                         {
-                            _buildingUnitsRepository.Add(new_obj);
-                            new_obj.IsDbBranch = true;
-                        }
-                        coll_for_add.Add(new_obj);
-                    }
-                  
+                            if (result.Result == ButtonResult.Yes || result.Result == ButtonResult.No)
+                            {
+                                parent_collection.Remove(cm_args.Entity);
 
+                                if (result.Result == ButtonResult.Yes)
+                                {
+                                    UnDoReDo.Save(cm_args.Entity);
+                                    UnDoReDo.UnRegister(cm_args.Entity);
+                                    _buildingUnitsRepository.Complete();
+                                    var dialog_par = new DialogParameters();
+                                    dialog_par.Add("message", $"{ch_namber.ToString()} изменения(й) сохранено!");
+                                    _dialogService.ShowDialog(nameof(MessageDialog), dialog_par, (result) => { });
+                                }
+                                if (result.Result == ButtonResult.No)
+                                {
+                                    UnDoReDo.UnDoAll(cm_args.Entity);
+                                    UnDoReDo.UnRegister(cm_args.Entity);
+                                    parent_collection.Remove(cm_args.Entity);
+                                    var dialog_par = new DialogParameters();
+                                    dialog_par.Add("message", $"{ch_namber.ToString()} изменения(й) сброшено!");
+                                    _dialogService.ShowDialog(nameof(MessageDialog), dialog_par, (result) => { });
+                                }
+                            }
+                            if (result.Result == ButtonResult.Cancel)
+                            {
+                            }
+                        });
+                }
+                else
+                {
+                    parent_collection.Remove(cm_args.Entity);
+                }
+                if (_buildingUnitsRepository.Contains(cm_args.Entity))
+                    _buildingUnitsRepository.SetAsDetached(cm_args.Entity);
+
+                parent_collection = null;
+
+
+            }
+        }
+        private void OnCreateBasedOn(CommandArgs cm_args)
+        {
+            if (cm_args != null && cm_args.Entity != null)
+            {
+                IEntityObject new_object = (IEntityObject)cm_args.Entity.Clone();
+                if (!cm_args.Parent.IsDbBranch)
+                {
+                    _buildingUnitsRepository.Add(new_object);
+                }
+                if (new_object is IJornalable jornable_new_object) jornable_new_object.IsDbBranch = true;
+                if (cm_args.Parent is IList new_object_list_parent)
+                    new_object_list_parent.Add(new_object);
+            }
+
+        }
+        private void OnCreateNew(CommandArgs cm_args)
+        {
+            if (cm_args != null && cm_args.Entity != null && cm_args.Type != null)
+            {
+                IEntityObject new_obj = (IEntityObject)Activator.CreateInstance(cm_args.Type);
+                INameableObservableCollection coll_for_add = null;
+                if (cm_args.Entity is INameableObservableCollection nameable_selected_coll)
+                    coll_for_add = nameable_selected_coll;
+                else
+                    if (cm_args.Parent is INameableObservableCollection nameable_parent_selected_coll)
+                    coll_for_add = nameable_parent_selected_coll;
+
+                if (coll_for_add != null)
+                {
+                    if (!coll_for_add.Owner.IsDbBranch)
+                    {
+                        _buildingUnitsRepository.Add(new_obj);
+                        new_obj.IsDbBranch = true;
+                    }
+                    coll_for_add.Add(new_obj);
                 }
             }
         }
- 
-        
+
+
 
         #endregion
         #region Model data 

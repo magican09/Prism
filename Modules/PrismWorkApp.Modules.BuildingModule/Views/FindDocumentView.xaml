@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="PrismWorkApp.Modules.BuildingModule.Views.FindDocumentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Views"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:cc="clr-namespace:bldCustomControlLibrary;assembly=bldCustomControlLibrary"
+             xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" 
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             mc:Ignorable="d" 
+             prism:ViewModelLocator.AutoWireViewModel="True"
+              Height="600"  Width="1150">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary    Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/GridViewsTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+            <Grid.Resources>
+
+                <Style x:Key="CommonCellStyle" TargetType="{x:Type telerik:GridViewCell}" >
+                    <Setter Property="ContextMenu" Value="{StaticResource   GridViewItemContextMenu}"/>
+                </Style>
+
+
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.05*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.05*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.05*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="0.1*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel x:Name="mainStakPanel" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Grid.RowSpan="2" Orientation="Vertical" >
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Тип документа:"/>
+                <ComboBox ItemsSource="{Binding DocTypeNames}" 
+                          DisplayMemberPath="Key" Width="150" 
+                          SelectedItem="{Binding SelectedDocTypeName}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Искать в..:" Margin="1 0 0 0"/>
+                    <ComboBox ItemsSource="{Binding AggragationDocumentsForSearch}" 
+                          DisplayMemberPath="Name" Width="150" 
+                          SelectedItem="{Binding SelectedAggragationDocumentForSearch}"/>
+                </StackPanel>
+                  
+                <Label Content="Искать по полю:" Margin="1 0 0 0"/>
+                <ComboBox ItemsSource="{Binding ColumnNames}" DisplayMemberPath="Key" Width="150" SelectedItem="{Binding SelectedColumnName}"/>
+                <Label Content="Искать  по слову:" Margin="1 0 0 0"/>
+                <TextBox  Width="200" Text="{Binding SearchString}"/>
+                <Button Content="Найти" Margin="1 0 0 0" Command="{Binding FindDocumentsCommand}"/>
+            </StackPanel>
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox x:Name="dataOnCheckBox" Content="Оганичения даты" IsChecked="{Binding IsDatePanelEnable}"/>
+                    <DatePicker SelectedDate="{Binding DocStarTime}">
+                        <DatePicker.Style>
+                            <Style TargetType="DatePicker">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDatePanelEnable}" Value="True">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DatePicker.Style>
+                    </DatePicker>
+                    <DatePicker SelectedDate="{Binding EndStarTime}">
+                        <DatePicker.Style>
+                            <Style TargetType="DatePicker">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDatePanelEnable}" Value="True">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DatePicker.Style>
+                    </DatePicker>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                
+            </StackPanel>
+            </StackPanel>
+        </Grid>
+</UserControl>

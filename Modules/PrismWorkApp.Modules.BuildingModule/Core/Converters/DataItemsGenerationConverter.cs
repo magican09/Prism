@@ -58,35 +58,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             attachedDocs_dataitem.AttachedObject = document.AttachedDocuments;
                             break;
                         }
-                    //case (nameof(bldAggregationDocument)):
-                    //    {
-                    //        bldAggregationDocument document = ((bldAggregationDocument)dataItem.AttachedObject);
-                    //        Binding binding = new Binding("Name");
-                    //        binding.Source = document;
-                    //        binding.Path = new PropertyPath("Name");
-                    //        binding.Mode = BindingMode.TwoWay;
-                    //        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
-
-                    //        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
-                    //        DataItem attachedDocs = new DataItem();
-                    //        attachedDocs.AttachedObject = document.AttachedDocuments;
-                    //        dataItem.Items.Add(attachedDocs);
-                    //        break;
-                    //    }
-                    //case (nameof(bldDocumentsGroup)):
-                    //case (nameof(bldAggregationDocumentsGroup)):
-                    //case (nameof(bldMaterialCertificatesGroup)):
-                    //    {
-                    //        bldDocumentsGroup documents = ((bldDocumentsGroup)dataItem.AttachedObject);
-                    //        Binding binding = new Binding("Name");
-                    //        binding.Source = documents;
-                    //        binding.Path = new PropertyPath("Name");
-                    //        binding.Mode = BindingMode.TwoWay;
-                    //        binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                    //        BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
-                    //        dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(new bldDocumentsGroup(), null, null, CultureInfo.CurrentCulture);
-                    //        break;
-                    //    }
                     case (nameof(bldUnitOfMeasurement)):
                         {
                             IEntityObject entity = ((IEntityObject)dataItem.AttachedObject);
@@ -117,7 +88,6 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             binding_2.Path = new PropertyPath("Extention");
                             binding_2.Mode = BindingMode.TwoWay;
                             BindingOperations.SetBinding(attachedDocs_dataitem, DataItem.TextProperty, binding_2);
-                         
                             break;
                         }
                     case (nameof(bldDocumentsGroup)):

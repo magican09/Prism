@@ -26,6 +26,7 @@
 
         NotifyCompositeCommand LoadUnitsOfMeasurementsCommand { get; }
         NotifyCompositeCommand SaveUnitsOfMeasurementsCommand { get; }
+        NotifyCompositeCommand FindDocumentCommand { get; }
         
     }
     public class ApplicationCommands : IApplicationCommands
@@ -173,7 +174,12 @@
         {
             get { return _saveUnitsOfMeasurementsCommand; }
         }
-        
+        private NotifyCompositeCommand _findDocumentCommand = new NotifyCompositeCommand();
+        public NotifyCompositeCommand FindDocumentCommand
+        {
+            get { return _findDocumentCommand; }
+        }
+
     }
 
 

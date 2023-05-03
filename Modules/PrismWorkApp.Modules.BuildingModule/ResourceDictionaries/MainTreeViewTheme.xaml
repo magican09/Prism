@@ -28,7 +28,6 @@
         </telerik:EventToCommandBehavior.EventBindings>
     </ContextMenu>
 
-
     <Style x:Key="TreeViewItemStyle" TargetType="{x:Type  telerik:RadTreeViewItem}">
         <Setter Property="IsExpanded" Value="{Binding IsExpanded,Mode=TwoWay}"/>
         <!--<Setter Property="DefaultImageSrc" Value="{Binding ImageUrl}"/>-->

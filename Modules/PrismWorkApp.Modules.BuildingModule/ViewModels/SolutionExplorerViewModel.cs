@@ -78,7 +78,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand UnDoCommand { get; protected set; }
         public NotifyCommand ReDoCommand { get; protected set; }
         public NotifyCommand SaveCommand { get; protected set; }
-        public NotifyCommand<object> CloseCommand { get; protected set; }
+     //   public NotifyCommand<object> CloseCommand { get; protected set; }
 
         public NotifyMenuCommands DocumentationCommands { get; set; }
 
@@ -88,24 +88,24 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand<object> EditInTreeViewItemCommand { get; private set; }
 
-        public NotifyCommand<object> CreateBasedOnCommand { get; set; }
+        public NotifyCommand<CommandArgs> CreateBasedOnCommand { get; private set; }
 
 
-        public NotifyCommand<object> LoadAggregationDocumentFromDBCommand { get; set; }
-        public NotifyCommand<object> CreateNewAggregationDocumentCommand { get; set; }
-        public NotifyCommand<object> RemoveAggregationDocumentCommand { get; private set; }
-        public NotifyCommand<object> CloseAggregationDocumentCommand { get; private set; }
-        public NotifyCommand<object> OpenAsMaterialCertificateAggregationDocumentCommand { get; set; }
+        public NotifyCommand<CommandArgs> LoadAggregationDocumentFromDBCommand { get; set; }
+        public NotifyCommand<CommandArgs> CreateNewAggregationDocumentCommand { get; set; }
+        public NotifyCommand<CommandArgs> RemoveAggregationDocumentCommand { get; private set; }
+        public NotifyCommand<CommandArgs> CloseAggregationDocumentCommand { get; private set; }
+        public NotifyCommand<CommandArgs> OpenAsMaterialCertificateAggregationDocumentCommand { get; set; }
 
 
         //public NotifyCommand<object> LoadUnitOfMeasurementFromDBCommand { get; set; }
-        public NotifyCommand<object> CreateNewUnitOfMeasurementCommand { get; set; }
-        public NotifyCommand<object> RemoveUnitOfMeasurementCommand { get; private set; }
-        public NotifyCommand<object> CloseUnitOfMeasurementCommand { get; private set; }
-     
-        public NotifyCommand<object> CreateNewTypeOfFileCommand { get; set; }
-        public NotifyCommand<object> CloseTypeOfFileCommand { get; private set; }
-        public NotifyCommand<object> RemoveTypeOfFileCommand { get; private set; }
+        public NotifyCommand<CommandArgs> CreateNewUnitOfMeasurementCommand { get; set; }
+        public NotifyCommand<CommandArgs> RemoveUnitOfMeasurementCommand { get; private set; }
+        public NotifyCommand<CommandArgs> CloseUnitOfMeasurementCommand { get; private set; }
+
+        public NotifyCommand<CommandArgs> CreateNewTypeOfFileCommand { get; set; }
+        public NotifyCommand<CommandArgs> CloseTypeOfFileCommand { get; private set; }
+        public NotifyCommand<CommandArgs> RemoveTypeOfFileCommand { get; private set; }
 
         private readonly IEventAggregator _eventAggregator;
         private AppObjectsModel _appObjectsModel;
@@ -118,8 +118,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         private IApplicationCommands _applicationCommands;
         IBuildingUnitsRepository _buildingUnitsRepository;
-        private static TreeeViewCommandParToCommonCommandParConverter CommandParConverter = new TreeeViewCommandParToCommonCommandParConverter();
-
+        
 
         public SolutionExplorerViewModel(IEventAggregator eventAggregator,
                             IRegionManager regionManager, IDialogService dialogService,
@@ -149,34 +148,34 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             MouseDoubleClickCommand = new NotifyCommand<object>(OnMouseDoubleClick);
             EditInTreeViewItemCommand = new NotifyCommand<object>(OnEditInTreeViewItem);
             EditInTreeViewItemCommand.Name = "Редактировать";
-            CreateBasedOnCommand = new NotifyCommand<object>(OnCreateBasedOn);
+            CreateBasedOnCommand = _appObjectsModel.CreateBasedOnCommand;
             CreateBasedOnCommand.Name = "Создать на основании...";
 
-            LoadAggregationDocumentFromDBCommand = new NotifyCommand<object>(OnLoadAggregationDocumentFromDB);
+            LoadAggregationDocumentFromDBCommand = new NotifyCommand<CommandArgs>(OnLoadAggregationDocumentFromDB);
             LoadAggregationDocumentFromDBCommand.Name = "Загрузить перечень документов из БД";
-            CreateNewAggregationDocumentCommand = new NotifyCommand<object>(OnCreateNewAggregationDocument);
+            CreateNewAggregationDocumentCommand = new NotifyCommand<CommandArgs>(OnCreateNewAggregationDocument);
             CreateNewAggregationDocumentCommand.Name = "Добавить новый перечень документов";
-            RemoveAggregationDocumentCommand = new NotifyCommand<object>(OnRemoveAggregationDocument);
+            RemoveAggregationDocumentCommand = new NotifyCommand<CommandArgs>((cm_args) => _appObjectsModel.RemoveObjCommand.Execute(cm_args));
             RemoveAggregationDocumentCommand.Name = "Удалить перечень документов";
-            CloseAggregationDocumentCommand = new NotifyCommand<object>(OnCloseAggregationDocument);
+            CloseAggregationDocumentCommand = new NotifyCommand<CommandArgs>((cm_args) => _appObjectsModel.CloseObjCommand.Execute(cm_args));
             CloseAggregationDocumentCommand.Name = "Закрыть перечень документов";
 
 
-            CreateNewUnitOfMeasurementCommand = new NotifyCommand<object>(OnCreateNewUnitOfMeasurement);
+            CreateNewUnitOfMeasurementCommand = new NotifyCommand<CommandArgs>(OnCreateNewUnitOfMeasurement);
             CreateNewUnitOfMeasurementCommand.Name = "Добавить новую ед.изм.";
-            RemoveUnitOfMeasurementCommand = new NotifyCommand<object>(OnRemoveUnitOfMeasurement);
+            RemoveUnitOfMeasurementCommand = new NotifyCommand<CommandArgs>((cm_args) => _appObjectsModel.RemoveObjCommand.Execute(cm_args));
             RemoveUnitOfMeasurementCommand.Name = "Удалить ед.изм. из БД";
-            CloseUnitOfMeasurementCommand = new NotifyCommand<object>(OnCloseUnitOfMeasurement);
+            CloseUnitOfMeasurementCommand = new NotifyCommand<CommandArgs>((cm_args) => _appObjectsModel.CloseObjCommand.Execute(cm_args));
             CloseUnitOfMeasurementCommand.Name = "Закрыть ед.изм.";
 
-            CreateNewTypeOfFileCommand = new NotifyCommand<object>(OnCreateNewTypeOfFile);
+            CreateNewTypeOfFileCommand = new NotifyCommand<CommandArgs>(OnCreateNewTypeOfFile);
             CreateNewTypeOfFileCommand.Name = "Добавить новый тип файла";
-            RemoveTypeOfFileCommand = new NotifyCommand<object>(OnRemoveTypeOfFile);
+            RemoveTypeOfFileCommand = new NotifyCommand<CommandArgs>((cm_args) => _appObjectsModel.RemoveObjCommand.Execute(cm_args));
             RemoveTypeOfFileCommand.Name = "Удалить тип файла";
-            CloseTypeOfFileCommand = new NotifyCommand<object>(OnCloseTypeOfFile);
+            CloseTypeOfFileCommand = new NotifyCommand<CommandArgs>((cm_args) => _appObjectsModel.CloseObjCommand.Execute(cm_args));
             CloseTypeOfFileCommand.Name = "Закрыть тип файла";
 
-            OpenAsMaterialCertificateAggregationDocumentCommand = new NotifyCommand<object>(OnOpenAsMaterialCertificateAggregationDocument);
+            OpenAsMaterialCertificateAggregationDocumentCommand = new NotifyCommand<CommandArgs>(OnOpenAsMaterialCertificateAggregationDocument);
             OpenAsMaterialCertificateAggregationDocumentCommand.Name = "Открыть как перечень сертификатов/паспартов";
 
             _applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadAggregationDocumentFromDBCommand);
@@ -193,41 +192,10 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             UnDoReDo.SaveAll();
         }
-        private void OnCreateBasedOn(object obj)
+        private void OnOpenAsMaterialCertificateAggregationDocument(CommandArgs cm_args)
         {
-            _appObjectsModel.CreateBasedOnCommand.Execute(CommandParConverter.Convert(obj, null, null, CultureInfo.CurrentUICulture));
-        }
-
-        private void OnCloseTypeOfFile(object obj)
-        {
-           _appObjectsModel.CloseObjCommand.Execute(CommandParConverter.Convert(obj, null, null, CultureInfo.CurrentUICulture));
-        }
-        private void OnRemoveTypeOfFile(object obj)
-        {
-            _appObjectsModel.RemoveObjCommand.Execute(CommandParConverter.Convert(obj, null, null, CultureInfo.CurrentUICulture));
-
-        }
-
-        private void OnCreateNewTypeOfFile(object obj)
-        {
-            ((IList)obj).Add(typeof(TypeOfFile));
-            _appObjectsModel.CreateNewCommand.Execute(CommandParConverter.Convert(obj, null, null, CultureInfo.CurrentUICulture));
-        }
-
-        private void OnOpenAsMaterialCertificateAggregationDocument(object obj)
-        {
-            object selected_object = null;
-            object parent_object = null;
-            if (obj is IList list)
+          if (cm_args != null&& cm_args.Entity is bldAggregationDocument aggregationDocument)
             {
-                selected_object = ((DataItem)list[0]).AttachedObject;
-                parent_object = ((DataItem)list[0]).Parent.AttachedObject;
-            }
-            else selected_object = ((DataItem)obj).AttachedObject;
-
-            if (selected_object is bldAggregationDocument document)
-            {
-                bldAggregationDocument aggregationDocument = selected_object as bldAggregationDocument;
                 NavigationParameters navParam = new NavigationParameters();
                 navParam.Add("bld_agrregation_document", (new ConveyanceObject(aggregationDocument, ConveyanceObjectModes.EditMode.FOR_EDIT)));
                 navParam.Add("title", "Перечень сертификатов/паспортов");
@@ -235,69 +203,34 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             }
         }
 
-        private void OnCloseAggregationDocument(object obj)
+        private void OnCreateNewAggregationDocument(CommandArgs cm_args)
         {
-            _appObjectsModel.CloseObjCommand.Execute(CommandParConverter.Convert(obj, null, null, CultureInfo.CurrentUICulture));
+            cm_args.Type = typeof(bldAggregationDocument);
+            _appObjectsModel.CreateNewCommand.Execute(cm_args);
+        }
+        private void OnCreateNewUnitOfMeasurement(CommandArgs cm_args)
+        {
+             cm_args.Type = typeof(bldUnitOfMeasurement);
+            _appObjectsModel.CreateNewCommand.Execute(cm_args);
+        }
+        private void OnCreateNewTypeOfFile(CommandArgs cm_args)
+        {
+            cm_args.Type = typeof(TypeOfFile);
+            _appObjectsModel.CreateNewCommand.Execute(cm_args);
         }
 
-        private void OnRemoveUnitOfMeasurement(object obj)
-        {
-            _appObjectsModel.RemoveObjCommand.Execute(CommandParConverter.Convert(obj, null, null, CultureInfo.CurrentUICulture));
-        }
-        private void OnCloseUnitOfMeasurement(object obj)
-        {
-            _appObjectsModel.CloseObjCommand.Execute(CommandParConverter.Convert(obj, null, null, CultureInfo.CurrentUICulture));
-        }
-        private void OnCreateNewUnitOfMeasurement(object obj)
-        {
-            ((IList)obj).Add(typeof(bldUnitOfMeasurement));
-            _appObjectsModel.CreateNewCommand.Execute(CommandParConverter.Convert(obj, null, null, CultureInfo.CurrentUICulture));
-        }
-
-        private void OnUnDoReDoSystemEvents(IUnDoReDoSystem unDoReDosys, UnDoReDoSystemEventArgs e)
-        {
-            string out_str = "";
-            foreach (IJornalable obj in e.ObjectsList)
-                if (obj is INameable n_obj) out_str += $"{n_obj.Name}\n";
-            CoreFunctions.ConfirmChangesDialog(_dialogService, out_str,
-
-                (result) =>
-                {
-                    if (result.Result == ButtonResult.Yes)
-                    {
-                        foreach (IJornalable obj in e.ObjectsList)
-                            obj.UnDoReDoSystem.Save(obj);
-                    }
-                    if (result.Result == ButtonResult.No)
-                    {
-
-                    }
-                }
-                );
-        }
-
-        private void OnRemoveAggregationDocument(object obj)
-        {
-            _appObjectsModel.RemoveObjCommand.Execute(CommandParConverter.Convert(obj, null, null, CultureInfo.CurrentUICulture));
-        }
-
-        private void OnCreateNewAggregationDocument(object obj)
-        {
-            ((IList)obj).Add(typeof(bldAggregationDocument));
-            _appObjectsModel.CreateNewCommand.Execute(CommandParConverter.Convert(obj, null, null, CultureInfo.CurrentUICulture));
-        }
-
-        private void OnLoadAggregationDocumentFromDB(object obj)
+        private void OnLoadAggregationDocumentFromDB(CommandArgs cm_args)
         {
             object selected_object = null;
-            if (obj is IList list) selected_object = (list[0] as DataItem)?.AttachedObject; else selected_object = (obj as DataItem)?.AttachedObject;
-            if (selected_object == null)
+            if (cm_args == null)
                 selected_object = Documentation;
+            else
+                selected_object = cm_args.Entity;
             bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(
                 _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.Select()
                 .Include(ad => ad.AttachedDocuments)
-                .ThenInclude(mc=>mc.ImageFile)
-                .ThenInclude(mc=>mc.FileType).ToList()
+                .ThenInclude(mc => mc.ImageFile)
+                .ThenInclude(mc => mc.FileType).ToList()
                 .Where(d => d.AttachedDocuments.Count > 0 && d.AttachedDocuments[0].GetType() == typeof(bldMaterialCertificate) &&
                 !Documentation.Where(dc => dc.Id == d.Id).Any()).ToList()); ;
             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>

@@ -420,5 +420,10 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         }
 
+        public bool ContainsObjectWithType(Type type)
+        {
+
+            return this.Where(el => el.GetType()==type).Any();
+        }
     }
 }

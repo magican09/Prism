@@ -22,9 +22,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         public NotifyCommand LoadMaterialCertificatesFromAccessCommand { get; private set; }
         public NotifyCommand LoadMaterialCertificatesFromDBCommand { get; private set; }
-   
-        public NotifyCommand SaveDataToDBCommand { get; private set; }
-        private string _title = "Материалы";
+        public NotifyCommand FindDocumentCommand { get; private set; }
+
+        private string _title = "Документация";
         public string Title
         {
             get { return _title; }
@@ -32,15 +32,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         bldAggregationDocument TempCatalog { get; set; } = new bldAggregationDocument();
 
-        private IDialogService _dialogService;
         public IBuildingUnitsRepository _buildingUnitsRepository { get; }
-        public IApplicationCommands ApplicationCommands
-        {
-            get { return _applicationCommands; }
-            set { SetProperty(ref _applicationCommands, value); }
-        }
+
         private IApplicationCommands _applicationCommands;
-        private readonly IRegionManager _regionManager;
         private readonly IEventAggregator _eventAggregator;
         private AppObjectsModel _appObjectsModel;
         public DocumentsRibbonTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator,
@@ -50,111 +44,25 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _regionManager = regionManager;
             _buildingUnitsRepository = buildingUnitsRepository;
             _dialogService = dialogService;
-            _applicationCommands = applicationCommands;
+            ApplicationCommands = applicationCommands;
             _appObjectsModel = appObjectsModel as AppObjectsModel;
             _eventAggregator = eventAggregator;
               IsActiveChanged += OnActiveChanged;
             LoadMaterialCertificatesFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
             
 
-           SaveDataToDBCommand = new NotifyCommand(OnSaveDataToDB);
-            //    ApplicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadMaterialCertificatesFromDBCommand);
-          
-        }
-
-     
-
-        private void OnLoadMaterialCertificatesFromDB()
-        {
-            //bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAllAsync().ToList());
-
-            //CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
-            //          (All_AggregationDocuments, _dialogService, (result) =>
-            //          {
-            //              if (result.Result == ButtonResult.Yes)
-            //              {
-            //                  bldAggregationDocument selected_catalog = result.Parameters.GetValue<bldAggregationDocument>("element");
-
-            //                  var navParam = new NavigationParameters();
-            //                  navParam.Add("bld_document", selected_catalog);
-            //                  _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, typeof(DocumentationExplorerView).Name, navParam);
-
-
-            //              }
-
-            //          }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
-            //          "Выберете каталог для сохранения",
-            //             "Форма для выбора каталога для загзузки из базы данных."
-            //            , "Перечень каталогов");
+       
+           FindDocumentCommand = new NotifyCommand(OnFindDocument);
+           ApplicationCommands.FindDocumentCommand.RegisterCommand(FindDocumentCommand);
 
         }
 
-        private void OnSaveDataToDB()
+        private void OnFindDocument()
         {
-            CoreFunctions.ConfirmActionDialog(
-                "Cохранить в БД", "документация", "Сохранить", "Отмена", "Сохраниение в БД завершено!",
-                 (result) =>
-                 {
-                     if (result.Result == ButtonResult.Yes)
-                     {
-                         bldAggregationDocumentsGroup All_AggregationDocuments = new bldAggregationDocumentsGroup(_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.GetAll().ToList());
-                         var current_catalog = All_AggregationDocuments.Where(ct => ct.Id == TempCatalog.Id).FirstOrDefault();
-                         if (current_catalog == null)
-                         {
-                             CoreFunctions.SelectElementFromCollectionWhithDialog<bldAggregationDocumentsGroup, bldAggregationDocument>
-                              (All_AggregationDocuments, _dialogService, (result) =>
-                                {
-                                    if (result.Result == ButtonResult.Yes)
-                                    {
-                                        current_catalog = result.Parameters.GetValue<bldAggregationDocument>("element");
-                                        var dialog_par = new DialogParameters();
-                                        dialog_par.Add("massege", current_catalog.Name);
+        // DialogParameters parms  = new DialogParameters();
 
-                                        _dialogService.ShowDialog(typeof(InputTextValueDialog).Name, dialog_par,
-                                            (diag_result) =>
-                                            {
-                                                if (diag_result.Result == ButtonResult.Yes)
-                                                {
-                                                    current_catalog.Name = diag_result.Parameters.GetValue<string>("input_text");
+          _dialogService.ShowDialog(nameof(FindDocumentDialogView));
 
-                                                }
-                                                if (diag_result.Result == ButtonResult.Cancel)
-                                                {
-                                                    current_catalog.Name = "Новый каталог";
-                                                }
-                                            });
-
-
-                                    }
-
-                                }, typeof(SelectAggregationDocumentFromCollectionDialogView).Name,
-                              "Выберете каталог для сохранения",
-                                 "Форма для выбора каталога для загзузки из базы данных."
-                                , "Перечень каталогов");
-                         }
-
-
-                         foreach (bldMaterialCertificate certificate in TempCatalog.AttachedDocuments)
-                             if (!current_catalog.AttachedDocuments.Where(mc => (mc.Id == certificate.Id && mc.Id != Guid.Empty) ||
-                             (mc.Name == certificate.Name && mc.RegId == certificate.RegId && mc.Date == certificate.Date)).Any())
-                                 current_catalog.AttachedDocuments.Add(certificate);
-                         if (!_buildingUnitsRepository.DocumentsRepository.AggregationDocuments.Find(ad => ad.Id == current_catalog.Id).Any())
-                         {
-                             foreach (bldMaterialCertificate certificate in current_catalog.AttachedDocuments)
-                             {
-                                 if (!_buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Find(mc => mc.Id == certificate.Id).Any())
-                                 {
-                                     _buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Add(certificate);
-                                     _buildingUnitsRepository.Complete();
-                                 }
-                             }
-                             _buildingUnitsRepository.DocumentsRepository.AggregationDocuments.Add((bldAggregationDocument)current_catalog);
-                         }
-                         SaveDataToDBCommand.RaiseCanExecuteChanged();
-                         _buildingUnitsRepository.Complete();
-
-                     }
-                 }, _dialogService);
         }
 
         private void OnLoadMaterialsFromAccess()
@@ -203,7 +111,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             //event_massage.Recipient = "DocumentationExplorer";
             //event_massage.Value = Catalog;
             //_eventAggregator.GetEvent<MessageConveyEvent>().Publish(event_massage);
-
         }
 
 
@@ -211,11 +118,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             if (IsActive)
             {
-                ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialCertificatesFromAccessCommand);
+             //   ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialCertificatesFromAccessCommand);
             }
             else
             {
-                ApplicationCommands.LoadMaterialsFromAccessCommand.UnregisterCommand(LoadMaterialCertificatesFromAccessCommand);
+             //   ApplicationCommands.LoadMaterialsFromAccessCommand.UnregisterCommand(LoadMaterialCertificatesFromAccessCommand);
             }
         }
     }

@@ -56,6 +56,7 @@
         <None Remove="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
         <None Remove="Resourses\Images\Ribbon\32x32\wand.png" />
         <None Remove="Resourses\Images\Ribbon\access_icon.png" />
+        <None Remove="Resourses\Images\Ribbon\DocumentsRibbonTab\find_Document.png" />
         <None Remove="Resourses\Images\Ribbon\DocumentsRibbonTab\new_bldAggregationDocument.png" />
         <None Remove="Resourses\Images\Ribbon\DocumentsRibbonTab\new_bldExecutiveScheme.png" />
         <None Remove="Resourses\Images\Ribbon\DocumentsRibbonTab\new_bldLaboratoryReport.png" />
@@ -148,6 +149,7 @@
     <Resource Include="Resourses\Images\Ribbon\32x32\tag_blue_delete.png" />
     <Resource Include="Resourses\Images\Ribbon\32x32\wand.png" />
     <Resource Include="Resourses\Images\Ribbon\access_icon.png" />
+    <Resource Include="Resourses\Images\Ribbon\DocumentsRibbonTab\find_Document.png" />
     <Resource Include="Resourses\Images\Ribbon\DocumentsRibbonTab\new_bldAggregationDocument.png" />
     <Resource Include="Resourses\Images\Ribbon\DocumentsRibbonTab\new_bldExecutiveScheme.png" />
     <Resource Include="Resourses\Images\Ribbon\DocumentsRibbonTab\new_bldLaboratoryReport.png" />

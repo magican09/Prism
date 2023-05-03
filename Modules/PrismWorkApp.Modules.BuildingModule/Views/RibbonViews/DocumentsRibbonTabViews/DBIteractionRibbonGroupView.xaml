@@ -10,5 +10,7 @@
                       Command="{Binding LoadMaterialCertificatesFromAccessCommand}"/>
         <RibbonButton Label ="Загрузить перечень из БД" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/PNG/128x128/load_AggregationDocument.png" 
                 Command="{Binding ApplicationCommands.LoadAggregationDocumentsFromDBCommand}"/>
+        <RibbonButton Label ="Найти документ" LargeImageSource="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/Ribbon/DocumentsRibbonTab/find_Document.png" 
+                Command="{Binding ApplicationCommands.FindDocumentCommand}"/>
     </StackPanel>
 </RibbonGroup>

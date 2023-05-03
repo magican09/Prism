@@ -61,7 +61,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             //    _regionManager.RequestNavigate(RegionNames.ContentRegion, "ProjectExplorerView");
             //  _regionManager.RequestNavigate(RegionNames.SolutionExplorerRegion, "ConvertersView");
             _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new SolutionExplorerView());
-            _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new ProjectExplorerView());
+           // _regionManager.Regions[RegionNames.SolutionExplorerRegion].Add(new ProjectExplorerView());
 
             var projectManagerRibbonTab = new ProjectManagerRibbonTabView();
             var dataImportRibbonGroup = new DataImportRibbonGroupView();
@@ -195,6 +195,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterForNavigation<MaterialCertificatesGroupView>();
             containerRegistry.RegisterForNavigation<AggregationDocumentsView>();
             containerRegistry.RegisterForNavigation<UnitsOfMeasurementsView>();
+            containerRegistry.RegisterForNavigation<FindDocumentDialogView>();
 
             containerRegistry.RegisterDialog<UserParametersDialogView, UserParametersDialogViewModel>();
 
@@ -235,6 +236,8 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<SelectAggregationDocumentFromCollectionDialogView, SelectAggregationDocumentFromCollectionDialogViewModel>();
 
             containerRegistry.RegisterDialog<GetObjectFromCollectionDialogVeiw, GetObjectFromCollectionDialogVeiwModel>();
+
+            containerRegistry.RegisterDialog<FindDocumentDialogView, FindDocumentDialogViewModel>();
 
             containerRegistry.RegisterForNavigation<MaterialCertificateAggregationDocumentsView, AggregationDocumentsViewModel>();
           

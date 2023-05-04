@@ -5,15 +5,29 @@ using PrismWorkApp.Core.Commands;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.Services.Repositories;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Windows.Controls;
 
 namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
     public class FindDocumentViewModel : BaseViewModel<IEntityObject>, INavigationAware
     {
+        private AggregationDocumentsViewModel _documentsViewModel;
+        public AggregationDocumentsViewModel DocumentsViewModel
+        {
+            get { return _documentsViewModel; }
+            set { SetProperty(ref _documentsViewModel, value); }
+        }
+        private ObservableCollection<bldDocument> _selectedDocuments = new ObservableCollection<bldDocument>();
+        public ObservableCollection<bldDocument> SelectedDocuments
+        {
+            get { return _selectedDocuments; }
+            set { SetProperty(ref _selectedDocuments, value); }
+        }
         private ObservableCollection<bldDocument> _findedDocuments = new ObservableCollection<bldDocument>();
         public ObservableCollection<bldDocument> FindedDocuments
         {
@@ -52,7 +66,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             {
                 SetProperty(ref _selectedDocTypeName, value);
 
-                for (int ii = AggragationDocumentsForSearch.Count; ii > 1; ii--)
+                for (int ii = AggragationDocumentsForSearch.Count-1; ii > 1; ii--)
                 {
                     AggragationDocumentsForSearch.Remove(AggragationDocumentsForSearch[ii]);
                 }
@@ -110,9 +124,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _columnNames; }
             set { SetProperty(ref _columnNames, value); }
         }
-
-        public NotifyCommand FindDocumentsCommand { get; private set; } 
-
+ 
+        public NotifyCommand FindDocumentsCommand { get; private set; }
+   
         AppObjectsModel _appObjectsModel;
         private IBuildingUnitsRepository _buildingUnitsRepository;
 
@@ -125,9 +139,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
             _appObjectsModel = appObjectsModel as AppObjectsModel;
+            DocumentsViewModel = new AggregationDocumentsViewModel(dialogService, regionManager, buildingUnitsRepository, applicationCommands, appObjectsModel);
+            bldAggregationDocument aggregationDocument = new bldAggregationDocument();
+            DocumentsViewModel.SelectedAggregationDocument = aggregationDocument;
+            FindedDocuments = DocumentsViewModel.SelectedAggregationDocument.AttachedDocuments;
 
-            FindDocumentsCommand = new NotifyCommand(OnFindDocuments,()=>SearchString!="");
-
+              FindDocumentsCommand = new NotifyCommand(OnFindDocuments,()=>SearchString!="");
+            
+          
             DocTypeNames.Add("Перечень", typeof(bldAggregationDocument));
             DocTypeNames.Add("Сертификат/Паспорт", typeof(bldMaterialCertificate));
 
@@ -144,11 +163,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             //  docs = new ObservableCollection<bldDocument>(_buildingUnitsRepository.DocumentsRepository.Select().Where(ad =>ad is bldMaterialCertificate 
             //  &&  EF.Functions.Like(ad.Name , $"%{SearchString}%")).ToList());
+            StringComparison comparisonType =  StringComparison.InvariantCultureIgnoreCase;
             docs = new ObservableCollection<bldDocument>(_buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Select()
                 .Where(d => d is bldMaterialCertificate)
-                // .Where($"{SelectedColumnName.Value}.Contains(@0)",SearchString ).ToList());
-                .Where(string.Format("{0}.Contains(@0, \"{1}\")",
-                        SelectedColumnName.Value, StringComparison.InvariantCultureIgnoreCase.ToString()), SearchString).ToList());
+            // .Where($"{SelectedColumnName.Value}.Contains(@0)",SearchString ).ToList());
+            //.Where($"{ SelectedColumnName.Value}.Contains(@0)",SearchString).ToList());
+            //.Where(doc =>doc.MaterialName.ToLower().Contains("Шв")).ToList());
+            .Where($"doc =>doc.{SelectedColumnName.Value}.ToLower().Contains(@0)",SearchString.ToLower())
+            .Include(d=>d.ImageFile).ThenInclude(d=>d.FileType).ToList ());
 
 
             FindedDocuments.Clear();

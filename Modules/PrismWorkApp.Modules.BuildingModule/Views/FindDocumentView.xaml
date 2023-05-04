@@ -22,29 +22,132 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-            <Grid.Resources>
+        <Grid.Resources>
+            <DataTemplate x:Key="DefaultViewdataTemplate">
+                <Grid>
+                    <telerik:RadGridView x:Name="childGridView" telerik:StyleManager.Theme="VisualStudio2019" 
+                                             DataContext="{Binding DataContext.DocumentsViewModel, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                             ItemsSource="{Binding SelectedAggregationDocument.AttachedDocuments}" 
+                                             SelectedItem="{Binding SelectedDocument}"  
+                                             AutoGenerateColumns="False"
+                                             IsFilteringAllowed="True"
+                                             RowIndicatorVisibility="Visible" 
+                                             SelectionMode="Extended"
+                                             CanUserSelect="True"
+                                             CanUserDeleteRows="False"
+                                             ShowGroupPanel="False" 
+                                             ClipboardCopyMode="None"
+                                             ClipboardPasteMode="None">
 
-                <Style x:Key="CommonCellStyle" TargetType="{x:Type telerik:GridViewCell}" >
-                    <Setter Property="ContextMenu" Value="{StaticResource   GridViewItemContextMenu}"/>
-                </Style>
 
+                     
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <prism:InvokeCommandAction Command="{Binding DataGridSelectionChangedCommand}">
+                                    <prism:InvokeCommandAction.CommandParameter>
+                                        <MultiBinding Converter="{StaticResource    ObjectsToListMultiConverter}">
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItem"/>
+                                            <Binding  RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="DataContext"/>
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
+                                        </MultiBinding>
+                                    </prism:InvokeCommandAction.CommandParameter>
+                                </prism:InvokeCommandAction>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
 
-            </Grid.Resources>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.05*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="0.05*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="0.05*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="0.1*" />
-            </Grid.RowDefinitions>
+                        <telerik:RadGridView.Columns>
+                            <telerik:GridViewImageColumn Width="15" DataMemberBinding="{Binding   Converter={StaticResource imgFrombldProjectObject}}"/>
+                            <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code }" Width="55"  IsReadOnly="True"    />
+                            <telerik:GridViewDataColumn Header="Нименование"  DataMemberBinding = "{Binding Name}"  Width="150" />
+                            <telerik:GridViewDataColumn Header="№ док. о кач."  DataMemberBinding = "{Binding RegId}"  Width="100" />
+                            <telerik:GridViewDataColumn Header="Дата док."  DataMemberBinding = "{Binding Date, ConverterCulture=ru, StringFormat=d}"  Width="100" />
 
-            <StackPanel x:Name="mainStakPanel" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Grid.RowSpan="2" Orientation="Vertical" >
+                            <telerik:GridViewDataColumn  Header="Скан" DataMemberBinding="{Binding ImageFile}"  Width="150">
+                                <telerik:GridViewDataColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image x:Name="fileImage"  >
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
+                                                                             Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Setter Property="Source" Value="{Binding  Path=DataContext.ImageFile.FileType,Converter={StaticResource imgFrombldProjectObject},RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"/>
+                                                                <!--<Setter Property="Source" Value="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/bldProjectImages/TypesOfFile/pdf.png"/>-->
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <Button x:Name="viewFileImageButton" Content="просмотр" Command="{Binding DataContext.OpenImageFileCommand, RelativeSource={RelativeSource AncestorType={x:Type telerik:RadGridView}, Mode=FindAncestor}}"  Margin="0 0 0 0"
+                                      CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"  >
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
+                                                                             Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <Button x:Name="dowloadFileImageButton" Content="скачать" Command="{Binding DataContext.SaveImageFileToDiskCommand, RelativeSource={RelativeSource AncestorType={x:Type telerik:RadGridView}, Mode=FindAncestor}}" 
+                                             CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}},Path=DataContext}">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
+                                                                                 Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <Button x:Name="loadFileImageButton" Content="загрузить" Command="{Binding DataContext.LoadImageFileFromDiskCommand, RelativeSource={RelativeSource AncestorType={x:Type telerik:RadGridView}, Mode=FindAncestor}}" Margin="0 0 0 0"
+                                             CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}},Path=DataContext}">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
+                                                                       Value="False">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </telerik:GridViewDataColumn.CellTemplate>
+                            </telerik:GridViewDataColumn>
+                        </telerik:RadGridView.Columns>
+                    </telerik:RadGridView>
+                </Grid>
+            </DataTemplate>
+
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.05*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.05*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.05*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="0.1*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel x:Name="mainStakPanel" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Grid.RowSpan="2" Orientation="Vertical" >
             <StackPanel Orientation="Horizontal">
                 <Label Content="Тип документа:"/>
                 <ComboBox ItemsSource="{Binding DocTypeNames}" 
@@ -56,7 +159,7 @@
                           DisplayMemberPath="Name" Width="150" 
                           SelectedItem="{Binding SelectedAggragationDocumentForSearch}"/>
                 </StackPanel>
-                  
+
                 <Label Content="Искать по полю:" Margin="1 0 0 0"/>
                 <ComboBox ItemsSource="{Binding ColumnNames}" DisplayMemberPath="Key" Width="150" SelectedItem="{Binding SelectedColumnName}"/>
                 <Label Content="Искать  по слову:" Margin="1 0 0 0"/>
@@ -93,143 +196,16 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                
+                <ContentControl    DataContext="{Binding FindedDocuments}">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="ContentTemplate" Value="{StaticResource DefaultViewdataTemplate}"/>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
+                <!--<UserControl   ContentTemplate="{StaticResource   MaterialCertificatesViewdataTemplate}" DataContext="{Binding FindedDocuments}"/>-->
             </StackPanel>
-          
-                        <telerik:RadGridView x:Name="childGridView" telerik:StyleManager.Theme="VisualStudio2019" 
-                                             ItemsSource="{Binding FindedDocuments}" 
-                                             SelectedItem="{Binding DataContext.SelectedDocument, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"  
-                                             AutoGenerateColumns="False"
-                                             IsFilteringAllowed="True"
-                                             RowIndicatorVisibility="Visible" 
-                                             SelectionMode="Extended"
-                                           
-                                             CanUserSelect="True"
-                                             CanUserDeleteRows="False"
-                                             ShowGroupPanel="False" 
-                                             ClipboardCopyMode="None"
-                                             ClipboardPasteMode="None">
 
-
-
-                            <telerik:RadGridView.InputBindings>
-                                <KeyBinding  Key="Delete" Command="{Binding DataContext.RemoveDocumentsCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}">
-                                    <KeyBinding.CommandParameter>
-                                        <MultiBinding Converter="{StaticResource ObjectsToListMultiConverter}">
-                                            <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="SelectedItem"/>
-                                            <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="DataContext"/>
-                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
-                                        </MultiBinding>
-                                    </KeyBinding.CommandParameter>
-                                </KeyBinding>
-                                <KeyBinding  Key="C" Modifiers="Ctrl" Command="{Binding DataContext.CopyDocumentsCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}">
-                                    <KeyBinding.CommandParameter>
-                                        <MultiBinding Converter="{StaticResource ObjectsToListMultiConverter}">
-                                            <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="SelectedItem"/>
-                                            <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="DataContext"/>
-                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
-                                        </MultiBinding>
-                                    </KeyBinding.CommandParameter>
-                                </KeyBinding>
-                                <KeyBinding  Key="V" Modifiers="Ctrl" Command="{Binding DataContext.PasteDocumentsCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}">
-                                    <KeyBinding.CommandParameter>
-                                        <MultiBinding Converter="{StaticResource ObjectsToListMultiConverter}">
-                                            <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="SelectedItem"/>
-                                            <Binding   RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=telerik:RadGridView}" Path="DataContext"/>
-                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
-                                        </MultiBinding>
-                                    </KeyBinding.CommandParameter>
-                                </KeyBinding>
-                                <KeyBinding  Key="Z" Modifiers="Ctrl" Command="{Binding DataContext.UnDoCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"/>
-                            </telerik:RadGridView.InputBindings>
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="SelectionChanged">
-                                    <prism:InvokeCommandAction Command="{Binding DataContext.DataGridSelectionChangedCommand,RelativeSource={RelativeSource  Mode=FindAncestor,AncestorType={x:Type UserControl}}}">
-                                        <prism:InvokeCommandAction.CommandParameter>
-                                            <MultiBinding Converter="{StaticResource    ObjectsToListMultiConverter}">
-                                                <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItem"/>
-                                                <Binding  RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="DataContext"/>
-                                                <Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadGridView}}" Path="SelectedItems"/>
-                                            </MultiBinding>
-                                        </prism:InvokeCommandAction.CommandParameter>
-                                    </prism:InvokeCommandAction>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-
-                            <telerik:RadGridView.Columns>
-                                <telerik:GridViewImageColumn Width="15" DataMemberBinding="{Binding   Converter={StaticResource imgFrombldProjectObject}}"/>
-                                <telerik:GridViewDataColumn Header="Код" DataMemberBinding = "{Binding Code }" Width="55" CellStyle="{StaticResource CommonCellStyle}" IsReadOnly="True"    />
-                                <telerik:GridViewDataColumn Header="Нименование"  DataMemberBinding = "{Binding Name}" CellStyle="{StaticResource CommonCellStyle}" Width="150" />
-                                <telerik:GridViewDataColumn Header="№ док. о кач."  DataMemberBinding = "{Binding RegId}" CellStyle="{StaticResource CommonCellStyle}" Width="100" />
-                                <telerik:GridViewDataColumn Header="Дата док."  DataMemberBinding = "{Binding Date, ConverterCulture=ru, StringFormat=d}" CellStyle="{StaticResource CommonCellStyle}" Width="100" />
-
-                                <telerik:GridViewDataColumn  Header="Скан" DataMemberBinding="{Binding ImageFile}"  Width="150">
-                                    <telerik:GridViewDataColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Image x:Name="fileImage"  >
-                                                    <Image.Style>
-                                                        <Style TargetType="Image">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
-                                                                             Value="True">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                    <Setter Property="Source" Value="{Binding  Path=DataContext.ImageFile.FileType,Converter={StaticResource imgFrombldProjectObject},RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"/>
-                                                                    <!--<Setter Property="Source" Value="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/bldProjectImages/TypesOfFile/pdf.png"/>-->
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
-                                                <Button x:Name="viewFileImageButton" Content="просмотр" Command="{Binding DataContext.OpenImageFileCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}}"  Margin="0 0 0 0"
-                                      CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}"  >
-                                                    <Button.Style>
-                                                        <Style TargetType="{x:Type Button}">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
-                                                                             Value="False">
-                                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Button.Style>
-                                                </Button>
-                                                <Button x:Name="dowloadFileImageButton" Content="скачать" Command="{Binding DataContext.SaveImageFileToDiskCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}}" 
-                                             CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}},Path=DataContext}">
-                                                    <Button.Style>
-                                                        <Style TargetType="{x:Type Button}">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
-                                                                                 Value="False">
-                                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Button.Style>
-                                                </Button>
-                                                <Button x:Name="loadFileImageButton" Content="загрузить" Command="{Binding DataContext.LoadImageFileFromDiskCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}}" Margin="0 0 0 0"
-                                             CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}},Path=DataContext}">
-                                                    <Button.Style>
-                                                        <Style TargetType="{x:Type Button}">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding  Path=DataContext.IsHaveImageFile,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:GridViewCell}}}" 
-                                                                       Value="False">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Button.Style>
-                                                </Button>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </telerik:GridViewDataColumn.CellTemplate>
-                                </telerik:GridViewDataColumn>
-                            </telerik:RadGridView.Columns>
-                        </telerik:RadGridView>
         </StackPanel>
-        </Grid>
+    </Grid>
 </UserControl>

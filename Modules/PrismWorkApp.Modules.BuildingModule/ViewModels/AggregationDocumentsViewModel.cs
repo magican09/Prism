@@ -29,7 +29,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 {
     public class AggregationDocumentsViewModel : BaseViewModel<bldMaterialCertificate>, INotifyPropertyChanged, INavigationAware
     {
-
+        
 
         private bldDocument _selectedDocument;
         public bldDocument SelectedDocument
@@ -110,7 +110,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _buildingUnitsRepository = buildingUnitsRepository;
             _regionManager = regionManager;
 
-
+          
             ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
             DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
 

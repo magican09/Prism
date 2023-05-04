@@ -81,8 +81,12 @@ namespace PrismWorkApp.Services.Repositories
             //  string new_con_str = @"Data Source=M-RUK-04\TEW_SQLEXPRESS_5;Initial Catalog=master;Database=work_bd;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
             // optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;;Database=workappdb;Trusted_Connection=True;");
-            optionsBuilder.UseSqlServer(_connectionString);
+            optionsBuilder.UseSqlServer(_connectionString,options=>
+            {
+              
+            });
             optionsBuilder.EnableSensitiveDataLogging();
+          
          //   optionsBuilder.UseSqlServer("ThisIsJustForMigrations");
             // optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }

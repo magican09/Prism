@@ -33,7 +33,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             Binding binding = new Binding("Name");
                             binding.Source = document;
                             binding.Path = new PropertyPath("Name");
-                            binding.Mode = BindingMode.OneWay;
+                            binding.Mode = BindingMode.TwoWay;
                             BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
 
                             dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);
@@ -49,7 +49,7 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
                             Binding binding = new Binding("MaterialName");
                             binding.Source = document;
                             binding.Path = new PropertyPath("MaterialName");
-                            binding.Mode = BindingMode.OneWay;
+                            binding.Mode = BindingMode.TwoWay;
                             BindingOperations.SetBinding(dataItem, DataItem.TextProperty, binding);
 
                             dataItem.ImageUrl = (Uri)ObjecobjectTo_Url_Convectert.Convert(dataItem.AttachedObject, null, null, CultureInfo.CurrentCulture);

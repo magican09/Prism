@@ -269,65 +269,13 @@ namespace PrismWorkApp.OpenWorkLib.Data
             return new_object;
         }
         
+       
+            
 
-        //public virtual object Clone()
-        //{
-        //    BindableBase new_object = (BindableBase)Activator.CreateInstance(this.GetType());
-        //    // new_object =(BindableBase) this.MemberwiseClone();
-        //    new_object.Id = Guid.Empty;
-        //    var prop_infoes = new_object.GetType().GetProperties().Where(pr => pr.GetIndexParameters().Length == 0);
-        //    ObservableCollection<PropertyInfo> CreateNewWhenCopyProps = new ObservableCollection<PropertyInfo>();
-        //    ObservableCollection<PropertyInfo> OtherProps = new ObservableCollection<PropertyInfo>();
-        //    foreach (PropertyInfo prop_info in prop_infoes)
-        //    {
-        //        var prop_val = prop_info.GetValue(this);
-        //        var member_info = this.GetType().GetMember(prop_info.Name);
-        //        object[] no_copy__attributes = member_info[0].GetCustomAttributes(typeof(CreateNewWhenCopyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
-        //        if (no_copy__attributes.Length != 0)
-        //        {
-        //            CreateNewWhenCopyProps.Add(prop_info);
-        //            prop_val = Activator.CreateInstance(prop_info.PropertyType);
-        //            if (prop_info.SetMethod != null)
-        //                prop_info.SetValue(new_object, prop_val);
-        //            if (prop_val is IList)
-        //            {
+        
 
-        //            }
+        
 
-        //        }
-        //        else
-        //            OtherProps.Add(prop_info);
-        //    }
-
-        //    foreach (PropertyInfo prop_info in prop_infoes)
-        //    {
-        //        var prop_val = prop_info.GetValue(this);
-        //        var member_info = this.GetType().GetMember(prop_info.Name);
-        //        object[] navigate__attributes = member_info[0].GetCustomAttributes(typeof(NavigatePropertyAttribute), false); //Проверяем нет ли у свойство атрибута против копирования
-
-        //        if (prop_val != null && !prop_info.PropertyType.FullName.Contains("System"))
-        //        {
-        //            if (navigate__attributes.Length == 0) //Если объяет свойство не навигационный и без запрета накопирование  
-        //            {
-        //                if (prop_val is ICloneable clonable_prop_val)
-        //                    prop_info.SetValue(new_object, clonable_prop_val.Clone());
-        //                else
-        //                    prop_info.SetValue(new_object, prop_val);
-        //            }
-        //            else  //Если свойство навигационное 
-        //            {
-        //                prop_val = null;
-        //                prop_info.SetValue(new_object, prop_val);
-        //            }
-
-        //        }
-        //        else
-        //            if (prop_info.SetMethod != null) prop_info.SetValue(new_object, prop_val);
-        //    }
-        //    return new_object;
-        //}
-        // public Guid? CategoryId { get; set; }
-        //  public EntityCategory? Category { get; set; }
     }
 
 

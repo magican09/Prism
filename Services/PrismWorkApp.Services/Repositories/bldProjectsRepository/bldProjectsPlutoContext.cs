@@ -197,7 +197,8 @@ namespace PrismWorkApp.Services.Repositories
 
             modelBuilder.Entity<bldConstructionCompany>().ToTable("ConstructionCompanies");
             modelBuilder.Entity<bldParticipant>().ToTable("Participants");
-
+           
+         //   modelBuilder.Entity<bldDocument>().ToTable("bldDocuments");
 
             modelBuilder.Entity<bldAOSRDocument>().ToTable("AOSRDocuments");
             modelBuilder.Entity<bldExecutiveScheme>().ToTable("ExecutiveSchemes");

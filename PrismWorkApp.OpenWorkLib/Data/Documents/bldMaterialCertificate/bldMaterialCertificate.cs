@@ -61,10 +61,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
         public bldMaterialCertificate(string name) : base(name)
         {
             this.Code = "мат_серт";
+        //    base.Type = typeof(bldMaterialCertificate);
         }
         public bldMaterialCertificate()
         {
             this.Code = "мат_серт";
+          //  base.Type = typeof(bldMaterialCertificate);
         }
 
     }

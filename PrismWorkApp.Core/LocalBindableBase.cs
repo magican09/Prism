@@ -56,7 +56,7 @@ namespace PrismWorkApp.Core
 
         }
 
-        private  void OnIsActiveChanged()
+        public virtual  void OnIsActiveChanged()
         {
             //UpdateCommand.IsActive = IsActive; //set the command as active
             IsActiveChanged?.Invoke(this, new EventArgs()); //invoke the event for all listeners

@@ -86,6 +86,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> AddNewMaterialCertificateCommand { get; private set; }
         public NotifyCommand<object> AddNewLaboratoryReportCommand { get; private set; }
         public NotifyCommand<object> AddNewExecutiveSchemeCommand { get; private set; }
+        public NotifyMenuCommands AggregationDocumentMenuCommands { get; set; }
+        public NotifyMenuCommands DocumentMenuCommands { get; set; }
 
         public NotifyCommand<object> OpenImageFileCommand { get; private set; }
         public NotifyCommand<object> SaveImageFileToDiskCommand { get; private set; }
@@ -176,22 +178,31 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             SaveImageFileToDiskCommand = _appObjectsModel.SaveDocumentImageFileToDiskCommand;
             LoadImageFileFromDiskCommand = _appObjectsModel.LoadDocumentImageFileFromDiskCommand;
 
+            #region MenuCommands
+            DocumentMenuCommands = new NotifyMenuCommands() {
+                             CreateNewDocumentCommand,
+                             CreatedBasedOnCommand,
+                             CopyDocumentsCommand,
+                             PasteDocumentsCommand,
+                             AddDocumentsToCommand,
+                             MoveDocumentsToCommand,
+                             RemoveDocumentsCommand
+                            };
+            AggregationDocumentMenuCommands = new NotifyMenuCommands(){
+                             CreateNewDocumentCommand,
+                             CreatedBasedOnCommand,
+                             CopyDocumentsCommand,
+                             PasteDocumentsCommand,
+                             AddDocumentsToCommand,
+                             MoveDocumentsToCommand,
+                             RemoveDocumentsCommand
+                            };
+
+
             #endregion
-            ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
-            ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
-            ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
 
-            ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewDocumentCommand);
-            ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
-            ApplicationCommands.DeleteCommand.RegisterCommand(RemoveDocumentsCommand);
-            ApplicationCommands.AddToCommand.RegisterCommand(AddDocumentsToCommand);
-            ApplicationCommands.MoveToCommand.RegisterCommand(MoveDocumentsToCommand);
-
-
-            ApplicationCommands.AddNewAggregationDocumentCommand.RegisterCommand(AddNewAggregationDocumentCommand);
-            ApplicationCommands.AddNewMaterialCertificateCommand.RegisterCommand(AddNewMaterialCertificateCommand);
-            ApplicationCommands.AddNewLaboratoryReportCommand.RegisterCommand(AddNewLaboratoryReportCommand);
-            ApplicationCommands.AddNewExecutiveSchemeCommand.RegisterCommand(AddNewExecutiveSchemeCommand);
+            #endregion
+          
 
             AllUnitsOfMeasurements = new ObservableCollection<bldUnitOfMeasurement>(_buildingUnitsRepository.UnitOfMeasurementRepository.GetAllAsync());
 
@@ -368,16 +379,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     {
                         if (context_menu_item_commands?.Name != nameof(bldDocument))
                         {
-                            context_menu_item_commands = new NotifyMenuCommands()
-                            {
-                             CreateNewDocumentCommand,
-                             CreatedBasedOnCommand,
-                             CopyDocumentsCommand,
-                             PasteDocumentsCommand,
-                             AddDocumentsToCommand,
-                             MoveDocumentsToCommand,
-                             RemoveDocumentsCommand
-                            };
+                            context_menu_item_commands = AggregationDocumentMenuCommands;
                             context_menu_item_commands.Name = nameof(bldDocument);
                             contextMenu.ItemsSource = context_menu_item_commands;
                         }
@@ -387,16 +389,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                     {
                         if (context_menu_item_commands?.Name != nameof(bldAggregationDocument))
                         {
-                            context_menu_item_commands = new NotifyMenuCommands()
-                            {
-                             CreateNewDocumentCommand,
-                             CreatedBasedOnCommand,
-                             CopyDocumentsCommand,
-                             PasteDocumentsCommand,
-                             AddDocumentsToCommand,
-                             MoveDocumentsToCommand,
-                             RemoveDocumentsCommand
-                            };
+                            context_menu_item_commands = AggregationDocumentMenuCommands;
                             context_menu_item_commands.Name = nameof(bldAggregationDocument);
                             contextMenu.ItemsSource = context_menu_item_commands;
                         }
@@ -477,23 +470,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         }
         public override void OnWindowClose()
         {
-            ApplicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
-            ApplicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
-            ApplicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
-
-            ApplicationCommands.CreateNewCommand.UnregisterCommand(CreateNewDocumentCommand);
-            ApplicationCommands.CreateBasedOnCommand.UnregisterCommand(CreatedBasedOnCommand);
-            ApplicationCommands.DeleteCommand.UnregisterCommand(RemoveDocumentsCommand);
-            ApplicationCommands.AddToCommand.UnregisterCommand(AddDocumentsToCommand);
-            ApplicationCommands.MoveToCommand.UnregisterCommand(MoveDocumentsToCommand);
-
-
-            ApplicationCommands.AddNewAggregationDocumentCommand.UnregisterCommand(AddNewAggregationDocumentCommand);
-            ApplicationCommands.AddNewMaterialCertificateCommand.UnregisterCommand(AddNewMaterialCertificateCommand);
-            ApplicationCommands.AddNewLaboratoryReportCommand.UnregisterCommand(AddNewLaboratoryReportCommand);
-            ApplicationCommands.AddNewExecutiveSchemeCommand.UnregisterCommand(AddNewExecutiveSchemeCommand);
-
-            UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
+           UnDoReDo.ParentUnDoReDo?.UnSetUnDoReDoSystemAsChildren(UnDoReDo);
         }
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -525,6 +502,46 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
 
+        }
+        public override void OnIsActiveChanged()
+        {
+            if (IsActive)
+            {
+                ApplicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+                ApplicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+                ApplicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+
+                ApplicationCommands.CreateNewCommand.RegisterCommand(CreateNewDocumentCommand);
+                ApplicationCommands.CreateBasedOnCommand.RegisterCommand(CreatedBasedOnCommand);
+                ApplicationCommands.DeleteCommand.RegisterCommand(RemoveDocumentsCommand);
+                ApplicationCommands.AddToCommand.RegisterCommand(AddDocumentsToCommand);
+                ApplicationCommands.MoveToCommand.RegisterCommand(MoveDocumentsToCommand);
+
+
+                ApplicationCommands.AddNewAggregationDocumentCommand.RegisterCommand(AddNewAggregationDocumentCommand);
+                ApplicationCommands.AddNewMaterialCertificateCommand.RegisterCommand(AddNewMaterialCertificateCommand);
+                ApplicationCommands.AddNewLaboratoryReportCommand.RegisterCommand(AddNewLaboratoryReportCommand);
+                ApplicationCommands.AddNewExecutiveSchemeCommand.RegisterCommand(AddNewExecutiveSchemeCommand);
+            }
+            else
+            {
+                ApplicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+                ApplicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
+                ApplicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
+
+                ApplicationCommands.CreateNewCommand.UnregisterCommand(CreateNewDocumentCommand);
+                ApplicationCommands.CreateBasedOnCommand.UnregisterCommand(CreatedBasedOnCommand);
+                ApplicationCommands.DeleteCommand.UnregisterCommand(RemoveDocumentsCommand);
+                ApplicationCommands.AddToCommand.UnregisterCommand(AddDocumentsToCommand);
+                ApplicationCommands.MoveToCommand.UnregisterCommand(MoveDocumentsToCommand);
+
+
+                ApplicationCommands.AddNewAggregationDocumentCommand.UnregisterCommand(AddNewAggregationDocumentCommand);
+                ApplicationCommands.AddNewMaterialCertificateCommand.UnregisterCommand(AddNewMaterialCertificateCommand);
+                ApplicationCommands.AddNewLaboratoryReportCommand.UnregisterCommand(AddNewLaboratoryReportCommand);
+                ApplicationCommands.AddNewExecutiveSchemeCommand.UnregisterCommand(AddNewExecutiveSchemeCommand);
+            }
+            base.OnIsActiveChanged();
         }
     }
 }

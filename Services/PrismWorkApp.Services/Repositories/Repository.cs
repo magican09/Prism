@@ -15,6 +15,10 @@ namespace PrismWorkApp.Services.Repositories
         {
             return Context.Set<TEntity>();
         }
+        public IQueryable<TEntity>  Select(Type type)
+        {
+            return (IQueryable<TEntity>) Context.Set(type);
+        }
 
         public Repository(DbContext context)
         {

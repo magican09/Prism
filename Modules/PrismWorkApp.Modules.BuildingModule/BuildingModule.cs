@@ -238,6 +238,7 @@ namespace PrismWorkApp.Modules.BuildingModule
             containerRegistry.RegisterDialog<GetObjectFromCollectionDialogVeiw, GetObjectFromCollectionDialogVeiwModel>();
 
             containerRegistry.RegisterDialog<FindDocumentDialogView, FindDocumentDialogViewModel>();
+            containerRegistry.RegisterDialog<SelectObjectInAppModelDialogView,SelectObjectInAppModelDialogViewModel>();
 
             containerRegistry.RegisterForNavigation<MaterialCertificateAggregationDocumentsView, AggregationDocumentsViewModel>();
           

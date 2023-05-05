@@ -2,6 +2,7 @@
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using PrismWorkApp.Core.Commands;
+using PrismWorkApp.Modules.BuildingModule.Dialogs;
 using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.Services.Repositories;
 using System;
@@ -34,7 +35,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _findedDocuments; }
             set { SetProperty(ref _findedDocuments, value); }
         }
-        private string _searchString;
+        private string _searchString ="";
         public string SearchString
         {
             get { return _searchString; }
@@ -66,30 +67,37 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             {
                 SetProperty(ref _selectedDocTypeName, value);
 
-                for (int ii = AggragationDocumentsForSearch.Count-1; ii > 1; ii--)
+                for (int ii = AggragationDocumentsForSearch.Count - 1; ii > 1; ii--)
                 {
                     AggragationDocumentsForSearch.Remove(AggragationDocumentsForSearch[ii]);
                 }
-                 // var coll_3 = _buildingUnitsRepository.DocumentsRepository.Select().Where(d => d.ParentDocuments.Where(pd=>pd is bldAggregationDocument).Any());
-                 //  var coll = _buildingUnitsRepository.DocumentsRepository.Select().Where(d => d is bldAggregationDocument).Include(ad => ad.AttachedDocuments).ToList();
-                 //var agr_docs = coll.Where(dd => dd.AttachedDocuments.ContainsObjectWithType(_selectedDocTypeName.Value)).ToList();
+                // var coll_3 = _buildingUnitsRepository.DocumentsRepository.Select().Where(d => d.ParentDocuments.Where(pd=>pd is bldAggregationDocument).Any());
+                //  var coll = _buildingUnitsRepository.DocumentsRepository.Select().Where(d => d is bldAggregationDocument).Include(ad => ad.AttachedDocuments).ToList();
+                //var agr_docs = coll.Where(dd => dd.AttachedDocuments.ContainsObjectWithType(_selectedDocTypeName.Value)).ToList();
                 var agr_docs = _buildingUnitsRepository.DocumentsRepository.Select().Where(d => d is bldAggregationDocument);
                 foreach (bldAggregationDocument aggregationDocument in agr_docs)
                     AggragationDocumentsForSearch.Add(aggregationDocument);
+                ColumnNames.Clear();
                 switch (_selectedDocTypeName.Value.Name)
                 {
                     case (nameof(bldMaterialCertificate)):
                         {
-
                             ColumnNames.Add("Наименование материала", "MaterialName");
                             ColumnNames.Add("Геом. параменты", "GeometryParameters");
                             ColumnNames.Add("Контр. парам.", "ControlingParament");
                             ColumnNames.Add("ГОСТ,ТУ...", "RegulationDocumentsName");
                             break;
                         }
+                    case (nameof(bldAggregationDocument)):
+                    case (nameof(bldLaboratoryReport)):
+                    case (nameof(bldExecutiveScheme)):
+                        {
+                            ColumnNames.Add("Наименование", "Name");
+                            break;
+                        }
                 }
-           
-                
+
+
             }
         }
         private Dictionary<string, Type> _docTypeNames = new Dictionary<string, Type>();
@@ -124,9 +132,14 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             get { return _columnNames; }
             set { SetProperty(ref _columnNames, value); }
         }
- 
+    
+        public NotifyCommand<object> DataGridSelectionChangedCommand { get; private set; }
+        public NotifyCommand<object> ContextMenuOpenedCommand { get; private set; }
         public NotifyCommand FindDocumentsCommand { get; private set; }
-   
+        public NotifyCommand<object>  AddDocumentToAppModelCommand { get; set; }
+    
+        public NotifyMenuCommands AggregationDocumentMenuCommands { get; set; }
+
         AppObjectsModel _appObjectsModel;
         private IBuildingUnitsRepository _buildingUnitsRepository;
 
@@ -142,13 +155,22 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             DocumentsViewModel = new AggregationDocumentsViewModel(dialogService, regionManager, buildingUnitsRepository, applicationCommands, appObjectsModel);
             bldAggregationDocument aggregationDocument = new bldAggregationDocument();
             DocumentsViewModel.SelectedAggregationDocument = aggregationDocument;
+           
+            DataGridSelectionChangedCommand = new NotifyCommand<object>(OnDataGridSelectionChanged);
+            ContextMenuOpenedCommand = DocumentsViewModel.ContextMenuOpenedCommand;
             FindedDocuments = DocumentsViewModel.SelectedAggregationDocument.AttachedDocuments;
+            FindDocumentsCommand = new NotifyCommand(OnFindDocuments);//, () => SearchString != "").ObservesProperty(()=>SearchString);
 
-              FindDocumentsCommand = new NotifyCommand(OnFindDocuments,()=>SearchString!="");
-            
-          
+            AddDocumentToAppModelCommand = new NotifyCommand<object>(OnAddDocumentToAppModel,(ob)=> SelectedDocuments.Count>0)
+                .ObservesPropertyChangedEvent(SelectedDocuments);
+            AddDocumentToAppModelCommand.Name = "Добавить в модель";
+            AggregationDocumentMenuCommands = DocumentsViewModel.AggregationDocumentMenuCommands;
+            AggregationDocumentMenuCommands.Clear();
+            AggregationDocumentMenuCommands.Add(AddDocumentToAppModelCommand);
+
             DocTypeNames.Add("Перечень", typeof(bldAggregationDocument));
             DocTypeNames.Add("Сертификат/Паспорт", typeof(bldMaterialCertificate));
+            DocTypeNames.Add("Лабораторные испытания", typeof(bldLaboratoryReport));
 
             bldAggregationDocument temp_ADoc = new bldAggregationDocument("Искать везде");
             AggragationDocumentsForSearch.Add(temp_ADoc);
@@ -156,6 +178,38 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             Title = "Поиск документа";
         }
 
+        private void OnAddDocumentToAppModel(object obj)
+        {
+            _dialogService.ShowDialog(nameof(SelectObjectInAppModelDialogView),(result)=>
+            {
+                if(result.Result== ButtonResult.Yes)
+                {
+                    IEntityObject selected_element = result.Parameters.GetValue<IEntityObject>("element");
+                    if (selected_element is INameableObservableCollection coll_element)
+                    {
+                        foreach (bldDocument document in SelectedDocuments)
+                          if (!selected_element.ContainsDownWard(document) && !selected_element.ContainsUpWard(document))
+                                    coll_element.Add(document);
+                    }
+                    if (selected_element is bldDocument selected_document)
+                    {
+                        foreach (bldDocument document in SelectedDocuments)
+                            if (!selected_element.ContainsDownWard(document) && !selected_element.ContainsUpWard(document))
+                                selected_document.AttachedDocuments.Add(document);
+                    }
+                }
+            }
+            );
+        }
+
+        private void OnDataGridSelectionChanged(object obj)
+        {
+            bldDocument selected_certificate = ((IList)obj)[0] as bldDocument;
+            bldDocument selected_aggr_document = ((IList)obj)[1] as bldDocument;
+            SelectedDocuments.Clear();
+            foreach (object elm in ((IList)obj)[2] as IList)
+                SelectedDocuments.Add(elm as bldDocument);
+        }
         private void OnFindDocuments()
         {
 
@@ -163,14 +217,12 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             //  docs = new ObservableCollection<bldDocument>(_buildingUnitsRepository.DocumentsRepository.Select().Where(ad =>ad is bldMaterialCertificate 
             //  &&  EF.Functions.Like(ad.Name , $"%{SearchString}%")).ToList());
-            StringComparison comparisonType =  StringComparison.InvariantCultureIgnoreCase;
-            docs = new ObservableCollection<bldDocument>(_buildingUnitsRepository.DocumentsRepository.MaterialCertificates.Select()
-                .Where(d => d is bldMaterialCertificate)
-            // .Where($"{SelectedColumnName.Value}.Contains(@0)",SearchString ).ToList());
-            //.Where($"{ SelectedColumnName.Value}.Contains(@0)",SearchString).ToList());
-            //.Where(doc =>doc.MaterialName.ToLower().Contains("Шв")).ToList());
-            .Where($"doc =>doc.{SelectedColumnName.Value}.ToLower().Contains(@0)",SearchString.ToLower())
-            .Include(d=>d.ImageFile).ThenInclude(d=>d.FileType).ToList ());
+            if (SearchString == null) SearchString = "";
+            StringComparison comparisonType = StringComparison.InvariantCultureIgnoreCase;
+            docs = new ObservableCollection<bldDocument>(_buildingUnitsRepository.DocumentsRepository.Select(SelectedDocTypeName.Value)
+            .Where($"doc =>doc.{SelectedColumnName.Value}.ToLower().Contains(@0)", SearchString.ToLower())
+            .Include(d=>d.AttachedDocuments)
+            .Include(d => d.ImageFile).ThenInclude(d => d.FileType).ToList());
 
 
             FindedDocuments.Clear();
@@ -178,7 +230,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                 FindedDocuments.Add(document);
         }
 
-        
+
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             throw new NotImplementedException();

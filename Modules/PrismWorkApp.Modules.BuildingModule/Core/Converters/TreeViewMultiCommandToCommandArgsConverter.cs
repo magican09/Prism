@@ -15,13 +15,17 @@ namespace PrismWorkApp.Modules.BuildingModule.Core
             CommandArgs commandArgs = new CommandArgs();
             if (values is IList list_value)
             {
-                DataItem selected_dataItem = list_value[0] as DataItem;
                 Type type_for_created_obj = null;
+                DataItem selected_dataItem = list_value[0] as DataItem;
+                if (list_value.Count > 1)
+                    commandArgs.Buffet = list_value[1];
                 if (list_value.Count > 2)
                     type_for_created_obj = list_value[2] as Type;
-                commandArgs.Entity = selected_dataItem.AttachedObject;
-                if (selected_dataItem.Parent!=null)
+
+                if (selected_dataItem.Parent != null)
                     commandArgs.Parent = selected_dataItem.Parent.AttachedObject;
+
+                commandArgs.Entity = selected_dataItem.AttachedObject;
                 commandArgs.Type = type_for_created_obj;
                 return commandArgs;
             }

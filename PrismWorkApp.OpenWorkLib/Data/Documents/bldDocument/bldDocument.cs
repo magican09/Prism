@@ -5,7 +5,12 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public abstract class bldDocument : BindableBase, IbldDocument 
     {
-
+        //private  Type _type;
+        //public Type Type
+        //{
+        //    get { return _type; }
+        //    set { SetProperty(ref _type, value); }
+        //}
         private DateTime _date = DateTime.Now;
         public DateTime Date
         {

@@ -131,8 +131,26 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         private void OnChangesJornalChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-                ;
+           // if (e.Action == NotifyCollectionChangedAction.Add)
+            //{
+            //    foreach (IEntityObject entity in e.NewItems)
+            //        if (!Children.Where(c => c.StoredId == entity.StoredId).Any())
+            //        {
+            //            Children.Add(entity);
+            //            if (entity.Parents!=null&& !entity.Parents.Where(p => p.StoredId == this.StoredId).Any())
+            //                entity.Parents.Add(this);
+            //        }
+            //}
+            //if (e.Action == NotifyCollectionChangedAction.Remove)
+            //{
+            //    foreach (IEntityObject entity in e.OldItems)
+            //        if (Children.Where(c => c.StoredId == entity.StoredId).Any())
+            //        {
+            //            Children.Remove(entity);
+            //            if(entity.Parents!=null&&entity.Parents.Where(p => p.StoredId == this.StoredId).Any())
+            //                entity.Parents.Remove(this);
+            //        }
+            //}
         }
 
         public NameableObservableCollection(string name) : this()

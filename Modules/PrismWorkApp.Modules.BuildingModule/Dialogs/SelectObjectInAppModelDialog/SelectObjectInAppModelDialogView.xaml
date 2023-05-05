@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="PrismWorkApp.Modules.BuildingModule.Dialogs.SelectObjectInAppModelDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PrismWorkApp.Modules.BuildingModule.Dialogs"
+             xmlns:loc_core="clr-namespace:PrismWorkApp.Modules.BuildingModule.Core"
+             xmlns:core="clr-namespace:PrismWorkApp.Core;assembly=PrismWorkApp.Core"
+             xmlns:bld="clr-namespace:PrismWorkApp.OpenWorkLib.Data;assembly=PrismWorkApp.OpenWorkLib"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:prism="http://prismlibrary.com/" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+              Height="600" Width="1150">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+
+                <ResourceDictionary
+                            Source="pack://application:,,,/PrismWorkApp.Modules.BuildingModule;component/ResourceDictionaries/MainTreeViewTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+      
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.9*"/>
+            <RowDefinition Height="0.1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <telerik:RadTreeView Grid.Row="0"  IsExpandOnSingleClickEnabled="True" IsLineEnabled="True" Margin="5"
+                             IsEditable="True"
+                             telerik:StyleManager.Theme="VisualStudio2019"
+                             ItemContainerStyle="{StaticResource TreeViewItemStyle}" 
+                             ItemEditTemplate="{StaticResource EditTreeViewTemplate}"
+                             ItemsSource="{Binding Items}"
+                             ItemTemplate="{StaticResource TreeViewItemTamplate}"
+                             SelectedItem="{Binding  SelectedElement,Mode=TwoWay}"
+                             SelectionMode="Single">
+            <!--<telerik:EventToCommandBehavior.EventBindings>
+                <telerik:EventBinding EventName="ItemDoubleClick"
+                                      Command="{Binding DataContext.MouseDoubleClickCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                      CommandParameter="{Binding SelectedValue.AttachedObject, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadTreeView}}}"/>
+            </telerik:EventToCommandBehavior.EventBindings>-->
+            <!--<telerik:EventToCommandBehavior.EventBindings>
+                <telerik:EventBinding EventName="SelectionChanged"
+                                      Command="{Binding DataContext.SelectionChangeCommnad, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                      CommandParameter="{Binding SelectedValue.AttachedObject, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type telerik:RadTreeView}}}"/>
+            </telerik:EventToCommandBehavior.EventBindings>-->
+
+        </telerik:RadTreeView>
+        <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal"   VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="2 2 2 10" >
+            <Button  Content="Выбрать" Command="{Binding ConfirmDialogCommand}" />
+            <Button  Content="Отмета"  Command="{Binding CloseDialogCommand}"/>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

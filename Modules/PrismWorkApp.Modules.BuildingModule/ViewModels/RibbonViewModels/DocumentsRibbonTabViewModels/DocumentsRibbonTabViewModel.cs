@@ -49,11 +49,9 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             _eventAggregator = eventAggregator;
               IsActiveChanged += OnActiveChanged;
             LoadMaterialCertificatesFromAccessCommand = new NotifyCommand(OnLoadMaterialsFromAccess);
-            
-
-       
+         
            FindDocumentCommand = new NotifyCommand(OnFindDocument);
-           ApplicationCommands.FindDocumentCommand.RegisterCommand(FindDocumentCommand);
+          
 
         }
 
@@ -118,11 +116,13 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         {
             if (IsActive)
             {
-             //   ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialCertificatesFromAccessCommand);
+                //   ApplicationCommands.LoadMaterialsFromAccessCommand.RegisterCommand(LoadMaterialCertificatesFromAccessCommand);
+                ApplicationCommands.FindDocumentCommand.RegisterCommand(FindDocumentCommand);
             }
             else
             {
-             //   ApplicationCommands.LoadMaterialsFromAccessCommand.UnregisterCommand(LoadMaterialCertificatesFromAccessCommand);
+                //   ApplicationCommands.LoadMaterialsFromAccessCommand.UnregisterCommand(LoadMaterialCertificatesFromAccessCommand);
+                ApplicationCommands.FindDocumentCommand.UnregisterCommand(FindDocumentCommand);
             }
         }
     }

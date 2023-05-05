@@ -86,7 +86,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
         public NotifyCommand<object> MouseDoubleClickCommand { get; private set; }
 
 
-        public NotifyCommand<object> EditInTreeViewItemCommand { get; private set; }
+        public NotifyCommand<CommandArgs> EditInTreeViewItemCommand { get; private set; }
 
         public NotifyCommand<CommandArgs> CreateBasedOnCommand { get; private set; }
 
@@ -133,7 +133,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             UnDoReDo = unDoReDoSystem;
             AllModels = AppObjectsModel.AllModels;
             Documentation = AppObjectsModel.Documentation;
-
             UnDoCommand = new NotifyCommand(() => { UnDoReDo.UnDo(1); },
                                    () => { return UnDoReDo.CanUnDoExecute(); }).ObservesPropertyChangedEvent(UnDoReDo);
             ReDoCommand = new NotifyCommand(() => UnDoReDo.ReDo(1),
@@ -146,7 +145,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
             ContextMenuOpenedCommand = new NotifyCommand<object>(OnContextMenuOpened);
             MouseDoubleClickCommand = new NotifyCommand<object>(OnMouseDoubleClick);
-            EditInTreeViewItemCommand = new NotifyCommand<object>(OnEditInTreeViewItem);
+            EditInTreeViewItemCommand = new NotifyCommand<CommandArgs>(OnEditInTreeViewItem);
             EditInTreeViewItemCommand.Name = "Редактировать";
             CreateBasedOnCommand = _appObjectsModel.CreateBasedOnCommand;
             CreateBasedOnCommand.Name = "Создать на основании...";
@@ -178,11 +177,6 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             OpenAsMaterialCertificateAggregationDocumentCommand = new NotifyCommand<CommandArgs>(OnOpenAsMaterialCertificateAggregationDocument);
             OpenAsMaterialCertificateAggregationDocumentCommand.Name = "Открыть как перечень сертификатов/паспартов";
 
-            _applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadAggregationDocumentFromDBCommand);
-
-            _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
-            _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
-            _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
 
             AllModels.Add(Documentation);
             DataItem Root = new DataItem();
@@ -191,6 +185,8 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
             Items.Add(Root);
 
             UnDoReDo.SaveAll();
+
+
         }
         private void OnOpenAsMaterialCertificateAggregationDocument(CommandArgs cm_args)
         {
@@ -266,16 +262,11 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
         }
 
-        private void OnEditInTreeViewItem(object obj)
+        private void OnEditInTreeViewItem(CommandArgs cm_args)
         {
-            object selected_object = null;
-            if (obj is IList list)
+             if (cm_args.Buffet!=null)
             {
-                selected_object = list[1];
-                // RadTreeView treeView  = selected_object as RadTreeView;
-                ContextMenu contextMenu = selected_object as ContextMenu;
-                var parent_ = LogicalTreeHelper.GetParent((DependencyObject)contextMenu);
-                var parent = CoreFunctions.FindParent<RadTreeViewItem>((DependencyObject)contextMenu);
+                ContextMenu contextMenu = cm_args.Buffet as ContextMenu;
                 RadTreeViewItem selected_treeViewItem = contextMenu.PlacementTarget as RadTreeViewItem;
                 selected_treeViewItem.IsInEditMode = true;
             }
@@ -422,6 +413,28 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
 
 
         }
+        public override void OnIsActiveChanged()
+        {
+            if (IsActive)
+            {
+                _applicationCommands.LoadAggregationDocumentsFromDBCommand.RegisterCommand(LoadAggregationDocumentFromDBCommand);
 
+                _applicationCommands.ReDoCommand.RegisterCommand(ReDoCommand);
+                _applicationCommands.UnDoCommand.RegisterCommand(UnDoCommand);
+                _applicationCommands.SaveAllCommand.RegisterCommand(SaveCommand);
+            }
+            else
+            {
+                _applicationCommands.LoadAggregationDocumentsFromDBCommand.UnregisterCommand(LoadAggregationDocumentFromDBCommand);
+
+                _applicationCommands.ReDoCommand.UnregisterCommand(ReDoCommand);
+                _applicationCommands.UnDoCommand.UnregisterCommand(UnDoCommand);
+                _applicationCommands.SaveAllCommand.UnregisterCommand(SaveCommand);
+            }
+            base.OnIsActiveChanged();
+
+        }
+
+        
     }
 }

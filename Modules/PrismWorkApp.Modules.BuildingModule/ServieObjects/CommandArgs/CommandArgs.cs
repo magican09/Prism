@@ -10,6 +10,8 @@ namespace PrismWorkApp.Modules.BuildingModule
         public string  CommandName { get; set; }
         public IEntityObject Entity { get; set; }
         public IEntityObject Parent { get; set; }
+        public object Buffet { get; set; }
+
         public Type Type { get; set; }
     }
 }

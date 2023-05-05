@@ -42,6 +42,7 @@
             <Image x:Name="imageObjectNeedSaveToDB"  Visibility="Collapsed"  Source="/PrismWorkApp.Modules.BuildingModule;component/Resourses/Images/MainTreeView/need_save_to_db.png"/>
             <Image x:Name="treeViewItemTImage" Source="{Binding ImageUrl}" />
             <TextBlock x:Name="treeViewItemTextBlock" Text="{Binding Text}" Margin="5 0 0 0" />
+            <!--<TextBox Text="{Binding Text,Mode=TwoWay}" Margin="5 0 0 0" />-->       
         </StackPanel>
         <HierarchicalDataTemplate.Triggers>
             <!--<DataTrigger Binding="{Binding AttachedObject.ChangesJornal,Converter={StaticResource isCollectionEmpty}}" Value="True">-->

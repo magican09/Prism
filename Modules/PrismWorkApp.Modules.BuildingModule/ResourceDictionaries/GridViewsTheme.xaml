@@ -35,4 +35,7 @@
         <Setter Property="TextWrapping" Value="Wrap"/>
         <Setter Property="EditorStyle" Value="{StaticResource TextBoxEditorStyle}"/>
     </Style>
+    <Style   TargetType="{x:Type telerik:GridViewCell}" >
+        <Setter Property="ContextMenu" Value="{StaticResource   GridViewItemContextMenu}"/>
+    </Style>
 </ResourceDictionary>

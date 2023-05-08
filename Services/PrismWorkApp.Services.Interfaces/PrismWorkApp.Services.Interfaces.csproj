@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\PrismWorkApp.OpenWorkLib\PrismWorkApp.OpenWorkLib.csproj" />
+    <ProjectReference Include="..\..\ProjectServise\ProjectServise.csproj" />
   </ItemGroup>
 
   <ItemGroup>

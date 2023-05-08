@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrismWorkApp.OpenWorkLib.Data;
+using ProjectServise;
 using System;
 using System.Linq;
 
@@ -73,6 +74,11 @@ namespace PrismWorkApp.Services.Repositories
         public virtual DbSet<bldUnitOfMeasurement> UnitOfMeasurements { get; set; }
         #endregion
 
+        #region Users
+        //    public virtual DbSet<UserInfo> UserInfos { get; set; }
+        //public virtual DbSet<UsersSecurityGroup>  UsersSecurityGroups { get; set; }
+
+        #endregion
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

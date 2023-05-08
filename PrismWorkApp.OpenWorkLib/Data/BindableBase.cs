@@ -37,6 +37,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         } 
         private Guid _storedId = Guid.NewGuid();
         [CreateNewWhenCopy]
+        [NotMapped]
         public Guid StoredId
         {
             get {

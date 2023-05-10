@@ -8,7 +8,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
     public interface INameableObservableCollection : IList, IEntityObject, INotifyCollectionChanged, INotifyJornalableCollectionChanged  
     {
 
-        public IEntityObject Owner { get; set; }
-        public bool ContainsObjectWithType(Type type);
+          IEntityObject Owner { get; set; }
+          bool ContainsObjectWithType(Type type);
     }
 }

@@ -99,7 +99,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
         private bldParticipantsGroup _participants;
-        public bldParticipantsGroup? Participants
+        public bldParticipantsGroup  Participants
         {
             get
             {
@@ -110,8 +110,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             set { SetProperty(ref _participants, value); }
         }
-        private bldResponsibleEmployeesGroup? _responsibleEmployees;
-        public bldResponsibleEmployeesGroup? ResponsibleEmployees
+        private bldResponsibleEmployeesGroup  _responsibleEmployees;
+        public bldResponsibleEmployeesGroup  ResponsibleEmployees
         {
             get
             {
@@ -123,7 +123,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
         private bldObject _bldObject;
         [NavigateProperty]
-        public virtual bldObject? bldObject
+        public virtual bldObject  bldObject
         {
             get
             {
@@ -136,9 +136,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NavigateProperty]
         public Guid? bldConstructionId { get; set; }
         [NavigateProperty]
-        public bldConstruction? ParentConstruction { get; set; }
-        private bldProject? _bldProject;
-        public bldProject? bldProject
+        public bldConstruction  ParentConstruction { get; set; }
+        private bldProject  _bldProject;
+        public bldProject  bldProject
         {
             get
             {

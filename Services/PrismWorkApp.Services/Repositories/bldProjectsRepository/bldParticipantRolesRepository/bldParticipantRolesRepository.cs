@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class bldParticipantRolesRepository : Repository<bldParticipantRole>
+    public class bldParticipantRolesRepository : Repository<bldParticipantRole>, IbldParticipantRolesRepository
     {
         public bldProjectsPlutoContext PlutoContext { get { return Context as bldProjectsPlutoContext; } }
 

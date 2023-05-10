@@ -63,8 +63,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _parentDocuments; }
             set { SetProperty(ref _parentDocuments, value); }
         }
-        private Picture? _imageFile;
-        public Picture? ImageFile
+        private Picture  _imageFile;
+        public Picture  ImageFile
         {
             get { return _imageFile; }
             set { SetProperty(ref _imageFile, value); }

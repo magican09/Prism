@@ -2,7 +2,7 @@
 {
     public interface IBuildingObject
     {
-        public string Address { get; set; }
+          string Address { get; set; }
 
     }
 }

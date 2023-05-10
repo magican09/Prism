@@ -3,6 +3,7 @@ using Prism.Services.Dialogs;
 using PrismWorkApp.Core;
 using PrismWorkApp.Core.Commands;
 using PrismWorkApp.Modules.BuildingModule.ViewModels;
+using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using System;
 

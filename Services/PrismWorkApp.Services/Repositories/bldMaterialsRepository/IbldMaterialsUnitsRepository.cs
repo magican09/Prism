@@ -4,10 +4,10 @@ namespace PrismWorkApp.Services.Repositories
 {
     public interface IbldMaterialsUnitsRepository : IDisposable
     {
-        public bldUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
-        public bldMaterialsRepository Materials { get; }
-        public bldMaterialsCertificatesRepository MaterialCertificates { get; }
-        public bldResourseCategoriesRepository ResourseCategories { get; }
-        public int Complete();
+         bldUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
+         bldMaterialsRepository Materials { get; }
+         bldMaterialsCertificatesRepository MaterialCertificates { get; }
+         bldResourseCategoriesRepository ResourseCategories { get; }
+         int Complete();
     }
 }

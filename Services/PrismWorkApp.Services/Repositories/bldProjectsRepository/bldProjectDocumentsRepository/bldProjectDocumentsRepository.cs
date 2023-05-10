@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class bldProjectDocumentsRepository : Repository<bldProjectDocument>
+    public class bldProjectDocumentsRepository : Repository<bldProjectDocument>, IbldProjectDocumentsRepository
     {
         public bldProjectDocumentsRepository(bldProjectsPlutoContext context) : base(context)
         {

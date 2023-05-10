@@ -86,7 +86,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
     <PackageReference Include="Syncfusion.Pdf.Wpf" Version="20.3.0.61" />
     <PackageReference Include="System.Data.Odbc" Version="4.7.0" />
     <PackageReference Include="System.Data.OleDb" Version="7.0.0" />

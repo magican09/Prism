@@ -93,7 +93,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
 
         private bldObjectsGroup _buildingObjects = new bldObjectsGroup("Объекты строительства");
-        public bldObjectsGroup? BuildingObjects
+        public bldObjectsGroup  BuildingObjects
         {
             get { return _buildingObjects; }
             set { SetProperty(ref _buildingObjects, value); }
@@ -106,14 +106,14 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _address, value); }
         }
         private bldParticipantsGroup _participants = new bldParticipantsGroup();
-        public bldParticipantsGroup? Participants
+        public bldParticipantsGroup  Participants
         {
             get { return _participants; }
             set { SetProperty(ref _participants, value); }
         }
 
         private bldResponsibleEmployeesGroup _responsibleEmployees = new bldResponsibleEmployeesGroup();
-        public bldResponsibleEmployeesGroup? ResponsibleEmployees
+        public bldResponsibleEmployeesGroup  ResponsibleEmployees
         {
             get { return _responsibleEmployees; }
             set { SetProperty(ref _responsibleEmployees, value); }

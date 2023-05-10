@@ -4,6 +4,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public interface IDateable
     {
-        public DateTime Date { get; set; }
+          DateTime Date { get; set; }
     }
 }

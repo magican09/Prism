@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bldCustomControlLibrary", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Styling", "Common.Styling\Common.Styling.csproj", "{E430432F-105C-44D4-A915-D41351EAD534}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectServiceHost", "Services\ProjectServiceHost\ProjectServiceHost\ProjectServiceHost.csproj", "{58649191-C7CE-4CE2-A452-B1639A99CC08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{E430432F-105C-44D4-A915-D41351EAD534}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E430432F-105C-44D4-A915-D41351EAD534}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E430432F-105C-44D4-A915-D41351EAD534}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58649191-C7CE-4CE2-A452-B1639A99CC08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58649191-C7CE-4CE2-A452-B1639A99CC08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58649191-C7CE-4CE2-A452-B1639A99CC08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58649191-C7CE-4CE2-A452-B1639A99CC08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +85,7 @@ Global
 		{3464CE0A-A038-46C9-A4E5-0BEED24B7EA4} = {C2EEC775-7DC9-4282-A9E1-56A85A85293D}
 		{7CB0F5EF-4738-47C9-B298-639B1026D12B} = {C2EEC775-7DC9-4282-A9E1-56A85A85293D}
 		{D1A13DDA-5781-48F1-A306-6CAF1FE77B72} = {C921C601-45C5-4EFA-92F6-AA9EE67EAE09}
+		{58649191-C7CE-4CE2-A452-B1639A99CC08} = {C921C601-45C5-4EFA-92F6-AA9EE67EAE09}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4071247E-F781-4F88-9B04-331B1357D857}

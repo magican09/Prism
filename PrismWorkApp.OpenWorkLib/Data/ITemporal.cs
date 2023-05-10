@@ -4,8 +4,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public interface ITemporal
     {
-        public DateTime StartTime { get; set; }//Дата начала
-        public DateTime? EndTime { get; set; }//Дата окончания
-        public DateTime? NetExecutionTime { get; set; }//Чистое время выполнения
+          DateTime StartTime { get; set; }//Дата начала
+          DateTime? EndTime { get; set; }//Дата окончания
+          DateTime? NetExecutionTime { get; set; }//Чистое время выполнения
     }
 }

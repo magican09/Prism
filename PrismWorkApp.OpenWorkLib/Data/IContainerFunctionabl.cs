@@ -2,6 +2,6 @@
 {
     public interface IContainerFunctionabl
     {
-        public bool IsPointerContainer { get; set; }
+          bool IsPointerContainer { get; set; }
     }
 }

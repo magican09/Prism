@@ -7,6 +7,8 @@ using PrismWorkApp.Core.Console;
 using PrismWorkApp.Core.Dialogs;
 using PrismWorkApp.Modules.BuildingModule;
 using PrismWorkApp.Modules.MainModule;
+using PrismWorkApp.OpenWorkLib.Core;
+using PrismWorkApp.OpenWorkLib.Data;
 using PrismWorkApp.OpenWorkLib.Data.Service;
 using PrismWorkApp.Services;
 using PrismWorkApp.Services.Interfaces;
@@ -35,7 +37,7 @@ namespace PrismWorkApp
             containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
             containerRegistry.RegisterSingleton<IModulesContext, ModulesContext>();
 
-            containerRegistry.RegisterSingleton<IAppSettingsSystem, AppSettingsSystem>();
+            _ = containerRegistry.RegisterSingleton<IAppSettingsSystem, AppSettingsSystem>();
 
             containerRegistry.RegisterSingleton<IBuildingUnitsRepository, BuildingUnitsRepository>();
             //   containerRegistry.RegisterSingleton<IbldMaterialsUnitsRepository, bldMaterialsUnitsRepository>();

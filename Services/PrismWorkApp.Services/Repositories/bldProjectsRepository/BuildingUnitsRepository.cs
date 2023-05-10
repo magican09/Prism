@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PrismWorkApp.Core;
 using PrismWorkApp.OpenWorkLib.Data;
+using PrismWorkApp.Services.Interfaces;
 using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
@@ -8,30 +8,30 @@ namespace PrismWorkApp.Services.Repositories
     public class BuildingUnitsRepository : IBuildingUnitsRepository
     {
         public string ConnectionString { get; set; }
-        public bldProjectRepository Projects { get; }
-        public bldObjectRepository Objects { get; }
-        public bldPacticipantsRepository Pacticipants { get; }
-        public bldResponsibleEmployeesRepository ResponsibleEmployees { get; }
-        public bldConstructionRepository Constructions { get; }
-        public bldWorkRepository Works { get; }
-        public bldParticipantRolesRepository ParticipantRolesRepository { get; }
-        public bldResponsibleEmployeeRoleRepository ResponsibleEmployeeRoleRepository { get; }
-        public bldConstructionCompaniesRepository ConstructionCompanies { get; }
-        public bldProjectUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
-        public bldProjectMaterialsRepository Materials { get; }
-        public bldDocumentsRepository DocumentsRepository { get; }
-        public TypesOfFileRepository TypesOfFileRepository { get; }
-        public FileDatasRepository FileDatasRepository { get; }
-        public PicturesReposytory PicturesReposytory { get; }
+        public IbldProjectRepository Projects { get; }
+        public IbldObjectRepository Objects { get; }
+        public IbldPacticipantsRepository Pacticipants { get; }
+        public IbldResponsibleEmployeesRepository ResponsibleEmployees { get; }
+        public IbldConstructionRepository Constructions { get; }
+        public IbldWorkRepository Works { get; }
+        public IbldParticipantRolesRepository ParticipantRolesRepository { get; }
+        public IbldResponsibleEmployeeRoleRepository ResponsibleEmployeeRoleRepository { get; }
+        public IbldConstructionCompaniesRepository ConstructionCompanies { get; }
+        public IbldProjectUnitOfMeasuremenRepository UnitOfMeasurementRepository { get; }
+        public IbldProjectMaterialsRepository Materials { get; }
+        public IbldDocumentsRepository DocumentsRepository { get; }
+        public ITypesOfFileRepository TypesOfFileRepository { get; }
+        public IFileDatasRepository FileDatasRepository { get; }
+        public IPicturesReposytory PicturesReposytory { get; }
 
         private readonly bldProjectsPlutoContext _context;
 
         public BuildingUnitsRepository(IAppSettingsSystem settings)
         {
             _context = new bldProjectsPlutoContext(settings.AppSettings.ProjectBDConnectionString); // context;
-            Projects = new bldProjectRepository(_context);
-            Objects = new bldObjectRepository(_context);
-            Pacticipants = new bldPacticipantsRepository(_context);
+            Projects =(IbldProjectRepository) new bldProjectRepository(_context);
+            Objects =(IbldObjectRepository) new bldObjectRepository(_context);
+            Pacticipants =(IbldPacticipantsRepository) new bldPacticipantsRepository(_context);
             ResponsibleEmployees = new bldResponsibleEmployeesRepository(_context);
             Constructions = new bldConstructionRepository(_context);
             Works = new bldWorkRepository(_context);

@@ -2,7 +2,7 @@
 {
     public interface IbldMaterial : IbldResource
     {
-        public bldDocumentsGroup Documents { get; set; }
+          bldDocumentsGroup Documents { get; set; }
 
     }
 }

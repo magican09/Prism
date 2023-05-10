@@ -2,6 +2,6 @@
 {
     public interface IbldLaboratoryReport : IbldDocument
     {
-        public string LaboratoryReportPeeoperty { get; set; }
+          string LaboratoryReportPeeoperty { get; set; }
     }
 }

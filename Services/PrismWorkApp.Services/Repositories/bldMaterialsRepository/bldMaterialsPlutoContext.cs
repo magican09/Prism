@@ -30,7 +30,7 @@ namespace PrismWorkApp.Services.Repositories
         {
             string Conectionstring = @"(localdb)\MSSQLLocalDB;Initial Catalog = master; Database=materials_appdb;Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;;Database=materials_appdb;Trusted_Connection=True;");
+         //   optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;;Database=materials_appdb;Trusted_Connection=True;");
             optionsBuilder.EnableSensitiveDataLogging();
             // optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
@@ -72,15 +72,15 @@ namespace PrismWorkApp.Services.Repositories
 
 
 
-            modelBuilder.Entity<bldMaterialCertificate>().ToTable("MaterialCertificates");
-            modelBuilder.Entity<bldPasportDocument>().ToTable("PasportDocuments");
+            //modelBuilder.Entity<bldMaterialCertificate>().ToTable("MaterialCertificates");
+            //modelBuilder.Entity<bldPasportDocument>().ToTable("PasportDocuments");
             base.OnModelCreating(modelBuilder);
         }
         public override int SaveChanges()
         {
-            Console.WriteLine(this.ChangeTracker.DebugView.ShortView);
-            ChangeTracker.CascadeChanges();
-            Console.WriteLine(this.ChangeTracker.DebugView.ShortView);
+            //Console.WriteLine(this.ChangeTracker.DebugView.ShortView);
+            //ChangeTracker.CascadeChanges();
+            //Console.WriteLine(this.ChangeTracker.DebugView.ShortView);
             var addedAuditedEntities = ChangeTracker.Entries<IEntityObject>()
                 .Where(p => p.State == EntityState.Added)
              .Select(p => p.Entity);

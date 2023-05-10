@@ -3,7 +3,7 @@ using PrismWorkApp.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace PrismWorkApp.Services.Repositories
+namespace PrismWorkApp.Services.Interfaces
 {
     public interface IbldProjectRepository : IRepository<bldProject>
     {

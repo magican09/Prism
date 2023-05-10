@@ -5,41 +5,41 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public interface IJornalable : IKeyable, IHierarchical
     {
-        public Guid StoredId { get; set; }
+         Guid StoredId { get; set; }
         /// <summary>
         /// Включение жруналирования объекта
         /// </summary>
-        public void JornalingOff();
+         void JornalingOff();
         /// <summary>
         /// Выкдючение журналирования объектка
         /// </summary>
-        public void JornalingOn();
-        public event PropertyBeforeChangeEventHandler PropertyBeforeChanged;
-        public event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
+         void JornalingOn();
+         event PropertyBeforeChangeEventHandler PropertyBeforeChanged;
+         event UnDoReDoCommandCreateEventHandler UnDoReDoCommandCreated;
       
         /// <summary>
         /// Cостояние объектв в системе UNDoRedu
         /// </summary>
-        public EntityState  State { get; set; }
+         EntityState  State { get; set; }
         /// <summary>
         /// Является ли объект частью дерева объектов сохраняемых в базу даннных
         /// </summary>
-        public bool IsDbBranch { get; set; }
-        public ObservableCollection<IUnDoRedoCommand> ChangesJornal { get; set; }
-        //public ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems { get; set; }
+         bool IsDbBranch { get; set; }
+         ObservableCollection<IUnDoRedoCommand> ChangesJornal { get; set; }
+        // ObservableCollection<IUnDoReDoSystem> UnDoReDoSystems { get; set; }
         /// <summary>
         /// UnDoReDoSystem сисестема в которой в данный момени зарегистрирован объект
         /// </summary>
-        public IUnDoReDoSystem UnDoReDoSystem { get; set; }
+         IUnDoReDoSystem UnDoReDoSystem { get; set; }
         /// <summary>
         /// Флад включающий функцию авторегисрации добаляемых в тейкущй объект объектов
         /// </summary>
-        public bool IsAutoRegistrateInUnDoReDo { get; set; }
+         bool IsAutoRegistrateInUnDoReDo { get; set; }
      
 
 
     }
-    public enum EntityState
+   public   enum EntityState
     {
         //
         // Summary:
@@ -69,7 +69,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
        
 
     }
-    public  enum AdjustStatus
+    public enum AdjustStatus
     {
 
         UNADJUSTED
@@ -90,7 +90,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 
     }
 
-    public enum JornalRecordState
+     enum JornalRecordState
     {
         NONE,
         PICKED,

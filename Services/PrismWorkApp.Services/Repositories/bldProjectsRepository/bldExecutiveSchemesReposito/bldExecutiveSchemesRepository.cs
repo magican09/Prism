@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class bldExecutiveSchemesRepository : Repository<bldExecutiveScheme>
+    public class bldExecutiveSchemesRepository : Repository<bldExecutiveScheme>, IbldExecutiveSchemesRepository
     {
         public bldExecutiveSchemesRepository(bldProjectsPlutoContext context) : base(context)
         {

@@ -167,7 +167,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         }
 
         private bldWorkExecutiveDocumentation _executiveDocumentation = new bldWorkExecutiveDocumentation();
-        public bldWorkExecutiveDocumentation? ExecutiveDocumentation
+        public bldWorkExecutiveDocumentation  ExecutiveDocumentation
         {
             get
             {
@@ -178,8 +178,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             }
             // set { SetProperty(ref _executiveDocumentation, value); }
         }
-        private bldParticipantsGroup? _participants;
-        public bldParticipantsGroup? Participants
+        private bldParticipantsGroup  _participants;
+        public bldParticipantsGroup  Participants
         {
             get
             {
@@ -194,8 +194,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _participants, value); }
         }
 
-        private bldResponsibleEmployeesGroup? _responsibleEmployees;
-        public bldResponsibleEmployeesGroup? ResponsibleEmployees
+        private bldResponsibleEmployeesGroup  _responsibleEmployees;
+        public bldResponsibleEmployeesGroup  ResponsibleEmployees
         {
             get
             {

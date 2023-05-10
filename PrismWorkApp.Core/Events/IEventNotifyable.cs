@@ -4,6 +4,6 @@ namespace PrismWorkApp.Core
 {
     public interface IEventNotifyable
     {
-        public event EventHandler EventNotify;
+          event EventHandler EventNotify;
     }
 }

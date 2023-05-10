@@ -2,7 +2,7 @@
 {
     public interface IHierarchicable<TParentType, TChildrenType>
     {
-        public TParentType Parent { get; set; }
-        public TChildrenType Children { get; set; }
+          TParentType Parent { get; set; }
+          TChildrenType Children { get; set; }
     }
 }

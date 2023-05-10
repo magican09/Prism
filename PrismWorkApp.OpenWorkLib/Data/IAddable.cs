@@ -2,6 +2,6 @@
 {
     public interface IAddable
     {
-        public void Add(object obj);
+          void Add(object obj);
     }
 }

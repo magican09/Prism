@@ -11,7 +11,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
         int PagesNumber { get; set; }
         string RegId { get; set; }
         string ShortName { get; set; }
-        public bool IsHaveImageFile { get; set; }
+          bool IsHaveImageFile { get; set; }
       //  public Type Type { get; set; }
     }
 }

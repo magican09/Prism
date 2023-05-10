@@ -2,7 +2,7 @@
 {
     public interface ICostable
     {
-        public decimal UnitPrice { get; set; }//Цена за ед. 
-        public decimal Cost { get; set; }//Общая стоимость
+          decimal UnitPrice { get; set; }//Цена за ед. 
+          decimal Cost { get; set; }//Общая стоимость
     }
 }

@@ -8,13 +8,14 @@ namespace PrismWorkApp.Services.Repositories
     public class bldProjectsPlutoContext : DbContext
     {
         private string _connectionString;
-        public bldProjectsPlutoContext(string connectionString) : base()
+         public bldProjectsPlutoContext(string connectionString) : base()
+        //public bldProjectsPlutoContext(DbContextOptions<bldProjectsPlutoContext> options) : base(options)
         {
             _connectionString = connectionString;
-        //  Database.EnsureDeleted();
+            Database.EnsureDeleted();
             Database.EnsureCreated();
-            ChangeTracker.StateChanged += ChangeTracker_StateChanged;
-            ChangeTracker.Tracked += ChangeTracker_Tracked;
+          //  ChangeTracker.StateChanged += ChangeTracker_StateChanged;
+           // ChangeTracker.Tracked += ChangeTracker_Tracked;
         }
         //public bldProjectsPlutoContext()
         //{
@@ -81,10 +82,15 @@ namespace PrismWorkApp.Services.Repositories
             //  string new_con_str = @"Data Source=M-RUK-04\TEW_SQLEXPRESS_5;Initial Catalog=master;Database=work_bd;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
             // optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;;Database=workappdb;Trusted_Connection=True;");
-            optionsBuilder.UseSqlServer(_connectionString,options=>
+            //optionsBuilder.UseSqlServer(_connectionString, options =>
+            // {
+
+            // });
+            if (!optionsBuilder.IsConfigured)
             {
-              
-            });
+                optionsBuilder.UseSqlServer(_connectionString);
+            }
+
             optionsBuilder.EnableSensitiveDataLogging();
           
          //   optionsBuilder.UseSqlServer("ThisIsJustForMigrations");
@@ -92,85 +98,40 @@ namespace PrismWorkApp.Services.Repositories
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //// использование Fluent API
-            ////modelBuilder
-            ////    .Entity<bldProject>()
-            ////    .HasOne(p => p.BuildingObjects)
-            ////    .WithMany(pg => pg.)
-            ////    .HasForeignKey<bldObjectsGroup>(pg => pg.bldProjectId);
-
-            ////modelBuilder
-            ////     .Entity<bldResponsibleEmployee>()
-            ////     .HasOne(re => re.Company)
-            ////     .WithOne(cm => cm.bldResponsibleEmployee)
-            ////     .HasForeignKey<bldCompany>(cm=>cm.bldResponsibleEmployeeId);
-            ////modelBuilder
-            ////  .Entity<bldParticipant>()
-            ////  .HasOne(pt => pt.Company)
-            ////  .WithOne(con_c => con_c.bldParticipant)
-            ////  .HasForeignKey<bldConstructionCompany>(con_c => con_c.bldParticipantId);
-
-
-            ////modelBuilder.Entity<bldProject>()
-            ////    .HasMany(pr => pr.ResponsibleEmployees)
-            ////    .WithMany(re => re.bldProjects)
-            ////    .UsingEntity(j => j.ToTable("ProjectToResponsibleEmployees"));
-
-            ////modelBuilder
-            ////     .Entity<bldWorkbldWork>()
-            ////    .HasKey(wr => new {  wr.PreviousWorkId, wr.NextWorkId });
-            ////modelBuilder
-            //// .Entity<bldWorkbldWork>()
-            //// .HasOne(wr=>wr.NextWork)
-            //// .WithMany(wr=>wr.NextWorks)
-
-
-
-            ////modelBuilder
-            ////        .Entity<bldWorkbldWork>()
-            ////        .HasKey(el => new {  el.PreviousWorkId, el.NextWorkId });
-
-            modelBuilder.Entity<bldWork>()
-            .HasMany(w => w.NextWorks)
-            .WithMany(nw => nw.PreviousWorks)
-            .UsingEntity(j => j.ToTable("PreToNexWorksTable"));
-
-            modelBuilder.Entity<bldProject>()
-                  .HasMany(ob => ob.Participants)
-                  .WithOne(pr => pr.bldProject);
-
-            modelBuilder.Entity<bldObject>()
-                  .HasMany(ob => ob.Participants)
-                  .WithMany(pr => pr.BuildingObjects);
-
-            modelBuilder.Entity<bldConstruction>()
-                .HasMany(cn => cn.Participants)
-                .WithMany(pr => pr.Constructions);
-
-            modelBuilder.Entity<bldWork>()
-                .HasMany(wr => wr.Participants)
-                .WithMany(pr => pr.Works);
-            //modelBuilder.Entity<EntityCategory>()
-            //    .HasMany(en => en.Entities)
-            //    .WithOne(c => c.Category);
 
             //modelBuilder.Entity<bldWork>()
-            //    .HasOne(wr => wr.AOSRDocument)
-            //    .WithOne(d => d.bldWork)
-            //    .HasForeignKey<bldAOSRDocument>(d => d.bldWorkId);
+            //.HasMany(w => w.NextWorks)
+            //.WithMany(nw => nw.PreviousWorks)
+            //.UsingEntity(j => j.ToTable("PreToNexWorksTable"));
+
+            //modelBuilder.Entity<bldProject>()
+            //      .HasMany(ob => ob.Participants)
+            //      .WithOne(pr => pr.bldProject);
+
+            //modelBuilder.Entity<bldObject>()
+            //      .HasMany(ob => ob.Participants)
+            //      .WithMany(pr => pr.BuildingObjects);
+
+            //modelBuilder.Entity<bldConstruction>()
+            //    .HasMany(cn => cn.Participants)
+            //    .WithMany(pr => pr.Constructions);
+
+            //modelBuilder.Entity<bldWork>()
+            //    .HasMany(wr => wr.Participants)
+            //    .WithMany(pr => pr.Works);
 
             modelBuilder.Entity<bldWork>()
           .HasOne(wr => wr.AOSRDocument)
           .WithOne(d => d.bldWork)
           .HasForeignKey<bldAOSRDocument>(d => d.bldWorkId);
 
-            modelBuilder.Entity<FileData>()
-                .Property(p => p.Data)
-                .HasColumnType("VARBINARY(MAX) FILESTREAM");
-            modelBuilder.Entity<FileData>()
-            .Property(m => m.DataId)
-            .HasColumnType("UNIQUEIDENTIFIER ROWGUIDCOL")
-            .IsRequired();
+            //modelBuilder.Entity<FileData>()
+            //    .Property(p => p.Data)
+            //    .HasColumnType("VARBINARY(MAX) FILESTREAM");
+            //modelBuilder.Entity<FileData>()
+            //.Property(m => m.DataId)
+            //.HasColumnType("UNIQUEIDENTIFIER ROWGUIDCOL")
+            //.IsRequired();
             modelBuilder.Entity<FileData>()
                   .HasAlternateKey(m => m.DataId);
 
@@ -183,22 +144,14 @@ namespace PrismWorkApp.Services.Repositories
              .HasOne(bo => bo.ParentObject)
              .WithMany(bo => bo.BuildingObjects)
              .HasForeignKey(bo => bo.bldObjectId);
-           
-            //modelBuilder.Entity<bldMaterialCertificate>()
-            //   .Property(mc => mc.Id)
-            //   .ValueGeneratedNever();
-
-            //modelBuilder.Entity<bldAggregationDocument>()
-            //    .HasMany(ad => ad.ParentDocuments)
-            //    .WithMany(aa => aa.AttachedDocuments);
 
             modelBuilder.Entity<Employee>().ToTable("Employees");
             modelBuilder.Entity<bldResponsibleEmployee>().ToTable("ResponsibleEmployees");
 
             modelBuilder.Entity<bldConstructionCompany>().ToTable("ConstructionCompanies");
             modelBuilder.Entity<bldParticipant>().ToTable("Participants");
-           
-         //   modelBuilder.Entity<bldDocument>().ToTable("bldDocuments");
+
+            //   modelBuilder.Entity<bldDocument>().ToTable("bldDocuments");
 
             modelBuilder.Entity<bldAOSRDocument>().ToTable("AOSRDocuments");
             modelBuilder.Entity<bldExecutiveScheme>().ToTable("ExecutiveSchemes");
@@ -209,35 +162,16 @@ namespace PrismWorkApp.Services.Repositories
             modelBuilder.Entity<bldRegulationtDocument>().ToTable("RegulationtDocuments");
             modelBuilder.Entity<bldAggregationDocument>().ToTable("AggregationDocuments");
             modelBuilder.Entity<bldOrderDocument>().ToTable("OrderDocuments");
-            
 
-            //modelBuilder.Entity<EmployeePosition>().ToTable("EmployeePositions");
-            //modelBuilder.Entity<Person>().ToTable("Persons");
-            //modelBuilder.Entity<Picture>().ToTable("Pictures");
-            //modelBuilder.Entity<bldCompany>().ToTable("bldCompanies");
-            //modelBuilder.Entity<bldConstruction>().ToTable("bldConstructions");
-            //modelBuilder.Entity<bldObject>().ToTable("bldObjects");
-            //modelBuilder.Entity<bldProject>().ToTable("bldProjects");
-            //modelBuilder.Entity<bldResponsibleEmployee>().ToTable("bldResponsibleEmployees");
-            //modelBuilder.Entity<bldResponsibleEmployeeRole>().ToTable("bldResponsibleEmployeeRoles");
-            //modelBuilder.Entity<bldParticipant>().ToTable("bldParticipants");
-            //modelBuilder.Entity<bldDocument>().ToTable("bldDocuments");
-            //modelBuilder.Entity<bldParticipantRole>().ToTable("bldParticipantRoles");
-            //modelBuilder.Entity<bldResource>().ToTable("bldResources");
-            //modelBuilder.Entity<bldResourseCategory>().ToTable("bldResourseCategories");
-            //modelBuilder.Entity<bldUnitOfMeasurement>().ToTable("bldUnitOfMeasurements");
-            //modelBuilder.Entity<bldWorkArea>().ToTable("bldWorkAreas");
-            //modelBuilder.Entity<bldWork>().ToTable("bldWorks");
-            //modelBuilder.Entity<bldMaterial>().ToTable("bldMaterials");
 
 
             base.OnModelCreating(modelBuilder);
         }
         public override int SaveChanges()
         {
-            Console.WriteLine(this.ChangeTracker.DebugView.ShortView);
-            ChangeTracker.CascadeChanges();
-            Console.WriteLine(this.ChangeTracker.DebugView.ShortView);
+            //Console.WriteLine(this.ChangeTracker.DebugView.ShortView);
+            //ChangeTracker.CascadeChanges();
+            //Console.WriteLine(this.ChangeTracker.DebugView.ShortView);
             var addedAuditedEntities = ChangeTracker.Entries<IEntityObject>()
                 .Where(p => p.State == EntityState.Added)
              .Select(p => p.Entity);

@@ -7,13 +7,13 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
 {
     public interface IUnDoReDoSystem : INotifyPropertyChanged, IUnDoRedoCommand
     {
-        public Stack<IUnDoRedoCommand> _UnDoCommands { get; set; }
-        public  Stack<IUnDoRedoCommand> _ReDoCommands { get; set; }
+         Stack<IUnDoRedoCommand> _UnDoCommands { get; set; }
+          Stack<IUnDoRedoCommand> _ReDoCommands { get; set; }
         event PropertyChangedEventHandler PropertyChanged;
         /// <summary>
         /// Уникальный Id системы
         /// </summary>
-        public Guid Id { get; set; }
+         Guid Id { get; set; }
         /// <summary>
         /// Метод сигнализирующее о том, что все отмены изменений  выполнены ( "шагать назад некуда")
         /// </summary>
@@ -23,7 +23,7 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// Метод сигнализирующее о том, что в системе нет записанных "шагов" как "вперед" так и "назад". Оба стека пусты.
         /// </summary>
         /// <returns></returns>
-        public bool IsSatcksEmpty();
+         bool IsSatcksEmpty();
         /// <summary>
         /// Метод ипользуемый для опредения есть ли в системе события которые можно отменить (сделать шаг назад).
         /// </summary>
@@ -39,23 +39,23 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// </summary>
         /// <param name="obj">Удаляемы из системы объект</param>
         void UnRegister(IJornalable obj);
-        public void SetUnDoReDo_System(IUnDoReDoSystem unDoReDoSystem);
+         void SetUnDoReDo_System(IUnDoReDoSystem unDoReDoSystem);
 
-        public void Register(IJornalable obj);
+         void Register(IJornalable obj);
         /// <summary>
         /// Метод для регистрации объекта  реализуещго IJornalable в системе. В системе регистрируются как сам объект,
         /// так и все его IJornalable свойства на всю глубину цепочек объектов IJornalable, пока не встретит 
         /// уже зарегисрированный объект.
         /// </summary>
         /// <param name="obj"> Регистрируемый объект IJornalable</param>
-        public void Register(IJornalable obj, bool enable_outo_registration = true, bool is_db_branch = false);
+         void Register(IJornalable obj, bool enable_outo_registration = true, bool is_db_branch = false);
         /// <summary>
         /// Метод регистрирует все дерево объектов по иерахии внурь перескакивая и череp уже зарегисрированные, если 
         /// таковые встречаются.
         /// </summary>
         /// <param name="obj">Объект IJornalable, который будет зарегисрирована в сисиеме </param>
         /// <param name="first_itaration">Служебный флаг регистрации выхода из рекурсивной функции. Не изменять!</param>
-       // public void RegisterAll(IJornalable obj, bool first_itaration = true);
+       //  void RegisterAll(IJornalable obj, bool first_itaration = true);
         /// <summary>
         /// Метод отменяет ("откатывает назад") произвольное количество последних изменений
         /// </summary>
@@ -136,18 +136,18 @@ namespace PrismWorkApp.OpenWorkLib.Data.Service
         /// <returns></returns>
         //int SaveAllChages(IJornalable obj);
         //int SaveAllChages();
-        public ObservableCollection<IJornalable> _AllChangedObjects { get; }
-        public int SaveAll();
-        public bool IsAnyChildSystemRegistered(IJornalable obj);
-        public bool IsRegistered(IJornalable obj);
-        public bool Contains(IJornalable obj);
-        public int GetChangesNamber(IJornalable obj, bool first_itr = true);
-        public int GetUnChangesObjectsNamber(IJornalable obj, bool first_itr = true);
-        public IEnumerable<IUnDoRedoCommand> GetAllCommandsByObject(IJornalable obj, bool firs_itaration = true);
-        public int Level { get; set; }
-        public void UnDoAll(IJornalable obj);
-      //  public int SystemHaveNotSavedObjectsMethodsNamber { get; set; }
-        public event UnDoReDoSystemEventHandler SystemHaveNotSavedObjects;
-        public bool HasAnyChangedObjectInAllSystems();
+         ObservableCollection<IJornalable> _AllChangedObjects { get; }
+         int SaveAll();
+         bool IsAnyChildSystemRegistered(IJornalable obj);
+         bool IsRegistered(IJornalable obj);
+         bool Contains(IJornalable obj);
+         int GetChangesNamber(IJornalable obj, bool first_itr = true);
+         int GetUnChangesObjectsNamber(IJornalable obj, bool first_itr = true);
+         IEnumerable<IUnDoRedoCommand> GetAllCommandsByObject(IJornalable obj, bool firs_itaration = true);
+         int Level { get; set; }
+         void UnDoAll(IJornalable obj);
+      //   int SystemHaveNotSavedObjectsMethodsNamber { get; set; }
+         event UnDoReDoSystemEventHandler SystemHaveNotSavedObjects;
+         bool HasAnyChangedObjectInAllSystems();
     }
 }

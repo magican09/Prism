@@ -98,7 +98,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _scopeOfWork, value); }
         }
         private bldConstructionsGroup _constructions = new bldConstructionsGroup();
-        public virtual bldConstructionsGroup? Constructions
+        public virtual bldConstructionsGroup  Constructions
         {
             get { return _constructions; }
             set { SetProperty(ref _constructions, value); }
@@ -132,7 +132,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
 
         private bldProject _bldProject;
         [NavigateProperty]
-        public virtual bldProject? bldProject
+        public virtual bldProject  bldProject
         {
             get
             {
@@ -145,9 +145,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
         [NavigateProperty]
         public Guid? bldObjectId { get; set; }
         [NavigateProperty]
-        public bldObject? ParentObject { get; set; }
+        public bldObject  ParentObject { get; set; }
         #region IClonable
-        public override bool Equals(object? obj)
+        public override bool Equals(object  obj)
         {
             if (obj is IEntityObject)
             {
@@ -195,9 +195,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
             set { SetProperty(ref _participants, value); }
         }
 
-        private bldResponsibleEmployeesGroup? _responsibleEmployees;
+        private bldResponsibleEmployeesGroup  _responsibleEmployees;
 
-        public bldResponsibleEmployeesGroup? ResponsibleEmployees
+        public bldResponsibleEmployeesGroup  ResponsibleEmployees
         {
             get
             {

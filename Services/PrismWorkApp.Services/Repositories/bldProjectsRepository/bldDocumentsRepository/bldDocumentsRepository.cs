@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class bldDocumentsRepository : Repository<bldDocument>
+    public class bldDocumentsRepository : Repository<bldDocument>, IbldDocumentsRepository
     {
         public bldProjectDocumentsRepository ProjectDocuments { get; }
         public bldLaboratoryReportsRepository LaboratoryReports { get; }

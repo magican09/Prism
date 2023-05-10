@@ -6,6 +6,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
     {
         EmployeePosition Position { get; set; }
         decimal Salary { get; set; }
-        public bldCompany Company { get; set; }
+          bldCompany Company { get; set; }
     }
 }

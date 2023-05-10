@@ -5,6 +5,6 @@
         string Contacts { get; set; }
         string INN { get; set; }
         string OGRN { get; set; }
-        public string Address { get; set; }
+         string Address { get; set; }
     }
 }

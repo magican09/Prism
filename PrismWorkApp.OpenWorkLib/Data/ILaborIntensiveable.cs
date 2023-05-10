@@ -2,7 +2,7 @@
 {
     public interface ILaborIntensiveable
     {
-        public decimal Laboriousness { get; set; }
-        public decimal ScopeOfWork { get; set; }
+          decimal Laboriousness { get; set; }
+          decimal ScopeOfWork { get; set; }
     }
 }

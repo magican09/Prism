@@ -6,9 +6,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
     {
         bldResponsibleEmployeesGroup ResponsibleEmployees { get; set; }
 
-        public DateTime StartTime { get; set; }
+          DateTime StartTime { get; set; }
 
-        public DateTime? EndTime { get; set; }
+          DateTime? EndTime { get; set; }
 
         bldWork bldWork { get; set; }
     }

@@ -6,7 +6,7 @@ namespace PrismWorkApp.Core
 {
     public interface INodes : INotifyCollectionChanged, IEnumerable<INode>, IList<INode>
     {
-        public string Name { get; set; }
-        public PropertyInfo PropertyInfo { get; set; }
+          string Name { get; set; }
+          PropertyInfo PropertyInfo { get; set; }
     }
 }

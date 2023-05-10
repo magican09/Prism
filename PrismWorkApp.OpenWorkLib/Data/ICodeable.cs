@@ -2,6 +2,6 @@
 {
     public interface ICodeable
     {
-        public string Code { get; set; }
+          string Code { get; set; }
     }
 }

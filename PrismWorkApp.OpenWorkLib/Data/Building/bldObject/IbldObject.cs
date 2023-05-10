@@ -6,8 +6,8 @@ namespace PrismWorkApp.OpenWorkLib.Data
                                  ICloneable, IEntityObject
     //IHierarchicable<IbldProject, INameableOservableCollection<KeyValue>>
     {
-        public string Address { get; set; }
-        public bldConstructionsGroup Constructions { get; set; }
-        public bldObjectsGroup BuildingObjects { get; set; }
+         string Address { get; set; }
+         bldConstructionsGroup Constructions { get; set; }
+         bldObjectsGroup BuildingObjects { get; set; }
     }
 }

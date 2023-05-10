@@ -1,11 +1,11 @@
 ﻿
-using Prism.Mvvm;
+
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 
-namespace PrismWorkApp.Core
+namespace PrismWorkApp.OpenWorkLib.Data
 {
     public class AppSettingsSystem : BindableBase, INotifyPropertyChanged, IAppSettingsSystem
     {
@@ -25,10 +25,10 @@ namespace PrismWorkApp.Core
         }
         public void Save()
         {
-            string settings_text = JsonSerializer.Serialize(_appSettings);
-            if (!Directory.Exists(appDataPath))
-                Directory.CreateDirectory(appDataPath);
-            File.WriteAllText(Path.Combine(appDataPath, SettingsFaileName), settings_text);
+            //string settings_text = JsonSerializer.Serialize(_appSettings);
+            //if (!Directory.Exists(appDataPath))
+            //    Directory.CreateDirectory(appDataPath);
+            //File.WriteAllText(Path.Combine(appDataPath, SettingsFaileName), settings_text);
         }
         public void Read()
         {

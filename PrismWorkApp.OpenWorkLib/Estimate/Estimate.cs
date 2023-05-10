@@ -811,7 +811,7 @@ namespace PrismWorkApp.OpenWorkLib.Estimate
             position.CorrectionIndexes[position.CorrectionIndexes.Count - 1].Justification = parms[5];
             ///////////////////////Проверка суммы процентов по описанию
             Regex regex = new Regex(@"(\d\W\d)%");
-            if (parms[5] != "" && parms[5].Contains('%'))
+            if (parms[5] != "" && parms[5].Contains("%"))
             {
                 MatchCollection matches = regex.Matches(parms[5]); // 
                 foreach (Match mh in matches)

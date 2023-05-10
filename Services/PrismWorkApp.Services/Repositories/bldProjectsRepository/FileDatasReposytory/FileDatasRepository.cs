@@ -2,7 +2,7 @@
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class FileDatasRepository : Repository<FileData>
+    public class FileDatasRepository : Repository<FileData>, IFileDatasRepository
     {
        
         public FileDatasRepository(bldProjectsPlutoContext context) : base(context)

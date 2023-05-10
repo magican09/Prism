@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class bldProjectMaterialsRepository : Repository<bldMaterial>
+    public class bldProjectMaterialsRepository : Repository<bldMaterial>, IbldProjectMaterialsRepository
     {
         public bldProjectMaterialsRepository(DbContext context) : base(context)
         {

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace PrismWorkApp.Services.Repositories
 {
-    public class TypesOfFileRepository : Repository<TypeOfFile>
+    public class TypesOfFileRepository : Repository<TypeOfFile>, ITypesOfFileRepository
     {
         public TypesOfFileRepository(DbContext context) : base(context)
         {

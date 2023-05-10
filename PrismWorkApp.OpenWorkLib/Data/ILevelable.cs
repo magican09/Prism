@@ -3,8 +3,8 @@
     public interface ILevelable
     {
         //   public StructureLevel StructureLevel { get; set; }
-        public string Code { get; set; }
-        public void UpdateStructure();
-        public void ClearStructureLevel();
+          string Code { get; set; }
+          void UpdateStructure();
+          void ClearStructureLevel();
     }
 }

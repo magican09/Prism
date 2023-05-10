@@ -4,9 +4,9 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public interface IOperation
     {
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public decimal LaborVolume { get; set; }
-        public decimal LaborCost { get; set; }
+         DateTime StartTime { get; set; }
+         DateTime EndTime { get; set; }
+         decimal LaborVolume { get; set; }
+         decimal LaborCost { get; set; }
     }
 }

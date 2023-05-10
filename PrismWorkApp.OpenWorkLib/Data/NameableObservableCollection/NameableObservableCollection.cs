@@ -203,7 +203,7 @@ namespace PrismWorkApp.OpenWorkLib.Data
             get { return _isDbBranch; }
             set { SetProperty(ref _isDbBranch, value); }
         }
-        public EntityState _state;
+        private EntityState _state;
         [NotMapped]
         [NotJornaling]
         public EntityState State

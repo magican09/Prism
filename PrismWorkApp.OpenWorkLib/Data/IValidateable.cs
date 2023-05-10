@@ -5,6 +5,6 @@ namespace PrismWorkApp.OpenWorkLib.Data
 {
     public interface IValidateable
     {
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+          event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
     }
 }

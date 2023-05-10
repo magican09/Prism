@@ -198,7 +198,7 @@ namespace PrismWorkApp.Modules.BuildingModule.ViewModels
                                 selected_document.AttachedDocuments.Add(document);
                     }
                 }
-            }
+            } 
             );
         }
 

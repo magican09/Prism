@@ -32,18 +32,18 @@ namespace PrismWorkApp.Services.Repositories
             Projects =(IbldProjectRepository) new bldProjectRepository(_context);
             Objects =(IbldObjectRepository) new bldObjectRepository(_context);
             Pacticipants =(IbldPacticipantsRepository) new bldPacticipantsRepository(_context);
-            ResponsibleEmployees = new bldResponsibleEmployeesRepository(_context);
-            Constructions = new bldConstructionRepository(_context);
-            Works = new bldWorkRepository(_context);
-            ParticipantRolesRepository = new bldParticipantRolesRepository(_context);
-            ConstructionCompanies = new bldConstructionCompaniesRepository(_context);
-            ResponsibleEmployeeRoleRepository = new bldResponsibleEmployeeRoleRepository(_context);
-            UnitOfMeasurementRepository = new bldProjectUnitOfMeasuremenRepository(_context);
-            Materials = new bldProjectMaterialsRepository(_context);
-            DocumentsRepository = new bldDocumentsRepository(_context);
-            TypesOfFileRepository = new TypesOfFileRepository(_context);
-            FileDatasRepository = new FileDatasRepository(_context);
-            PicturesReposytory = new PicturesReposytory(_context);
+            ResponsibleEmployees =(IbldResponsibleEmployeesRepository) new bldResponsibleEmployeesRepository(_context);
+            Constructions =(IbldConstructionRepository) new bldConstructionRepository(_context);
+            Works =(IbldWorkRepository) new bldWorkRepository(_context);
+            ParticipantRolesRepository = (IbldParticipantRolesRepository) new bldParticipantRolesRepository(_context);
+            ConstructionCompanies =(IbldConstructionCompaniesRepository) new bldConstructionCompaniesRepository(_context);
+            ResponsibleEmployeeRoleRepository =(IbldResponsibleEmployeeRoleRepository) new bldResponsibleEmployeeRoleRepository(_context);
+            UnitOfMeasurementRepository =(IbldProjectUnitOfMeasuremenRepository) new bldProjectUnitOfMeasuremenRepository(_context);
+            Materials =(IbldProjectMaterialsRepository) new bldProjectMaterialsRepository(_context);
+            DocumentsRepository =(IbldDocumentsRepository) new bldDocumentsRepository(_context);
+            TypesOfFileRepository =(ITypesOfFileRepository) new TypesOfFileRepository(_context);
+            FileDatasRepository =(IFileDatasRepository) new FileDatasRepository(_context);
+            PicturesReposytory =(IPicturesReposytory) new PicturesReposytory(_context);
 
         }
         public int Complete()
